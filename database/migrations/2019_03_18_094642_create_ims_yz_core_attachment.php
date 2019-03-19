@@ -21,8 +21,7 @@ class CreateImsYzCoreAttachment extends Migration
                 $table->string('filename',255)->default('');  
                 $table->string('attachment',255)->default(''); 
                 $table->integer('type')->default(0);
-                $table->integer('createtime')->default(0)->nullable();
-                $table->string('module_upload_dir',255)->default('');  
+                $table->string('module_upload_dir',255)->default('');
                 $table->integer('group_id')->nullable();
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();

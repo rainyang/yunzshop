@@ -55,6 +55,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/startDownload', 'UpdateController@startDownload');
         /* 上传 */
         // 图片
+        Route::any('upload/upload', 'UploadController@upload');
         Route::any('upload/image', 'UploadController@image');
     });
 

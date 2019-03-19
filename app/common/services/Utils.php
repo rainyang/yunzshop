@@ -2,6 +2,7 @@
 
 namespace app\common\services;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Carbon\Carbon;
@@ -296,5 +297,16 @@ class Utils
                 }
             }
         }
+    }
+
+    public static function mkdirs($path)
+    {
+        $filesystem = app(Filesystem::class);
+
+        if (!$filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path, 0755, true);
+        }
+
+        return $filesystem->isDirectory($path);
     }
 }

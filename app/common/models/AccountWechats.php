@@ -12,6 +12,15 @@ class AccountWechats extends BaseModel
 {
     public $table = 'account_wechats';
 
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_uniacid_app';
+        }
+    }
+
     public static function getAccountByUniacid($uniacid)
     {
         return self::where('uniacid', $uniacid)->first();

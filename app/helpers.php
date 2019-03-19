@@ -219,7 +219,11 @@ if (!function_exists("tomedia")) {
         }
 
         if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
-            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            if (env('APP_Framework') == 'platform') {
+                $src = request()->getSchemeAndHttpHost() . '/' . $src;
+            } else {
+                $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            }
         } else {
             $src = YunShop::app()->attachurl_remote . $src;
         }
@@ -466,10 +470,7 @@ if (!function_exists('shop_template_compile')) {
     function shop_template_compile($from, $to, $inmodule = false)
     {
         $path = dirname($to);
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+        \app\common\services\Utils::mkdirs($path);
         $content = shop_template_parse(file_get_contents($from), $inmodule);
 
         file_put_contents($to, $content);
@@ -981,5 +982,376 @@ if (!function_exists('randNum')) {
             $hash .= $seed{mt_rand(0, $max)};
         }
         return $hash;
+    }
+}
+
+if (!function_exists('file_random_name')) {
+    function file_random_name($dir, $ext)
+    {
+        do {
+            $filename = random(30) . '.' . $ext;
+        } while (file_exists($dir . $filename));
+
+        return $filename;
+    }
+}
+
+if (!function_exists('random')) {
+    function random($length, $numeric = FALSE)
+    {
+        $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
+        $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
+        if ($numeric) {
+            $hash = '';
+        } else {
+            $hash = chr(rand(1, 26) + rand(0, 1) * 32 + 64);
+            $length--;
+        }
+        $max = strlen($seed) - 1;
+        for ($i = 0; $i < $length; $i++) {
+            $hash .= $seed{mt_rand(0, $max)};
+        }
+        return $hash;
+    }
+}
+
+if (!function_exists('is_error')) {
+    function is_error($data)
+    {
+        if (empty($data) || !is_array($data) || !array_key_exists('errno', $data) || (array_key_exists('errno', $data) && $data['errno'] == 0)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+
+if (!function_exists('mkdirs')) {
+    function mkdirs($path)
+    {
+        if (!is_dir($path)) {
+            mkdirs(dirname($path));
+            mkdir($path);
+        }
+
+        return is_dir($path);
+    }
+}
+
+if (!function_exists('file_image_quality')) {
+    function file_image_quality($src, $to_path, $ext, $global)
+    {
+        $quality = intval($global['zip_percentage']);
+        if ($quality <= 0 || $quality >= 100) {
+            return;
+        }
+
+        if (filesize($src) / 1024 > 5120) {
+            return;
+        }
+
+        $result = \app\platform\modules\system\models\Image::create($src, $ext)->saveTo($to_path, $quality);
+        return $result;
+    }
+}
+
+if (!function_exists('safe_gpc_path')) {
+    function safe_gpc_path($value, $default = '') {
+        $path = safe_gpc_string($value);
+        $path = str_replace(array('..', '..\\', '\\\\' ,'\\', '..\\\\'), '', $path);
+
+        if (empty($path) || $path != $value) {
+            $path = $default;
+        }
+
+        return $path;
+    }
+}
+
+if (!function_exists('safe_gpc_string')) {
+    function safe_gpc_string($value, $default = '')
+    {
+        $value = safe_bad_str_replace($value);
+        $value = preg_replace('/&((#(\d{3,5}|x[a-fA-F0-9]{4}));)/', '&\\1', $value);
+
+        if (empty($value) && $default != $value) {
+            $value = $default;
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('array_elements')) {
+    function array_elements($keys, $src, $default = FALSE)
+    {
+        $return = array();
+        if (!is_array($keys)) {
+            $keys = array($keys);
+        }
+        foreach ($keys as $key) {
+            if (isset($src[$key])) {
+                $return[$key] = $src[$key];
+            } else {
+                $return[$key] = $default;
+            }
+        }
+        return $return;
+    }
+}
+
+if (!function_exists('sizecount')) {
+    function sizecount($size)
+    {
+        if ($size >= 1073741824) {
+            $size = round($size / 1073741824 * 100) / 100 . ' GB';
+        } elseif ($size >= 1048576) {
+            $size = round($size / 1048576 * 100) / 100 . ' MB';
+        } elseif ($size >= 1024) {
+            $size = round($size / 1024 * 100) / 100 . ' KB';
+        } else {
+            $size = $size . ' Bytes';
+        }
+        return $size;
+    }
+}
+
+if (!function_exists('file_image_thumb')) {
+    function file_image_thumb($srcfile, $desfile = '', $width = 0, $global)
+    {
+        if (intval($width) == 0) {
+            $width = intval($global['thumb_width']);
+        }
+        if (!$desfile) {
+            $ext = pathinfo($srcfile, PATHINFO_EXTENSION);
+            $srcdir = dirname($srcfile);
+            do {
+                $desfile = $srcdir . '/' . random(30) . ".{$ext}";
+            } while (file_exists($desfile));
+        }
+
+        $des = dirname($desfile);
+        if (!file_exists($des)) {
+            if (!mkdirs($des)) {
+                return 1;
+            }
+        } elseif (!is_writable($des)) {
+            return 2;
+        }
+        $org_info = @getimagesize($srcfile);
+        if ($org_info) {
+            if ($width == 0 || $width > $org_info[0]) {
+                copy($srcfile, $desfile);
+                return str_replace(base_path() . '/', '', $desfile);
+            }
+        }
+        $scale_org = $org_info[0] / $org_info[1];
+        $height = $width / $scale_org;
+        $desfile = \app\platform\modules\system\models\Image::create($srcfile)->resize($width, $height)->saveTo($desfile);
+        if (!$desfile) {
+            return false;
+        }
+
+        return str_replace(base_path() . '/', '', $desfile);
+    }
+}
+
+if (!function_exists('file_is_image')) {
+    function file_is_image($url)
+    {
+        if (!parse_path($url)) {
+            return false;
+        }
+        $pathinfo = pathinfo($url);
+        $extension = strtolower($pathinfo['extension']);
+
+        return !empty($extension) && in_array($extension, array('jpg', 'jpeg', 'gif', 'png'));
+    }
+}
+
+if (!function_exists('file_remote_upload')) {
+    function file_remote_upload($filename, $auto_delete_local = true, $remote)
+    {
+        if (!$remote['type']) {
+            return false;
+        }
+        if ($remote['type'] == '2') {
+//            load()->library('oss');
+//            load()->model('attachment');
+            $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
+            $host_name = $remote['alioss']['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
+            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
+            try {
+                $ossClient = new \OSS\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . $filename);
+            } catch (\OSS\Core\OssException $e) {
+                return [
+                    'status' => 1,
+                    'msg' => $e->getMessage()
+                ];
+            }
+            if ($auto_delete_local) {
+                file_delete($filename);
+            }
+        } elseif ($remote['type'] == '4') {
+            if ($remote['cos']['local']) {
+//                load()->library('cos');
+                qcloudcos\Cosapi::setRegion($remote['cos']['local']);
+                $uploadRet = qcloudcos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            } else {
+//                load()->library('cosv3');
+                $uploadRet = \Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            }
+            if ($uploadRet['code'] != 0) {
+                return [
+                    'status' => $uploadRet['code'],
+                    'msg' => ''
+                ];
+            }
+            if ($auto_delete_local) {
+                file_delete($filename);
+            }
+        }
+    }
+}
+
+if (!function_exists('attachment_alioss_buctkets')) {
+    function attachment_alioss_buctkets($key, $secret)
+    {
+        $url = 'http://oss-cn-beijing.aliyuncs.com';
+        try {
+            $ossClient = new \OSS\OssClient($key, $secret, $url);
+        } catch(\OSS\Core\OssException $e) {
+            return $this->error(1, $e->getMessage());
+        }
+        try {
+            $bucketlistinfo = $ossClient->listBuckets();
+        } catch(\OSS\Core\OssException $e) {
+            return $this->error(1, $e->getMessage());
+        }
+        $bucketlistinfo = $bucketlistinfo->getBucketList();
+        $bucketlist = array();
+        foreach ($bucketlistinfo as &$bucket) {
+            $bucketlist[$bucket->getName()] = array('name' => $bucket->getName(), 'location' => $bucket->getLocation());
+        }
+        return $bucketlist;
+    }
+}
+
+if (!function_exists('file_delete')) {
+    function file_delete($file)
+    {
+        if (empty($file)) {
+            return false;
+        }
+        if (file_exists($file)) {
+            @unlink($file);
+        }
+        if (file_exists(base_path() . '/' . $file)) {
+            @unlink(base_path() . '/' . $file);
+        }
+
+        return true;
+    }
+}
+
+if (!function_exists('safe_gpc_html')) {
+    function safe_gpc_html($value, $default = '')
+    {
+        if (empty($value) || !is_string($value)) {
+            return $default;
+        }
+        $value = safe_bad_str_replace($value);
+
+        $value = safe_remove_xss($value);
+        if (empty($value) && $value != $default) {
+            $value = $default;
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('safe_bad_str_replace')) {
+    function safe_bad_str_replace($string)
+    {
+        if (empty($string)) {
+            return '';
+        }
+        $badstr = array("\0", "%00", "%3C", "%3E", '<?', '<%', '<?php', '{php', '../');
+        $newstr = array('_', '_', '&lt;', '&gt;', '_', '_', '_', '_', '.._');
+        $string = str_replace($badstr, $newstr, $string);
+
+        return $string;
+    }
+}
+
+if (!function_exists('safe_remove_xss')) {
+    function safe_remove_xss($val)
+    {
+        $val = preg_replace('/([\x0e-\x19])/', '', $val);
+        $search = 'abcdefghijklmnopqrstuvwxyz';
+        $search .= 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $search .= '1234567890!@#$%^&*()';
+        $search .= '~`";:?+/={}[]-_|\'\\';
+
+        for ($i = 0; $i < strlen($search); $i++) {
+            $val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val);
+            $val = preg_replace('/(&#0{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val);
+        }
+        preg_match_all('/href=[\'|\"](.*?)[\'|\"]|src=[\'|\"](.*?)[\'|\"]/i', $val, $matches);
+        $url_list = array_merge($matches[1], $matches[2]);
+        $encode_url_list = array();
+        if (!empty($url_list)) {
+            foreach ($url_list as $key => $url) {
+                $val = str_replace($url, 'we7_' . $key . '_we7placeholder', $val);
+                $encode_url_list[] = $url;
+            }
+        }
+        $ra1 = array('javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'script', 'embed', 'object', 'frameset', 'ilayer', 'bgsound', 'base');
+        $ra2 = array('onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload', '@import');
+        $ra = array_merge($ra1, $ra2);
+        $found = true;
+        while ($found == true) {
+            $val_before = $val;
+            for ($i = 0; $i < sizeof($ra); $i++) {
+                $pattern = '/';
+                for ($j = 0; $j < strlen($ra[$i]); $j++) {
+                    if ($j > 0) {
+                        $pattern .= '(';
+                        $pattern .= '(&#[xX]0{0,8}([9ab]);)';
+                        $pattern .= '|';
+                        $pattern .= '|(&#0{0,8}([9|10|13]);)';
+                        $pattern .= ')*';
+                    }
+                    $pattern .= $ra[$i][$j];
+                }
+                $pattern .= '/i';
+                $replacement = substr($ra[$i], 0, 2) . '<x>' . substr($ra[$i], 2);
+                $val = preg_replace($pattern, $replacement, $val);
+                if ($val_before == $val) {
+                    $found = false;
+                }
+            }
+        }
+        if (!empty($encode_url_list) && is_array($encode_url_list)) {
+            foreach ($encode_url_list as $key => $url) {
+                $val = str_replace('we7_' . $key . '_we7placeholder', $url, $val);
+            }
+        }
+        return $val;
+    }
+}
+
+if (!function_exists('file_move')) {
+    function file_move($filename, $dest)
+    {
+        mkdirs(dirname($dest));
+        if (is_uploaded_file($filename)) {
+            move_uploaded_file($filename, $dest);
+        } else {
+            rename($filename, $dest);
+        }
+//        @chmod($filename, $_W['config']['setting']['filemode']);
+
+        return is_file($dest);
     }
 }
