@@ -176,6 +176,7 @@ class AdminUser extends Authenticatable
                 }
                 $item['endtime'] = date('Y年m月d日', $item['endtime']);
             }
+            $item['status'] = "$item[status]";
         }
 
         return $users;
