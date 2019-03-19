@@ -9,11 +9,13 @@
 namespace app\common\middleware;
 
 
+use app\common\models\AccountWechats;
+
 class GlobalParams
 {
     public function handle($request, \Closure $next, $guard = null)
     {
-        $base_config    = $this->setConfigInfo();
+        $base_config = $this->setConfigInfo();
 
         \config::set('app.global', $base_config);
         \config::set('app.sys_global', array_merge($request->input(), $_COOKIE));
@@ -28,10 +30,15 @@ class GlobalParams
      */
     private function setConfigInfo()
     {
+        $cfg     = \config::get('app.global');
+        $account = AccountWechats::getAccountByUniacid($cfg['uniacid']);
+        $cfg['account'] = $account ? $account->toArray() : '';
+
         if (request('uniacid')) {
-            return \config::get('app.global');
+
+            return $cfg;
         }
 
-        return array_merge(\config::get('app.global'), $_COOKIE);
+        return array_merge($cfg, $_COOKIE);
     }
 }
