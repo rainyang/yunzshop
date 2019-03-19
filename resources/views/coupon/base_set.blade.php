@@ -95,13 +95,77 @@
                 </div>
 
 
+                <div class='panel-heading'>购物分享设置</div>
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品分享优惠券：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][share_open]" value="1" @if ($coupon['shopping_share']['share_open'] == 1) checked="checked" @endif />
+                                开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][share_open]" value="0" @if ($coupon['shopping_share']['share_open'] == 0) checked="checked" @endif />
+                                关闭
+                            </label>
+                            <div class="help-block">
+                                会员购买指定商品，获得优惠券分享资格
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享限制：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][share_limit]" value="1" @if ($coupon['shopping_share']['share_limit'] == 1) checked="checked" @endif />
+                                是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][share_limit]" value="0" @if ($coupon['shopping_share']['share_limit'] == 0) checked="checked" @endif />
+                                否
+                            </label>
+                            <div class="help-block">
+                                是否限制为拥有推广资格的会才可以分享
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">领取限制：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][receive_limit]" value="1" @if ($coupon['shopping_share']['receive_limit'] == 1) checked="checked" @endif />
+                                是
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[shopping_share][receive_limit]" value="0" @if ($coupon['shopping_share']['receive_limit'] == 0) checked="checked" @endif />
+                                否
+                            </label>
+                            <div class="help-block">
+                                分享者是否可以领取
+                            </div>
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">领取页面Banner</label>
+                        <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
+                            {!! app\common\helpers\ImageHelper::tplFormFieldImage('coupon[shopping_share][banner]', $coupon['shopping_share']['banner']) !!}
+                            {{--<span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>--}}
+                            {{--@if (!empty($coupon['shopping_share']['banner']))
+                                <a href='{{tomedia($coupon['shopping_share']['banner'])}}' target='_blank'>
+                                    <img src="{{tomedia($coupon['shopping_share']['banner'])}}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                </a>
+                            @endif--}}
+                        </div>
+                    </div>
+
+                </div>
 
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
-                        <input type="submit" name="submit" value="保存设置" class="btn btn-primary col-lg-1" onclick='return formcheck()'/>
+                        <input type="submit" name="submit" value="保存设置" class="btn btn-primary" onclick='return formcheck()'/>
                     </div>
                 </div>
 
