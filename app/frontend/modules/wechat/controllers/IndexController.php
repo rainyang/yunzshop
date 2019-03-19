@@ -33,12 +33,17 @@ class IndexController extends ApiController
             $request = \Illuminate\Http\Request::capture()
         );
 
+        if ($this->checkSignature()) {
+            // 打开公众号
+            return $_GET['echostr'];
+        }
+        die;
+
         // 判断接入
         //查询数据库，该公众号是否开启，开启，则不校验，正常接收请求。如果关闭，则校验
         if (empty(\Setting::get('plugin.wechat.status'))) {
             if ($this->checkSignature()) {
                 // 打开公众号
-                \Setting::set('plugin.wechat.status',1);
                 return $_GET['echostr'];
             }
         }
