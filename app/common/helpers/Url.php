@@ -113,12 +113,7 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-
-        if (env('APP_Framework') == 'platform') {
-            return  config('app.isApi') . '?'. http_build_query($params);
-        } else {
-            return  '/addons/yun_shop/api.php?'. http_build_query($params);
-        }
+        return  '/addons/yun_shop/api.php?'. http_build_query($params);
     }
 
     /**

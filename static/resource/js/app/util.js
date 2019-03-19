@@ -539,7 +539,8 @@
 					}
 				}
 			}, opts);
-		});
+            fileUploader.url('./index.php?c=utility&a=file&do=upload&upload_type=');
+        });
 	}; // end of image
 
 	util.wechat_image = function(val, callback, options) {
