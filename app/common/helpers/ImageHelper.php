@@ -55,19 +55,22 @@ class ImageHelper
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
+        $util = 'util';
         if (env('APP_Framework') == 'platform') {
             $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
             $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
+            $util = 'utils';
         } else {
             $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         }
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
+
             $s = '
 		<script type="text/javascript">
 			function showImageDialog(elm, opts, options) {
-				require(["util"], function(util){
+				require(["'.$util.'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
 					var val = ipt.val();
