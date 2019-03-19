@@ -25,7 +25,6 @@ class IndexController extends ApiController
         \Log::debug('-------------wechat_start----------------------');
         \Log::debug($_GET);
         \Log::debug('-------------wechat_end------------------------');
-        die;
         //引入laravel
         require_once __DIR__.'/bootstrap/autoload.php';
         $app = require_once __DIR__.'/bootstrap/app.php';
@@ -33,14 +32,16 @@ class IndexController extends ApiController
         $kernel->handle(
             $request = \Illuminate\Http\Request::capture()
         );
-        /*
+
         // 判断接入
-        if (!empty($_GET['signature'])) {
+        //查询数据库，该公众号是否开启，开启，则不校验，正常接收请求。如果关闭，则校验
+        if (empty(\Setting::get('plugin.wechat.status'))) {
             if ($this->checkSignature()) {
+                // 打开公众号
+                \Setting::set('plugin.wechat.status',1);
                 return $_GET['echostr'];
             }
         }
-        */
         // 获取第三方库easyWechat的app对象
         $wechatApp = new \app\common\modules\wechat\WechatApplication();
         $server = $wechatApp->server;
