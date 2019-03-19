@@ -22,6 +22,7 @@ class IndexController extends ApiController
 {
     public function index()
     {
+        var_dump($_GET);die;
         //引入laravel
         require_once __DIR__.'/bootstrap/autoload.php';
         $app = require_once __DIR__.'/bootstrap/app.php';
@@ -29,6 +30,14 @@ class IndexController extends ApiController
         $kernel->handle(
             $request = \Illuminate\Http\Request::capture()
         );
+        /*
+        // 判断接入
+        if (!empty($_GET['signature'])) {
+            if ($this->checkSignature()) {
+                return $_GET['echostr'];
+            }
+        }
+        */
         // 获取第三方库easyWechat的app对象
         $wechatApp = new \app\common\modules\wechat\WechatApplication();
         $server = $wechatApp->server;
@@ -75,4 +84,20 @@ class IndexController extends ApiController
 
         }
     }
+
+    // 验证接入数据
+    public function checkSignature()
+    {
+        $token = \Setting::get('plugin.wechat.token');
+        $array = array($token, $_GET['timestamp'], $_GET['nonce']);
+        sort($array, SORT_STRING);
+        $str = implode($array);
+        $str = sha1($str);
+        if ($_GET['signature'] === $str) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
