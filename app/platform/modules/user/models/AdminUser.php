@@ -142,6 +142,7 @@ class AdminUser extends Authenticatable
             $data['password'] = trim($data['password']);
             $data['re_password'] = trim($data['re_password']);
         }
+        unset($data['avatar']);
         $data['lastvisit'] =time();
         $data['lastip'] = getIp();
         $data['joinip'] = getIp();
@@ -265,7 +266,8 @@ class AdminUser extends Authenticatable
         if (request()->path() == "admin/user/create") {
             $data = [
                 'mobile' => $data['mobile'],
-                'uid' => $user->uid
+                'uid' => $user->uid,
+                'avatar' => $data['avatar']
             ];
             $profile_model = new YzUserProfile;
             $profile_model->fill($data);
