@@ -18,27 +18,17 @@ use app\common\helpers\Cache;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends ApiController
+class IndexController extends \app\common\components\BaseController//extends ApiController
 {
     public function index()
     {
-        \Log::debug('-------------wechat_start----------------------');
-        \Log::debug($_GET);
-        \Log::debug('-------------wechat_end------------------------');
-        //引入laravel
-        require_once __DIR__.'/bootstrap/autoload.php';
-        $app = require_once __DIR__.'/bootstrap/app.php';
-        $kernel = $app->make(\Illuminate\Contracts\Http\Kernel::class);
-        $kernel->handle(
-            $request = \Illuminate\Http\Request::capture()
-        );
-
-        if ($this->checkSignature()) {
-            // 打开公众号
-            return $_GET['echostr'];
+        if (isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
+            if ($this->checkSignature()) {
+                // 打开公众号
+                return $_GET['echostr'];
+            }
         }
-        die;
-
+        /*
         // 判断接入
         //查询数据库，该公众号是否开启，开启，则不校验，正常接收请求。如果关闭，则校验
         if (empty(\Setting::get('plugin.wechat.status'))) {
@@ -47,6 +37,7 @@ class IndexController extends ApiController
                 return $_GET['echostr'];
             }
         }
+        */
         // 获取第三方库easyWechat的app对象
         $wechatApp = new \app\common\modules\wechat\WechatApplication();
         $server = $wechatApp->server;
