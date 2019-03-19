@@ -167,16 +167,19 @@ class AdminUser extends Authenticatable
         $users = self::searchUsers($parames)->orderBy('uid', 'desc')->get();
         foreach ($users as $item) {
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
+            if ($item['status'] == 2) {
+                $item['state'] = '有效';
+            } elseif ($item['status'] == 3) {
+                $item['state'] = '已禁用';
+            }
             if ($item['endtime'] == 0) {
                 $item['endtime'] = '永久有效';
             }else {
                 if (time() > $item['endtime']) {
-                    $item['status'] = 1;
-                    self::where('uid', $item['uid'])->update(['status'=>1]);
+                    $item['state'] = '已过期';
                 }
                 $item['endtime'] = date('Y年m月d日', $item['endtime']);
             }
-            $item['status'] = "$item[status]";
         }
 
         return $users;
