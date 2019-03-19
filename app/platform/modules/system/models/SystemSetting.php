@@ -25,7 +25,7 @@ class SystemSetting extends BaseModel
      * @param $cache_name
      * @return SystemSetting|bool
      */
-    public static function settingSave($data = '', $key = '', $cache_name = '')
+    public static function settingSave($data = '', $key = '')
     {
         if (!$data && !$key) {
             return false;
@@ -44,9 +44,6 @@ class SystemSetting extends BaseModel
             // 修改
             $result = self::where('key', $key)->update(['value' => $data]);
         }
-        if ($result) {
-            Cache::put($cache_name, $data, 3600);
-        }
 
         return $result;
     }
@@ -63,10 +60,11 @@ class SystemSetting extends BaseModel
             $result = self::getKeyList($key);
             Cache::put($cache_name, $result, 3600);
         } else {
-            $result = \Cache::get($cache_name);
+            $result = Cache::get($cache_name);
         }
+
         if ($result) {
-            $result = unserialize($result);
+            $result = unserialize($result['value']);
         }
 
         return $result;

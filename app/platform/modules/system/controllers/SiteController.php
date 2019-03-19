@@ -27,10 +27,12 @@ class SiteController extends BaseController
             }
         }
 
+        return view('system.site');
+
         if ($copyright) {
             return $this->successJson('成功', $copyright);
         } else {
-            return $this->errorJson('失败', $copyright);
+            return $this->errorJson('没有检测到数据', '');
         }
     }
 }

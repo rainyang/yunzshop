@@ -15,6 +15,7 @@ class CoreAttach extends BaseModel
     protected $table = 'yz_core_attachment';
     protected $guarded = [''];
     protected $hidden  = ['deleted_at', 'updated_at', 'created_at'];
+    public $timestamps = true;
 
     public function scopeSearch($query, $keyword)
     {
