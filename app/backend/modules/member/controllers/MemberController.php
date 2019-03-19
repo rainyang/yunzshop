@@ -401,7 +401,6 @@ class MemberController extends BaseController
         $yz = array(
             'member_id' => $uid,
             'wechat' => $parame->data['wechat'],
-            'parent_id' => $parame->data['parent_id'],
             'uniacid' => \YunShop::app()->uniacid,
             'level_id' => $parame->data['level_id'] ?: 0,
             'group_id' => $parame->data['group_id'],
@@ -627,6 +626,7 @@ class MemberController extends BaseController
         }
 
         $list = MemberParent::children($request)
+            ->orderBy('level','asc')
             ->paginate($this->pageSize)
             ->toArray();
 
@@ -679,6 +679,7 @@ class MemberController extends BaseController
             });
         })->export('xls');
     }
+
 
 
 
