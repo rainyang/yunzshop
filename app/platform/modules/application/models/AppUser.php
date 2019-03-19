@@ -76,8 +76,8 @@ class AppUser extends BaseModel
 //        return $this->role_name = $this->role === 'manager' ? '管理员' : '操作员';
     }
 
-    public static function getAccount($uid)
+    public static function getAccount($uid, $uniacid)
     {
-        return self::where('uid', $uid)->first();
+        return self::where(['uid' => $uid, 'uniacid' => $uniacid])->first();
     }
 }

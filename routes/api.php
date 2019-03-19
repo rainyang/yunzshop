@@ -31,8 +31,8 @@ Route::group(['middleware' => ['globalparams']], function () {
         }
 
         //api
-        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
-            strpos(request()->getRequestUri(), '/api') !== false
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
+            strpos(request()->getRequestUri(), '/api.php') !== false
         ) {
             $shop = Setting::get('shop.shop');
             if (!is_null($shop) && isset($shop['close']) && 1 == $shop['close']) {
@@ -43,14 +43,14 @@ Route::group(['middleware' => ['globalparams']], function () {
             return;
         }
         //shop.php
-        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
             strpos(request()->getRequestUri(), '/shop.php') !== false
         ) {
             YunShop::parseRoute(request()->input('route'));
             return;
         }
         //任务调度
-        if (strpos(request()->getRequestUri(), config('app.isApi')) !== false &&
+        if (strpos(request()->getRequestUri(), '/addons/') !== false &&
             strpos(request()->getRequestUri(), '/cron.php') !== false
         ) {
             // Get security key from config
@@ -86,10 +86,8 @@ Route::group(['middleware' => ['globalparams']], function () {
         }
 
         //微信回调
-        if (strpos(request()->getRequestUri(), config('app.isApi')) === false &&
-            strpos(request()->getRequestUri(), '/api.php') !== false
-        ) {
-
+        if (strpos(request()->getRequestUri(), '/addons/') === false && strpos(request()->getRequestUri(),
+                '/api.php') !== false) {
             return;
         }
 
@@ -97,18 +95,6 @@ Route::group(['middleware' => ['globalparams']], function () {
             return redirect(request()->getSchemeAndHttpHost() . '/addons/yun_shop/?menu#/home?i=' . request()->get('i'));
         }
 
-        //后台
-        if (strpos(request()->getRequestUri(), config('app.root')) !== false) {
-            //如未设置当前公众号则加到选择公众号列表
-            if (!YunShop::app()->uniacid) {
-                // TODO 跳转到平台管理页面
-            }
-
-            //解析商城路由
-            if (YunShop::request()->route) {
-                YunShop::parseRoute(YunShop::request()->route);
-            }
-        }
         return;
     });
 });

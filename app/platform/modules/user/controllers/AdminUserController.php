@@ -92,7 +92,7 @@ class AdminUserController extends BaseController
         if ($user) {
             return $this->successJson('成功', $user);
         } else {
-            return $this->errorJson('失败');
+            return $this->check(0);
         }
     }
 
@@ -225,25 +225,25 @@ class AdminUserController extends BaseController
     {
         switch ($user) {
             case 1:
-                return $this->successJson('成功');
+                return $this->successJson('成功', '');
                 break;
             case 2:
-                return $this->errorJson('原密码错误');
+                return $this->errorJson('原密码错误', '');
                 break;
             case 3:
-                return $this->errorJson('新密码与原密码一致');
+                return $this->errorJson('新密码与原密码一致', '');
                 break;
             case 4:
-                return $this->errorJson('存储相关信息表失败');
+                return $this->errorJson('存储相关信息表失败', '');
                 break;
             case 5:
-                return $this->errorJson('参数错误');
+                return $this->errorJson('参数错误', '');
                 break;
             case 6:
-                return $this->errorJson('未获取到数据');
+                return $this->errorJson('未获取到数据', '');
                 break;
             default:
-                return $this->errorJson('失败');
+                return $this->errorJson('失败', '');
         }
     }
 
@@ -277,7 +277,8 @@ class AdminUserController extends BaseController
      */
     public function clerkList()
     {
-        $user = AdminUser::with(['hasOneProfile'])->where('type', 3)->get();
+        $parames = request();
+        $user = AdminUser::searchUsers($parames)->with(['hasOneProfile'])->where('type', 3)->get();
         foreach ($user as &$item) {
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
