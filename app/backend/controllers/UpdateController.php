@@ -489,6 +489,13 @@ class UpdateController extends BaseController
                 'file' => [
                     base_path('plugins/supplier/migrations/2018_11_26_155528_update_ims_yz_order_and_goods.php')
                 ]
+            ],
+            [
+                'path' => base_path(),
+                'file' => [
+                    base_path('manifest.xml'),
+                    base_path('map.json')
+                ]
             ]
         ];
 
