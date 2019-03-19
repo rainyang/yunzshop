@@ -470,10 +470,7 @@ if (!function_exists('shop_template_compile')) {
     function shop_template_compile($from, $to, $inmodule = false)
     {
         $path = dirname($to);
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+        \app\common\services\Utils::mkdirs($path);
         $content = shop_template_parse(file_get_contents($from), $inmodule);
 
         file_put_contents($to, $content);

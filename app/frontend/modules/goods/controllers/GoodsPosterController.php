@@ -12,6 +12,7 @@ namespace app\frontend\modules\goods\controllers;
 use app\common\components\ApiController;
 use app\common\models\Goods;
 use app\common\models\Store;
+use app\common\services\Utils;
 
 /**
  * 商品海报
@@ -232,10 +233,8 @@ class GoodsPosterController extends ApiController
     {
         $path = storage_path('app/public/goods/'.\YunShop::app()->uniacid) . "/";
 
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+        Utils::mkdirs($path);
+
         $file_name = \YunShop::app()->uniacid.'-'.$this->goodsModel->id.'.png';
 
         return $path . $file_name;
@@ -368,10 +367,9 @@ class GoodsPosterController extends ApiController
         }
 
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+
+        Utils::mkdirs($path);
+
         $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
 
         if (!is_file($path.'/'.$file)) {

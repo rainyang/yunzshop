@@ -30,9 +30,9 @@ class AppServiceProvider extends ServiceProvider
         }
 
         //设置uniacid
-        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
+        Setting::$uniqueAccountId = $this->getUniacid();
         //设置公众号信息
-        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid($this->getUniacid()));
 
         //开发模式下记录SQL
         if ($this->app->environment() !== 'production') {
@@ -114,5 +114,18 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
+    }
+
+    private function getUniacid()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        if (is_null($uniacid) && !empty(request('uniacid'))) {
+            $uniacid = request('uniacid');
+        } elseif (is_null($uniacid)) {
+            $uniacid = $_COOKIE['uniacid'];
+        }
+
+        return $uniacid;
     }
 }

@@ -30,6 +30,7 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\services\plugin\huanxun\HuanxunSet;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
+use app\common\services\Utils;
 use app\frontend\models\Member;
 use app\frontend\models\OrderListModel;
 use app\frontend\modules\member\models\MemberModel;
@@ -989,10 +990,9 @@ class MemberController extends ApiController
 
         $uniacid = \YunShop::app()->uniacid;
         $path    = storage_path('app/public/personalposter/' . $uniacid);
-        if (!file_exists($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+
+        Utils::mkdirs($path);
+
         $md5    = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg']); //用于标识组成元素是否有变化
         $extend = '.png';
         $file   = $md5 . $extend;
