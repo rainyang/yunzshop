@@ -216,7 +216,7 @@ class YunSessionMysql extends YunSession {
         $row['expiretime'] = TIMESTAMP + YunSession::$expire;
 
         $sql = 'INSERT INTO ' . DB::getTablePrefix() . "core_sessions (`sid`, `uniacid`, `openid`, `data`, `expiretime`) 
-                   VALUES ({$row['sid']}, {$row['uniacid']}, {$row['openid']}, {$row['data']}, {$row['expiretime']})";
+                   VALUES ('{$row['sid']}', {$row['uniacid']}, '{$row['openid']}', '{$row['data']}', {$row['expiretime']})";
 
         return DB::insert($sql) >= 1;
     }
