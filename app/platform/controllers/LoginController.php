@@ -78,7 +78,7 @@ class LoginController extends BaseController
      * @return [type]                   [description]
      */
     public function showLoginForm()
-    {
+    {//dd($_COOKIE, \config::get('app.global'));
         return view('admin.auth.login');
     }
     /**
@@ -112,7 +112,7 @@ class LoginController extends BaseController
         request()->session()->flush();
         request()->session()->regenerate();
 
-        Cookie::queue(Cookie::forget('uniacid'));
+        setcookie('uniacid', null);
 
         return $this->successJson('成功', []);
     }

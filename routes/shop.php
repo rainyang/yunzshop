@@ -1,7 +1,7 @@
 <?php
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], function () {
-    Route::any('/', function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin']], function () {
+    Route::any('shop', function () {
         //支付回调
         if (strpos(request()->getRequestUri(), '/payment/') !== false) {
             preg_match('#(.*)/payment/(\w+)/(\w+).php(.*?)#', request()->getRequestUri(), $match);
@@ -98,7 +98,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams']], func
         }
 
         //后台
-        if (strpos(request()->getRequestUri(), config('app.root')) !== false) {
+        if (strpos(request()->getRequestUri(), config('app.isWeb')) !== false) {
             //如未设置当前公众号则加到选择公众号列表
             if (!YunShop::app()->uniacid) {
                 // TODO 跳转到平台管理页面

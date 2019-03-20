@@ -109,7 +109,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapShopRoutes()
     {
         Route::group([
-            'prefix' => 'shop',
+            'prefix' => 'admin',
             'middleware' => ['admin'],
             'namespace' => $this->namespace,
         ], function ($router) {

@@ -502,6 +502,8 @@ class YunApp extends YunComponent
 
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$global_params;
         $this->routeList = Config::get('menu');
+
+
     }
 
     public function getW()

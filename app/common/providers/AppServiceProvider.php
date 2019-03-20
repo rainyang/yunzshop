@@ -29,10 +29,12 @@ class AppServiceProvider extends ServiceProvider
             //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
         }
 
+        $this->globalParamsHandle();
+
         //设置uniacid
-        Setting::$uniqueAccountId = $this->getUniacid();
+        Setting::$uniqueAccountId = \YunShop::app()->uniacid;
         //设置公众号信息
-        AccountWechats::setConfig(AccountWechats::getAccountByUniacid($this->getUniacid()));
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
 
         //开发模式下记录SQL
         if ($this->app->environment() !== 'production') {
@@ -116,18 +118,28 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
-    private function getUniacid()
+    private function globalParamsHandle()
     {
-        $uniacid = \YunShop::app()->uniacid;
-
         if (env('APP_Framework') == 'platform') {
-            if (is_null($uniacid) && !empty(request('uniacid'))) {
+            $uniacid = 0;
+            $cfg = \config::get('app.global');
+
+            if (!empty(request('uniacid')) && request('uniacid') > 0) {
                 $uniacid = request('uniacid');
-            } elseif (is_null($uniacid)) {
+                setcookie('uniacid', request('uniacid'));
+            }
+
+            if (empty($uniacid) && isset($_COOKIE['uniacid'])) {
                 $uniacid = $_COOKIE['uniacid'];
             }
-        }
 
-        return $uniacid;
+            $account = AccountWechats::getAccountByUniacid($uniacid);
+
+            $cfg['uniacid'] = $uniacid;
+            $cfg['account'] = $account ? $account->toArray() : '';
+
+            \config::set('app.global', $cfg);
+            \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
+        }
     }
 }
