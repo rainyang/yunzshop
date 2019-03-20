@@ -197,7 +197,7 @@ class AdminUser extends Authenticatable
     }
 
     /**
-     * 检索会员信息
+     * 检索用户信息
      *
      * @param $parame
      * @return mixed
