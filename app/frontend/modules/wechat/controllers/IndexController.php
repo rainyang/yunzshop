@@ -22,10 +22,20 @@ class IndexController extends \app\common\components\BaseController//extends Api
 {
     public function index()
     {
-        if (isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
-            if ($this->checkSignature()) {
-                // 打开公众号
-                return $_GET['echostr'];
+        if ( isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
+            $signature = $_GET["signature"];
+            $timestamp = $_GET["timestamp"];
+            $nonce     = $_GET["nonce"];
+            $token = \Setting::get('plugin.wechat.token');
+            $tmpArr    = [ $token, $timestamp, $nonce ];
+            sort( $tmpArr, SORT_STRING );
+            $tmpStr = implode( $tmpArr );
+            $tmpStr = sha1( $tmpStr );
+            if ( $tmpStr == $signature ) {
+                \Log::debug('----------公众号接入成功---------',$_GET);
+                //      echo $signature;
+                //      return  $_GET["echostr"];
+                //exit;
             }
         }
         /*
@@ -84,20 +94,4 @@ class IndexController extends \app\common\components\BaseController//extends Api
 
         }
     }
-
-    // 验证接入数据
-    public function checkSignature()
-    {
-        $token = \Setting::get('plugin.wechat.token');
-        $array = array($token, $_GET['timestamp'], $_GET['nonce']);
-        sort($array, SORT_STRING);
-        $str = implode($array);
-        $str = sha1($str);
-        if ($_GET['signature'] === $str) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
 }
