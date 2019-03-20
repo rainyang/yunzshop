@@ -164,7 +164,7 @@ class AdminUser extends Authenticatable
      */
     public static function getList($parames)
     {
-        $users = self::searchUsers($parames)->orderBy('uid', 'desc')->get();
+        $users = self::searchUsers($parames)->orderBy('uid', 'desc')->paginate();
         foreach ($users as $item) {
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             if ($item['status'] == 2) {
@@ -197,7 +197,7 @@ class AdminUser extends Authenticatable
     }
 
     /**
-     * 检索会员信息
+     * 检索用户信息
      *
      * @param $parame
      * @return mixed
