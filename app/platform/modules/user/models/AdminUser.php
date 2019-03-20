@@ -211,7 +211,10 @@ class AdminUser extends Authenticatable
                 $time = [['endtime', '<', time()], ['endtime', '>', '0']];
                 $result = $result->where($time);
             } else {
-                $result = $result->where('status', $parame['search']['status'])->where('endtime', '==', '0')->orWhere('endtime', '>', time());
+                $result = $result->where('status', $parame['search']['status'])->Where(function ($query) {
+                    $query->where('endtime', '==', '0')
+                        ->orWhere('endtime', '>', time());
+                });
             }
         }
 
