@@ -80,7 +80,7 @@ class AdminUserController extends BaseController
         $data = request()->user;
 
         if($data) {
-            $validate  = $this->validate($this->rules(), $data, $this->message());
+            $validate  = $this->validate($this->rules($uid, $user['hasOneProfile']['id']), $data, $this->message());
             if ($validate) {
                 return $validate;
             }
