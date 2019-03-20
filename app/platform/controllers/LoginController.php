@@ -112,7 +112,8 @@ class LoginController extends BaseController
         request()->session()->flush();
         request()->session()->regenerate();
 
-        setcookie('uniacid', null);
+        setcookie('uniacid', null, time() - 3600, '/admin');
+        setcookie('uniacid', null, time() - 3600, '/admin/shop');
 
         return $this->successJson('成功', []);
     }

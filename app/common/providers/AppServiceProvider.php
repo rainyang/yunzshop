@@ -126,7 +126,8 @@ class AppServiceProvider extends ServiceProvider
 
             if (!empty(request('uniacid')) && request('uniacid') > 0) {
                 $uniacid = request('uniacid');
-                setcookie('uniacid', request('uniacid'));
+                setcookie('uniacid', request('uniacid'), time() + 3600, '/admin');
+                setcookie('uniacid', request('uniacid'), time() + 3600, '/admin/shop');
             }
 
             if (empty($uniacid) && isset($_COOKIE['uniacid'])) {

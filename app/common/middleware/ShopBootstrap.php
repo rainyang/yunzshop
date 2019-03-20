@@ -25,7 +25,8 @@ class ShopBootstrap
             if (!is_null($account) && in_array($account->role, $this->authRole)) {
 
                 $cfg['uniacid'] = $account->uniacid;
-                setcookie('uniacid', $account->uniacid);
+                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin');
+                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin/shop');
                 \config::set('app.global', $cfg);
 
                 return redirect()->guest(Url::absoluteWeb('index.index'));

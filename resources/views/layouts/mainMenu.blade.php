@@ -89,7 +89,12 @@
                                 <li class="system"> <a href="?c=system&a=welcome" target="_blank"><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
                                 <li class="system three"> <a href="?c=system&a=updatecache&" target="_blank"><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>
                             @endif
-                            <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+
+                            @if (env('APP_Framework') == 'platform')
+                                <li class="drop_out"> <a href="javascript:void(0)" id="sys_logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+                            @else
+                                <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+                            @endif
                         </ul>
 
                     </li>
@@ -115,3 +120,12 @@
         </div>
     </nav>
 </div>
+<script>
+    $(function () {
+        $("#sys_logout").click(function () {
+            $.get("/admin/logout",function(data,status){
+                location.href = '/';
+            });
+        });
+    });
+</script>
