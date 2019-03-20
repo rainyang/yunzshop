@@ -120,10 +120,12 @@ class AppServiceProvider extends ServiceProvider
     {
         $uniacid = \YunShop::app()->uniacid;
 
-        if (is_null($uniacid) && !empty(request('uniacid'))) {
-            $uniacid = request('uniacid');
-        } elseif (is_null($uniacid)) {
-            $uniacid = $_COOKIE['uniacid'];
+        if (env('APP_Framework') == 'platform') {
+            if (is_null($uniacid) && !empty(request('uniacid'))) {
+                $uniacid = request('uniacid');
+            } elseif (is_null($uniacid)) {
+                $uniacid = $_COOKIE['uniacid'];
+            }
         }
 
         return $uniacid;

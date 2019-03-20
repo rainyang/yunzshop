@@ -301,7 +301,6 @@ return [
     ],
 
     'isWeb'  => '/shop',
-    'isApi' => '/api',
     'root' => '/shop',
     'global' => [],
     'sys_global' => []
