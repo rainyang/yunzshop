@@ -71,7 +71,7 @@ class AppUser extends BaseModel
         } elseif ($this->role == 'clerk') {
             return $this->role_name = '店员';
         } elseif ($this->role == 'operator') {
-            return  $this->role_name = '店员';
+            return  $this->role_name = '操作员';
         }
 //        return $this->role_name = $this->role === 'manager' ? '管理员' : '操作员';
     }

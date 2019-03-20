@@ -73,10 +73,8 @@ class AdminUserController extends BaseController
         if (!$uid) {
             return $this->check(5);
         }
-        $user = AdminUser::getData($uid);
-        $profile = YzUserProfile::where('uid', $uid)->first();
-        $user['mobile'] = $profile['mobile'];
-        if (!$user || !$profile) {
+        $user = AdminUser::with('hasOneProfile')->find($uid);
+        if (!$user) {
             return $this->check(6);
         }
         $data = request()->user;
@@ -273,12 +271,12 @@ class AdminUserController extends BaseController
         return $this->successJson('成功', $data);
     }
     /**
-     * 单个用户平台列表
+     * 店员列表
      */
     public function clerkList()
     {
         $parames = request();
-        $user = AdminUser::searchUsers($parames)->with(['hasOneProfile'])->where('type', 3)->get();
+        $user = AdminUser::searchUsers($parames)->with(['hasOneProfile'])->where('type', 3)->paginate();
         foreach ($user as &$item) {
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
