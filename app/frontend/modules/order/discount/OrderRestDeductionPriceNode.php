@@ -26,7 +26,7 @@ class OrderRestDeductionPriceNode extends PriceNode
 
     function getKey()
     {
-        return $this->preOrderDeduction->getCode().'RestDeduction';
+        return $this->preOrderDeduction->getCode() . 'RestDeduction';
     }
 
     /**
@@ -35,7 +35,11 @@ class OrderRestDeductionPriceNode extends PriceNode
      */
     function getPrice()
     {
-        return $this->order->getPriceBefore($this->getKey()) - $this->preOrderDeduction->getUsablePoint()->getMoney();
+        if (!$this->preOrderDeduction->isChecked()) {
+            return $this->order->getPriceBefore($this->getKey());
+        } else {
+            return $this->order->getPriceBefore($this->getKey()) - $this->preOrderDeduction->getUsablePoint()->getMoney();
+        }
     }
 
 }
