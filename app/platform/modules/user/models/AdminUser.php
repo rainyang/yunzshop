@@ -208,7 +208,7 @@ class AdminUser extends Authenticatable
 
         if ($parame['search']['keyword']) {
             $result = $result->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
-            ->whereHas('hasOneProfile', function ($query) use ($parame) {
+            ->orWhereHas('hasOneProfile', function ($query) use ($parame) {
                     $query->where('mobile', 'like', '%' . $parame['search']['keyword'] . '%');
             });
         }
