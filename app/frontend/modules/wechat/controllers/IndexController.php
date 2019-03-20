@@ -21,7 +21,9 @@ class IndexController extends BaseController
     public function init()
     {
         $uniacid = request('id');
+
         //设置uniacid
+        \config::set('app.global', array_merge(\config::get('app.global'), ['uniacid' => $uniacid]));
         \Setting::$uniqueAccountId = $uniacid;
         //设置公众号信息
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid($uniacid));
