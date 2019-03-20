@@ -2,15 +2,8 @@
 
 namespace app\frontend\modules\wechat\controllers;
 
-use app\common\components\ApiController;
-use app\common\facades\Setting;
-use app\common\models\Category;
-use app\common\models\Goods;
-use app\common\models\Slide;
-use app\frontend\modules\goods\models\Brand;
-use Illuminate\Support\Facades\DB;
-use app\common\models\Adv;
-use app\common\helpers\Cache;
+use app\common\components\BaseController;
+use app\common\models\AccountWechats;
 
 /**
  * Created by PhpStorm.
@@ -18,8 +11,22 @@ use app\common\helpers\Cache;
  * Date: 2017/3/3
  * Time: 22:16
  */
-class IndexController extends \app\common\components\BaseController//extends ApiController
+class IndexController extends BaseController
 {
+    public function __construct()
+    {
+        $this->init();
+    }
+
+    public function init()
+    {
+        $uniacid = request('id');
+        //设置uniacid
+        \Setting::$uniqueAccountId = $uniacid;
+        //设置公众号信息
+        AccountWechats::setConfig(AccountWechats::getAccountByUniacid($uniacid));
+    }
+
     public function index()
     {
         if ( isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
