@@ -260,13 +260,14 @@ class AdminUserController extends BaseController
         } else {
             $offset = ($page-1)*15;
         }
-        $lastpage = AppUser::where('uid', $uid)->paginate()->lastpage();
         $user = AdminUser::with(['hasManyAppUser' => function ($query) use ($offset) {
             $query->with('hasOneApp');
             $query->offset($offset)->limit('15');
         }])->where('uid', $uid)->first();
 
-        $user['lastpage'] = $lastpage;
+        $user['total'] = AppUser::where('uid', $uid)->paginate()->count();
+        $user['current_page'] = $page ? : 1;
+        $user['per_page'] = 15;
 
         if (!$user) {
             return $this->errorJson('未获取到该用户', '');
