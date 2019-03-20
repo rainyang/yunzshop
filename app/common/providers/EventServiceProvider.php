@@ -43,6 +43,8 @@ use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use app\common\events\WechatMessage;
+use app\common\listeners\WechatMessageListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -82,6 +84,10 @@ class EventServiceProvider extends ServiceProvider
         //微信接口回调触发事件进程
         WechatProcessor::class => [
             WechatProcessorListener::class//示例监听类
+        ],
+
+        WechatMessage::class => [
+            WechatMessageListener::class//示例监听类
         ],
 
         //发送消息触发事件
