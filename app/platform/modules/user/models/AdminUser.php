@@ -282,6 +282,7 @@ class AdminUser extends Authenticatable
         } elseif (request()->path() == "admin/user/edit") {
             $data = [
                 'mobile' => $data['mobile'],
+                'avatar' => $data['avatar']
             ];
             $profile_model = YzUserProfile::where('uid', $user->uid)->first();
             $profile_model->fill($data);
