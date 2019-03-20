@@ -206,6 +206,15 @@ class AdminUser extends Authenticatable
     {
         $result = self::select(['uid', 'username', 'status', 'type', 'remark', 'application_number', 'endtime', 'created_at', 'updated_at']);
 
+        if ($parame['search']['status']) {
+            if ($parame['search']['status'] == 4) {
+                $time = [['endtime', '<', time()], ['endtime', '>', '0']];
+                $result = $result->where($time);
+            } else {
+                $result = $result->where('status', $parame['search']['status'])->where('endtime', '==', '0')->orWhere('endtime', '>', time());
+            }
+        }
+
         if ($parame['search']['keyword']) {
             $result = $result->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
             ->orWhereHas('hasOneProfile', function ($query) use ($parame) {
@@ -220,15 +229,6 @@ class AdminUser extends Authenticatable
             } elseif ($parame['search']['searchtime'] == 2) {
                 $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('endtime', $range);
-            }
-        }
-
-        if ($parame['search']['status']) {
-            if ($parame['search']['status'] == 4) {
-                $time = [['endtime', '<', time()], ['endtime', '>', '0']];
-                $result = $result->where($time);
-            } else {
-                $result = $result->where('status', $parame['search']['status']);
             }
         }
 
