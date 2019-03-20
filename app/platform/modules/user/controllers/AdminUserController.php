@@ -18,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserCreateRequest;
 use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
+use app\platform\modules\application\models\AppUser;
 
 class AdminUserController extends BaseController
 {
@@ -251,24 +252,30 @@ class AdminUserController extends BaseController
     public function applicationList()
     {
         $uid = request()->uid;
-        $user = AdminUser::where('uid', $uid)->first();
-        $app_id = $user->hasManyAppUser;
-        foreach ($app_id as &$item) {
-            $item->hasOneApp;
+        $page = request()->page;
+        // 如果page小于且等于1 就等于0 (因为offset是从0开始取数据)
+        if ($page<=1) {
+            $page = 0;
+            $offset = ($page)*15;
+        } else {
+            $offset = ($page-1)*15;
         }
-        $data = [
-            'username' => $user->username,
-            'app' => $app_id,
-        ];
+        $lastpage = AppUser::where('uid', $uid)->paginate()->lastpage();
+        $user = AdminUser::with(['hasManyAppUser' => function ($query) use ($offset) {
+            $query->with('hasOneApp');
+            $query->offset($offset)->limit('15');
+        }])->where('uid', $uid)->first();
+
+        $user['lastpage'] = $lastpage;
 
         if (!$user) {
             return $this->errorJson('未获取到该用户', '');
         }
-        if ($data['app']->isEmpty()) {
+        if ($user->hasManyAppUser->isEmpty()) {
             return $this->errorJson('该用户暂时没有平台', '');
         }
 
-        return $this->successJson('成功', $data);
+        return $this->successJson('成功', $user);
     }
     /**
      * 店员列表
@@ -278,6 +285,11 @@ class AdminUserController extends BaseController
         $parames = request();
         $user = AdminUser::searchUsers($parames)->with(['hasOneProfile'])->where('type', 3)->paginate();
         foreach ($user as &$item) {
+            if ($item['status'] == 2) {
+                $item['state'] = '有效';
+            } elseif ($item['status'] == 3) {
+                $item['state'] = '已禁用';
+            }
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
         }
