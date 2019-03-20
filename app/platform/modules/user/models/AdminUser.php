@@ -208,17 +208,17 @@ class AdminUser extends Authenticatable
 
         if ($parame['search']['keyword']) {
             $result = $result->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
-            ->whereHas('hasOneProfile', function ($query) use ($parame) {
+            ->orWhereHas('hasOneProfile', function ($query) use ($parame) {
                     $query->where('mobile', 'like', '%' . $parame['search']['keyword'] . '%');
             });
         }
 
         if ($parame['search']['searchtime']) {
             if ($parame['search']['searchtime'] == 1) {
-                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
+                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('created_at', $range);
             } elseif ($parame['search']['searchtime'] == 2) {
-                $range = [strtotime($parame['search']['times']['start']), strtotime($parame['search']['times']['end'])];
+                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('endtime', $range);
             }
         }
