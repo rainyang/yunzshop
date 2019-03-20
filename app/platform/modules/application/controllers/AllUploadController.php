@@ -21,33 +21,84 @@ class AllUploadController extends BaseController
 
     public function __construct()
     {
+        //本地存放路径协议
         $this->proto = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://';
 
-        $this->path = config('filesystems.disks.syst')['url'].'/'; //实际存放路径
+        $this->path = config('filesystems.disks.syst')['url'].'/'; //本地图片实际存放路径
     }
 
-    public function doUpload()
+    public function upload()
     {
-        $setting = SystemSetting::settingLoad();
-
         $file = request()->file('file');
 
+        if (count($file) > 1 && count($file) < 6) {
+            //多文件上传
+            foreach ($file as $k => $v) {
+               
+               if ($v) {
+                    $url = $this->doUpload($v) ;
+                    //检验返回的是否是 正确合法链接
+                    // $data[] = $url ? $url : false;
+               }
+            }
+
+        } else {
+
+            $data = $this->doUpload($file);
+        }
+
+        return $this->successJson('ok', $data);
+    }
+    //视频类型建议使用第三方存储, 本地暂不支持
+    public function doUpload($file)
+    {
+        if (!$file->isValid()) {
+            return false;
+        }
+        $setting = SystemSetting::settingLoad('global', 'system_global');
         //文件大小是否大于所设置的文件最大值
+        if($setting[''] ) {
+
+        }
         //文件上传最大执行时间
         $ext = $file->getClientOriginalExtension();
 
-        if ($setting['set'] == 0) {
-            //判断是否属于设置的类型
-            $defaultImgType = [
-                'jpg', 'bmp', 'eps', 'gif', 'mif', 'miff', 'png', 'tif',
-                'tiff', 'svg', 'wmf', 'jpe', 'jpeg', 'dib', 'ico', 'tga', 'cut', 'pic'
-            ];
+        if ($file->getClientSize() > 30*1024) {
+            //文件过大时执行本地上传  
+                \Log::info('file_size_out');
+        }
+        
+        //默认支持的文件格式类型
+        $defaultImgType = [
+            'jpg', 'bmp', 'eps', 'gif', 'mif', 'miff', 'png', 'tif',
+            'tiff', 'svg', 'wmf', 'jpe', 'jpeg', 'dib', 'ico', 'tga', 'cut', 'pic'
+        ];
 
+        $defaultAudioType = ['AVI', 'ASF', 'WMV', 'AVS', 'FLV', 'MKV', 'MOV', '3GP', 'MP4',
+            'MPG', 'MPEG', 'DAT', 'OGM', 'VOB', 'RM', 'RMVB', 'TS', 'TP', 'IFO', 'NSV'
+        ];
+
+        $defaultVideoType = [
+            'MP3', 'AAC', 'WAV', 'WMA', 'CDA', 'FLAC', 'M4A', 'MID', 'MKA', 'MP2',
+                'MPA', 'MPC', 'APE', 'OFR', 'OGG', 'RA', 'WV', 'TTA', 'AC3', 'DTS'
+        ];
+
+        if (in_array($ext, $defaultImgType)) {
+            $file_type = 'syst';
+        } elseif (in_array($ext, $defaultAudioType)) {
+            $file_type = 'audio';
+        } elseif (in_array($ext, $defaultVideoType)) {
+            $file_type = 'video';
+        }
+
+        if ($setting['type'] == 0) {
+            //判断是否属于设置的类型
+          
             if (in_array($ext, $defaultImgType)) {
 
                 $file_type = 'syst';
 
-                $img_type = $setting['img_suffix_name'] ? explode('\r\n', $setting['img_suffix_name']) : $defaultImgType;
+                $img_type = $setting['image_extentions'] ? explode('\r\n', $setting['image_extentions']) : $defaultImgType;
 
                 if (!in_array($ext, $img_type) ) {
                     return $this->errorJson('文件格式不正确');
@@ -59,24 +110,16 @@ class AllUploadController extends BaseController
                     return $this->errorJson('文件大小超出规定值');
                 }
 
-                if ($setting['compression_ratio']) {
+                if ($setting['zip_percentage']) {
                     //执行图片压缩
                 }
             }
-
-            //检查音视频文件
-            $defaultAudioType = ['AVI', 'ASF', 'WMV', 'AVS', 'FLV', 'MKV', 'MOV', '3GP', 'MP4',
-                'MPG', 'MPEG', 'DAT', 'OGM', 'VOB', 'RM', 'RMVB', 'TS', 'TP', 'IFO', 'NSV'];
-
-            $defaultVideoType = [
-                'MP3', 'AAC', 'WAV', 'WMA', 'CDA', 'FLAC', 'M4A', 'MID', 'MKA', 'MP2',
-                'MPA', 'MPC', 'APE', 'OFR', 'OGG', 'RA', 'WV', 'TTA', 'AC3', 'DTS'];
 
             if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
 
                 $file_type = in_array($ext, $defaultVideoType) ? 'video' : 'audio';
 
-                $img_type = $setting['av_suffix_name'] ? explode('\r\n', $setting['av_suffix_name']) : $defaultAudioType;
+                $img_type = $setting['audio_extentions'] ? explode('\r\n', $setting['audio_extentions']) : $defaultAudioType;
 
                 if (!in_array($ext, $img_type) ) {
                     return $this->errorJson('文件格式不正确');
@@ -91,19 +134,15 @@ class AllUploadController extends BaseController
             //执行本地上传
             $res =  $this->uploadLocal($file, 1, $file_type);
         }
-        if ($setting['type'] == 'oss') {
+
+        if ($setting['type'] == 2) {
             //阿里OSS
-            if ($setting['net'] == 1) {
-                //开启内网上传
-            } else {
-                //外网上传
-            }
-            $res = $this->OssUpload($file, $setting);
+            $res = $this->OssUpload($file, $setting, $file_type);
         }
 
-        if ($setting['type'] == 'cos') {
+        if ($setting['type'] == 4) {
             //腾讯cos
-            $res = $this->CosUpload($file, $setting);
+            $res = $this->CosUpload($file, $setting, $file_type);
         }
 
         return $this->successJson('ok', $res);
@@ -206,22 +245,68 @@ class AllUploadController extends BaseController
 
         \Log::info('cos_upload_res:', $res);
 
-        $url = $setting['url'].$truePath.$newFileName;
         //检查 object 及服务器路径 权限
-        // if ($res['code'] == 0 && $res['message'] == 'SUCCESS') {
-        //自定义域名拼接文件名
-        // }
-        return $url;
+        if ($res['code'] == 0 && $res['message'] == 'SUCCESS') {
+            // 自定义域名拼接文件名
+            return $setting['url'].$truePath.$newFileName;
+        }
+        return false;
     }
 
-    //阿里云OSS 单文件外网上传
+    //阿里云OSS 文件上传 (支持内网上传, 加强参数权限检验, 暂不支持CDN中转自定义域名)
     public function OssUpload($file, $setting, $file_type)
     {
-        if (!$setting['key'] || !$setting['secret'] || !$setting['endpoint'] || !$setting['bucket'] || !$setting['url']) {
-            return $this->errorJson('请配置参数');
+        if (!$setting['key'] || !$setting['secret'] || !$setting['bucket']) {
+            return '请配置参数';
         }
 
-        $oss = new OssClient($setting['key'], $setting['secret'], $setting['endpoint'], $setting['url']);
+        $o = explode('.', $setting['bucket']); 
+        
+        if (!$o ) {
+            return '请检查参数';
+        }
+
+        $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3];
+
+
+        try{
+            
+            $oss = new OssClient($setting['key'], $setting['secret'], $setting['endpoint']);
+        
+        } catch(OssException $e) {
+            return $e->getMessage();
+        }
+        
+        $lists = $oss->listBuckets();
+
+        foreach ($lists as $k => $v) {
+            
+            if ($v['name'] != $setting['bucket'] || $v['location'] != $setting['endpoint']) {
+                return '数据错误,请检查参数';
+            }
+        }
+        //检查bucket中的域名
+        $bucketInfo =  $oss->getBucketMeta($setting['bucket']);
+        
+        $bu = explode('.', $bucketInfo['info']['url']);
+    
+            \Log::info('oss_upload_check_endpoint:', $bu);
+        
+        if ($setting['endpoint'].'/' !== $bu[1].'.'.$bu[2].'.'.$bu[3]) {
+            return 'endpoint 数据错误';
+        }
+        unset($bucketInfo, $bu);
+
+        if ($setting['internal'] == 1) {
+            //使用内网上传时
+            $data = explode('.', $setting['endpoint']); //获取endpoint_internal
+            
+            $one = $data[0].'-internal';
+            
+            $domain = $one.'.'.$data[1].'.'.$data[2]; //拼接内网地址
+
+            $oss = new OssClient($setting['key'], $setting['secret'], $domain, $setting['endpoint']);
+        } 
 
         $originalName = $file->getClientOriginalName(); // 文件原名
 
@@ -229,45 +314,41 @@ class AllUploadController extends BaseController
 
         $realPath = $file->getRealPath();   //临时文件的绝对路径
 
-        \Log::info('oss_upload_file_content:', ['name'=> $originalName, 'ext'=>$ext, 'path'=>$realPath]);
+        $content = $realPath.'/'.$originalName;
+
+            \Log::info('oss_upload_file_content:', ['name'=> $originalName, 'ext'=>$ext, 'path'=>$realPath]);
 
         $truePath = substr($this->getOsPath($file_type), 1);   // OSS服务器 bucket 路径
 
         $newFileName = $this->getNewFileName($originalName, $ext);
 
-        \Log::info('oss_upload_path:', $truePath.$newFileName);
+        $object = $truePath.$newFileName;
+            \Log::info('oss_upload_path:', $object);
 
-        //检查 object 及服务器路径 权限
-        $auth = $oss->getObjectAcl($setting['bucket'], $newFileName);
+        if ($setting['internal'] != 1) {
+            //使用外网上传 域名为
+            $domain = $setting['url'] ?  : $setting['endpoint'];
+        }
 
-        if ($auth == 'default') {
-            //检查 bucket 权限
-            if ($oss->getBucketAcl($setting['bucket']) == 'private' || $auth == 'private') {
-                //上传加签
-                $signUrl = $oss->signUrl($setting['bucket'], $truePath.$newFileName);
+        $res = $oss->putObject($setting['bucket'], $object, file_get_contents($content));
+           
+            \Log::info('AliOss_res, and Content', [$res, $content]);
+        
+        if ($res['info']['http_code'] == 200) {
+            //检查 object bucket 权限
+            if ($oss->getBucketAcl($setting['bucket']) == 'private' || $oss->getObjectAcl($setting['bucket'], $object) == 'private') {
+                //私有时访问加签
+                $url = $oss->signUrl($setting['bucket'], $object, 3600*24);
+                    
+                    \Log::info('getBucketOrObjAcl, true');
+                
+            } else {
+                // $url  = $res['info']['url']; //公有权限时
+                $url = 'http://'.$setting['bucket'].'.'.$domain.'/'.$object;
             }
+            return $url;
         }
-
-        if ($setting['internal'] == 1) {
-            // 使用内网上传
-            $data = explode('.', $setting['url']);
-            $one = $data[0].'-internal';
-            $newUrlData = $one.'.'.$data[1].'.'.$data[2];
-
-            $res = $oss->putObject($setting['bucket'], $truePath.$newFileName, file_get_contents($realPath.'/'.$originalName));
-
-        } else {
-            //使用外网上传
-            $res = $oss->putObject($setting['bucket'], $truePath.$newFileName, file_get_contents($realPath.'/'.$originalName));
-            \Log::info('AliOss_res, and Content', [$res, $realPath.'/'.$originalName]);
-            // $domain = $setting['url'] ?  : config('filesystems.disks.oss.endpoint');
-        }
-
-        // if ($res['info']['http_code'] == 200) {
-        // }
-        $url = 'http://'.config('filesystems.disks.oss.bucket').'.'.$domain.'/'.$newFileName;
-
-        return $url;
+        return false;       
     }
 
     /**
@@ -298,38 +379,63 @@ class AllUploadController extends BaseController
     {
         $oss = new OssClient(config('filesystems.disks.oss.access_id'), config('filesystems.disks.oss.access_key'), config('filesystems.disks.oss.endpoint'));
 
-        $auth = $oss->getObjectAcl(config('filesystems.disks.oss.bucket'), '20190318347e0052aa60ce815f6f58bcd4b15a5e.png');
-        // dd($auth);
+        $setting = SystemSetting::settingLoad('global', 'system_global');
+        // dd($setting);
+         $o = explode('.', 'test-yunshop-com.oss-cn-hangzhou.aliyuncs.com');
+            $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3]; dd($setting['endpoint']);
 
-        // $file = $oss->doesObjectExist(config('filesystems.disks.oss.bucket'), '/test');
-        // dd($file)
-        // $acl = $oss->getBucketAcl(config('filesystems.disks.oss.bucket')); dd($acl);
-        $signUrl = $oss->signUrl(config('filesystems.disks.oss.bucket'), 'test'); dd($signUrl);
+        // $internal_oss = new OssClient(config('filesystems.disks.oss.access_id'), config('filesystems.disks.oss.access_key'), config('filesystems.disks.oss.endpoint_internal')); dd($internal_oss); //内网上传时使用
 
+        // $authOss = new OssClient(config('filesystems.disks.oss.access_id'), config('filesystems.disks.oss.access_key'), config('filesystems.disks.oss.endpoint'), 'false', $token); //bucket或object权限私有时并设置STS作为验签方法时使用
 
+        // $auth = $oss->getObjectAcl(config('filesystems.disks.oss.bucket'), '20190318347e0052aa60ce815f6f58bcd4b15a5e.png'); dd($auth); //获取对象权限
+
+        // $acl = $oss->getBucketAcl(config('filesystems.disks.oss.bucket')); dd($acl); //获取bucket 权限 return string
+
+        // $res = $oss->PutBucketACL('test-yunshop-com', 'public-read'); dd($res); //修改bucket 权限
+
+        // $bucketInfo = $oss->getBucketMeta(config('filesystems.disks.oss.bucket')); dd($bucketInfo);
+        // $a = explode('.', $bucketInfo['info']['url']);
+        // dd($a, $a[1].'.'.$a[2].'.'.$a[3]); //获取bucket信息
+
+        // $b = $oss->getBucketCname(config('filesystems.disks.oss.bucket')); dd($b);
+        $lists = $oss->listBuckets();
+        foreach ($lists as $k => $v) {
+            if ($v['name'] != config('filesystems.disks.oss.bucket') && $v['location'] != config('filesystems.disks.oss.endpoint')) {
+                dd('1');
+            }
+        }
+        // dd('存在');
+        // $checkObj = $oss->doesObjectExist(config('filesystems.disks.oss.bucket'),  'test/2a2eae2748b5788ea3a190dd8948e137.png'); dd($$checObj); //检查文件是否存在 true 时存在
+        $image = 'videos/0/2019/03/'.md5('2s1sf4s411').'.qsv';
         $res = $oss->putObject(
             config('filesystems.disks.oss.bucket'),
-            'test/'.md5('2s1sf4s411').'.png',
-            file_get_contents('D:\wamp\www\shop\storage\app\public\201903155c8b82a7c16502036.png')
+            $image,
+            file_get_contents('E:\iqiyi\young\young-1.qsv')
         );
+        
+        $signUrl = $oss->signUrl(config('filesystems.disks.oss.bucket'), $image, 3600); //dd($signUrl); //加签名 return string
 
-
-        dd($res);
+        dd($res, $signUrl);
     }
 
     public function cosTest()
     {
-        $cos = new Api(config('filesystems.disks.cos'));
+        $config = config('filesystems.disks.cos');
+        unset($config['region']);
+        $cos = new Api($config); 
         $check = '/images/0/2019/03/';
-        $originalName = 'aaa222www11'; $ext='png';
+        $originalName = 'aaa222www11';
+        $ext='png';
         $newFileName = date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
 
         $res = $cos->upload(
             config('filesystems.disks.cos.bucket'),
-            'D:\wamp\www\shop\storage\app\public\201903145c8a4009ed4838729.png',
+            'D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg',
             'test/'.date('Y').'/'.$newFileName
         );
-        dd($res);
+        $url = config('filesystems.disks.cos.bucket').'-'.config('filesystems.disks.cos.app_id').'.cos'.config('filesystems.disks.cos.region').'.myqcloud.com/'.$check.'/iamges';
+        dd($res, $url);
 
         $file_type = $file_type == 'syst' ? 'images' : $file_type.'s';
 
@@ -337,7 +443,7 @@ class AllUploadController extends BaseController
 
         $Syspath = '/images';
         //查看该目录下有无此文件夹
-        $first = $cos->listFolder(config('filesystems.disks.cos.bucket'), $Syspath);
+        $first = $cos->listFolder(config('filesystems.disks.cos.bucket'), $Syspath); dd($first);
 
         if ($first['code'] == 0 && $first['message'] == 'SUCCESS' && $first['data']['infos']) {
 
