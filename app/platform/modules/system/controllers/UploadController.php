@@ -11,6 +11,7 @@ use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\system\models\Loader;
 use app\platform\modules\application\models\CoreAttach;
+use app\platform\modules\application\models\WechatAttachment;
 
 class UploadController extends BaseController
 {
@@ -24,34 +25,32 @@ class UploadController extends BaseController
         $this->global = SystemSetting::settingLoad('global', 'system_global');
         $this->remote = SystemSetting::settingLoad('remote', 'system_remote');
         $this->uniacid = \YunShop::app()->uniacid ?  : 0 ;
-
     }
-
-    //    [uploadtype] =>
-    //    [global] =>
-    //    [dest_dir] =>
-    //    [width] => 0
-    // /index.php/admin/system/upload/upload
 
     public function upload()
     {
-        $dest_dir = request()->dest_dir;
-        if (preg_match('/^[a-zA-Z0-9_\/]{0,50}$/', $dest_dir, $out)) {
-            $dest_dir = trim($dest_dir, '/');
-            $pieces = explode('/', $dest_dir);
-            if(count($pieces) > 3){
-                $dest_dir = '';
-            }
-        } else {
-            $dest_dir = '';
-        }
-        $module_upload_dir = '';
-        if($dest_dir != '') {
-            $module_upload_dir = sha1($dest_dir);
-        }
+        $dest_dir = $this->destDir();
+
+        $option = array_elements(array('uploadtype', 'global', 'dest_dir'), $_POST);
+        $option['width'] = intval($option['width']);
+        $option['global'] = request()->global;
 
 //        dd( \Auth::guard('admin')->user()->uid, $this->global, $this->remote);
         $type = in_array(request()->upload_type, array('image','audio','video')) ? request()->upload_type : 'image';
+
+        if (!empty($option['global'])) {
+            $setting['folder'] = "{$type}s/global/";
+            if (! empty($dest_dir)) {
+                $setting['folder'] .= '' . $dest_dir . '/';
+            }
+        } else {
+            $setting['folder'] = "{$type}s/{$this->uniacid}";
+            if (empty($dest_dir)) {
+                $setting['folder'] .= '/' . date('Y/m/');
+            } else {
+                $setting['folder'] .= '/' . $dest_dir . '/';
+            }
+        }
 
         if (!$_FILES['file']['name']) {
             return $this->errorJson('上传失败, 请选择要上传的文件！');
@@ -93,7 +92,30 @@ class UploadController extends BaseController
         }
         $pathname = $file['path'];
         $fullname = base_path() . '/' . $pathname;
-        return $this->saveData($type, $fullname, $originname, $ext, $filename, $module_upload_dir, $pathname);
+        return $this->saveData($type, $fullname, $originname, $ext, $filename, $dest_dir['module_upload_dir'], $pathname, $option);
+    }
+
+    public function destDir()
+    {
+        $dest_dir = request()->dest_dir;
+        if (preg_match('/^[a-zA-Z0-9_\/]{0,50}$/', $dest_dir, $out)) {
+            $dest_dir = trim($dest_dir, '/');
+            $pieces = explode('/', $dest_dir);
+            if(count($pieces) > 3){
+                $dest_dir = '';
+            }
+        } else {
+            $dest_dir = '';
+        }
+        $module_upload_dir = '';
+        if($dest_dir != '') {
+            $module_upload_dir = sha1($dest_dir);
+        }
+
+        return [
+            'dest_dir' => $dest_dir,
+            'module_upload_dir' => $module_upload_dir
+        ];
     }
 
     public function file_upload($file, $type = 'image', $name = '', $compress = false)
@@ -164,13 +186,11 @@ class UploadController extends BaseController
         return $result;
     }
 
-    public function saveData($type, $fullname, $originname, $ext, $filename, $module_upload_dir, $pathname)
+    public function saveData($type, $fullname, $originname, $ext, $filename, $module_upload_dir, $pathname, $option)
     {
 //        if ($do == 'fetch' || $do == 'upload') {
         if ($type == 'image') {
-            $option = array_elements(array('uploadtype', 'global', 'dest_dir'), $_POST);
-            $option['width'] = intval($option['width']);
-            $option['global'] = request()->global;
+
 
             $thumb = !$this->global['thumb'] ? 0 : 1;
             $width = intval($this->global['thumb_width']);
@@ -274,56 +294,77 @@ class UploadController extends BaseController
         $groupid = intval(request()->groupid);
         $page_size = 24;
         $islocal = request()->local == 'local';
-
         $is_local_image = $islocal == 'local' ? true : false;
+        if ($page<=1) {
+            $page = 0;
+            $offset = ($page)*$page_size;
+        } else {
+            $offset = ($page-1)*$page_size;
+        }
+
+        if(!$is_local_image) {
+            $core_attach =  new WechatAttachment;
+        } else {
+            $core_attach = new CoreAttach;
+        }
+        $dest_dir = $this->destDir();
+        $core_attach = $core_attach->uniacid()->where('module_upload_dir', $dest_dir['module_upload_dir']);
 //        $attachment_table = table('attachment');
 //        $attachment_table = $attachment_table->local($is_local_image);
 //        $attachment_table->searchWithUniacid($uniacid);
 //        $attachment_table->searchWithUploadDir($module_upload_dir);
 
-        echo '<pre>';
-        print_r($is_local_image);
-        exit;
-
-//        if (empty($uniacid)) {
-//            $attachment_table->searchWithUid($_W['uid']);
-//        }
-//        if ($groupid > 0) {
-//            $attachment_table->searchWithGroupId($groupid);
-//        }
-//
-//        if ($groupid == 0) {
-//            $attachment_table->searchWithGroupId(-1);
-//        }
-//
-//        if ($year || $month) {
-//            $start_time = strtotime("{$year}-{$month}-01");
-//            $end_time = strtotime('+1 month', $start_time);
-//            $attachment_table->searchWithTime($start_time, $end_time);
-//        }
-//        if ($islocal) {
-//            $attachment_table->searchWithType(ATTACH_TYPE_IMAGE);
-//        } else {
-//            $attachment_table->searchWithType(ATTACHMENT_IMAGE);
-//        }
+        if (!$this->uniacid) {
+            $core_attach = $core_attach->where('uid', \Auth::guard('admin')->user()->uid);
+        }
+        if ($groupid > 0) {
+            $core_attach = $core_attach->where('group_id', $groupid);
+        }
+        if ($groupid == 0) {
+            $core_attach = $core_attach->where('group_id', -1);
+        }
+        if ($year || $month) {
+            $start_time = strtotime("{$year}-{$month}-01");
+            $end_time = strtotime('+1 month', $start_time);
+            $core_attach = $core_attach->where('created_at', '>=', $start_time)->where('created_at', '<=', $end_time);
+        }
+        if ($islocal) {
+            $core_attach = $core_attach->where('type', 1);
+        } else {
+            $core_attach = $core_attach->where('type', 'image');
+        }
 //        $attachment_table->searchWithPage($page, $page_size);
-//
+
+        $count = $core_attach->orderby('created_at', 'desc')->get()->count();
+        $core_attach = $core_attach->orderby('created_at', 'desc')->offset($offset)->limit($page_size)->get();
+
 //        $list = $attachment_table->searchAttachmentList();
 //        $total = $attachment_table->getLastQueryTotal();
-//        if (!empty($list)) {
-//            foreach ($list as &$meterial) {
-//                if ($islocal) {
-//                    $meterial['url'] = tomedia($meterial['attachment']);
-//                    unset($meterial['uid']);
-//                } else {
-//                    $meterial['attach'] = tomedia($meterial['attachment'], true);
-//                    $meterial['url'] = $meterial['attach'];
-//                }
-//            }
-//        }
-//
-//        $pager = pagination($total, $page, $page_size,'',$context = array('before' => 5, 'after' => 4, 'isajax' => $_W['isajax']));
-//        $result = array('items' => $list, 'pager' => $pager);
+
+        foreach ($core_attach as &$meterial) {
+            if ($islocal) {
+                $meterial['url'] = tomedia($meterial['attachment']);
+                unset($meterial['uid']);
+            } else {
+                $meterial['attach'] = tomedia($meterial['attachment'], true);
+                $meterial['url'] = $meterial['attach'];
+            }
+        }
+
+        $pager = pagination($count, $page, $page_size,'',$context = array('before' => 5, 'after' => 4, 'isajax' => '1'));
+        $result = array('items' => $core_attach, 'pager' => $pager);
+
+        $array = [
+            'message' => [
+                'erron' => 0,
+                'message' => $result
+            ],
+            'redirect' => '',
+            'type' => 'ajax'
+        ];
+
+        return \GuzzleHttp\json_encode($array);
+//        return $this->successJson('', $result);
 //        iajax(0, $result);
     }
 

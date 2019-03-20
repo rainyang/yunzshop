@@ -202,16 +202,19 @@ class AdminUser extends Authenticatable
      * @param $parame
      * @return mixed
      */
-    public static function searchUsers($parame)
+    public static function scopeSearchUsers($result, $parame)
     {
-        $result = self::select(['uid', 'username', 'status', 'type', 'remark', 'application_number', 'endtime', 'created_at', 'updated_at']);
+        $result = $result->select(['uid', 'username', 'status', 'type', 'remark', 'application_number', 'endtime', 'created_at', 'updated_at']);
 
         if ($parame['search']['status']) {
             if ($parame['search']['status'] == 4) {
                 $time = [['endtime', '<', time()], ['endtime', '>', '0']];
                 $result = $result->where($time);
             } else {
-                $result = $result->where('status', $parame['search']['status'])->where('endtime', '==', '0')->orWhere('endtime', '>', time());
+                $result = $result->where('status', $parame['search']['status'])->Where(function ($query) {
+                    $query->where('endtime', '==', '0')
+                        ->orWhere('endtime', '>', time());
+                });
             }
         }
 
@@ -223,7 +226,7 @@ class AdminUser extends Authenticatable
         }
 
         if ($parame['search']['searchtime']) {
-            if ($parame['search']['searchtime'] == 1) {
+            if ($parame['search']['searchtime'] == 1 && $parame['search']['times']['start']) {
                 $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('created_at', $range);
             } elseif ($parame['search']['searchtime'] == 2) {
