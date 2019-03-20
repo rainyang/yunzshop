@@ -35,6 +35,7 @@ use app\common\modules\process\StateContainer;
 use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use app\frontend\modules\coupon\listeners\CouponSend;
+use app\frontend\modules\coupon\listeners\ShoppingShareCouponListener;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
@@ -122,6 +123,8 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\member\level\LevelListener::class,
         \app\common\listeners\balance\BalanceListener::class,
 
+        //订单支付后，获取分享优惠卷资格
+        ShoppingShareCouponListener::class,
 
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,

@@ -105,7 +105,7 @@
 </div>
 
 
-<div class='panel-heading'>购物分享设置</div>
+{{--<div class='panel-heading'>购物分享设置</div>--}}
 <div class='panel-body'>
     <div class='panel-body'>
         <div class="form-group">
@@ -125,34 +125,35 @@
             </div>
         </div>
     </div>
+    <div id="shopping_share_coupon" @if(empty($coupon->shopping_share)) style="display: none" @endif>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <div>
+                    <button type='button' onclick="addShareCouponItem('share_coupon')" class="btn btn-default" style="margin-bottom:10px"><i class='fa fa-plus'></i>添加优惠券</button>
+                </div>
 
-    <div class="form-group">
-        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-        <div class="col-sm-9 col-xs-12">
-            <div>
-                <button type='button' onclick="addShareCouponItem('share_coupon')" class="btn btn-default" style="margin-bottom:10px"><i class='fa fa-plus'></i>添加优惠券</button>
-            </div>
+                <div id='coupon-items'>
+                    @foreach( $coupon->share_coupon as $share)
 
-            <div class='coupon-items'>
-                @foreach( $coupon->share_coupon as $share)
-
-                    <div class="input-group coupon-item" style="margin-top:5px; width: 60%">
-                        <input class="coupon_id" type="hidden" name="widgets[coupon][share_coupon][][coupon_id]" value="{{ $share['coupon_id'] }}"/>
-                        <input class="form-control coupon_name" type="text" maxlength="30" name='widgets[coupon][share_coupon][][coupon_name]' value='{{ $share['coupon_name'] or '' }}' readonly/>
-                        <div class="input-group-addon"><button type="button" class="input-group-add">选择优惠券</button></div>
-                        <input type="text" class="form-control" name='widgets[coupon][share_coupon][][coupon_several]' value='{{ $share['coupon_several'] or '' }}'/>
-                        <span class="input-group-addon unit">张</span>
-                        <div class='input-group-btn'>
-                            <button class='btn btn-danger' type='button'
-                                    onclick="removeCouponItem(this)"><i class='fa fa-remove'></i>
-                            </button>
+                        <div class="input-group coupon-item" style="margin-top:5px; width: 60%">
+                            <input class="coupon_id" type="hidden" name="widgets[coupon][share_coupon][coupon_id][]" value="{{ $share['coupon_id'] }}"/>
+                            <input class="form-control coupon_name" type="text" maxlength="30" name='widgets[coupon][share_coupon][coupon_name][]' value='{{ $share['coupon_name'] or '' }}' readonly/>
+                            <div class="input-group-addon"><button type="button" class="input-group-add">选择优惠券</button></div>
+                            <input type="text" class="form-control" name='widgets[coupon][share_coupon][coupon_several][]' value='{{ $share['coupon_several'] or '' }}'/>
+                            <span class="input-group-addon unit">张</span>
+                            <div class='input-group-btn'>
+                                <button class='btn btn-danger' type='button'
+                                        onclick="removeCouponItem(this)"><i class='fa fa-remove'></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
+                    @endforeach
+                </div>
 
-            <span class="help-block">两项都填写才能生效</span>
-            <span class="help-block">订单支付后，按照勾选发放规则获得对应优惠券分享资格</span>
+                <span class="help-block">两项都填写才能生效</span>
+                <span class="help-block">订单支付后，按照勾选发放规则获得对应优惠券分享资格</span>
+            </div>
         </div>
     </div>
 
@@ -179,20 +180,29 @@
                 $("#coupon_send_month").show();
             }
         });
+
+        $(":radio[name='widgets[coupon][shopping_share]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#shopping_share_coupon").show();
+            }
+            else {
+                $("#shopping_share_coupon").hide();
+            }
+        });
     });
 
     //新 添加优惠券
     function addShareCouponItem(name) {
 
         var html = '<div class="input-group coupon-item"  style="margin-top:5px; width: 60%;">';
-        html += '<input class="coupon_id" type="hidden" name="widgets[coupon]['+ name +'][][coupon_id]" value=""/>';
-        html += '<input class="form-control coupon_name" type="text" maxlength="30" name="widgets[coupon]['+ name +'][][coupon_name]"  readonly />';
+        html += '<input class="coupon_id" type="hidden" name="widgets[coupon]['+ name +'][coupon_id][]" value=""/>';
+        html += '<input class="form-control coupon_name" type="text" maxlength="30" name="widgets[coupon]['+ name +'][coupon_name][]"  readonly />';
         html += '<div class="input-group-addon"><button type="button" class="input-group-add">选择优惠券</button></div>';
-        html += '<input type="text" class="form-control"  name="widgets[coupon]['+ name +'][][coupon_several]" placeholder="请输入赠送张数（正整数）" value="1"/>';
+        html += '<input type="text" class="form-control"  name="widgets[coupon]['+ name +'][coupon_several][]" placeholder="请输入赠送张数（正整数）" value="1"/>';
         html += '<span class="input-group-addon unit">张</span>';
         html += '<div class="input-group-btn"><button type="button" class="btn btn-danger" onclick="removeCouponItem(this)"><i class="fa fa-remove"></i></button></div>';
         html += '</div>';
-        $('.coupon-items').append(html);
+        $('#coupon-items').append(html);
     }
 
     //添加优惠券
