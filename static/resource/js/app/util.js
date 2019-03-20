@@ -539,7 +539,8 @@
 					}
 				}
 			}, opts);
-            fileUploader.url('./index.php?c=utility&a=file&do=upload&upload_type=');
+            fileUploader.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
+            fileUploader.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
         });
 	}; // end of image
 

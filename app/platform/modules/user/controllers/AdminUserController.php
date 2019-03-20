@@ -284,7 +284,7 @@ class AdminUserController extends BaseController
     public function clerkList()
     {
         $parames = request();
-        $user = AdminUser::searchUsers($parames)->with(['hasOneProfile'])->where('type', 3)->paginate();
+        $user = AdminUser::where('type', 3)->searchUsers($parames)->with(['hasOneProfile'])->paginate();
         foreach ($user as &$item) {
             if ($item['status'] == 2) {
                 $item['state'] = '有效';
