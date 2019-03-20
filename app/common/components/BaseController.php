@@ -121,7 +121,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        Session::factory(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        Session::factory(\YunShop::app()->uniacid, self::COOKIE_EXPIRE);
     }
 
     /**
