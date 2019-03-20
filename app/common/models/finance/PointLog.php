@@ -123,7 +123,11 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (19):
-                $mode_attribute = PointService::POINT_MODE_SIGN_REWARD_ATTACHED;
+                if (app('plugins')->isEnabled('sign')) {
+                    $mode_attribute = trans('Yunshop\Sign::sign.plugin_name') . '奖励';
+                } else {
+                    $mode_attribute = PointService::POINT_MODE_SIGN_REWARD_ATTACHED;
+                }
                 break;
             case (20):
                 $mode_attribute = PointService::POINT_MODE_COURIER_REWARD_ATTACHED;
