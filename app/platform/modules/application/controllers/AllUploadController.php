@@ -10,6 +10,7 @@ namespace app\platform\modules\Application\controllers;
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
+// use app\common\services\qcloud\Api;
 use app\common\services\qcloud\Api;
 use app\common\services\aliyunoss\OssClient;
 use app\common\services\aliyunoss\Core\OssException;
@@ -57,9 +58,7 @@ class AllUploadController extends BaseController
         }
         $setting = SystemSetting::settingLoad('global', 'system_global');
         //文件大小是否大于所设置的文件最大值
-        if($setting[''] ) {
-
-        }
+       
         //文件上传最大执行时间
         $ext = $file->getClientOriginalExtension();
 
@@ -248,6 +247,7 @@ class AllUploadController extends BaseController
         //检查 object 及服务器路径 权限
         if ($res['code'] == 0 && $res['message'] == 'SUCCESS') {
             // 自定义域名拼接文件名
+            \Log::info('cos_upload_url', $setting['url'].$truePath.$newFileName);
             return $setting['url'].$truePath.$newFileName;
         }
         return false;
@@ -374,6 +374,114 @@ class AllUploadController extends BaseController
     {
         return date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
+    
+    //图片压缩
+    public function imageDeal($file, $percent, $ext)
+    {
+        // $ext = $file->getClientOriginalExtension();
+        
+        header("Content-type: image/".$ext); 
+        dd( getimagesize($file));
+
+        list($width, $height) = getimagesize($file); //获取原图尺寸 
+
+        //缩放尺寸 
+
+        $newwidth = $width * $percent; 
+
+        $newheight = $height * $percent; 
+
+        $src_im = imagecreatefromjpeg($file); 
+
+        $dst_im = imagecreatetruecolor($newwidth, $newheight); 
+
+        return imagecopyresized($dst_im, $src_im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height); 
+        // imagejpeg($dst_im); //输出压缩后的图片 
+
+        // imagedestroy($dst_im); 
+
+        // imagedestroy($src_im);
+
+    }
+
+    function image_png_size_add($imgsrc,$imgdst){  
+
+         list($width,$height,$type)=getimagesize($imgsrc);  
+
+         $new_width = ($width>600?600:$width)*0.9;  
+
+         $new_height =($height>600?600:$height)*0.9;  
+
+         switch($type){  
+
+          case 1:  
+
+           $giftype=check_gifcartoon($imgsrc);  
+
+           if($giftype){  
+
+            header('Content-Type:image/gif');  
+
+            $image_wp=imagecreatetruecolor($new_width, $new_height);  
+
+            $image = imagecreatefromgif($imgsrc);  
+
+            imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
+
+            imagejpeg($image_wp, $imgdst,75);  
+
+            imagedestroy($image_wp);  
+
+           }  
+
+           break;  
+
+        case 2:  
+
+           header('Content-Type:image/jpeg');  
+
+           $image_wp=imagecreatetruecolor($new_width, $new_height);  
+
+           $image = imagecreatefromjpeg($imgsrc);  
+
+           imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
+
+           imagejpeg($image_wp, $imgdst,75);  
+
+           imagedestroy($image_wp);  
+
+           break;  
+
+          case 3:  
+
+           header('Content-Type:image/png');  
+
+           $image_wp=imagecreatetruecolor($new_width, $new_height);  
+
+           $image = imagecreatefrompng($imgsrc);  
+
+           imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
+
+           imagejpeg($image_wp, $imgdst,75);  
+
+           imagedestroy($image_wp);  
+
+           break;  
+
+        }  
+    }  
+
+    //gif
+    function check_gifcartoon($image_file){  
+
+        $fp = fopen($image_file,'rb');  
+
+        $image_head = fread($fp,1024);  
+
+        fclose($fp);  
+
+        return preg_match("/".chr(0x21).chr(0xff).chr(0x0b).'NETSCAPE2.0'."/",$image_head)?false:true;  
+    }  
 
     public function ossTest()
     {
@@ -428,6 +536,9 @@ class AllUploadController extends BaseController
         $originalName = 'aaa222www11';
         $ext='png';
         $newFileName = date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+
+        $im = $this->imageDeal('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', '30%', $ext);
+        dd($im);
 
         $res = $cos->upload(
             config('filesystems.disks.cos.bucket'),
