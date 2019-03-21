@@ -120,10 +120,8 @@ class AllUploadController extends BaseController
 
                 $file_type = 'syst';
 
-                $img_type = $setting['image_extentions'] ? explode('\r\n', $setting['image_extentions']) : $defaultImgType;
-
-                if (!in_array($ext, $img_type) ) {
-                    return '文件格式不正确';
+                if ($sett['image_extentions'] && !in_array($ext, $img_type) ) {
+                    return '非规定类型的文件格式';
                 }
 
                 $defaultImgSize = $setting['img_size'] ? $setting['img_size'] : 10240;
@@ -138,10 +136,8 @@ class AllUploadController extends BaseController
 
                 $file_type = in_array($ext, $defaultVideoType) ? 'video' : 'audio';
 
-                $img_type = $setting['audio_extentions'] ? explode('\r\n', $setting['audio_extentions']) : $defaultAudioType;
-
-                if (!in_array($ext, $img_type) ) {
-                    return '文件格式不正确';
+                if ($setting['audio_extentions'] && !in_array($ext, $img_type) ) {
+                    return '非规定类型的文件格式';
                 }
                 $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] : 30702; //音视频最大 30M
 
