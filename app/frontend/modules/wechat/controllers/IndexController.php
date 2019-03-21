@@ -31,6 +31,7 @@ class IndexController extends BaseController
 
     public function index()
     {
+        // 接入判断
         if ( isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
             $signature = $_GET["signature"];
             $timestamp = $_GET["timestamp"];
@@ -46,7 +47,14 @@ class IndexController extends BaseController
                 //      return  $_GET["echostr"];
                 //exit;
             }
+        } else {// 不是接入，则触发事件，交给监听者处理.
+            // 获取第三方库easyWechat的app对象
+            $wechatApp = new \app\common\modules\wechat\WechatApplication();
+            $server = $wechatApp->server;
+            $msg = $server->getMessage();
+            event(new \app\common\events\WechatMessage($wechatApp,$msg));
         }
+
         /*
         // 判断接入
         //查询数据库，该公众号是否开启，开启，则不校验，正常接收请求。如果关闭，则校验
@@ -57,6 +65,7 @@ class IndexController extends BaseController
             }
         }
         */
+        /*
         // 获取第三方库easyWechat的app对象
         $wechatApp = new \app\common\modules\wechat\WechatApplication();
         $server = $wechatApp->server;
@@ -70,9 +79,9 @@ class IndexController extends BaseController
                     case 'text':
                         if (!empty($message->Content)) {
                             // 查询关键字，交给对应的模块处理
-                            $keyword = \app\common\modules\wechat\models\RuleKeyword::getRuleByKeywords($message->Content);
+                            $keyword = \app\common\modules\wechat\models\RuleKeyword::getRuleKeywordByKeywords($message->Content);
                             if ($keyword->module) {
-                                event(new \app\common\events\WechatMessage($wechatApp,$keyword));
+                                event(new \app\common\events\WechatMessage($message,$keyword,$response));
                             }
                         }
                         // 获取用户输入的关键字，查询关键字表，得到模块，然后将关键字交给该模块进行处理
@@ -102,5 +111,6 @@ class IndexController extends BaseController
         } catch (\Exception $exception) {
 
         }
+        */
     }
 }
