@@ -10,6 +10,7 @@ namespace app\common\middleware;
 
 
 use app\common\helpers\Url;
+use app\platform\modules\application\models\AppUser;
 
 class ShopBootstrap
 {
@@ -18,9 +19,16 @@ class ShopBootstrap
     public function handle($request, \Closure $next, $guard = null)
     {
         if (\Auth::guard('admin')->user()->uid !== 1) {
-            $base_config = \config::get('app.global');
+            $cfg = \config::get('app.global');
+            $account = AppUser::getAccount(\Auth::guard('admin')->user()->uid);
 
-            if (in_array($base_config['role'], $this->authRole)) {
+            if (!is_null($account) && in_array($account->role, $this->authRole)) {
+
+                $cfg['uniacid'] = $account->uniacid;
+                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin');
+                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin/shop');
+                \config::set('app.global', $cfg);
+
                 return redirect()->guest(Url::absoluteWeb('index.index'));
             }
         }

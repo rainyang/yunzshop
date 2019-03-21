@@ -24,7 +24,6 @@ class AuthenticateAdmin
     private $account = null;
     private $uniacid = 0;
     private $role    = ['role' => '', 'isfounder' => false];
-    private $authRole = ['operator'];
 
     /**
      * Handle an incoming request.
@@ -36,13 +35,24 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        $this->saveUniacid();
+        if (\Auth::guard('admin')->user()->uid == 1) {
+            $this->role = ['role' => 'founder', 'isfounder' => true];
+        } else {
+            $cfg = \config::get('app.global');
 
-        $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $this->uniacid);
+            if (!empty($cfg['uniacid'])) {
+                $this->uniacid = $cfg['uniacid'];
+                $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $cfg['uniacid']);
 
-        $this->accessPermissions();
+                if (!is_null($this->account)) {
+                   $this->setRole();
+                } else {
+                    $this->relogin();
+                }
+            }
+        }
 
-        \config::set('app.global', array_merge($this->setConfigInfo(), $this->setRole()));
+        \config::set('app.global', array_merge($this->setConfigInfo(), $this->role));
 
         return $next($request);
     }
@@ -54,7 +64,7 @@ class AuthenticateAdmin
      */
     private function setConfigInfo()
     {
-        return array_merge(\config::get('app.global'), ['uniacid' => $this->uniacid]);
+        return \config::get('app.global');
     }
 
     /**
@@ -69,30 +79,6 @@ class AuthenticateAdmin
         } else {
             $this->role    = ['role' => $this->account->role, 'isfounder' => false];
         }
-
-        return $this->role;
-    }
-
-    /**
-     * 保存公众号
-     *
-     */
-    private function saveUniacid()
-    {
-        if (!empty(request('uniacid')) && request('uniacid') > 0) {
-            $this->uniacid = request('uniacid');
-            setcookie('uniacid', request('uniacid'));
-        }
-
-        if (in_array($this->account->role, $this->authRole)) {
-            $this->uniacid = $this->account->uniacid;
-            setcookie('uniacid', $this->account->uniacid);
-        }
-
-        if (empty($this->uniacid) && isset($_COOKIE['uniacid'])) {
-            $this->uniacid = $_COOKIE['uniacid'];
-        }
-
     }
 
     /**
@@ -100,18 +86,15 @@ class AuthenticateAdmin
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    private function accessPermissions()
+    private function relogin()
     {
-        if (\Auth::guard('admin')->user()->uid !== 1) {
-            if ($this->account->uniacid != $this->uniacid) {
-                \Auth::guard('admin')->logout();
-                request()->session()->flush();
-                request()->session()->regenerate();
+        \Auth::guard('admin')->logout();
+        request()->session()->flush();
+        request()->session()->regenerate();
 
-                Cookie::queue(Cookie::forget('uniacid'));
+        Cookie::queue(Cookie::forget('uniacid'));
 
-                return $this->errorJson('请重新登录', ['login_status' => 1, 'login_url' => '/#/login']);
-            }
-        }
+        return $this->errorJson('请重新登录', ['login_status' => 1, 'login_url' => '/#/login']);
+
     }
 }

@@ -31,6 +31,7 @@ class GlobalParams
     private function setConfigInfo()
     {
         $cfg     = \config::get('app.global');
+
         $account = AccountWechats::getAccountByUniacid($cfg['uniacid']);
         $cfg['account'] = $account ? $account->toArray() : '';
 

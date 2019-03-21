@@ -9,6 +9,10 @@
 namespace app\common\helpers;
 
 
+use Illuminate\Support\Facades\DB;
+
+define('TIMESTAMP', time());
+
 class YunSession implements \SessionHandlerInterface
 {
     public static $uniacid;
@@ -16,7 +20,6 @@ class YunSession implements \SessionHandlerInterface
     public static $openid;
 
     public static $expire;
-
 
     public static function start($uniacid, $openid, $expire = 3600) {
         self::$uniacid = $uniacid;
@@ -172,22 +175,21 @@ class YunSessionRedis extends YunSessionMemcache {
 
 class YunSessionMysql extends YunSession {
     public function open($save_path, $session_name) {
-        $tablename = str_replace('`', "'", DBHelper::tablename('core_sessions'));
-
-        $status = \DB::selectOne("SHOW TABLE STATUS LIKE {$tablename}");
+        $tablename = DB::getTablePrefix() . 'core_sessions';
+        $status = DB::selectOne("SHOW TABLE STATUS LIKE '{$tablename}'");
 
         if (strexists($status['Comment'], 'crashed')) {
-            \DB::select("REPAIR TABLE " . DBHelper::tablename('core_sessions'));
+            DB::select("REPAIR TABLE " . DB::getTablePrefix() . 'core_sessions');
         }
         return true;
     }
 
     public function read($sessionid) {
-        $sql = 'SELECT * FROM ' . DBHelper::tablename('core_sessions') . ' WHERE `sid`=:sessid AND `expiretime`>:time';
+        $sql = 'SELECT * FROM ' . DB::getTablePrefix() . 'core_sessions WHERE `sid`=:sessid AND `expiretime`>:time';
         $params = array();
         $params[':sessid'] = $sessionid;
         $params[':time'] = TIMESTAMP;
-        $row = \DB::selectOne($sql, $params);
+        $row = DB::selectOne($sql, $params);
 
 
         if(is_array($row) && !empty($row['data'])) {
@@ -214,22 +216,26 @@ class YunSessionMysql extends YunSession {
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + YunSession::$expire;
 
-        return \DB::insert('core_sessions', $row, true) >= 1;
+        $sql = 'REPLACE INTO ' . DB::getTablePrefix() . "core_sessions (`sid`, `uniacid`, `openid`, `data`, `expiretime`) 
+                   VALUES ('{$row['sid']}', {$row['uniacid']}, '{$row['openid']}', '{$row['data']}', {$row['expiretime']})";
+
+        return DB::insert($sql) >= 1;
     }
 
 
     public function destroy($sessionid) {
         $row = array();
-        $row['sid'] = $sessionid;
+        $row[':sid'] = $sessionid;
 
-        return \DB::delete('core_sessions', $row) == 1;
+        $sql = 'DELETE FROM ' . DB::getTablePrefix() . 'core_sessions WHERE `sid` = :sid';
+        return DB::delete($sql, $row) == 1;
     }
 
 
     public function gc($expire) {
-        $sql = 'DELETE FROM ' . DBHelper::tablename('core_sessions') . ' WHERE `expiretime`<:expire';
+        $sql = 'DELETE FROM ' . DB::getTablePrefix() . 'core_sessions WHERE `expiretime`<:expire';
 
-        return \DB::selectOne($sql, array(':expire' => TIMESTAMP)) == 1;
+        return DB::selectOne($sql, [':expire' => TIMESTAMP]) == 1;
     }
 
     private function chk_member_id_session($read_data)

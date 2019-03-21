@@ -300,8 +300,7 @@ return [
         ]
     ],
 
-    'isWeb'  => '/shop',
-    'root' => '/shop',
-    'global' => [],
+    'isWeb'  => '/admin/shop',
+    'global' => ['test' => 1],
     'sys_global' => []
 ];

@@ -19,6 +19,6 @@ class IndexController extends BaseController
        /* Cookie::queue('user_id', $user->uid);
         Cookie::queue('user_name', $user->username);*/
 
-        return $this->successJson('', []);
+        return $this->successJson('', ['cookie' => $_COOKIE, 'cfg' => \config::get('app.global')]);
     }
 }
