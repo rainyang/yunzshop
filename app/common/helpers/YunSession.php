@@ -11,6 +11,8 @@ namespace app\common\helpers;
 
 use Illuminate\Support\Facades\DB;
 
+define('TIMESTAMP', time());
+
 class YunSession implements \SessionHandlerInterface
 {
     public static $uniacid;
@@ -18,7 +20,6 @@ class YunSession implements \SessionHandlerInterface
     public static $openid;
 
     public static $expire;
-
 
     public static function start($uniacid, $openid, $expire = 3600) {
         self::$uniacid = $uniacid;
@@ -215,7 +216,7 @@ class YunSessionMysql extends YunSession {
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + YunSession::$expire;
 
-        $sql = 'INSERT INTO ' . DB::getTablePrefix() . "core_sessions (`sid`, `uniacid`, `openid`, `data`, `expiretime`) 
+        $sql = 'REPLACE INTO ' . DB::getTablePrefix() . "core_sessions (`sid`, `uniacid`, `openid`, `data`, `expiretime`) 
                    VALUES ('{$row['sid']}', {$row['uniacid']}, '{$row['openid']}', '{$row['data']}', {$row['expiretime']})";
 
         return DB::insert($sql) >= 1;
