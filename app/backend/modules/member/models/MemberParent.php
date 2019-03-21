@@ -58,9 +58,10 @@ class MemberParent extends \app\common\models\member\MemberParent
 
         if ($request->level) {
             $query->where('level', $request->level);
-        } else {
-            $query->where('level', 1);
         }
+//        else {
+//            $query->where('level', 1);
+//        }
 
         if ($request->aid) {
             $query->where('member_id', $request->aid);
