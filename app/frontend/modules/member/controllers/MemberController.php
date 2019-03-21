@@ -48,7 +48,7 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
 use Symfony\Component\HttpFoundation\Request;
-
+use Yunshop\Designer\models\Designer;
 class MemberController extends ApiController
 {
     protected $publicAction = [
@@ -845,7 +845,13 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
-
+        $designerModel = Designer::getDesignerByPageID($_GET['page_id']);
+        $arr=json_decode(htmlspecialchars_decode($designerModel->toArray()['page_info']),true)[0]['params'];
+        if (!empty($arr['title'])){
+            $share['title'] = $arr['title'];
+            $share['desc'] = $arr['desc'];
+            $share['icon'] = $arr['img'];
+        }
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置
