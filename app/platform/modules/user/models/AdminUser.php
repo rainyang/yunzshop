@@ -211,28 +211,29 @@ class AdminUser extends Authenticatable
                 $time = [['endtime', '<', time()], ['endtime', '>', '0']];
                 $result = $result->where($time);
             } else {
-                $result = $result->where('status', $parame['search']['status'])->Where(function ($query) {
+                $result = $result->where('status', $parame['search']['status'])->where(function ($query) {
                     $query->where('endtime', '==', '0')
                         ->orWhere('endtime', '>', time());
                 });
             }
         }
 
-        if ($parame['search']['keyword']) {
-            $result = $result->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
-            ->orWhereHas('hasOneProfile', function ($query) use ($parame) {
-                    $query->where('mobile', 'like', '%' . $parame['search']['keyword'] . '%');
-            });
-        }
-
         if ($parame['search']['searchtime']) {
+            $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
             if ($parame['search']['searchtime'] == 1 && $parame['search']['times']['start']) {
-                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('created_at', $range);
-            } elseif ($parame['search']['searchtime'] == 2) {
-                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
+            } elseif ($parame['search']['searchtime'] == 2 && $parame['search']['times']['start']) {
                 $result = $result->whereBetween('endtime', $range);
             }
+        }
+
+        if ($parame['search']['keyword']) {
+            $result = $result->where(function ($query) use ($parame) {
+                $query->where('username', 'like', '%' . $parame['search']['keyword'] . '%')
+                    ->orWhereHas('hasOneProfile', function ($query) use ($parame)  {
+                        $query->where('mobile', 'like', '%' . $parame['search']['keyword'] . '%');
+                    });
+            });
         }
 
         return $result;
