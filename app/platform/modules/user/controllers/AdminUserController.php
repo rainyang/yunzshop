@@ -224,25 +224,25 @@ class AdminUserController extends BaseController
     {
         switch ($user) {
             case 1:
-                return $this->successJson('成功', '');
+                return $this->successJson('成功');
                 break;
             case 2:
-                return $this->errorJson('原密码错误', '');
+                return $this->errorJson('原密码错误');
                 break;
             case 3:
-                return $this->errorJson('新密码与原密码一致', '');
+                return $this->errorJson('新密码与原密码一致');
                 break;
             case 4:
-                return $this->errorJson('存储相关信息表失败', '');
+                return $this->errorJson('存储相关信息表失败');
                 break;
             case 5:
-                return $this->errorJson('参数错误', '');
+                return $this->errorJson('参数错误');
                 break;
             case 6:
-                return $this->errorJson('未获取到数据', '');
+                return $this->errorJson('未获取到数据');
                 break;
             default:
-                return $this->errorJson('失败', '');
+                return $this->errorJson('失败');
         }
     }
 
@@ -270,10 +270,10 @@ class AdminUserController extends BaseController
         $user['per_page'] = 15;
 
         if (!$user) {
-            return $this->errorJson('未获取到该用户', '');
+            return $this->errorJson('未获取到该用户');
         }
         if ($user->hasManyAppUser->isEmpty()) {
-            return $this->errorJson('该用户暂时没有平台', '');
+            return $this->errorJson('该用户暂时没有平台');
         }
 
         return $this->successJson('成功', $user);
@@ -296,7 +296,7 @@ class AdminUserController extends BaseController
         }
 
         if ($user->isEmpty()) {
-            return $this->errorJson('未获取到店员信息', '');
+            return $this->errorJson('未获取到店员信息');
         }
 
         return $this->successJson('成功', $user);
