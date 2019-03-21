@@ -16,7 +16,7 @@ class AppuserController extends BaseController
 	public function index()
 	{
         // dd(request()->search);
-		$list = AppUser::with('hasOneUser')->search(request()->search ? : '')->orderBy('id', 'desc')->paginate()->toArray();
+		$list = AppUser::where('uniacid', request()->uniacid)->with('hasOneUser')->search(request()->search ? : '')->orderBy('id', 'desc')->paginate()->toArray();
 
 		return $this->successJson('获取成功', $list);
 	}
@@ -113,9 +113,8 @@ class AppuserController extends BaseController
     	if (!$data) {
     		return $this->errorJson('请输入要查询的用户名');
     	}
-
     	// return AdminUser::searchUsers($data)->get();
     	
-    	return $this->successJson('查询成功', AdminUser::where('username', 'like', '%'.$data['search']['realname'].'%')->get());
+    	return $this->successJson('查询成功', AdminUser::where('uniacid', request()->uniacid)->where('username', 'like', '%'.$data['search']['realname'].'%')->get());
     }
 }
