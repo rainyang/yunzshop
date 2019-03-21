@@ -11,32 +11,23 @@ namespace app\common\events;
 
 class WechatMessage extends Event
 {
+    protected $message;
 
     protected $wechatApp;
 
-    protected $keyword;
-
-    public function __construct(\app\common\modules\wechat\WechatApplication $wechatApp, $keyword)
+    public function __construct($wechatApp,$message)
     {
+        $this->message = $message;
         $this->wechatApp = $wechatApp;
-        $this->keyword = $keyword;
     }
 
-    /**
-     * 获取微信对象
-     * @return \app\common\modules\wechat\WechatApplication
-     */
     public function getWechatApp()
     {
         return $this->wechatApp;
     }
 
-    /**
-     * 获取关键字
-     * @return mixed
-     */
-    public function getKeyword()
+    public function getMessage()
     {
-        return $this->keyword;
+        return $this->message;
     }
 }
