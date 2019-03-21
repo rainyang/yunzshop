@@ -190,7 +190,7 @@ class YunShop
     public static function isWechatApi()
     {
         if (env('APP_Framework') == 'platform') {
-            return (strpos($_SERVER['REQUEST_URI'], '/wechat/') !== false &&
+            return (strpos($_SERVER['REQUEST_URI'], '/wechat') !== false &&
                 strpos($_SERVER['REQUEST_URI'], '/api') !== false) ? true : false;
         } else {
             return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
