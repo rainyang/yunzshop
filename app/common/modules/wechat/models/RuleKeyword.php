@@ -122,7 +122,7 @@ class RuleKeyword extends BaseModel
     }
 
     // 通过关键字获取规则
-    public static function getRuleByKeywords($keywords)
+    public static function getRuleKeywordByKeywords($keywords)
     {
         // 先找精准触发
         $accurate = static::uniacid()->where('status','=',1)
