@@ -14,6 +14,8 @@ use app\platform\modules\application\models\CoreAttach;
 use app\common\services\qcloud\Api;
 use app\common\services\aliyunoss\OssClient;
 use app\common\services\aliyunoss\Core\OssException;
+use app\common\services\ImageZip;
+
 
 class AllUploadController extends BaseController
 {
@@ -50,6 +52,7 @@ class AllUploadController extends BaseController
 
         return $this->successJson('ok', $data);
     }
+    
     //视频类型建议使用第三方存储, 本地暂不支持
     public function doUpload($file)
     {
@@ -109,9 +112,6 @@ class AllUploadController extends BaseController
                     return $this->errorJson('文件大小超出规定值');
                 }
 
-                if ($setting['zip_percentage']) {
-                    //执行图片压缩
-                }
             }
 
             if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
@@ -131,7 +131,7 @@ class AllUploadController extends BaseController
             }
 
             //执行本地上传
-            $res =  $this->uploadLocal($file, 1, $file_type);
+            $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
         }
 
         if ($setting['type'] == 2) {
@@ -148,7 +148,7 @@ class AllUploadController extends BaseController
     }
 
     //本地上传
-    public function uploadLocal($file, $uniacid, $file_type)
+    public function uploadLocal($file, $file_type, $percent)
     {
         if (!$file) {
             return $this->errorJson('请传入正确参数');
@@ -170,7 +170,7 @@ class AllUploadController extends BaseController
                 $core = new \app\platform\modules\application\models\CoreAttach;
 
                 $d = [
-                    'uniacid' => $uniacid,
+                    'uniacid' => \YunShop::app()->uniacid ? : 0,
                     'uid' => \Auth::guard('admin')->user()->uid,
                     'filename' => $originalName,
                     'type' => $file_type == 'syst' ? 1 : 2, //类型1.图片; 2.音乐
@@ -185,8 +185,19 @@ class AllUploadController extends BaseController
                     $core->save();
                 }
             }
+            
+            if ($percent) {
+                //执行图片压缩
+                $imagezip = new ImageZip();
 
-            return $this->proto.$_SERVER['HTTP_HOST'].$this->path.$newOriginalName;
+                $zipOrNot = $imagezip->makeThumb(
+                    \Storage::disk($file_type)->url().$newOriginalName,
+                    \Storage::disk($file_type)->url().$newOriginalName,
+                    $percent
+                );
+            }
+           
+            return $this->proto.$_SERVER['HTTP_HOST'].$this->path.'/'.$newOriginalName;
         }
     }
 
@@ -537,7 +548,11 @@ class AllUploadController extends BaseController
         $ext='png';
         $newFileName = date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
 
-        $im = $this->imageDeal('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', '30%', $ext);
+        $zip = new ImageZip();
+        $res = $zip->makeThumb('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', 'D:\wamp\www\shop\storage\app\\'.md5('2w43d3').'.jpeg',  '36%');
+        dd($res);
+
+        $im = $this->imageDeal('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', '50%', $ext);
         dd($im);
 
         $res = $cos->upload(
