@@ -29,8 +29,13 @@
                 image_url: function(a) {
                     this.image_url = a
                 },
+                fetch_urls : null,
+                fetch_url: function(fetch_urls) {
+                    this.fetch_urls = fetch_urls
+                },
                 init: function(b, c) {
                     var d = this;
+                    let o = this.fetch_urls;
                     if (d.options = a.extend({},
                         d.defaultoptions, c), d.options.callback = b, this.options.isWechat) {
                         if (c.account_error) return util.message("公众号号没有上传素材的权限", "", "info"),
@@ -49,7 +54,7 @@
                                     switch (d.options.type) {
                                         case "image":
                                         case "thumb":
-                                            d.options.isWechat || d.initRemote(),
+                                            d.options.isWechat || d.initRemote(o),
                                                 d.initLocal();
                                             break;
                                         case "audio":
@@ -411,13 +416,13 @@
                 initVideoUploader: function() {
                     this.initUploader("video")
                 },
-                initRemote: function() {
+                initRemote: function(o) {
                     var b = this;
                     b.modalobj.find("#li_network").removeClass("hide"),
                         b.modalobj.find(".modal-body").append(b.buildHtml().remoteDialog),
                         b.modalobj.find(".btn-primary").click(function() {
                             var c = b.modalobj.find("#networkurl").val();
-                            c.length > 0 && "image" == b.options.type && a.getJSON("./index.php?c=utility&a=file&do=fetch", {
+                            c.length > 0 && "image" == b.options.type && a.getJSON(o, {
                                     url: c
                                 },
                                 function(a) {
