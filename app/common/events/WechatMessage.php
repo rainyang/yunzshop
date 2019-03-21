@@ -11,19 +11,33 @@ namespace app\common\events;
 
 class WechatMessage extends Event
 {
-    protected $message;
-
     protected $wechatApp;
 
-    public function __construct($wechatApp,$message)
+    protected $server;
+
+    protected $message;
+
+    /**
+     * WechatMessage constructor.
+     * @param \app\common\modules\wechat\WechatApplication $wechatApp
+     * @param \EasyWeChat\Server\Guard $server
+     * @param array $message
+     */
+    public function __construct($wechatApp, $server, $message)
     {
-        $this->message = $message;
         $this->wechatApp = $wechatApp;
+        $this->server = $server;
+        $this->message = $message;
     }
 
     public function getWechatApp()
     {
         return $this->wechatApp;
+    }
+
+    public function getServer()
+    {
+        return $this->server;
     }
 
     public function getMessage()

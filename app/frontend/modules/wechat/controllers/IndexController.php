@@ -52,9 +52,9 @@ class IndexController extends BaseController
             $wechatApp = new \app\common\modules\wechat\WechatApplication();
             $server = $wechatApp->server;
             try {
-                $msg = $server->getMessage();// 异常代码
-                \Log::debug('----------微信公众号消息---------',$msg);
-                event(new \app\common\events\WechatMessage($wechatApp,$msg));
+                $message = $server->getMessage();// 异常代码
+                \Log::debug('----------微信公众号消息---------',$message);
+                event(new \app\common\events\WechatMessage($wechatApp,$server,$message));
             } catch (\Exception $exception) {
                 \Log::debug('----------公众号异常---------',$exception->getMessage());
             }
