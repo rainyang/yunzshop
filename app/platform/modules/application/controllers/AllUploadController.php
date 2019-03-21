@@ -124,7 +124,7 @@ class AllUploadController extends BaseController
                     return '非规定类型的文件格式';
                 }
 
-                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] : 10240;
+                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] : 1024*1024*5; //默认大小为5M
 
                 if ($file->getClientSize() > $defaultImgSize) {
                     return '文件大小超出规定值';
@@ -139,7 +139,7 @@ class AllUploadController extends BaseController
                 if ($setting['audio_extentions'] && !in_array($ext, $img_type) ) {
                     return '非规定类型的文件格式';
                 }
-                $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] : 30702; //音视频最大 30M
+                $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] : 1024*1024*30; //音视频最大 30M
 
                 if ($file->getClientSize() > $defaultAudioSize) {
                     return '文件大小超出规定值';
