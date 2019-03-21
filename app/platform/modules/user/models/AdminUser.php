@@ -219,11 +219,10 @@ class AdminUser extends Authenticatable
         }
 
         if ($parame['search']['searchtime']) {
+            $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
             if ($parame['search']['searchtime'] == 1 && $parame['search']['times']['start']) {
-                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
                 $result = $result->whereBetween('created_at', $range);
-            } elseif ($parame['search']['searchtime'] == 2) {
-                $range = [$parame['search']['times']['start'], $parame['search']['times']['end']];
+            } elseif ($parame['search']['searchtime'] == 2 && $parame['search']['times']['start']) {
                 $result = $result->whereBetween('endtime', $range);
             }
         }
