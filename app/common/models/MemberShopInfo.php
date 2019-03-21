@@ -464,6 +464,8 @@ class MemberShopInfo extends BaseModel
 
                 $rs = event(new MemberCreateRelationEvent($uid, $parent_id));
 
+                \Log::debug('----change relation----', [$uid, $parent_id, $rs]);
+
                 if (1 == $rs[0]['status']) {
                     $member->parent_id = $parent_id;
                     $member->inviter = 1;
