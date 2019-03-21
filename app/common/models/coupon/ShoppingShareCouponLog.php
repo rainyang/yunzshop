@@ -10,6 +10,7 @@ namespace app\common\models\coupon;
 
 
 use app\common\models\BaseModel;
+use app\framework\Database\Eloquent\Builder;
 
 class ShoppingShareCouponLog extends BaseModel
 {
@@ -17,8 +18,16 @@ class ShoppingShareCouponLog extends BaseModel
 
     protected $guarded = ['id'];
 
-    protected $attributes = [
-        'status' => 0,
-    ];
 
+    //分享者
+    public function scopeShareUid(Builder $query, $uid)
+    {
+        return $query->where('share_uid', $uid);
+    }
+
+    //领取者
+    public function scopeReceiveUid(Builder $query, $uid)
+    {
+        return $query->where('receive_uid', $uid);
+    }
 }

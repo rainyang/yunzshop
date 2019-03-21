@@ -10,10 +10,13 @@ namespace app\frontend\modules\coupon\controllers;
 
 use app\common\components\ApiController;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
-use app\common\exceptions\AppException;
 use app\common\models\Order;
+use app\common\exceptions\AppException;
+use app\common\models\Coupon;
 use app\frontend\models\Member;
 use app\frontend\modules\coupon\models\ShoppingShareCoupon;
+use app\frontend\modules\coupon\services\ShareCouponService;
+use Carbon\Carbon;
 
 class ShareCouponController extends ApiController
 {
@@ -39,24 +42,24 @@ class ShareCouponController extends ApiController
         //dd(1);
         //拥有推广资格的会员才可以分享
         if ($this->set['share_limit'] == 1) {
+            if (!$this->member->yzMember->is_agent) {
+                throw new AppException('拥有推广资格的会员才可以分享');
+            }
             $share_limit = $this->member->yzMember->is_agent ? 1 : 0;
         } else {
             $share_limit = 0;
         }
 
 
-        if ($this->share_model->isEmpty()) {
-            throw new AppException('无分享优惠卷');
-        }
-
-        $num = 0;
-
+        $this->share_model->map(function ($model) {
+            $model->coupon_num = count($model->share_coupon);
+        });
 
 
         $data = [
             'banner' => $this->set['banner'],
             'share_limit' => $share_limit,
-            'coupon_num' => $num,
+            'coupon_num' => $this->share_model->sum('coupon_num'),
         ];
 
 
@@ -67,11 +70,73 @@ class ShareCouponController extends ApiController
     //领取页面
     public function receive()
     {
+
+        foreach ($this->share_model as $model) {
+
+            $result = ShareCouponService::fen($model);
+
+            if ($result['state'] == 'YES' || $result['state'] == 'ER') {
+                break;
+            }
+
+        }
+
+        if ($result['state'] == 'ER') {
+            throw new AppException($result['msg']);
+        }
+
+
+
         $data = [
             'banner' => $this->set['banner'],
+            'member_name' => $this->member->nickname?:$this->member->realname,
+            'code' => $result['state'],
+            'mag'  => $result['msg'],
+            'coupon' =>  $this->handleCoupon($result['data']),
         ];
 
         $this->successJson('share', $data);
+    }
+
+    protected function handleCoupon($data)
+    {
+        if (empty($data)) return [];
+
+        $data['api_limit'] = $this->handleCouponUseType($data);
+
+        return $data;
+    }
+
+    protected function handleCouponUseType($couponInArrayFormat)
+    {
+        switch ($couponInArrayFormat['use_type']) {
+            case Coupon::COUPON_SHOP_USE:
+                return ('商城通用');
+                break;
+            case Coupon::COUPON_CATEGORY_USE:
+                $res = '适用于下列分类: ';
+                $res .= implode(',', $couponInArrayFormat['categorynames']);
+                return $res;
+                break;
+            case Coupon::COUPON_GOODS_USE:
+                $res = '适用于下列商品: ';
+                $res .= implode(',', $couponInArrayFormat['goods_names']);
+                return $res;
+                break;
+            case Coupon::COUPON_SUPPLIER_USE:
+                $res = '适用于下列供应商: ';
+                $res .= implode(',', $couponInArrayFormat['suppliernames']);
+                return $res;
+                break;
+            case Coupon::COUPON_STORE_USE:
+            case 5:
+                $res = '适用于下列门店: ';
+                $res .= implode(',', $couponInArrayFormat['storenames']);
+                return $res;
+                break;
+            default:
+                return ('Enjoy shopping');
+        }
     }
 
 
@@ -81,6 +146,11 @@ class ShareCouponController extends ApiController
         $order_ids = explode(',', rtrim(\YunShop::request()->order_ids, ','));
 
         $share_model = ShoppingShareCoupon::whereIn('order_id', $order_ids)->get();
+
+
+        if ($share_model->isEmpty()) {
+            throw new AppException('无分享优惠卷');
+        }
 
         $set = \Setting::get('coupon.shopping_share');
         array_set($set, 'banner', yz_tomedia($set['banner']));
