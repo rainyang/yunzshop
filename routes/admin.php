@@ -94,7 +94,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
 		//回收站
 		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
-		Route::post('application/upload/', 'ApplicationController@upload');
+        Route::post('all/upload/', 'AllUploadController@upload');
+		// Route::post('application/upload/', 'ApplicationController@upload');
 		Route::any('application/temp/', 'ApplicationController@temp');
         Route::any('application/test/', 'ApplicationController@test');
 
