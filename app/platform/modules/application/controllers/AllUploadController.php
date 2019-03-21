@@ -21,6 +21,7 @@ class AllUploadController extends BaseController
 {
     protected $proto;
     protected $path;
+    protected $pattern;
 
     public function __construct()
     {
@@ -28,29 +29,48 @@ class AllUploadController extends BaseController
         $this->proto = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://';
 
         $this->path = config('filesystems.disks.syst')['url'].'/'; //本地图片实际存放路径
+
+        $this->pattern =  '_^(?:(?:https?|ftp)://)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)(?:\.(?:[a-z\x{00a1}-\x{ffff}0-9]+-?)*[a-z\x{00a1}-\x{ffff}0-9]+)*(?:\.(?:[a-z\x{00a1}-\x{ffff}]{2,})))(?::\d{2,5})?(?:/[^\s]*)?$_iuS';
     }
 
     public function upload()
     {
         $file = request()->file('file');
 
-        if (count($file) > 1 && count($file) < 6) {
+        if (count($file) > 6) {
+            return $this->errorJson('文件数量过多, 请选择低于6个文件');
+        }
+
+        if (count($file) > 1 && count($file) < 7) {
             //多文件上传
             foreach ($file as $k => $v) {
                
-               if ($v) {
-                    $url = $this->doUpload($v) ;
+                if ($v) {
+                    
+                    $url = $this->doUpload($v);
+                    
+                    $success[] = $url;
                     //检验返回的是否是 正确合法链接
-                    // $data[] = $url ? $url : false;
-               }
-            }
+                    if (!preg_match($pattern, $url)) {
 
+                        \Log::info('more_upload_fail');
+
+                        $fail[] = $url;
+
+                        unset($success[$k]);
+                    }
+                }
+            }
         } else {
 
-            $data = $this->doUpload($file);
+            $success = $this->doUpload($file);
+            //检验参数是否为正确的url
+            if (!preg_match($this->pattern, $success)) {
+                $fail = $success;
+                unset($success);
+            }
         }
-
-        return $this->successJson('ok', $data);
+        return $this->successJson('ok', ['success'=>$success, 'fail'=>$fail]);
     }
     
     //视频类型建议使用第三方存储, 本地暂不支持
@@ -103,13 +123,13 @@ class AllUploadController extends BaseController
                 $img_type = $setting['image_extentions'] ? explode('\r\n', $setting['image_extentions']) : $defaultImgType;
 
                 if (!in_array($ext, $img_type) ) {
-                    return $this->errorJson('文件格式不正确');
+                    return '文件格式不正确';
                 }
 
                 $defaultImgSize = $setting['img_size'] ? $setting['img_size'] : 10240;
 
                 if ($file->getClientSize() > $defaultImgSize) {
-                    return $this->errorJson('文件大小超出规定值');
+                    return '文件大小超出规定值';
                 }
 
             }
@@ -121,12 +141,12 @@ class AllUploadController extends BaseController
                 $img_type = $setting['audio_extentions'] ? explode('\r\n', $setting['audio_extentions']) : $defaultAudioType;
 
                 if (!in_array($ext, $img_type) ) {
-                    return $this->errorJson('文件格式不正确');
+                    return '文件格式不正确';
                 }
                 $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] : 30702; //音视频最大 30M
 
                 if ($file->getClientSize() > $defaultAudioSize) {
-                    return $this->errorJson('文件大小超出规定值');
+                    return '文件大小超出规定值';
                 }
             }
 
@@ -144,14 +164,14 @@ class AllUploadController extends BaseController
             $res = $this->CosUpload($file, $setting, $file_type);
         }
 
-        return $this->successJson('ok', $res);
+        return $res;
     }
 
     //本地上传
     public function uploadLocal($file, $file_type, $percent)
     {
         if (!$file) {
-            return $this->errorJson('请传入正确参数');
+            return '请传入正确参数';
         }
 
         if ($file->isValid()) {
@@ -174,8 +194,7 @@ class AllUploadController extends BaseController
                     'uid' => \Auth::guard('admin')->user()->uid,
                     'filename' => $originalName,
                     'type' => $file_type == 'syst' ? 1 : 2, //类型1.图片; 2.音乐
-                    'attachment' => $newOriginalName,
-                    'creatime' => time()
+                    'attachment' => $newOriginalName
                 ];
 
                 $core->fill($d);
@@ -225,7 +244,7 @@ class AllUploadController extends BaseController
     public function CosUpload($file, $setting, $file_type)
     {
         if (!$setting) {
-            return $this->errorJson('请配置参数');
+            return '请配置参数';
         }
 
         $config = [
@@ -261,7 +280,7 @@ class AllUploadController extends BaseController
             \Log::info('cos_upload_url', $setting['url'].$truePath.$newFileName);
             return $setting['url'].$truePath.$newFileName;
         }
-        return false;
+        return '上传失败,请重试';
     }
 
     //阿里云OSS 文件上传 (支持内网上传, 加强参数权限检验, 暂不支持CDN中转自定义域名)
@@ -279,9 +298,7 @@ class AllUploadController extends BaseController
 
         $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3];
 
-
         try{
-            
             $oss = new OssClient($setting['key'], $setting['secret'], $setting['endpoint']);
         
         } catch(OssException $e) {
@@ -354,12 +371,12 @@ class AllUploadController extends BaseController
                     \Log::info('getBucketOrObjAcl, true');
                 
             } else {
-                // $url  = $res['info']['url']; //公有权限时
-                $url = 'http://'.$setting['bucket'].'.'.$domain.'/'.$object;
+                $url  = $res['info']['url']; //公有权限时
+                // $url = 'http://'.$setting['bucket'].'.'.$domain.'/'.$object;
             }
             return $url;
         }
-        return false;       
+        return '上传失败,请重试';       
     }
 
     /**
@@ -385,114 +402,6 @@ class AllUploadController extends BaseController
     {
         return date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
-    
-    //图片压缩
-    public function imageDeal($file, $percent, $ext)
-    {
-        // $ext = $file->getClientOriginalExtension();
-        
-        header("Content-type: image/".$ext); 
-        dd( getimagesize($file));
-
-        list($width, $height) = getimagesize($file); //获取原图尺寸 
-
-        //缩放尺寸 
-
-        $newwidth = $width * $percent; 
-
-        $newheight = $height * $percent; 
-
-        $src_im = imagecreatefromjpeg($file); 
-
-        $dst_im = imagecreatetruecolor($newwidth, $newheight); 
-
-        return imagecopyresized($dst_im, $src_im, 0, 0, 0, 0, $newwidth, $newheight, $width, $height); 
-        // imagejpeg($dst_im); //输出压缩后的图片 
-
-        // imagedestroy($dst_im); 
-
-        // imagedestroy($src_im);
-
-    }
-
-    function image_png_size_add($imgsrc,$imgdst){  
-
-         list($width,$height,$type)=getimagesize($imgsrc);  
-
-         $new_width = ($width>600?600:$width)*0.9;  
-
-         $new_height =($height>600?600:$height)*0.9;  
-
-         switch($type){  
-
-          case 1:  
-
-           $giftype=check_gifcartoon($imgsrc);  
-
-           if($giftype){  
-
-            header('Content-Type:image/gif');  
-
-            $image_wp=imagecreatetruecolor($new_width, $new_height);  
-
-            $image = imagecreatefromgif($imgsrc);  
-
-            imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
-
-            imagejpeg($image_wp, $imgdst,75);  
-
-            imagedestroy($image_wp);  
-
-           }  
-
-           break;  
-
-        case 2:  
-
-           header('Content-Type:image/jpeg');  
-
-           $image_wp=imagecreatetruecolor($new_width, $new_height);  
-
-           $image = imagecreatefromjpeg($imgsrc);  
-
-           imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
-
-           imagejpeg($image_wp, $imgdst,75);  
-
-           imagedestroy($image_wp);  
-
-           break;  
-
-          case 3:  
-
-           header('Content-Type:image/png');  
-
-           $image_wp=imagecreatetruecolor($new_width, $new_height);  
-
-           $image = imagecreatefrompng($imgsrc);  
-
-           imagecopyresampled($image_wp, $image, 0, 0, 0, 0, $new_width, $new_height, $width, $height);  
-
-           imagejpeg($image_wp, $imgdst,75);  
-
-           imagedestroy($image_wp);  
-
-           break;  
-
-        }  
-    }  
-
-    //gif
-    function check_gifcartoon($image_file){  
-
-        $fp = fopen($image_file,'rb');  
-
-        $image_head = fread($fp,1024);  
-
-        fclose($fp);  
-
-        return preg_match("/".chr(0x21).chr(0xff).chr(0x0b).'NETSCAPE2.0'."/",$image_head)?false:true;  
-    }  
 
     public function ossTest()
     {
