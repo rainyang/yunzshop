@@ -7,6 +7,7 @@
  */
 namespace app\platform\modules\system\controllers;
 
+
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\system\models\Loader;
@@ -18,40 +19,19 @@ class UploadController extends BaseController
     protected $global;
     protected $uniacid;
     protected $remote;
-
+    protected $common;
 
     public function __construct()
     {
         $this->global = SystemSetting::settingLoad('global', 'system_global');
         $this->remote = SystemSetting::settingLoad('remote', 'system_remote');
         $this->uniacid = \YunShop::app()->uniacid ?  : 0 ;
+        $this->common = $this->common();
     }
 
     public function upload()
     {
-        $dest_dir = $this->destDir();
-
-        $option = array_elements(array('uploadtype', 'global', 'dest_dir'), $_POST);
-        $option['width'] = intval($option['width']);
-        $option['global'] = request()->global;
-
 //        dd( \Auth::guard('admin')->user()->uid, $this->global, $this->remote);
-        $type = in_array(request()->upload_type, array('image','audio','video')) ? request()->upload_type : 'image';
-
-        if (!empty($option['global'])) {
-            $setting['folder'] = "{$type}s/global/";
-            if (! empty($dest_dir)) {
-                $setting['folder'] .= '' . $dest_dir . '/';
-            }
-        } else {
-            $setting['folder'] = "{$type}s/{$this->uniacid}";
-            if (empty($dest_dir)) {
-                $setting['folder'] .= '/' . date('Y/m/');
-            } else {
-                $setting['folder'] .= '/' . $dest_dir . '/';
-            }
-        }
-
         if (!$_FILES['file']['name']) {
             return $this->errorJson('上传失败, 请选择要上传的文件！');
         }
@@ -61,61 +41,18 @@ class UploadController extends BaseController
 
         $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
         $ext = strtolower($ext);
-        $size = intval($_FILES['file']['size']);
         $originname = $_FILES['file']['name'];
-        $folder = "static/upload/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
-        $filename = file_random_name(base_path() . '/' . $folder, $ext);
-        $file = $this->file_upload($_FILES['file'], $type, $folder . $filename, true);
-        switch ($file) {
-            case 1:
-                return $this->successJson('成功', '');
-                break;
-            case 2:
-                return $this->errorJson('没有上传内容', '');
-                break;
-            case 3:
-                return $this->errorJson('未知的上传类型', '');
-                break;
-            case 4:
-                return $this->errorJson('不允许上传此类文件', '');
-                break;
-            case 5:
-                return $this->errorJson("上传的文件超过大小限制，请上传小于 {$this->global['image_limit']}k 的文件");
-                break;
-            case 6:
-                return $this->errorJson('保存上传文件失败', '');
-                break;
+        $filename = file_random_name(base_path() . '/' . $this->common['folder'], $ext);
+
+        $file = $this->file_upload($_FILES['file'], $this->common['type'], $this->common['folder'] . $filename, true);
+        if (is_error($file)) {
+            return $this->errorJson($file['message']);
         }
 
-        if (is_error($file)) {
-            return $this->successJson('成功', $file['message']);
-        }
         $pathname = $file['path'];
         $fullname = base_path() . '/' . $pathname;
-        return $this->saveData($type, $fullname, $originname, $ext, $filename, $dest_dir['module_upload_dir'], $pathname, $option);
-    }
 
-    public function destDir()
-    {
-        $dest_dir = request()->dest_dir;
-        if (preg_match('/^[a-zA-Z0-9_\/]{0,50}$/', $dest_dir, $out)) {
-            $dest_dir = trim($dest_dir, '/');
-            $pieces = explode('/', $dest_dir);
-            if(count($pieces) > 3){
-                $dest_dir = '';
-            }
-        } else {
-            $dest_dir = '';
-        }
-        $module_upload_dir = '';
-        if($dest_dir != '') {
-            $module_upload_dir = sha1($dest_dir);
-        }
-
-        return [
-            'dest_dir' => $dest_dir,
-            'module_upload_dir' => $module_upload_dir
-        ];
+        return $this->saveData($this->common['type'], $fullname, $originname, $ext, $filename, $this->common['module_upload_dir'], $pathname, $this->common['option']);
     }
 
     public function file_upload($file, $type = 'image', $name = '', $compress = false)
@@ -123,10 +60,10 @@ class UploadController extends BaseController
         $harmtype = array('asp', 'php', 'jsp', 'js', 'css', 'php3', 'php4', 'php5', 'ashx', 'aspx', 'exe', 'cgi');
 
         if (!$file) {
-            return 2;
+            return error(-1, '没有上传内容');
         }
         if (!in_array($type, array('image', 'thumb', 'voice', 'video', 'audio'))) {
-            return 3;
+            return error(-2, '未知的上传类型');
         }
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $ext = strtolower($ext);
@@ -151,18 +88,17 @@ class UploadController extends BaseController
             $allowExt = array_merge($setting, $allowExt);
         }
         if (!in_array(strtolower($ext), $allowExt) || in_array(strtolower($ext), $harmtype)) {
-            return 4;
+            return error(-3, '不允许上传此类文件');
         }
         if ($limit && $limit * 1024 < filesize($file['tmp_name'])) {
-            return 5;
+            return error(-4, "上传的文件超过大小限制，请上传小于 {$limit}k 的文件");
         }
 
         $result = array();
         if (!$name || $name == 'auto') {
-            $path = "static\upload/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
+            $path = "static/upload/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
             mkdirs(base_path() . '/' . $path);
             $filename = file_random_name(base_path() . '/' . $path, $ext);
-
             $result['path'] = $path . $filename;
         } else {
             mkdirs(dirname(base_path() . '/' . $name));
@@ -174,7 +110,7 @@ class UploadController extends BaseController
 
         $save_path = base_path() . '/' . $result['path'];
         if (!file_move($file['tmp_name'], $save_path)) {
-            return 6;
+            return error(-1, '保存上传文件失败');
         }
 
         if ($type == 'image' && $compress) {
@@ -182,16 +118,12 @@ class UploadController extends BaseController
         }
 
         $result['success'] = true;
-
         return $result;
     }
 
     public function saveData($type, $fullname, $originname, $ext, $filename, $module_upload_dir, $pathname, $option)
     {
-//        if ($do == 'fetch' || $do == 'upload') {
         if ($type == 'image') {
-
-
             $thumb = !$this->global['thumb'] ? 0 : 1;
             $width = intval($this->global['thumb_width']);
             if (isset($option['thumb'])) {
@@ -238,27 +170,9 @@ class UploadController extends BaseController
         }
         if ($this->remote['type']) {
             $remotestatus = file_remote_upload($pathname, true, $this->remote);
-            switch ($remotestatus['status']) {
-                case 1:
-                    return $this->errorJson($remotestatus['msg'], '');
-                    break;
-                case -62:
-                    return $this->errorJson('输入的appid有误', '');
-                    break;
-                case -79:
-                    return $this->errorJson('输入的SecretID有误', '');
-                    break;
-                case -97:
-                    return $this->errorJson('输入的SecretKEY有误', '');
-                    break;
-                case -166:
-                    return $this->errorJson('输入的bucket有误', '');
-                    break;
-            }
-
             if (is_error($remotestatus)) {
                 file_delete($pathname);
-                return $this->errorJson('远程附件上传失败，请检查配置并重新上传', '');
+                return $this->errorJson('远程附件上传失败，请检查配置并重新上传'.$remotestatus['message']);
             } else {
                 file_delete($pathname);
                 $info['url'] = tomedia($pathname);
@@ -278,13 +192,10 @@ class UploadController extends BaseController
         if ($core_attach) {
             $info['state'] = 'SUCCESS';
             return json_encode($info);
-            return $this->successJson('成功', $info);
         } else {
             return $this->errorJson('失败');
         }
-//        }
     }
-
 
     public function image()
     {
@@ -307,12 +218,7 @@ class UploadController extends BaseController
         } else {
             $core_attach = new CoreAttach;
         }
-        $dest_dir = $this->destDir();
-        $core_attach = $core_attach->uniacid()->where('module_upload_dir', $dest_dir['module_upload_dir']);
-//        $attachment_table = table('attachment');
-//        $attachment_table = $attachment_table->local($is_local_image);
-//        $attachment_table->searchWithUniacid($uniacid);
-//        $attachment_table->searchWithUploadDir($module_upload_dir);
+        $core_attach = $core_attach->uniacid()->where('module_upload_dir', $this->common['module_upload_dir']);
 
         if (!$this->uniacid) {
             $core_attach = $core_attach->where('uid', \Auth::guard('admin')->user()->uid);
@@ -333,13 +239,9 @@ class UploadController extends BaseController
         } else {
             $core_attach = $core_attach->where('type', 'image');
         }
-//        $attachment_table->searchWithPage($page, $page_size);
 
         $count = $core_attach->orderby('created_at', 'desc')->get()->count();
         $core_attach = $core_attach->orderby('created_at', 'desc')->offset($offset)->limit($page_size)->get();
-
-//        $list = $attachment_table->searchAttachmentList();
-//        $total = $attachment_table->getLastQueryTotal();
 
         foreach ($core_attach as &$meterial) {
             if ($islocal) {
@@ -364,9 +266,107 @@ class UploadController extends BaseController
         ];
 
         return \GuzzleHttp\json_encode($array);
-//        return $this->successJson('', $result);
-//        iajax(0, $result);
     }
 
+    public function fetch()
+    {
+        $url = trim(request()->url);
+        $size = intval($_FILES['file']['size']);
+        $resp = ihttp_get($url);
+        if (is_error($resp)) {
+            return $this->errorJson('提取文件失败, 错误信息: ' . $resp['message']);
+        }
+        if (intval($resp['code']) != 200) {
+            return $this->errorJson('提取文件失败: 未找到该资源文件.');
+        }
+        if ($this->common['type'] == 'image') {
+            switch ($resp['headers']['Content-Type']) {
+                case 'application/x-jpg':
+                case 'image/jpeg':
+                    $ext = 'jpg';
+                    break;
+                case 'image/png':
+                    $ext = 'png';
+                    break;
+                case 'image/gif':
+                    $ext = 'gif';
+                    break;
+                default:
+                    return $this->errorJson('提取资源失败, 资源文件类型错误.');
+                    break;
+            }
+        } else {
+            return $this->errorJson('提取资源失败, 仅支持图片提取.');
+        }
 
+        if (intval($resp['headers']['Content-Length']) > $this->global[$this->common['type'].'_limit'] * 1024) {
+            return $this->errorJson('上传的媒体文件过大(' . sizecount($size) . ' > ' . sizecount($this->global[$this->common['type'].'_limit'] * 1024));
+        }
+
+        $originname = pathinfo($url, PATHINFO_BASENAME);
+        $filename = file_random_name(base_path() . '/' . $this->common['folder'], $ext);
+        $pathname = $this->common['folder'] . $filename;
+        $fullname = base_path() . '/' . $pathname;
+
+        if (file_put_contents($fullname, $resp['content']) == false) {
+            return $this->errorJson('提取失败');
+        }
+
+        return $this->saveData($this->common['type'], $fullname, $originname, $ext, $filename, $this->common['module_upload_dir'], $pathname, $this->common['option']);
+    }
+
+    public function errorJson($message = '失败', $error = 1, $data = '')
+    {
+        return response()->json([
+            'data' => $data,
+            'error' => $error,
+            'message' => $message
+        ], 200, ['charset' => 'utf-8']);
+    }
+
+    public function common()
+    {
+        $dest_dir = request()->dest_dir;
+        $type = in_array(request()->upload_type, array('image','audio','video')) ? request()->upload_type : 'image';
+        $option = array_elements(array('uploadtype', 'global', 'dest_dir'), $_POST);
+        $option['width'] = intval($option['width']);
+        $option['global'] = request()->global;
+
+        if (preg_match('/^[a-zA-Z0-9_\/]{0,50}$/', $dest_dir, $out)) {
+            $dest_dir = trim($dest_dir, '/');
+            $pieces = explode('/', $dest_dir);
+            if(count($pieces) > 3){
+                $dest_dir = '';
+            }
+        } else {
+            $dest_dir = '';
+        }
+
+        $module_upload_dir = '';
+        if($dest_dir != '') {
+            $module_upload_dir = sha1($dest_dir);
+        }
+
+        if ($option['global']) {
+            $folder = "static/upload/{$type}s/global/";
+            if ($dest_dir) {
+                $folder .= '' . $dest_dir . '/';
+            }
+        } else {
+            $folder = "static/upload/{$type}s/{$this->uniacid}";
+            if (!$dest_dir) {
+                $folder .= '/' . date('Y/m/');
+            } else {
+                $folder .= '/' . $dest_dir . '/';
+            }
+        }
+
+        return [
+            'dest_dir' => $dest_dir,
+            'module_upload_dir' => $module_upload_dir,
+            'type' => $type,
+            'options' => $option,
+            'folder' => $folder
+        ];
+    }
 }

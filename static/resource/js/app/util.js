@@ -541,6 +541,7 @@
 			}, opts);
             fileUploader.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
             fileUploader.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
+            fileUploader.fetch_url('./index.php?c=utility&a=file&do=fetch');
         });
 	}; // end of image
 
