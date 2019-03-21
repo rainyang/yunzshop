@@ -22,3 +22,4 @@ vendor/
 /index.php
 /storage/framework/cache/data
 /xhprof/
+/static/upload/images/
