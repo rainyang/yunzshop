@@ -19,11 +19,15 @@ class AttachmentController extends BaseController
 
     public function __construct()
     {
-
         $this->remote = SystemSetting::settingLoad('remote', 'system_remote');
-
     }
 
+    /**
+     * 保存及显示全局设置
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function globals()
     {
         $post_max_size = ini_get('post_max_size');
@@ -79,6 +83,12 @@ class AttachmentController extends BaseController
         ]);
     }
 
+    /**
+     * 保存及显示远程设置
+     *
+     * @return \Illuminate\Http\JsonResponse|void
+     * @throws \app\common\exceptions\AppException
+     */
     public function remote()
     {
         $alioss = request()->alioss;
@@ -106,6 +116,15 @@ class AttachmentController extends BaseController
         return $this->successJson('成功', $this->remote);
     }
 
+    /**
+     * 验证数据
+     *
+     * @param array $rules
+     * @param \Request|null $request
+     * @param array $messages
+     * @param array $customAttributes
+     * @return \Illuminate\Http\JsonResponse|void
+     */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
         if (!isset($request)) {
@@ -118,6 +137,12 @@ class AttachmentController extends BaseController
         }
     }
 
+    /**
+     * 配置验证规则
+     *
+     * @param $param
+     * @return array
+     */
     public function rules($param)
     {
         $rules = [];
@@ -147,6 +172,11 @@ class AttachmentController extends BaseController
         return $rules;
     }
 
+    /**
+     * 自定义错误信息
+     *
+     * @return array
+     */
     public function message()
     {
         return [
@@ -163,6 +193,11 @@ class AttachmentController extends BaseController
         ];
     }
 
+    /**
+     * 阿里云搜索 bucket
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function bucket()
     {
         $key = request()->key;
@@ -184,6 +219,11 @@ class AttachmentController extends BaseController
         return $this->successJson('成功', $bucket);
     }
 
+    /**
+     * 测试阿里云配置是否成功
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function oss()
     {
         $alioss = request()->alioss;
@@ -222,6 +262,11 @@ class AttachmentController extends BaseController
         }
     }
 
+    /**
+     * 测试腾讯云配置是否成功
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function cos()
     {
         $cos = request()->cos;
