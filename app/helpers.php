@@ -2014,3 +2014,27 @@ if (!function_exists('attachment_alioss_datacenters')) {
         return $bucket_datacenter;
     }
 }
+
+if (!function_exists('attachment_newalioss_auth')) {
+    function attachment_newalioss_auth($key, $secret, $bucket, $internal = false)
+    {
+        $buckets = attachment_alioss_buctkets($key, $secret);
+        $host = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
+        $url = 'http://' . $buckets[$bucket]['location'] . $host;
+        $filename = 'MicroEngine.ico';
+        try {
+            $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/images/global/' . $filename);
+        } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+            return error(1, $e->getMessage());
+        }
+        return 1;
+    }
+}
+
+if (!function_exists('getimagesizefromstring')) {
+    function getimagesizefromstring($string_data) {
+        $uri = 'data://application/octet-stream;base64,'  . base64_encode($string_data);
+        return getimagesize($uri);
+    }
+}
