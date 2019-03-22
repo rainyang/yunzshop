@@ -8,6 +8,7 @@
 namespace app\common\modules\wechat\models;
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RuleKeyword extends BaseModel
 {
@@ -66,7 +67,7 @@ class RuleKeyword extends BaseModel
         return $this->hasOne(Rule::class,'id','rid')->select('id','name');
     }
 
-    // 通过id获取模型对象
+    // 获取所有关键字
     public static function getRuleKeywords()
     {
         return static::uniacid()->get();
@@ -88,37 +89,6 @@ class RuleKeyword extends BaseModel
     public static function getRuleKeywordIdsByRid($rid)
     {
         return static::select('id')->uniacid()->where('rid',$rid)->get();
-    }
-
-    // 通过id删除对象
-    public static function deleteRuleKeywordById($id)
-    {
-        $keyword = static::getRuleKeywordById($id);
-        if ($keyword) {
-            if ($keyword->delete()) {
-                return ['status'=>1,'message'=>'删除成功!','data'=>[]];
-            } else {
-                return ['status'=>0,'message'=>'关键字'.$keyword->id.'删除失败!','data'=>[]];
-            }
-        }
-        return ['status'=>0,'message'=>'关键字'.$id.'不存在,删除失败!','data'=>[]];
-    }
-
-    // 保存和修改
-    public static function saveRuleKeyword($form)
-    {
-        $keyword = new self();
-        // 填充
-        $keyword->fill($form);
-        // 验证数据
-        $validate = $keyword->validator();
-        if ($validate->fails()) {
-            return ['status' => 0, 'message' => $validate->messages(), 'data' => []];
-        }
-        if ($keyword->save()) {
-            return ['status' => 1, 'message' => '关键字保存成功!', 'data' => []];
-        }
-        return ['status' => 0, 'message' => '关键字保存失败!', 'data' => []];
     }
 
     // 通过关键字获取规则

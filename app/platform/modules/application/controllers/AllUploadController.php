@@ -13,7 +13,7 @@ use app\platform\modules\application\models\CoreAttach;
 // use app\common\services\qcloud\Api;
 use app\common\services\qcloud\Api;
 use app\common\services\aliyunoss\OssClient;
-use app\common\services\aliyunoss\Core\OssException;
+use app\common\services\aliyunoss\OSS\Core\OssException;
 use app\common\services\ImageZip;
 
 
@@ -253,6 +253,7 @@ class AllUploadController extends BaseController
             'region'     => $setting['url']
         ];
         $cos = new Api($config);
+        \Log::info('cos_config', [$config, $cos]);
 
         $originalName = $file->getClientOriginalName(); // 文件原名
 
@@ -288,50 +289,57 @@ class AllUploadController extends BaseController
             return '请配置参数';
         }
 
-        $o = explode('.', $setting['bucket']); 
+        // $o = explode('.', $setting['bucket']); 
         
-        if (!$o ) {
-            return '请检查参数';
-        }
+        // if (!$o ) {
+        //     return '请检查参数';
+        // }
 
-        $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3];
+        // $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3];
+
+            \Log::info('oss_upload_config:', [$o,$setting['key'], $setting['secret'], $setting['bucket'], $setting['ossurl']]);
 
         try{
-            $oss = new OssClient($setting['key'], $setting['secret'], $setting['endpoint']);
+            $oss = new OssClient($setting['key'], $setting['secret'], $setting['ossurl']);
         
         } catch(OssException $e) {
             return $e->getMessage();
         }
-        
+            
+
         $lists = $oss->listBuckets();
+            
+            \Log::info('oss_upload_bucket_lists', $lists);
 
         foreach ($lists as $k => $v) {
             
-            if ($v['name'] != $setting['bucket'] || $v['location'] != $setting['endpoint']) {
+            if ($v['name'] != $setting['bucket'] || $v['location'] != $setting['ossurl']) {
                 return '数据错误,请检查参数';
             }
         }
         //检查bucket中的域名
         $bucketInfo =  $oss->getBucketMeta($setting['bucket']);
-        
+            
         $bu = explode('.', $bucketInfo['info']['url']);
     
-            \Log::info('oss_upload_check_endpoint:', $bu);
+            \Log::info('oss_upload_bucketInfo_and check_ossurl:', [$bucketInfo, $bu]);
         
-        if ($setting['endpoint'].'/' !== $bu[1].'.'.$bu[2].'.'.$bu[3]) {
-            return 'endpoint 数据错误';
+        if ($setting['ossurl'].'/' !== $bu[1].'.'.$bu[2].'.'.$bu[3]) {
+            return 'ossurl 数据错误';
         }
         unset($bucketInfo, $bu);
 
         if ($setting['internal'] == 1) {
             //使用内网上传时
-            $data = explode('.', $setting['endpoint']); //获取endpoint_internal
+            $data = explode('.', $setting['ossurl']); //获取ossurl_internal
             
             $one = $data[0].'-internal';
             
             $domain = $one.'.'.$data[1].'.'.$data[2]; //拼接内网地址
 
-            $oss = new OssClient($setting['key'], $setting['secret'], $domain, $setting['endpoint']);
+            $oss = new OssClient($setting['key'], $setting['secret'], $domain, $setting['ossurl']);
+
+            \Log::info('oss_domain', [$domain, $oss_internal]);
         } 
 
         $originalName = $file->getClientOriginalName(); // 文件原名
@@ -353,7 +361,7 @@ class AllUploadController extends BaseController
 
         if ($setting['internal'] != 1) {
             //使用外网上传 域名为
-            $domain = $setting['url'] ?  : $setting['endpoint'];
+            $domain = $setting['url'] ?  : $setting['ossurl'];
         }
 
         $res = $oss->putObject($setting['bucket'], $object, file_get_contents($content));
