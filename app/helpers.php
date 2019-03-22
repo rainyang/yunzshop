@@ -932,35 +932,6 @@ if (!function_exists('debug_log')) {
     }
 }
 
-if (!function_exists('getIp')) {
-    /**
-     * 获取登录的 ip 地址
-     * @return string
-     */
-    function getIp()
-    {
-        static $ip = '';
-        $ip = $_SERVER['REMOTE_ADDR'];
-        if (isset($_SERVER['HTTP_CDN_SRC_IP'])) {
-            $ip = $_SERVER['HTTP_CDN_SRC_IP'];
-        } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
-            foreach ($matches[0] AS $xip) {
-                if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
-                    $ip = $xip;
-                    break;
-                }
-            }
-        }
-        if (preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $ip)) {
-            return $ip;
-        } else {
-            return '127.0.0.1';
-        }
-    }
-}
-
 if (!function_exists('randNum')) {
     /**
      * 获取随机字符串
@@ -1023,18 +994,6 @@ if (!function_exists('is_error')) {
         } else {
             return true;
         }
-    }
-}
-
-if (!function_exists('mkdirs')) {
-    function mkdirs($path)
-    {
-        if (!is_dir($path)) {
-            mkdirs(dirname($path));
-            mkdir($path);
-        }
-
-        return is_dir($path);
     }
 }
 
@@ -1131,7 +1090,7 @@ if (!function_exists('file_image_thumb')) {
 
         $des = dirname($desfile);
         if (!file_exists($des)) {
-            if (!mkdirs($des)) {
+            if (!\app\common\services\Utils::mkdirs($des)) {
                 return 1;
             }
         } elseif (!is_writable($des)) {
@@ -1358,7 +1317,7 @@ if (!function_exists('safe_remove_xss')) {
 if (!function_exists('file_move')) {
     function file_move($filename, $dest)
     {
-        mkdirs(dirname($dest));
+        \app\common\services\Utils::mkdirs(dirname($dest));
         if (is_uploaded_file($filename)) {
             move_uploaded_file($filename, $dest);
         } else {

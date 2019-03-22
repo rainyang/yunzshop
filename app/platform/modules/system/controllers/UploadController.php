@@ -12,6 +12,7 @@ use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
 use app\platform\modules\application\models\WechatAttachment;
+use app\common\services\Utils;
 
 class UploadController extends BaseController
 {
@@ -96,11 +97,11 @@ class UploadController extends BaseController
         $result = array();
         if (!$name || $name == 'auto') {
             $path = "static/upload/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
-            mkdirs(base_path() . '/' . $path);
+            Utils::mkdirs(base_path() . '/' . $path);
             $filename = file_random_name(base_path() . '/' . $path, $ext);
             $result['path'] = $path . $filename;
         } else {
-            mkdirs(dirname(base_path() . '/' . $name));
+            Utils::mkdirs(dirname(base_path() . '/' . $name));
             if (!strexists($name, $ext)) {
                 $name .= '.' . $ext;
             }

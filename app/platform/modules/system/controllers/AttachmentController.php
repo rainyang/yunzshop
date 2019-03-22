@@ -13,7 +13,6 @@ use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\Attachment;
 use app\platform\modules\system\models\SystemSetting;
 
-
 class AttachmentController extends BaseController
 {
     public function globals()
