@@ -169,6 +169,7 @@ class AttachmentController extends BaseController
         $bucket = array();
         foreach ($buckets as $key => $value) {
             $value['loca_name'] = $key. '@@'. $bucket_datacenter[$value['location']];
+            $value['value'] = $key. '@@'. $value['location'];
             $bucket[] = $value;
         }
 
