@@ -15,6 +15,15 @@ use app\platform\modules\system\models\SystemSetting;
 
 class AttachmentController extends BaseController
 {
+    public $remote;
+
+    public function __construct()
+    {
+
+        $this->remote = SystemSetting::settingLoad('remote', 'system_remote');
+
+    }
+
     public function globals()
     {
         $post_max_size = ini_get('post_max_size');
@@ -72,7 +81,6 @@ class AttachmentController extends BaseController
 
     public function remote()
     {
-        $remote = SystemSetting::settingLoad('remote', 'system_remote');
         $alioss = request()->alioss;
         $cos = request()->cos;
 
@@ -86,7 +94,7 @@ class AttachmentController extends BaseController
                 return $validate;
             }
 
-            $attach = Attachment::saveRemote($alioss, $cos, $remote);
+            $attach = Attachment::saveRemote($alioss, $cos, $this->remote);
 
             if ($attach['result']) {
                 return $this->successJson('成功');
@@ -95,7 +103,7 @@ class AttachmentController extends BaseController
             }
         }
 
-        return $this->successJson('成功', $remote);
+        return $this->successJson('成功', $this->remote);
     }
 
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
@@ -174,5 +182,75 @@ class AttachmentController extends BaseController
         }
 
         return $this->successJson('成功', $bucket);
+    }
+
+    public function oss()
+    {
+        $alioss = request()->alioss;
+        $secret = strexists($alioss['secret'], '*') ? $this->remote['alioss']['secret'] : $alioss['secret'];
+        $buckets = attachment_alioss_buctkets($alioss['key'], $secret);
+        list($bucket, $url) = explode('@@', $alioss['bucket']);
+
+        $result = attachment_newalioss_auth($alioss['key'], $secret, $bucket, $alioss['internal']);
+        if (is_error($result)) {
+            return $this->error('OSS-Access Key ID 或 OSS-Access Key Secret错误，请重新填写');
+        }
+        $ossurl = $buckets[$bucket]['location'].'.aliyuncs.com';
+        if ($alioss['url']) {
+            if (!strexists($alioss['url'], 'http://') && !strexists($alioss['url'],'https://')) {
+                $url = 'http://'. trim($alioss['url']);
+            } else {
+                $url = trim($alioss['url']);
+            }
+            $url = trim($url, '/').'/';
+        } else {
+            $url = 'http://'.$bucket.'.'.$buckets[$bucket]['location'].'.aliyuncs.com/';
+        }
+        $filename = 'MicroEngine.ico';
+        $response = ihttp_request($url. '/'.$filename, array(), array('CURLOPT_REFERER' => $_SERVER['SERVER_NAME']));
+        if (is_error($response)) {
+            return $this->errorJson('配置失败，阿里云访问url错误');
+        }
+        if (intval($response['code']) != 200) {
+            return $this->errorJson('配置失败，阿里云访问url错误,请保证bucket为公共读取的');
+        }
+        $image = getimagesizefromstring($response['content']);
+        if ($image && strexists($image['mime'], 'image')) {
+            return $this->successJson('配置成功');
+        } else {
+            return $this->errorJson('配置失败，阿里云访问url错误');
+        }
+    }
+
+    public function cos()
+    {
+        $cos = request()->cos;
+
+        $secretkey = strexists($cos['secretkey'], '*') ? $this->remote['cos']['secretkey'] : trim($cos['secretkey']);
+        $bucket =  str_replace("-{$cos['appid']}", '', trim($cos['bucket']));
+
+        if (!$cos['url']) {
+            $cos['url'] = sprintf('https://%s-%s.cos%s.myqcloud.com', $bucket, $cos['appid'], $cos['local']);
+        }
+        $cos['url'] = rtrim($cos['url'], '/');
+        $auth= attachment_cos_auth($bucket, $cos['appid'], $cos['secretid'], $secretkey, $cos['local']);
+
+        if (is_error($auth)) {
+            return $this->errorJson('配置失败，请检查配置' . $auth['message']);
+        }
+        $filename = 'MicroEngine.ico';
+        $response = ihttp_request($cos['url']. '/'.$filename, array(), array('CURLOPT_REFERER' => $_SERVER['SERVER_NAME']));
+        if (is_error($response)) {
+            return $this->errorJson('配置失败，腾讯cos访问url错误');
+        }
+        if (intval($response['code']) != 200) {
+            return $this->errorJson('配置失败，腾讯cos访问url错误,请保证bucket为公共读取的');
+        }
+        $image = getimagesizefromstring($response['content']);
+        if ($image && strexists($image['mime'], 'image')) {
+            return $this->successJson('配置成功');
+        } else {
+            return $this->errorJson('配置失败，腾讯cos访问url错误');
+        }
     }
 }
