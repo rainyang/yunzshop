@@ -1961,6 +1961,47 @@ if (!function_exists('attachment_cos_auth')) {
             }
             return error(-1, $message);
         }
+    }
+}
+
+if (!function_exists('file_tree')) {
+    function file_tree($path, $include = array()) {
+        $files = array();
+        if (!empty($include)) {
+            $ds = glob($path . '/{' . implode(',', $include) . '}', GLOB_BRACE);
+        } else {
+            $ds = glob($path . '/*');
+        }
+        if (is_array($ds)) {
+            foreach ($ds as $entry) {
+                if (is_file($entry)) {
+                    $files[] = $entry;
+                }
+                if (is_dir($entry)) {
+                    $rs = file_tree($entry);
+                    foreach ($rs as $f) {
+                        $files[] = $f;
+                    }
+                }
+            }
+        }
+
+        return $files;
+    }
+}
+
+if (!function_exists('file_delete')) {
+    function file_delete($file) {
+        if (empty($file)) {
+            return false;
+        }
+        if (file_exists($file)) {
+            @unlink($file);
+        }
+        if (file_exists(base_path() . '/' . $file)) {
+            @unlink(base_path() . '/' . $file);
+        }
+
         return true;
     }
 }

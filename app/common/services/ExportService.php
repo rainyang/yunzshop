@@ -73,28 +73,27 @@ class ExportService
         $this->export_data = $export_data;
         $this->swith();
         if ($this->export_page == $this->page_count) {
-            load()->func('file');
-            $filename = IA_ROOT . "/addons/yun_shop/storage/logs/". time() . "down.zip";
+            $filename = storage_path('logs/' . time() . 'down.zip');
             $time = time();
             $zip = new \ZipArchive(); // 使用本类，linux需开启zlib，windows需取消php_zip.dll前的注释
             if ($zip->open ( $filename, \ZipArchive::CREATE ) !== TRUE) {
                 exit ( '无法打开文件，或者文件创建失败' );
             }
             //$fileNameArr 就是一个存储文件路径的数组 比如 array('/a/1.jpg,/a/2.jpg....');
-            $fileNameArr = file_tree(IA_ROOT . "/addons/yun_shop/storage/exports");
+            $fileNameArr = file_tree(storage_path('exports'));
             foreach ($fileNameArr as $val ) {
                 // 当你使用addFile添加到zip包时，必须确保你添加的文件是存在的，否则close时会返回FALSE，而且使用addFile时，即使文件不存在也会返回TRUE
-                if(file_exists(IA_ROOT . "/addons/yun_shop/storage/exports/" . basename($val))){
-                    $zip->addFile (IA_ROOT . "/addons/yun_shop/storage/exports/" . basename($val), basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                if(file_exists(storage_path('exports/' . basename($val)))){
+                    $zip->addFile (storage_path('exports/') . basename($val), basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
                 }
             }
 
             $zip->close (); // 关闭
             foreach ($fileNameArr as $val ) {
-                file_delete(IA_ROOT . "/addons/yun_shop/storage/exports/" . basename($val));
+                file_delete(storage_path('exports/' . basename($val)));
             }
             //下面是输出下载;
-            $url = "http://". $_SERVER['SERVER_NAME']."/addons/yun_shop/storage/logs/".$time ."down.zip";
+            $url = "http://". $_SERVER['SERVER_NAME']. storage_path('logs/') . $time ."down.zip";
             $backurl = "http://". $_SERVER['SERVER_NAME']. \config('app.isWeb') . "?c=site&a=entry&m=yun_shop&do=4302&route=" . $route;
             echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;"><a style="color:red;text-decorationnone;"  href="'.$url.'">点击获取下载文件</a><a style="color:#616161"  href="'.$backurl.'">返回</a><div>';
             exit;

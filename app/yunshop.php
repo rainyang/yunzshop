@@ -189,8 +189,13 @@ class YunShop
      */
     public static function isWechatApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
-            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return (strpos($_SERVER['REQUEST_URI'], '/wechat') !== false &&
+                strpos($_SERVER['REQUEST_URI'], '/api') !== false) ? true : false;
+        } else {
+            return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+                strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        }
     }
 
     /**
