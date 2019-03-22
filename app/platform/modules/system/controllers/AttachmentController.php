@@ -29,7 +29,7 @@ class AttachmentController extends BaseController
             if ($validate) {
                 return $validate;
             }
-            $attach = Attachment::saveGlobal($set_data);
+            $attach = Attachment::saveGlobal($set_data, $post_max_size);
 
             if ($attach['result']) {
                 return $this->successJson('成功');
