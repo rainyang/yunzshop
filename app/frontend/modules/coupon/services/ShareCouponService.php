@@ -13,6 +13,8 @@ use app\common\exceptions\ShopException;
 use app\common\models\Coupon;
 use app\common\models\coupon\ShoppingShareCouponLog;
 use app\common\models\MemberCoupon;
+use app\frontend\modules\coupon\models\ShoppingShareCoupon;
+use app\frontend\models\Member;
 
 class ShareCouponService
 {
@@ -122,5 +124,39 @@ class ShareCouponService
             'msg' => $error,
             'data' => $data,
         ];
+    }
+
+
+    /**
+     * 支付是否显示分享页
+     * @param array|string $order_ids
+     * @return bool
+     */
+    public static function showIndex($order_ids)
+    {
+        if (!is_array($order_ids)) {
+            $order_ids = explode(',', rtrim($order_ids, ','));
+        }
+
+        $share_model = ShoppingShareCoupon::whereIn('order_id', $order_ids)->get();
+        $member = Member::with(['yzMember'])->find(\YunShop::app()->getMemberId());
+
+        if ($share_model->isEmpty() || (!$member)) {
+            return false;
+        }
+
+
+
+        $set = \Setting::get('coupon.shopping_share');
+
+        //拥有推广资格的会员才可以分享
+        if ($set['share_limit'] == 1) {
+            if (!$member->yzMember->is_agent) {
+                return false;
+            }
+        }
+
+
+        return true;
     }
 }
