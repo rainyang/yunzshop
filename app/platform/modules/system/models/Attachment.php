@@ -13,6 +13,13 @@ use app\common\models\BaseModel;
 
 class Attachment extends BaseModel
 {
+    /**
+     * 保存全局设置的数据
+     *
+     * @param $set_data
+     * @param $post_max_size
+     * @return array
+     */
     public static function saveGlobal($set_data, $post_max_size)
     {
         $set_data['thumb_width'] = intval(trim($set_data['thumb_width']));
@@ -37,6 +44,12 @@ class Attachment extends BaseModel
         return SystemSetting::settingSave($set_data, 'global', 'system_global') ? ['result' => 1] : ['msg' => '失败'];
     }
 
+    /**
+     * 检测后缀名是否合适
+     *
+     * @param $extentions
+     * @return array
+     */
     public static function check_ext($extentions)
     {
         $harmtype = array('asp', 'php', 'jsp', 'js', 'css', 'php3', 'php4', 'php5', 'ashx', 'aspx', 'exe', 'cgi');
@@ -52,6 +65,14 @@ class Attachment extends BaseModel
         return $extentions;
     }
 
+    /**
+     * 保存远程设置的数据
+     *
+     * @param $alioss
+     * @param $cos
+     * @param $remote
+     * @return array
+     */
     public static function saveRemote($alioss, $cos, $remote)
     {
         $remotes = array(
