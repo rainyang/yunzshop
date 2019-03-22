@@ -13,9 +13,9 @@ use app\common\models\BaseModel;
 
 class Attachment extends BaseModel
 {
-    public static function saveGlobal($data, $post_max_size)
+    public static function saveGlobal($set_data, $post_max_size)
     {
-        $set_data['thumb_width'] = intval(trim($data['width']));
+        $set_data['thumb_width'] = intval(trim($set_data['thumb_width']));
         if ($set_data['thumb'] && !$set_data['thumb_width']) {
             return ['msg' => '请设置图片缩略宽度'];
         }
