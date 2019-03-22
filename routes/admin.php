@@ -42,7 +42,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 站点设置
         Route::any('site', 'SiteController@index');
         // 附件设置-全局设置
-        Route::any('attachment', 'AttachmentController@index');
+        Route::any('globals', 'AttachmentController@globals');
+        // 附件设置-远程设置
+        Route::any('remote', 'AttachmentController@remote');
         // 系统升级
         Route::any('update/index', 'UpdateController@index');
         // 检查更新
