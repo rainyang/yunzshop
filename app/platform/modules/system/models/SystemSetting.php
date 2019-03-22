@@ -56,12 +56,12 @@ class SystemSetting extends BaseModel
      */
     public static function settingLoad($key = '', $cache_name = '')
     {
-        if (!Cache::has($cache_name)) {
+        // if (!Cache::has($cache_name)) {
             $result = self::getKeyList($key);
-            Cache::put($cache_name, $result, 3600);
-        } else {
-            $result = Cache::get($cache_name);
-        }
+            // Cache::put($cache_name, $result, 3600);
+        // } else {
+            // $result = Cache::get($cache_name);
+        // }
 
         if ($result) {
             $result = unserialize($result['value']);
