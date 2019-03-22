@@ -9,12 +9,11 @@
 namespace app\platform\modules\user\models;
 
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use app\platform\controllers\BaseController;
-use app\common\helpers\Cache;
-use Illuminate\Support\Facades\Hash;
 use app\common\events\UserActionEvent;
+use app\common\services\Utils;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUser extends Authenticatable
 {
@@ -144,8 +143,8 @@ class AdminUser extends Authenticatable
         }
         unset($data['avatar']);
         $data['lastvisit'] =time();
-        $data['lastip'] = getIp();
-        $data['joinip'] = getIp();
+        $data['lastip'] = Utils::getClientIp();
+        $data['joinip'] = Utils::getClientIp();
         $data['salt'] = self::randNum(8);
 
         if (!$user_model) {

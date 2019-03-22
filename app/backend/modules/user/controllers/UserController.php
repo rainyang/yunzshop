@@ -15,6 +15,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\user\User;
 use app\common\models\user\YzRole;
+use app\common\services\Utils;
 
 class UserController extends BaseController
 {
@@ -168,8 +169,8 @@ class UserController extends BaseController
     {
         if (env('APP_Framework') == 'platform') {
             $data['lastvisit'] = time();
-            $data['lastip'] = getIp();
-            $data['joinip'] = getIp();
+            $data['lastip'] = Utils::getClientIp();
+            $data['joinip'] = Utils::getClientIp();
             $data['salt'] = randNum(8);
         } else {
             $data['joindate'] = $data['lastvisit'] = $data['starttime'] = time();
