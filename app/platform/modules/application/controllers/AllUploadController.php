@@ -80,6 +80,8 @@ class AllUploadController extends BaseController
             return false;
         }
         $setting = SystemSetting::settingLoad('global', 'system_global');
+
+        $remote = SystemSetting::settingLoad('remote', 'system_remote');
         //文件大小是否大于所设置的文件最大值
        
         //文件上传最大执行时间
@@ -124,7 +126,7 @@ class AllUploadController extends BaseController
                     return '非规定类型的文件格式';
                 }
 
-                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] : 1024*1024*5; //默认大小为5M
+                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] * 1024 : 1024*1024*5; //默认大小为5M
 
                 if ($file->getClientSize() > $defaultImgSize) {
                     return '文件大小超出规定值';
@@ -139,7 +141,7 @@ class AllUploadController extends BaseController
                 if ($setting['audio_extentions'] && !in_array($ext, $img_type) ) {
                     return '非规定类型的文件格式';
                 }
-                $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] : 1024*1024*30; //音视频最大 30M
+                $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] * 1024 : 1024*1024*30; //音视频最大 30M
 
                 if ($file->getClientSize() > $defaultAudioSize) {
                     return '文件大小超出规定值';
@@ -150,14 +152,14 @@ class AllUploadController extends BaseController
             $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
         }
 
-        if ($setting['type'] == 2) {
+        if ($remote['type'] == 2) {
             //阿里OSS
-            $res = $this->OssUpload($file, $setting, $file_type);
+            $res = $this->OssUpload($file, $remote['alioss'], $file_type);
         }
 
-        if ($setting['type'] == 4) {
+        if ($remote['type'] == 4) {
             //腾讯cos
-            $res = $this->CosUpload($file, $setting, $file_type);
+            $res = $this->CosUpload($file, $remote['cos'], $file_type);
         }
 
         return $res;
