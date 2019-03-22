@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 附件设置-全局设置
         Route::any('globals', 'AttachmentController@globals');
         // 附件设置-远程设置
-        Route::any('remote', 'AttachmentController@remote');
+        Route::post('remote', 'AttachmentController@remote');
         // 附件设置-远程设置-阿里云搜索bucket
         Route::post('bucket', 'AttachmentController@bucket');
         // 附件设置-远程设置-测试阿里云配置
@@ -71,19 +71,19 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::any('index', 'AdminUserController@index');
+        Route::get('index', 'AdminUserController@index');
         // 添加用户
         Route::any('create', 'AdminUserController@create');
         // 用户编辑
         Route::any('edit', 'AdminUserController@edit');
         // 用户修改状态
-        Route::any('status', 'AdminUserController@status');
+        Route::post('status', 'AdminUserController@status');
         // 用户修改密码
-        Route::any('change', 'AdminUserController@change');
+        Route::post('change', 'AdminUserController@change');
         // 平台列表
-        Route::any('app_list', 'AdminUserController@applicationList');
+        Route::get('app_list', 'AdminUserController@applicationList');
         // 店员用户列表
-        Route::any('clerk_list', 'AdminUserController@clerkList');
+        Route::get('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
