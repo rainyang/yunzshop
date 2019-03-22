@@ -139,6 +139,24 @@ class AttachmentController extends BaseController
         return $rules;
     }
 
+    public function sms()
+    {
+        $sms = SystemSetting::settingLoad('sms');
+
+        if (request()->input()) {
+            $data = request()->input()['sms'];
+
+            if ($requestModel) {
+                if (SystemSetting::settingSave($data, 'sms', 'system_sms')) {
+                    return $this->successJson('短信设置成功');
+                } else {
+                    return $this->errorJson('短信设置失败');
+                }
+            }
+        }
+        return View('system.attachment', $sms);
+    }
+
     public function message()
     {
         return [

@@ -8,6 +8,12 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
     Route::post('register', 'RegisterController@register');
 
+    Route::any('changePwd', 'ResetpwdController@changePwd'); //修改密码
+    Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
+    Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
+
+
+
     Route::get('/', 'IndexController@index');
 });
 
@@ -45,6 +51,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('globals', 'AttachmentController@globals');
         // 附件设置-远程设置
         Route::any('remote', 'AttachmentController@remote');
+         // 附件设置-远程设置
+        Route::any('sms', 'AttachmentController@sms');
         // 系统升级
         Route::any('update/index', 'UpdateController@index');
         // 检查更新
@@ -101,7 +109,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('all/list/', 'AllUploadController@getLocalList');
 
 		// Route::post('application/upload/', 'ApplicationController@upload');
-		Route::any('application/temp/', 'ApplicationController@temp');
+		Route::any('app/temp/', 'ApplicationController@temp');
         Route::any('application/test/', 'ApplicationController@upload');
         
         Route::any('all/test/', 'AllUploadController@ossTest');
