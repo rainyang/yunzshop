@@ -253,6 +253,7 @@ class AllUploadController extends BaseController
             'region'     => $setting['url']
         ];
         $cos = new Api($config);
+        \Log::info('cos_config', [$config, $cos]);
 
         $originalName = $file->getClientOriginalName(); // 文件原名
 
@@ -296,14 +297,19 @@ class AllUploadController extends BaseController
 
         $setting['endpoint'] = $o[1].'.'.$o[2].'.'.$o[3];
 
+            \Log::info('oss_upload_config:', [$o,$setting['key'], $setting['secret'], $setting['bucket'], $setting['endpoint']]);
+
         try{
             $oss = new OssClient($setting['key'], $setting['secret'], $setting['endpoint']);
         
         } catch(OssException $e) {
             return $e->getMessage();
         }
-        
+            
+
         $lists = $oss->listBuckets();
+            
+            \Log::info('oss_upload_bucket_lists', $lists);
 
         foreach ($lists as $k => $v) {
             
@@ -313,10 +319,10 @@ class AllUploadController extends BaseController
         }
         //检查bucket中的域名
         $bucketInfo =  $oss->getBucketMeta($setting['bucket']);
-        
+            
         $bu = explode('.', $bucketInfo['info']['url']);
     
-            \Log::info('oss_upload_check_endpoint:', $bu);
+            \Log::info('oss_upload_bucketInfo_and check_endpoint:', [$bucketInfo, $bu]);
         
         if ($setting['endpoint'].'/' !== $bu[1].'.'.$bu[2].'.'.$bu[3]) {
             return 'endpoint 数据错误';
@@ -332,6 +338,8 @@ class AllUploadController extends BaseController
             $domain = $one.'.'.$data[1].'.'.$data[2]; //拼接内网地址
 
             $oss = new OssClient($setting['key'], $setting['secret'], $domain, $setting['endpoint']);
+
+            \Log::info('oss_domain', [$domain, $oss_internal]);
         } 
 
         $originalName = $file->getClientOriginalName(); // 文件原名
