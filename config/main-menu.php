@@ -760,6 +760,17 @@ return [
                         'item'              => 'coupon_coupon_log',
                         'parents'           => ['Goods', 'coupon',],
                     ],
+                    'share_coupon_log' => [
+                        'name'              => '分享领取记录',
+                        'url'               => 'coupon.share-coupon.log',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-pencil',
+                        'sort'              => '3',
+                        'item'              => 'share_coupon_log',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
                 ],
             ],
 
