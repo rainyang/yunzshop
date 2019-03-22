@@ -932,35 +932,6 @@ if (!function_exists('debug_log')) {
     }
 }
 
-if (!function_exists('getIp')) {
-    /**
-     * 获取登录的 ip 地址
-     * @return string
-     */
-    function getIp()
-    {
-        static $ip = '';
-        $ip = $_SERVER['REMOTE_ADDR'];
-        if (isset($_SERVER['HTTP_CDN_SRC_IP'])) {
-            $ip = $_SERVER['HTTP_CDN_SRC_IP'];
-        } elseif (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && preg_match_all('#\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}#s', $_SERVER['HTTP_X_FORWARDED_FOR'], $matches)) {
-            foreach ($matches[0] AS $xip) {
-                if (!preg_match('#^(10|172\.16|192\.168)\.#', $xip)) {
-                    $ip = $xip;
-                    break;
-                }
-            }
-        }
-        if (preg_match('/^([0-9]{1,3}\.){3}[0-9]{1,3}$/', $ip)) {
-            return $ip;
-        } else {
-            return '127.0.0.1';
-        }
-    }
-}
-
 if (!function_exists('randNum')) {
     /**
      * 获取随机字符串
@@ -1023,18 +994,6 @@ if (!function_exists('is_error')) {
         } else {
             return true;
         }
-    }
-}
-
-if (!function_exists('mkdirs')) {
-    function mkdirs($path)
-    {
-        if (!is_dir($path)) {
-            mkdirs(dirname($path));
-            mkdir($path);
-        }
-
-        return is_dir($path);
     }
 }
 
@@ -1131,7 +1090,7 @@ if (!function_exists('file_image_thumb')) {
 
         $des = dirname($desfile);
         if (!file_exists($des)) {
-            if (!mkdirs($des)) {
+            if (!\app\common\services\Utils::mkdirs($des)) {
                 return 1;
             }
         } elseif (!is_writable($des)) {
@@ -1228,21 +1187,25 @@ if (!function_exists('attachment_alioss_buctkets')) {
     function attachment_alioss_buctkets($key, $secret)
     {
         $url = 'http://oss-cn-beijing.aliyuncs.com';
+
         try {
-            $ossClient = new \OSS\OssClient($key, $secret, $url);
-        } catch(\OSS\Core\OssException $e) {
-            return $this->error(1, $e->getMessage());
+            $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
+        } catch(\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+            return error(1, $e->getMessage());
         }
+
         try {
             $bucketlistinfo = $ossClient->listBuckets();
-        } catch(\OSS\Core\OssException $e) {
-            return $this->error(1, $e->getMessage());
+        } catch(\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+            return error(1, $e->getMessage());
         }
+
         $bucketlistinfo = $bucketlistinfo->getBucketList();
         $bucketlist = array();
         foreach ($bucketlistinfo as &$bucket) {
             $bucketlist[$bucket->getName()] = array('name' => $bucket->getName(), 'location' => $bucket->getLocation());
         }
+
         return $bucketlist;
     }
 }
@@ -1354,7 +1317,7 @@ if (!function_exists('safe_remove_xss')) {
 if (!function_exists('file_move')) {
     function file_move($filename, $dest)
     {
-        mkdirs(dirname($dest));
+        \app\common\services\Utils::mkdirs(dirname($dest));
         if (is_uploaded_file($filename)) {
             move_uploaded_file($filename, $dest);
         } else {
@@ -1893,6 +1856,75 @@ if (!function_exists('ihttp_allow_host')) {
     }
 }
 
+if (!function_exists('attachment_cos_auth')) {
+    function attachment_cos_auth($bucket, $appid, $key, $secret, $bucket_local = '')
+    {
+        if (!is_numeric($appid)) {
+            return error(-1, '传入appid值不合法, 请重新输入');
+        }
+        if (!preg_match('/^[a-zA-Z0-9]{36}$/', $key)) {
+            return error(-1, '传入secretid值不合法，请重新传入');
+        }
+        if (!preg_match('/^[a-zA-Z0-9]{32}$/', $secret)) {
+            return error(-1, '传入secretkey值不合法，请重新传入');
+        }
+        if ($bucket_local) {
+            $con = $original = @file_get_contents(base_path() . '/app/common/services/qcloud/Conf.php');
+            if (!$con) {
+                $conf_content = base64_decode("PD9waHANCg0KbmFtZXNwYWNlIHFjbG91ZGNvczsNCg0KY2xhc3MgQ29uZiB7DQogICAgLy8gQ29zIHBocCBzZGsgdmVyc2lvbiBudW1iZXIuDQogICAgY29uc3QgVkVSU0lPTiA9ICd2NC4yLjInOw0KICAgIGNvbnN0IEFQSV9DT1NBUElfRU5EX1BPSU5UID0gJ2h0dHA6Ly9yZWdpb24uZmlsZS5teXFjbG91ZC5jb20vZmlsZXMvdjIvJzsNCg0KICAgIC8vIFBsZWFzZSByZWZlciB0byBodHRwOi8vY29uc29sZS5xY2xvdWQuY29tL2NvcyB0byBmZXRjaCB5b3VyIGFwcF9pZCwgc2VjcmV0X2lkIGFuZCBzZWNyZXRfa2V5Lg0KICAgIGNvbnN0IEFQUF9JRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9JRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9LRVkgPSAnJzsNCg0KICAgIC8qKg0KICAgICAqIEdldCB0aGUgVXNlci1BZ2VudCBzdHJpbmcgdG8gc2VuZCB0byBDT1Mgc2VydmVyLg0KICAgICAqLw0KICAgIHB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gZ2V0VXNlckFnZW50KCkgew0KICAgICAgICByZXR1cm4gJ2Nvcy1waHAtc2RrLScgLiBzZWxmOjpWRVJTSU9OOw0KICAgIH0NCn0NCg==");
+                file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $conf_content);
+                $con = $original = $conf_content;
+            }
+            $con = preg_replace('/const[\s]APP_ID[\s]=[\s]\'.*\';/', 'const APP_ID = \'' . $appid . '\';', $con);
+            $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
+            $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
+            file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
+            app\common\services\qcloudcos\Cosapi:: setRegion($bucket_local);
+            app\common\services\qcloudcos\Cosapi:: setTimeout(180);
+            $uploadRet = app\common\services\qcloudcos\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+        } else {
+            $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
+            if (!$con) {
+                $conf_content = base64_decode("PD9waHANCm5hbWVzcGFjZSBRY2xvdWRfY29zOw0KDQpjbGFzcyBDb25mDQp7DQogICAgY29uc3QgUEtHX1ZFUlNJT04gPSAndjMuMyc7DQoNCiAgICBjb25zdCBBUElfSU1BR0VfRU5EX1BPSU5UID0gJ2h0dHA6Ly93ZWIuaW1hZ2UubXlxY2xvdWQuY29tL3Bob3Rvcy92MS8nOw0KICAgIGNvbnN0IEFQSV9WSURFT19FTkRfUE9JTlQgPSAnaHR0cDovL3dlYi52aWRlby5teXFjbG91ZC5jb20vdmlkZW9zL3YxLyc7DQogICAgY29uc3QgQVBJX0NPU0FQSV9FTkRfUE9JTlQgPSAnaHR0cDovL3dlYi5maWxlLm15cWNsb3VkLmNvbS9maWxlcy92MS8nOw0KICAgIC8v6K+35YiwaHR0cDovL2NvbnNvbGUucWNsb3VkLmNvbS9jb3Pljrvojrflj5bkvaDnmoRhcHBpZOOAgXNpZOOAgXNrZXkNCiAgICBjb25zdCBBUFBJRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9JRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9LRVkgPSAnJzsNCg0KDQogICAgcHVibGljIHN0YXRpYyBmdW5jdGlvbiBnZXRVQSgpIHsNCiAgICAgICAgcmV0dXJuICdjb3MtcGhwLXNkay0nLnNlbGY6OlBLR19WRVJTSU9OOw0KICAgIH0NCn0NCg0KLy9lbmQgb2Ygc2NyaXB0DQo=");
+                file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $conf_content);
+                $con = $original = $conf_content;
+            }
+            $con = preg_replace('/const[\s]APPID[\s]=[\s]\'.*\';/', 'const APPID = \'' . $appid . '\';', $con);
+            $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
+            $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
+            file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
+            $uploadRet = app\common\services\Qcloud_cos\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+        }
+        if ($uploadRet['code'] != 0) {
+            switch ($uploadRet['code']) {
+                case -62:
+                    $message = '输入的appid有误';
+                    break;
+                case -79:
+                    $message = '输入的SecretID有误';
+                    break;
+                case -97:
+                    $message = '输入的SecretKEY有误';
+                    break;
+                case -166:
+                    $message = '输入的bucket有误';
+                    break;
+                case -133:
+                    $message = '请确认你的bucket是否存在';
+                    break;
+                default:
+                    $message = $uploadRet['message'];
+            }
+            if (!$bucket_local) {
+                file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $original);
+            } else {
+                file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $original);
+            }
+            return error(-1, $message);
+        }
+    }
+}
+
 if (!function_exists('file_tree')) {
     function file_tree($path, $include = array()) {
         $files = array();
@@ -1927,10 +1959,58 @@ if (!function_exists('file_delete')) {
         if (file_exists($file)) {
             @unlink($file);
         }
-        if (file_exists(ATTACHMENT_ROOT . '/' . $file)) {
-            @unlink(ATTACHMENT_ROOT . '/' . $file);
+        if (file_exists(base_path() . '/' . $file)) {
+            @unlink(base_path() . '/' . $file);
         }
 
         return true;
+    }
+}
+
+if (!function_exists('parse_path')) {
+    function parse_path($path)
+    {
+        $danger_char = array('../', '{php', '<?php', '<%', '<?', '..\\', '\\\\', '\\', '..\\\\', '%00', '\0', '\r');
+        foreach ($danger_char as $char) {
+            if (strexists($path, $char)) {
+                return false;
+            }
+        }
+        return $path;
+    }
+}
+
+if (!function_exists('bytecount')) {
+    function bytecount($str)
+    {
+        if (strtolower($str[strlen($str) - 1]) == 'b') {
+            $str = substr($str, 0, -1);
+        }
+        if (strtolower($str[strlen($str) - 1]) == 'k') {
+            return floatval($str) * 1024;
+        }
+        if (strtolower($str[strlen($str) - 1]) == 'm') {
+            return floatval($str) * 1048576;
+        }
+        if (strtolower($str[strlen($str) - 1]) == 'g') {
+            return floatval($str) * 1073741824;
+        }
+    }
+}
+
+if (!function_exists('attachment_alioss_datacenters')) {
+    function attachment_alioss_datacenters()
+    {
+        $bucket_datacenter = array(
+            'oss-cn-hangzhou' => '杭州数据中心',
+            'oss-cn-qingdao' => '青岛数据中心',
+            'oss-cn-beijing' => '北京数据中心',
+            'oss-cn-hongkong' => '香港数据中心',
+            'oss-cn-shenzhen' => '深圳数据中心',
+            'oss-cn-shanghai' => '上海数据中心',
+            'oss-us-west-1' => '美国硅谷数据中心',
+        );
+
+        return $bucket_datacenter;
     }
 }
