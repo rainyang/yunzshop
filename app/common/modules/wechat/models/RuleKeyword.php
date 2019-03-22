@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class RuleKeyword extends BaseModel
 {
     //public $table = 'yz_wechat_rule_keyword';
-    public $table = 'rule_keyword';
+    //public $timestamps = false;
 
-    public $timestamps = false;
-    //use SoftDeletes;
+    public $table = 'rule_keyword';
     protected $guarded = [''];
+    use SoftDeletes;
+
     /**
      * 字段规则
      *
