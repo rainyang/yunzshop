@@ -547,8 +547,8 @@ if (!function_exists('weAccount')) {
      */
     function weAccount()
     {
-        load()->model('account');
-        return WeAccount::create();
+       /* load()->model('account');
+        return WeAccount::create();*/
     }
 }
 
