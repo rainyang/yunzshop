@@ -13,12 +13,13 @@ use Illuminate\Support\Facades\DB;
 
 class Rule extends BaseModel
 {
-    //public $table = 'yz_wechat_rule';
-    public $table = 'rule';
+    //public $table = 'rule';
+    //public $timestamps = false;
 
-    //use SoftDeletes;
+    public $table = 'yz_wechat_rule';
     protected $guarded = [''];
-    public $timestamps = false;
+    use SoftDeletes;
+
     // 关键字类型
     const REPLY_TYPE_BASIC = 'basic';
     const REPLY_TYPE_IMAGE= 'images';
