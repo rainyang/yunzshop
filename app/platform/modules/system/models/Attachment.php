@@ -13,7 +13,7 @@ use app\common\models\BaseModel;
 
 class Attachment extends BaseModel
 {
-    public static function saveGlobal($data)
+    public static function saveGlobal($data, $post_max_size)
     {
         $set_data['thumb_width'] = intval(trim($data['width']));
         if ($set_data['thumb'] && !$set_data['thumb_width']) {

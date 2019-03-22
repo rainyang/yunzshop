@@ -15,6 +15,7 @@ class RuleKeyword extends BaseModel
     //public $table = 'yz_wechat_rule_keyword';
     public $table = 'rule_keyword';
 
+    public $timestamps = false;
     //use SoftDeletes;
     protected $guarded = [''];
     /**

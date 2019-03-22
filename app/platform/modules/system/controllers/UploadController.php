@@ -10,7 +10,6 @@ namespace app\platform\modules\system\controllers;
 
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
-use app\platform\modules\system\models\Loader;
 use app\platform\modules\application\models\CoreAttach;
 use app\platform\modules\application\models\WechatAttachment;
 
