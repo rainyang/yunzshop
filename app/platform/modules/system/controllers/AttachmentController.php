@@ -298,4 +298,22 @@ class AttachmentController extends BaseController
             return $this->errorJson('配置失败，腾讯cos访问url错误');
         }
     }
+
+    public function sms()
+    {
+        $sms = SystemSetting::settingLoad('sms');
+
+        if (request()->input()) {
+            $data = request()->input()['sms'];
+
+            if ($requestModel) {
+                if (SystemSetting::settingSave($data, 'sms', 'system_sms')) {
+                    return $this->successJson('短信设置成功');
+                } else {
+                    return $this->errorJson('短信设置失败');
+                }
+            }
+        }
+        return View('system.attachment', $sms);
+    }
 }

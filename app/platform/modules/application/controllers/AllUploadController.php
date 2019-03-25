@@ -241,16 +241,25 @@ class AllUploadController extends BaseController
     public function getLocalList()
     {
         $core = new CoreAttach();
+        
         if (request()->search) {
             $core = $core->search(request()->search);
         }
+        
         $list = $core->paginate()->toArray();
 
         foreach ($list['data'] as $v) {
 
             if ($v['attachment']) {
 
-                $data[] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['total'] = $list['total'];
+                $data['per_page'] = $list['per_page'];
+                $data['last_page'] = $list['last_page'];
+                $data['prev_page_url'] = $list['prev_page_url'];
+                $data['next_page_url'] = $list['next_page_url'];
+                $data['from'] = $list['from'];
+                $data['to'] = $list['to'];
+                $data['data'][] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
             }
         }
 
@@ -282,7 +291,7 @@ class AllUploadController extends BaseController
 
         \Log::info('cos_upload_file_content:', ['name'=> $originalName, 'ext'=>$ext, 'path'=>$realPath]);
 
-        $truePath = $this->getOsPath($file_type);   // COS服务器 bucket 路径
+        $truePath = substr($this->getOsPath($file_type), 1);   // COS服务器 bucket 路径
 
         $newFileName = $this->getNewFileName($originalName, $ext); //新文件名
 
@@ -362,8 +371,6 @@ class AllUploadController extends BaseController
 
             \Log::info('oss_upload_file_content:', ['name'=> $originalName, 'ext'=>$ext, 'path'=>$realPath]);
 
-        // $content = $realPath.'/'.$originalName;
-
         $truePath = substr($this->getOsPath($file_type), 1);   // OSS服务器 bucket 路径
 
         $newFileName = $this->getNewFileName($originalName, $ext);
@@ -374,7 +381,6 @@ class AllUploadController extends BaseController
         if ($setting['internal'] != 1) {
             //使用外网上传 域名为
             $domain = $setting['url'] ?  : $setting['ossurl'];
-
         }
 
         $res = $oss->putObject($setting['bucket'], $object, file_get_contents($realPath));
@@ -390,8 +396,8 @@ class AllUploadController extends BaseController
                     \Log::info('getBucketOrObjAcl, true');
                 
             } else {
-                // $url  = $res['info']['url']; //公有权限时
-                $url = 'http://'.$setting['bucket'].'.'.$domain.'/'.$object;
+                $url  = $res['info']['url']; //公有权限时
+                // $url = 'http://'.$setting['bucket'].'.'.$domain.'/'.$object;
             }
             return $url;
         }

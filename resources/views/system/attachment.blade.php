@@ -24,6 +24,7 @@
         <ul class="add-shopnav" id="myTab">
             <li class="active"><a href="#global">全局设置</a></li>
             <li><a href="#remote">远程附件</a></li>
+            <li><a href="#sms">短信设置</a></li>
         </ul>
     </div>
     <div class="info">
@@ -31,6 +32,7 @@
             <div class="tab-content">
                 <div class="tab-pane  active" id="global">@include('system.global')</div>
                 <div class="tab-pane" id="remote">@include('system.remote')</div>
+                <div class="tab-pane" id="sms">@include('system.sms')</div>
             </div>
         </div>
     </div>
