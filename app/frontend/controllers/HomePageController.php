@@ -494,7 +494,7 @@ class HomePageController extends ApiController
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
                 foreach ($Menu as $key=>$value){
                     $Menu[$key]['name']=$Menu[$key]['id'];
-                    $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons"));
+                    $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
                 }
             }
         }
