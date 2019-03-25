@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 附件设置-全局设置
         Route::any('globals', 'AttachmentController@globals');
         // 附件设置-远程设置
-        Route::post('remote', 'AttachmentController@remote');
+        Route::any('remote', 'AttachmentController@remote');
         // 附件设置-远程设置-阿里云搜索bucket
         Route::post('bucket', 'AttachmentController@bucket');
         // 附件设置-远程设置-测试阿里云配置
