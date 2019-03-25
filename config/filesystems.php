@@ -86,10 +86,17 @@ return [
             'root' => storage_path('app/public/virtualcard'),
         ],
 
-        // 批量卡密上传excel文件保存路径
+        // 网约车 批量上传excel文件保存路径
+        'netcar' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/netcar'),
+        ],
+
+        // 易宝支付图片上传
         'yop' => [
             'driver' => 'local',
             'root' => storage_path('app/public/yop'),
+            'url' => env('APP_URL').'/storage/public/yop',
         ],
 
         'upload' => [

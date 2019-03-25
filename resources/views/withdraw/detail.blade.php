@@ -51,6 +51,18 @@
                         银行卡
                 </p>
                 <p>
+                    <b>姓名：</b>{{$item->bankCard->member_name}}
+                </p>
+                <p>
+                    <b>开户行：</b>{{$item->bankCard->bank_name}}
+                </p>
+                <p>
+                    <b>开户省市：</b>{{$item->bankCard->bank_province}} | {{$item->bankCard->bank_city}}
+                </p>
+                <p>
+                    <b>开户支行：</b>{{$item->bankCard->bank_branch}}
+                </p>
+                <p>
                     <b>银行卡：</b>{{$item->bankCard->bank_card}}
                 </p>
             @elseif($item->manual_type == 2)
@@ -238,6 +250,8 @@
                     <input type="submit" name="submit_pay" value="打款到银行卡" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'eup_pay')
                     <input type="submit" name="submit_pay" value="EUP打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                @elseif($item->pay_way == 'yop_pay')
+                    <input type="submit" name="submit_pay" value="易宝打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'manual')
                     <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @endif

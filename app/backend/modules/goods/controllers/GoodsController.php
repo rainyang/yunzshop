@@ -33,6 +33,9 @@ use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
+use Yunshop\LeaseToy\models\LeaseOrderModel;
+use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
+use Yunshop\VideoDemand\models\CourseGoodsModel;
 
 
 class GoodsController extends BaseController
@@ -42,6 +45,9 @@ class GoodsController extends BaseController
     protected $shoppay;
     //private $goods;
     protected $lang = null;
+
+    protected $success_url = 'goods.goods.index';
+
 
     public function preAction()
     {
@@ -69,8 +75,6 @@ class GoodsController extends BaseController
         );
         $this->goods_id = (int)\YunShop::request()->id;
         $this->shopset = Setting::get('shop.category');
-        //$this->init();
-        $this->videoDemand = Setting::get('plugin.video_demand');
     }
 
     public function index()
@@ -163,7 +167,7 @@ class GoodsController extends BaseController
         if (!$result) {
             $this->error('商品不存在.');
         }
-        return $this->message('商品复制成功', Url::absoluteWeb('goods.goods.index'));
+        return $this->message('商品复制成功', Url::absoluteWeb($this->success_url));
     }
 
     public function create(\Illuminate\Http\Request $request)
@@ -177,7 +181,7 @@ class GoodsController extends BaseController
 
         if ($result['status'] == 1) {
             Cache::flush();
-            return $this->message('商品创建成功', Url::absoluteWeb('goods.goods.index'));
+            return $this->message('商品创建成功', Url::absoluteWeb($this->success_url));
         } else if ($result['status'] == -1) {
             if (isset($result['msg'])) {
                 $this->error($result['msg']);
@@ -283,16 +287,52 @@ class GoodsController extends BaseController
                 $catetory_menus = CategoryService::getCategoryMenu(['catlevel' => $this->shopset['cat_level'], 'ids' => explode(",", $goods_category['category_ids'])]);
             }
         }*/
-
+//        dump(\Config::get('widget.goods'));
         //todo 所有操作去service里进行，供应商共用此方法。
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
-        if (!$goods_service->goods) {
-            return $this->message('未找到商品或已经被删除', '', 'error');
-        }
+
         $result = $goods_service->edit();
+        /*
+        $type2 = \YunShop::request()->goods['type2'];
+        $goods = \app\common\models\Goods::find($this->goods_id);
+        $plugin_id = '';
+        if (app('plugins')->isEnabled('lease-toy')) {
+            $LeaseToyGoods = LeaseToyGoodsModel::ofGoodsId($this->goods_id)->first();
+            $plugin_id = LeaseOrderModel::PLUGIN_ID;
+            if ($type2) {
+                if ($type2 != '2') {
+                    $goods->plugin_id =  0;
+                    $LeaseToyGoods->is_lease = 0;
+                    $goods->save();
+                } else if($type2 == '2') {
+                    $goods->plugin_id =  $plugin_id;
+                    $goods->type2 =  $type2;
+                    $LeaseToyGoods->is_lease = '1';
+                }
+                $LeaseToyGoods->save();
+                $goods->save();
+            }
+        }
+        //!app('plugins')->isEnabled('lease-toy') && $goods->type2 == '2' ||
+        if (!app('plugins')->isEnabled('video-demand') && $goods->type2 == '3') {
+            Setting::set('shop.goods.type2', $goods->type2);
+            $goods->type2 = '1';
+            $goods->save();
+        } else if (app('plugins')->isEnabled('video-demand')) {
+            $item = CourseGoodsModel::getModel($this->goods_id,'');
+            if (Setting::get('shop.goods.type2') == '3') {
+                $goods->type2 = Setting::get('shop.goods.type2');
+                Setting::set('shop.goods.type2', '');
+            }
+            if ($item->is_course == '1') {
+                $goods->type2 =  '3';
+            }
+            $goods->save();
+        }
+    */
         if ($result['status'] == 1) {
             Cache::flush();
-            return $this->message('商品修改成功', Url::absoluteWeb('goods.goods.index'));
+            return $this->message('商品修改成功', Url::absoluteWeb($this->success_url));
         } else if ($result['status'] == -1){
             if (isset($result['msg'])) {
                 $this->error($result['msg']);
@@ -300,7 +340,6 @@ class GoodsController extends BaseController
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
 
-        //dd($this->lang);
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
@@ -313,7 +352,7 @@ class GoodsController extends BaseController
             'catetory_menus' => implode('', $goods_service->catetory_menus),
             'virtual_types' => [],
             'shopset' => $this->shopset,
-            'type' => 'edit'
+            'type' => 'edit',
         ])->render();
     }
 
@@ -331,7 +370,7 @@ class GoodsController extends BaseController
             $goods->display_order = $displayOrder;
             $goods->save();
         }
-        return $this->message('商品排序成功', Url::absoluteWeb('goods.goods.index'));
+        return $this->message('商品排序成功', Url::absoluteWeb($this->success_url));
         //$this->error($goods);
     }
 
@@ -388,7 +427,7 @@ class GoodsController extends BaseController
     {
         $id = \YunShop::request()->id;
         $goods = Goods::destroy($id);
-        return $this->message('商品删除成功', Url::absoluteWeb('goods.goods.index'));
+        return $this->message('商品删除成功', Url::absoluteWeb($this->success_url));
     }
 
     public function batchDestroy()
@@ -505,32 +544,6 @@ class GoodsController extends BaseController
             'goods' => $goods
         ])->render();
 
-    }
-
-    public function test()
-    {
-        $request = [
-            'goods' =>
-                ['title' => 'title1',],
-            'widgets' => [
-                'notice' => [
-                    'uid' => 7, 'type' => [0, 2]
-                ],
-                'sale' => [
-                    'love_money' => 1,
-                    'max_point_deduct' => 2,
-                    'max_balance_deduct' => 3,
-                    'ed_num' => 4,
-                    'ed_money' => 5,
-                    'ed_areas' => '太原市;大同市;阳泉市;长治市;晋城市;朔州市;晋中市;运城市;忻州市;临汾市;吕梁市'
-                ]
-
-            ]
-        ];
-        $goods = new Goods($request['goods']);
-        $goods->setRawAttributes($request['goods']);
-        $goods->widgets = $request['widgets'];
-        $goods->save();
     }
 
     public function getMyLinkGoods()

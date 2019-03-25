@@ -23,7 +23,7 @@ class MemberCreateRelationEventListener
             \Log::debug('创建会员关系');
             $member_relation = new MemberRelation();
 
-            $member_relation->build($member_id, $parent_id);
+            return $member_relation->build($member_id, $parent_id);
         }
     }
 }

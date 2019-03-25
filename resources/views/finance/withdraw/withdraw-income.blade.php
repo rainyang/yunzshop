@@ -43,13 +43,34 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9 col-xs-12">
                 <div class="alipay" >
+                    <label class='radio-inline' >提现手续费类型</label>
+                </div>
+                <div class="switch">
+                    <label class='radio-inline'>
+                        <input type='radio' name='withdraw[income][special_poundage_type]' value='1'
+                               @if($set['special_poundage_type'] == 1) checked @endif />
+                        固定金额
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='withdraw[income][special_poundage_type]' value='0'
+                               @if(empty($set['special_poundage_type'])) checked @endif />
+                        手续费比例
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="alipay" >
                     <label class='radio-inline' >提现手续费</label>
                 </div>
                 <div class="cost" >
                     <label class='radio-inline'>
                         <div class="input-group">
                             <input type="text" name="withdraw[income][special_poundage]" class="form-control" value="{{ $set['special_poundage'] or '' }}" placeholder="提现至余额独立手续费比例"/>
-                            <div class="input-group-addon">%</div>
+                            <div class="input-group-addon" id="special_poundage_unit">@if($set['special_poundage_type'] == 1) 元 @else
+                                    % @endif</div>
                         </div>
                     </label>
                 </div>
@@ -136,6 +157,24 @@
                 </label>
                 <label class='radio-inline'>
                     <input type='radio' name='withdraw[income][eup_pay]' value='0' @if($set['eup_pay'] == 0) checked @endif />
+                    关闭
+                </label>
+            </div>
+        </div>
+    </div>
+@endif
+
+@if(app('plugins')->isEnabled('yop-pay'))
+    <div class="tab-pane  active">
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现到易宝</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][yop_pay]' value='1' @if($set['yop_pay'] == 1) checked @endif />
+                    开启
+                </label>
+                <label class='radio-inline'>
+                    <input type='radio' name='withdraw[income][yop_pay]' value='0' @if($set['yop_pay'] == 0) checked @endif />
                     关闭
                 </label>
             </div>
@@ -295,6 +334,14 @@
             }
             else {
                 $("#manual_type").hide();
+            }
+        });
+        $(":radio[name='withdraw[income][special_poundage_type]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#special_poundage_unit").html('元');
+            }
+            else {
+                $("#special_poundage_unit").html('%');
             }
         });
     })

@@ -20,8 +20,9 @@ trait PreOrderTrait
      */
     public function generate()
     {
+        $this->beforeSaving();
         $this->save();
-
+        $this->afterSaving();
         $result = $this->push();
 
         if ($result === false) {
@@ -50,7 +51,7 @@ trait PreOrderTrait
      * 统计订单商品成交金额
      * @return int
      */
-    protected function getOrderGoodsPrice()
+    public function getOrderGoodsPrice()
     {
         return $this->goods_price = $this->orderGoods->getPrice();
     }

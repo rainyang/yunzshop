@@ -104,7 +104,7 @@ class ApplyController extends ApiController
             $withdrawModel->fill($this->getWithdrawData($item));
 
             event(new WithdrawApplyEvent($withdrawModel));
-
+            
             $validator = $withdrawModel->validator();
             if ($validator->fails()) {
                 throw new AppException("ERROR:Data anomaly -- {$item['key_name']}::{$validator->messages()->first()}");
@@ -144,6 +144,7 @@ class ApplyController extends ApiController
             'amounts'           => $withdraw_item['income'],
             'poundage'          => '0.00',
             'poundage_rate'     => '0.00',
+            'poundage_type'     => $withdraw_item['poundage_type']?:0,
             'actual_poundage'   => '0.00',
             'actual_amounts'    => '0.00',
             'servicetax'        => '0.00',

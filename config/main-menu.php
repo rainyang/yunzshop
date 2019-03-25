@@ -946,7 +946,7 @@ return [
             ],
 
             'discount_set' => [
-                'name'              => '折扣设置',
+                'name'              => '批量操作',
                 'url'               => 'discount.batch-discount.index',
                 'url_params'        => '',
                 'permit'            => 1,
@@ -1032,6 +1032,31 @@ return [
                     ],
                 ],
 
+                    'goods_dispatch_freight'=> [
+                        'name'              => '运费批量设置',
+                        'url'               => 'discount.batch-dispatch.freight',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => '',
+                        'sort'              => '2',
+                        'item'              => 'goods_dispatch_freight-set',
+                        'parents'           => ['Goods','discount_set'],
+                        'child'             => [
+                            'goods_dispatch_set_freight' => [
+                                'name'              => '折扣设置',
+                                'url'               => 'discount.batch-dispatch.freight-set',
+                                'url_params'        => '',
+                                'permit'            => 1,
+                                'menu'              => 0,
+                                'icon'              => 'fa-sitemap',
+                                'sort'              => '2',
+                                'item'              => 'goods_dispatch_set_freight',
+                                'parents'           => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'child'             => []
+                            ],
+                        ],
+                    ],
             ],
         ],
         ],
@@ -1557,6 +1582,21 @@ return [
                 'child'         => [
                 ],
             ],
+            'member_invited'     => [
+                'name'          => '会员邀请码',
+                'url'           => 'member.member_invited.index',
+                'url_params'    => '',
+                'permit'        => 0,
+                'menu'          => 1,
+                'icon'          => 'fa-circle-o',
+                'sort'          => 0,
+                'left_first_show'   => 1,
+                'left_second_show'  => 1,
+                'item'          => 'member_invited',
+                'parents'       => ['Member'],
+                'child'         => [
+                ],
+            ],
         ],
     ],
 
@@ -1725,9 +1765,10 @@ return [
 
                             'order_operation_remark' => [
                                 'name'              => '订单备注',
-                                'url'               => 'order.remark.update-remark',
+                                // 'url'               => 'order.remark.index',
+                                'url'               => 'order.operation.remark',
                                 'url_params'        => '',
-                                'permit'            => 0,
+                                'permit'            => 1,
                                 'menu'              => 0,
                                 'icon'              => '',
                                 'sort'              => 1,
@@ -2119,7 +2160,7 @@ return [
                 'name'              => '批量发货',
                 'url'               => 'order.batch-send.index',
                 'url_params'        => '',
-                'permit'            => 1,
+                'permit'            => 0,
                 'menu'              => 1,
                 'icon'              => 'fa-send',
                 'sort'              => '8',
@@ -2131,7 +2172,7 @@ return [
                         'name'              => '下载模版',
                         'url'               => 'order.batch-send.get-example',
                         'url_params'        => '',
-                        'permit'            => 1,
+                        'permit'            => 0,
                         'menu'              => 0,
                         'icon'              => '',
                         'item'              => 'order_batch_send_get_example',
@@ -3446,6 +3487,27 @@ return [
                 'sort'              => '6',
                 'item'              => 'setting_shop_notice',
                 'parents'           => ['system',],
+                'child'             => [
+
+                    'setting_shop_default_notice_open'  => [
+                        'name'              => '默认消息模版开启',
+                        'url'               => 'setting.default-notice.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_shop_default_notice_open',
+                        'parents'           => ['system','setting_shop_notice'],
+                    ],
+                    'setting_shop_default_notice_closed'  => [
+                        'name'              => '默认消息模版取消',
+                        'url'               => 'setting.default-notice.cancel',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_shop_default_notice_closed',
+                        'parents'           => ['system','setting_shop_notice'],
+                    ],
+                ]
             ],
 
             'setting_wechat_notice' => [
