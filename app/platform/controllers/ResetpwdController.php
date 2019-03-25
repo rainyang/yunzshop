@@ -37,6 +37,21 @@ class ResetpwdController extends BaseController
         }
 	}
 
+	public function checkCode()
+	{
+		$mobile = request()->mobile;
+		$code = request()->code;
+
+		//检查验证码是否正确
+        if (!Cache::has($mobile.'_code')) {
+            return $this->errorJson('验证码已失效,请重新获取');
+        }
+        if ($code != Cache::get($mobile.'_code')) {
+        	return $this->errorJson('验证码错误');
+        }
+        return $this->successJson('验证成功');
+	}
+
 	public function getCaptcha()
 	{
 		$setting = SystemSetting::settingLoad('sms');
@@ -68,15 +83,6 @@ class ResetpwdController extends BaseController
 		$pwd = request()->pwd;
 		$mobile = request()->mobile;
         $confirm_password = \YunShop::request()->confirm_password;
-        $code = request()->code;
-
-		//检查验证码是否正确
-        if (!Cache::has($mobile.'_code')) {
-            return $this->errorJson('验证码已失效,请重新获取');
-        }
-        if ($code != Cache::get($mobile.'_code')) {
-        	return $this->errorJson('验证码错误');
-        }
         
         $msg = $this->validate($mobile, $pwd, $confirm_password);
         if ($msg != 1) {

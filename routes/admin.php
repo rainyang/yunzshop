@@ -11,6 +11,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('changePwd', 'ResetpwdController@changePwd'); //修改密码
     Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
+    Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
 
 
     Route::get('/', 'IndexController@index');
@@ -117,7 +118,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
 		Route::any('app/temp/', 'ApplicationController@temp');
         Route::any('application/test/', 'ApplicationController@upload');
         
-        Route::any('all/test/', 'AllUploadController@ossTest');
+        Route::any('all/test/', 'AllUploadController@cosTest');
 
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');
