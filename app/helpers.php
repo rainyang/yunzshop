@@ -226,14 +226,15 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
-            dd(file_exists(base_path() . '/static/upload/' . $src));
-
             if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
             } else {
-                $src = $remote['cos']['url']. $src;
+                if ($remote['type'] == '2') {
+                    $src = $remote['alioss']['url'] . '/'. $src;
+                } else {
+                    $src = $remote['cos']['url'] . '/'. $src;
+                }
             }
-
         } else {
             if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
@@ -1154,7 +1155,7 @@ if (!function_exists('file_remote_upload')) {
             $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
             try {
                 $ossClient = new \OSS\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
-                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . $filename);
+                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . '/static/upload/' . $filename);
             } catch (\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
@@ -1164,7 +1165,7 @@ if (!function_exists('file_remote_upload')) {
         } elseif ($remote['type'] == '4') {
             if ($remote['cos']['local']) {
                 \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
-                $uploadRet = \app\common\services\qcloud\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($remote['cos']['bucket'], base_path() . '/static/upload/' . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             } else {
                 $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
@@ -1230,8 +1231,8 @@ if (!function_exists('file_delete')) {
         if (file_exists($file)) {
             @unlink($file);
         }
-        if (file_exists(base_path() . '/' . $file)) {
-            @unlink(base_path() . '/' . $file);
+        if (file_exists(base_path() . '/static/upload/' . $file)) {
+            @unlink(base_path() . '/static/upload/' . $file);
         }
 
         return true;
@@ -1961,22 +1962,6 @@ if (!function_exists('file_tree')) {
     }
 }
 
-if (!function_exists('file_delete')) {
-    function file_delete($file) {
-        if (!$file) {
-            return false;
-        }
-        if (file_exists($file)) {
-            @unlink($file);
-        }
-        if (file_exists(base_path() . '/' . $file)) {
-            @unlink(base_path() . '/' . $file);
-        }
-
-        return true;
-    }
-}
-
 if (!function_exists('parse_path')) {
     function parse_path($path)
     {
@@ -2046,5 +2031,49 @@ if (!function_exists('getimagesizefromstring')) {
     function getimagesizefromstring($string_data) {
         $uri = 'data://application/octet-stream;base64,'  . base64_encode($string_data);
         return getimagesize($uri);
+    }
+}
+
+if (!function_exists('buildCustomPostFields')) {
+
+    /**
+     * Build custom post fields for safe multipart POST request for php before 5.5.
+     * @param $fields array of key -> value fields to post.
+     * @return $boundary and encoded post fields.
+     */
+    function buildCustomPostFields($fields)
+    {
+        // invalid characters for "name" and "filename"
+        static $disallow = array("\0", "\"", "\r", "\n");
+
+        // initialize body
+        $body = array();
+
+        // build normal parameters
+        foreach ($fields as $key => $value) {
+            $key = str_replace($disallow, "_", $key);
+            $body[] = implode("\r\n", array(
+                "Content-Disposition: form-data; name=\"{$key}\"",
+                '',
+                filter_var($value),
+            ));
+        }
+
+        // generate safe boundary
+        do {
+            $boundary = "---------------------" . md5(mt_rand() . microtime());
+        } while (preg_grep("/{$boundary}/", $body));
+
+        // add boundary for each parameters
+        foreach ($body as &$part) {
+            $part = "--{$boundary}\r\n{$part}";
+        }
+        unset($part);
+
+        // add final boundary
+        $body[] = "--{$boundary}--";
+        $body[] = '';
+
+        return array($boundary, implode("\r\n", $body));
     }
 }
