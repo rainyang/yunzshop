@@ -989,7 +989,7 @@ class MemberController extends ApiController
         $space = ($width - $str_lenght) / 2;
 
         $uniacid = \YunShop::app()->uniacid;
-        $path    = storage_path('app/public/personalposter/' . $uniacid);
+        $path    = \Storage::url('app/public/personalposter/' . $uniacid);
 
         Utils::mkdirs($path);
 
@@ -1047,7 +1047,7 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        $imgUrl = request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . '/' . $file;
+        $imgUrl = request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $file;
         return $imgUrl;
     }
 
@@ -1065,7 +1065,7 @@ class MemberController extends ApiController
     //合并字符串
     private static function mergeText($destinationImg, $text, $data)
     {
-        putenv('GDFONTPATH=' . IA_ROOT . '/addons/yun_shop/static/fonts');
+        putenv('GDFONTPATH=' . base_path('static/fonts'));
         $font = "source_han_sans";
 
         $black = imagecolorallocate($destinationImg, 0, 0, 0);
