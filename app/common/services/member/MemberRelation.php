@@ -220,7 +220,7 @@ class MemberRelation
             }
         }
 
-        if (!$parent_relation->isEmpty() && $parent_id != $parent_relation[0]->parent_id) {
+        if (!$parent_relation->isEmpty()) {
             \Log::debug('------step2-------');
             $child_relation = $this->hasRelationOfChild($member_id);
             $this->map_relaton[] = [$parent_id, $member_id];
