@@ -10,8 +10,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
 
     Route::any('changePwd', 'ResetpwdController@changePwd'); //修改密码
     Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
-    Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
-
+    Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
 
 
     Route::get('/', 'IndexController@index');
@@ -67,6 +66,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('update/pirate', 'UpdateController@pirate');
         // 初始程序
         Route::any('update/startDownload', 'UpdateController@startDownload');
+        //短信设置
         Route::any('sms', 'AttachmentController@sms');
         /* 上传 */
         // 图片
