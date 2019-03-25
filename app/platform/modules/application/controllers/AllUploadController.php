@@ -15,7 +15,7 @@ use app\common\services\qcloud\Api;
 use app\common\services\aliyunoss\OssClient;
 use app\common\services\aliyunoss\OSS\Core\OssException;
 use app\common\services\ImageZip;
-
+// use app\common\services\qcloudv5\Api;
 
 class AllUploadController extends BaseController
 {
@@ -273,7 +273,7 @@ class AllUploadController extends BaseController
             'app_id'     => $setting['appid'],
             'secret_id'  => $setting['secretid'],
             'secret_key' => $setting['secretkey'],
-            'bucket'     => $setting['bucket'],
+            // 'bucket'     => $setting['bucket'],
             'region'     => $setting['url']
         ];
         $cos = new Api($config);
@@ -487,9 +487,10 @@ class AllUploadController extends BaseController
             $path.$newName
         );
         dd($res);
+        // $cosApi->;
         $zip = new ImageZip();
         $res = $zip->makeThumb('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', 'D:\wamp\www\shop\storage\app\\'.md5('2w43d3').'.jpeg',  '36%');
-        dd($res);
+        // dd($res);
 
         $im = $this->imageDeal('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', '50%', $ext);
         dd($im);
