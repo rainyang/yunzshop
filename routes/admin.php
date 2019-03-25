@@ -12,6 +12,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
     Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
+    Route::any('detail', 'ResetpwdController@detail'); //检查验证码
 
 
     Route::get('/', 'IndexController@index');
