@@ -38,7 +38,7 @@ class OrderGoodsDeductionPriceNode extends BaseOrderGoodsPriceNode
      */
     function getPrice()
     {
-        return $this->orderGoodsPrice->getPriceBefore($this->getKey()) + $this->preOrderGoodsDeduction->used_amount;
+        return $this->orderGoodsPrice->getPriceBefore($this->getKey()) - $this->preOrderGoodsDeduction->used_amount;
     }
 
 }

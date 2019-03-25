@@ -196,7 +196,7 @@ class PreOrderDeduction extends OrderDeduction
 
             // 商品金额抵扣+ 运费抵扣金额 不能超过订单当前抵扣项之前的金额
             $deductionAmount = min(
-                $this->order->getPriceBefore($this->getCode() . 'RestDeduction') -$this->getMaxDispatchPriceDeduction()->getMoney(),
+                $this->order->getPriceBefore($this->getCode() . 'RestDeduction') - $this->getMaxDispatchPriceDeduction()->getMoney(),
                 $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney()
             );
 //dump($deductionAmount);
@@ -296,7 +296,7 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
-        \Log::debug("监听抵扣",$this->getDeduction()->isEnableDeductDispatchPrice());
+        \Log::debug("监听抵扣", $this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
         if (!$this->getDeduction()->isEnableDeductDispatchPrice()) {
 
@@ -305,7 +305,7 @@ class PreOrderDeduction extends OrderDeduction
 
             $result->setMoney($amount);
         }
-        \Log::debug("监听抵扣运费",$result);
+        \Log::debug("监听抵扣运费", $result);
         return $result;
     }
 

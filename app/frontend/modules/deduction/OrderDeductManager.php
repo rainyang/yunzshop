@@ -54,12 +54,13 @@ class OrderDeductManager
     {
         if (!isset($this->orderDeductionCollection)) {
             $this->orderDeductionCollection = $this->getAllOrderDeductions();
+            $this->order->setRelation('orderDeductions',$this->orderDeductionCollection);
             // 按照选中状态排序
             $this->orderDeductionCollection->sortOrderDeductionCollection();
             // 验证
             $this->orderDeductionCollection->validate();
 
-            $this->order->setRelation('orderDeductions',$this->orderDeductionCollection);
+
         }
         return $this->orderDeductionCollection;
     }
