@@ -183,7 +183,7 @@ class ResetpwdController extends BaseController
     public function sendSmsV2($mobile, $code, $state, $templateType = 'reg', $sms_type=2)
     {
         // $sms = \Setting::get('shop.sms');
-        $sms = SystemSetting::settingLoad('sms');
+        $sms = SystemSetting::settingLoad('sms', 'system_sms');
 
         $uniacid = \YunShop::app()->uniacid ? : 0;
         //互亿无线
