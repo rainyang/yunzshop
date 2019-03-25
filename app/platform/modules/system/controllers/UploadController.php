@@ -176,7 +176,6 @@ class UploadController extends BaseController
             } else {
                 file_delete($pathname);
                 $info['url'] = tomedia($pathname);
-                dd($info);
             }
         }
 
