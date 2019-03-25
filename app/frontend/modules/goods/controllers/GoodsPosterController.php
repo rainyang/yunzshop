@@ -89,7 +89,7 @@ class GoodsPosterController extends ApiController
 
         $imgPath = $this->get_lt();
 
-        $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
+        $urlPath =  request()->getSchemeAndHttpHost() . config('app.webPath') . $imgPath;
             
         return $this->successJson('ok', $urlPath);
 
@@ -231,7 +231,7 @@ class GoodsPosterController extends ApiController
 
     private function getGoodsPosterPath()
     {
-        $path = storage_path('app/public/goods/'.\YunShop::app()->uniacid) . "/";
+        $path = \Storage::url('app/public/goods/'.\YunShop::app()->uniacid) . "/";
 
         Utils::mkdirs($path);
 

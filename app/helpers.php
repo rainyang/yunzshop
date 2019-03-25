@@ -9,9 +9,15 @@ use Ixudra\Curl\Facades\Curl;
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
     {
+        if (env('APP_Framework') == 'platform') {
+            $file_dir = '';
+        } else {
+            $file_dir = '../addons/yun_shop';
+        }
+
         $s = '';
         if (!defined('TPL_INIT_UEDITOR')) {
-            $s .= '<script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="../addons/yun_shop/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
+            $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
         }
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';

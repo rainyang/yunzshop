@@ -300,7 +300,9 @@ return [
         ]
     ],
 
-    'isWeb'  => '/admin/shop',
-    'global' => ['test' => 1],
+    'isWeb'  => env('IS_WEB', '/web/index.php'),
+    'webPath' => env('ROOT_PATH', '/addons/yun_shop'),
+    'extendDir' => env('EXTEND_DIR', 'addons'),
+    'global' => [],
     'sys_global' => []
 ];
