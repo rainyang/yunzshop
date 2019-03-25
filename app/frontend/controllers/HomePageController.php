@@ -487,10 +487,12 @@ class HomePageController extends ApiController
      */
     public static function defaultMenu($i, $mid, $type)
     {
-        DesignerMenu::getDefaultMenu()->toArray();
-        $CustomizeMenu = DesignerMenu::getDefaultMenu()->toArray();
-        if(is_array($CustomizeMenu) && !empty($CustomizeMenu) && !empty($CustomizeMenu['menus'])){
-            $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
+        $CustomizeMenu = DesignerMenu::getDefaultMenu();
+        if(!empty($CustomizeMenu)){
+            $CustomizeMenu_list=$CustomizeMenu->toArray();
+            if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
+                $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
+            }
         }
         else {
             //默认菜单
