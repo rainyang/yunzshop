@@ -764,7 +764,7 @@ class MemberModel extends Member
         self::createDir(storage_path('app/public/avatar'));
 
         $member_info['qr'] = self::getAgentQR();
-        $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+        $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . config('app.webPath') . \Storage::url('app/public/avatar/');
 
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
