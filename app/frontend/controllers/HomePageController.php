@@ -493,8 +493,9 @@ class HomePageController extends ApiController
             if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
                 foreach ($Menu as $key=>$value){
-                    $Menu[$key]['name']=$Menu[$key]['id'];
-                   // $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                   // $Menu[$key]['name']=$Menu[$key]['id'];
+                    unset($Menu[$key]['name']);
+                    // $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
                 }
             }
         }
