@@ -35,11 +35,11 @@ class ShareCouponService
         if ($share_log) {
             return self::toData('RT', '以领取不可重复领取');
         } elseif(!$couponModel->status) {
-            return self::toData('NO', '该优惠券已下架');
+            return self::toData('RT', '该优惠券已下架');
         } elseif (($couponModel->total != -1) && (1 > $lastTotal)) {
             return self::toData('RT', '已经被抢光了');
         } elseif ((!$share_model->obtain_restriction) && $share_model->member_id == \YunShop::app()->getMemberId()) {
-            return self::toData('NO', '分享者不可领取');
+            return self::toData('RT', '分享者不可领取');
         }
 
 

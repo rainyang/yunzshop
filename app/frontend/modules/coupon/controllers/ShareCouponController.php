@@ -77,7 +77,7 @@ class ShareCouponController extends ApiController
 
             $result = ShareCouponService::fen($model);
 
-            if ($result['state'] == 'YES' || $result['state'] == 'ER' || $result['state'] == 'NO') {
+            if ($result['state'] == 'YES' || $result['state'] == 'ER') {
                 break;
             }
 
@@ -112,11 +112,11 @@ class ShareCouponController extends ApiController
 
         $coupon_num = $this->share_model->sum('coupon_num');
 
-
         $returnData = [
             'remainder' => $coupon_num - $log_model['total'],
             'total' => $log_model['total'],
             'current_page' => $log_model['current_page'],
+            'last_page'   => $log_model['last_page'],
             'per_page' => $log_model['per_page'],
             'data' => $log_model['data'],
         ];
