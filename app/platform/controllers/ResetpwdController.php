@@ -52,6 +52,16 @@ class ResetpwdController extends BaseController
         return $this->successJson('验证成功');
 	}
 
+	public function detail()
+	{
+		$setting = SystemSetting::settingLoad('sms', 'system_sms');
+		
+		if (!$setting) {
+			return $this->errorJson('暂无数据');
+		}
+		return $this->successJson('获取成功', $setting);
+	}
+
 	public function getCaptcha()
 	{
 		$setting = SystemSetting::settingLoad('sms');
