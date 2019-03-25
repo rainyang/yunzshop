@@ -25,7 +25,7 @@ class ShareCouponService
         $key = array_rand($coupon_ids,1);
 
         $couponModel = Coupon::find($coupon_ids[$key]);
-
+//dd($couponModel);
         $getTotal = MemberCoupon::uniacid()->where("coupon_id", $coupon_ids[$key])->count();
 
         $lastTotal = $couponModel->total - $getTotal;
@@ -35,11 +35,11 @@ class ShareCouponService
         if ($share_log) {
             return self::toData('RT', '以领取不可重复领取');
         } elseif(!$couponModel->status) {
-            return self::toData('RT', '该优惠券已下架');
+            return self::toData('NO', '该优惠券已下架');
         } elseif (($couponModel->total != -1) && (1 > $lastTotal)) {
             return self::toData('RT', '已经被抢光了');
         } elseif ((!$share_model->obtain_restriction) && $share_model->member_id == \YunShop::app()->getMemberId()) {
-            return self::toData('RT', '分享者不可领取');
+            return self::toData('NO', '分享者不可领取');
         }
 
 
@@ -69,10 +69,12 @@ class ShareCouponService
         $logData = [
             'uniacid' => \YunShop::app()->uniacid,
             'share_uid' => $share_model->member_id,
+            'order_id' => $share_model->order_id,
             'share_coupon_id' => $share_model->id,
             'receive_uid' => $receiveUid,
             'coupon_id' => $couponModel->id,
             'coupon_name' => $couponModel->name,
+            'remark' => $couponModel->coupon_method == 1 ? '￥'.$couponModel->deduct : $couponModel->discount.'折',
         ];
 
         $member_coupon = MemberCoupon::create($data);

@@ -10,6 +10,7 @@ namespace app\common\models\coupon;
 
 
 use app\common\models\BaseModel;
+use app\common\models\Coupon;
 use app\common\models\Member;
 use app\framework\Database\Eloquent\Builder;
 
@@ -67,6 +68,12 @@ class ShoppingShareCouponLog extends BaseModel
         return $model;
     }
 
+    //以领取记录
+    public static function yiLog($order_ids, $member_id)
+    {
+        return self::uniacid()->with('receiveMember')->whereIn('order_id', $order_ids)->receiveUid($member_id);
+    }
+
 
     //分享者
     public function scopeShareUid(Builder $query, $uid)
@@ -80,7 +87,7 @@ class ShoppingShareCouponLog extends BaseModel
         return $query->where('receive_uid', $uid);
     }
 
-    //领取者
+    //分析记录
     public function scopeShareCouponId(Builder $query, $share_coupon_id)
     {
         return $query->where('share_coupon_id', $share_coupon_id);
@@ -95,5 +102,10 @@ class ShoppingShareCouponLog extends BaseModel
     public function receiveMember()
     {
         return $this->belongsTo(Member::class, 'receive_uid', 'uid');
+    }
+
+    public function hasOneCoupon()
+    {
+        return $this->belongsTo(Coupon::class, 'coupon_id', 'id');
     }
 }

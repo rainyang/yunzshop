@@ -10,6 +10,7 @@ namespace app\frontend\modules\coupon\controllers;
 
 use app\common\components\ApiController;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\models\coupon\ShoppingShareCouponLog;
 use app\common\models\Order;
 use app\common\exceptions\AppException;
 use app\common\models\Coupon;
@@ -26,13 +27,14 @@ class ShareCouponController extends ApiController
 
     protected $member;
 
+
     public function preAction()
     {
         parent::preAction();
 
         $this->getData();
-
     }
+
 
     //分享页面
     public function share()
@@ -75,7 +77,7 @@ class ShareCouponController extends ApiController
 
             $result = ShareCouponService::fen($model);
 
-            if ($result['state'] == 'YES' || $result['state'] == 'ER') {
+            if ($result['state'] == 'YES' || $result['state'] == 'ER' || $result['state'] == 'NO') {
                 break;
             }
 
@@ -84,8 +86,6 @@ class ShareCouponController extends ApiController
         if ($result['state'] == 'ER') {
             throw new AppException($result['msg']);
         }
-
-
 
         $data = [
             'set' =>  $this->set,
@@ -97,6 +97,35 @@ class ShareCouponController extends ApiController
 
         $this->successJson('share', $data);
     }
+
+
+    public function logList()
+    {
+        $order_ids = explode('_', rtrim(\YunShop::request()->order_ids, '_'));
+
+        $log_model = ShoppingShareCouponLog::yiLog($order_ids, \YunShop::app()->getMemberId())->paginate(15)->toArray();
+
+
+        $this->share_model->map(function ($model) {
+            $model->coupon_num = count($model->share_coupon);
+        });
+
+        $coupon_num = $this->share_model->sum('coupon_num');
+
+
+        $returnData = [
+            'remainder' => $coupon_num - $log_model['total'],
+            'total' => $log_model['total'],
+            'current_page' => $log_model['current_page'],
+            'per_page' => $log_model['per_page'],
+            'data' => $log_model['data'],
+        ];
+
+        return $this->successJson('成功', $returnData);
+    }
+
+
+
 
     protected function handleCoupon($data)
     {

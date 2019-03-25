@@ -20,6 +20,7 @@ class CreateYzShoppingShareCouponLogTable extends Migration
                 $table->integer('share_uid')->default(0)->nullable()->comment('分享者会员id');
                 $table->integer('receive_uid')->default(0)->nullable()->comment('领取者会员id');
                 $table->integer('share_coupon_id')->default(0)->nullable()->comment('优惠卷分享表id');
+                $table->integer('order_id')->default(0)->nullable()->comment('订单ID');
                 $table->integer('coupon_id')->default(0)->nullable()->comment('优惠卷id');
                 $table->string('coupon_name')->nullable()->comment('优惠卷名称');
                 $table->text('log')->nullable()->comment('日志详细');
