@@ -492,6 +492,10 @@ class HomePageController extends ApiController
             $CustomizeMenu_list=$CustomizeMenu->toArray();
             if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
+                foreach ($Menu as $key=>$value){
+                    $Menu[$key]['name']=$Menu[$key]['id'];
+                    $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons"));
+                }
             }
         }
         else {
@@ -546,6 +550,35 @@ class HomePageController extends ApiController
                     "bordercolor" => "#bfbfbf"
                 ),
             );
+            $promoteMenu      = Array(
+                "id"          => "menu_1489731319695",
+                "classt"      => "no",
+                "title"       => "推广",
+                "icon"        => "fa fa-send",
+                "url"         => "/addons/yun_shop/?#/member/extension?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+                "name"        => "extension",
+                "subMenus"    => [],
+                "textcolor"   => "#666666",
+                "bgcolor"     => "#837aef",
+                "iconcolor"   => "#666666",
+                "bordercolor" => "#bfbfbf"
+            );
+            $extension_status = Setting::get('shop_app.pay.extension_status');
+            if (isset($extension_status) && $extension_status == 0) {
+                $extension_status = 0;
+            } else {
+                $extension_status = 1;
+            }
+            if ($type == 7 && $extension_status == 0) {
+                unset($promoteMenu);
+            } else {
+                //是否显示推广按钮
+                if (PortType::popularizeShow($type)) {
+                    $Menu[4] = $Menu[3]; //第 5 个按钮改成"会员中心"
+                    $Menu[3] = $Menu[2]; //第 4 个按钮改成"购物车"
+                    $Menu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+                }
+            }
         }
 
         //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
@@ -557,35 +590,6 @@ class HomePageController extends ApiController
         }
         */
         //if($relation->status == 1){
-        $promoteMenu      = Array(
-            "id"          => "menu_1489731319695",
-            "classt"      => "no",
-            "title"       => "推广",
-            "icon"        => "fa fa-send",
-            "url"         => "/addons/yun_shop/?#/member/extension?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-            "name"        => "extension",
-            "subMenus"    => [],
-            "textcolor"   => "#666666",
-            "bgcolor"     => "#837aef",
-            "iconcolor"   => "#666666",
-            "bordercolor" => "#bfbfbf"
-        );
-        $extension_status = Setting::get('shop_app.pay.extension_status');
-        if (isset($extension_status) && $extension_status == 0) {
-            $extension_status = 0;
-        } else {
-            $extension_status = 1;
-        }
-        if ($type == 7 && $extension_status == 0) {
-            unset($promoteMenu);
-        } else {
-            //是否显示推广按钮
-            if (PortType::popularizeShow($type)) {
-                $Menu[4] = $Menu[3]; //第 5 个按钮改成"会员中心"
-                $Menu[3] = $Menu[2]; //第 4 个按钮改成"购物车"
-                $Menu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-            }
-        }
 
         return $Menu;
 
