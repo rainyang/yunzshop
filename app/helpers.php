@@ -2034,7 +2034,7 @@ if (!function_exists('attachment_newalioss_auth')) {
         $filename = 'MicroEngine.ico';
         try {
             $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
-            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/images/global/' . $filename);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/global/' . $filename);
         } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
             return error(1, $e->getMessage());
         }

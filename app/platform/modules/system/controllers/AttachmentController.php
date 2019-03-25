@@ -271,6 +271,35 @@ class AttachmentController extends BaseController
     public function cos()
     {
         $cos = request()->cos;
+        switch($cos['url']) {
+            case '华北':
+                $cos['url'] = 'tj';
+                break;
+            case '华东':
+                $cos['url'] = 'sh';
+                break;
+            case '华南':
+                $cos['url'] = 'gz';
+                break;
+            case '西南':
+                $cos['url'] = 'cd';
+                break;
+            case '北京':
+                $cos['url'] = 'bj';
+                break;
+            case '新加坡':
+                $cos['url'] = 'sgp';
+                break;
+            case '香港':
+                $cos['url'] = 'hk';
+                break;
+            case '多伦多':
+                $cos['url'] = 'ca';
+                break;
+            case '法兰克福':
+                $cos['url'] = 'ger';
+                break;
+        }
 
         $secretkey = strexists($cos['secretkey'], '*') ? $this->remote['cos']['secretkey'] : trim($cos['secretkey']);
         $bucket =  str_replace("-{$cos['appid']}", '', trim($cos['bucket']));
