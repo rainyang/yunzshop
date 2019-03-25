@@ -237,7 +237,7 @@ class LevelUpgradeService
 
         if ($this->memberModel->save()) {
             //会员等级升级触发事件
-            event(new MemberLevelUpgradeEvent($this->memberModel));
+            event(new MemberLevelUpgradeEvent($this->memberModel,false));
             $this->notice();
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {
