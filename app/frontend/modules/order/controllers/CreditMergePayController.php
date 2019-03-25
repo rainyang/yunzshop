@@ -65,8 +65,8 @@ class CreditMergePayController extends MergePayController
          $share_bool = ShareCouponService::showIndex($orderPay->order_ids);
 
          if ($share_bool) {
-             $ids = rtrim(implode(',', $orderPay->order_ids), ',');
-             redirect(Url::absoluteApp('couponShare/order_ids'.$ids, ['i' => \YunShop::app()->uniacid]))->send();
+             $ids = rtrim(implode('_', $orderPay->order_ids), '_');
+             redirect(Url::absoluteApp('couponShare/'.$ids, ['i' => \YunShop::app()->uniacid]))->send();
          }
 
 

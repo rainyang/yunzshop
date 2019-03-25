@@ -143,7 +143,7 @@ class ShareCouponController extends ApiController
     protected function getData()
     {
 
-        $order_ids = explode(',', rtrim(\YunShop::request()->order_ids, ','));
+        $order_ids = explode('_', rtrim(\YunShop::request()->order_ids, '_'));
 
         $share_model = ShoppingShareCoupon::whereIn('order_id', $order_ids)->get();
 

@@ -135,7 +135,11 @@ class ShareCouponService
     public static function showIndex($order_ids)
     {
         if (!is_array($order_ids)) {
-            $order_ids = explode(',', rtrim($order_ids, ','));
+            if (strpos($order_ids, '_') !== false) {
+                $order_ids = explode('_', rtrim($order_ids, '_'));
+            } else {
+                $order_ids = explode(',', rtrim($order_ids, ','));
+            }
         }
 
         $share_model = ShoppingShareCoupon::whereIn('order_id', $order_ids)->get();
