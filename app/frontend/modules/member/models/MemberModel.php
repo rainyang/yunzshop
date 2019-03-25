@@ -525,11 +525,11 @@ class MemberModel extends Member
 
         $extend = 'png';
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
-        $path = storage_path('app/public/qr/');
+        $path = \Storage::url('app/public/qr/');
 
         QrCode::format($extend)->size(400)->generate($url,  $path . $filename);
 
-        return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . $filename;
+        return request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $filename;
     }
 
     /**
