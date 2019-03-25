@@ -253,6 +253,7 @@ class AllUploadController extends BaseController
                 $data['last_page'] = $list['last_page'];
                 $data['prev_page_url'] = $list['prev_page_url'];
                 $data['next_page_url'] = $list['next_page_url'];
+                $data['current_page'] = $list['current_page'];
                 $data['from'] = $list['from'];
                 $data['to'] = $list['to'];
                 $data['data'][] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
