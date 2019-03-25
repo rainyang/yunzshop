@@ -147,7 +147,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">领取页面Banner</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享Banner图</label>
                         <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
                             {!! app\common\helpers\ImageHelper::tplFormFieldImage('coupon[shopping_share][banner]', $coupon['shopping_share']['banner']) !!}
                             {{--<span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>--}}
@@ -156,6 +156,22 @@
                                     <img src="{{tomedia($coupon['shopping_share']['banner'])}}" style='width:100px;border:1px solid #ccc;padding:1px' />
                                 </a>
                             @endif--}}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享标题</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="coupon[shopping_share][share_title]" class="form-control" value="{{$coupon['shopping_share']['share_title']}}">
+                            <span class="help-block">如果不填写，默认为商城名称</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享描述</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <textarea name="coupon[shopping_share][share_desc]" class="form-control">{{$coupon['shopping_share']['share_desc']}}</textarea>
+                            <span class="help-block">如果不填写，默认为空</span>
                         </div>
                     </div>
 

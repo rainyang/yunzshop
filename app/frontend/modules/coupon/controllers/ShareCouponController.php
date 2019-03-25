@@ -57,7 +57,7 @@ class ShareCouponController extends ApiController
 
 
         $data = [
-            'banner' => $this->set['banner'],
+            'set' => $this->set,
             'share_limit' => $share_limit,
             'coupon_num' => $this->share_model->sum('coupon_num'),
         ];
@@ -88,7 +88,7 @@ class ShareCouponController extends ApiController
 
 
         $data = [
-            'banner' => $this->set['banner'],
+            'set' =>  $this->set,
             'member_name' => $this->member->nickname?:$this->member->realname,
             'code' => $result['state'],
             'mag'  => $result['msg'],
