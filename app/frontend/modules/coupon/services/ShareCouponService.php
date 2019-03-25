@@ -30,7 +30,7 @@ class ShareCouponService
 
         $lastTotal = $couponModel->total - $getTotal;
 
-        $share_log = ShoppingShareCouponLog::uniacid()->shareUid($share_model->member_id)->receiveUid(\YunShop::app()->getMemberId())->first();
+        $share_log = ShoppingShareCouponLog::uniacid()->shareCouponId($share_model->id)->shareUid($share_model->member_id)->receiveUid(\YunShop::app()->getMemberId())->first();
 
         if ($share_log) {
             return self::toData('RT', '以领取不可重复领取');

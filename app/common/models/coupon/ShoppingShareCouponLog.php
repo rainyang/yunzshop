@@ -80,6 +80,12 @@ class ShoppingShareCouponLog extends BaseModel
         return $query->where('receive_uid', $uid);
     }
 
+    //领取者
+    public function scopeShareCouponId(Builder $query, $share_coupon_id)
+    {
+        return $query->where('share_coupon_id', $share_coupon_id);
+    }
+
 
     public function shareMember()
     {
