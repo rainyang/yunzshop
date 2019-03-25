@@ -79,7 +79,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::get('index', 'AdminUserController@index');
+        Route::post('index', 'AdminUserController@index');
         // 添加用户
         Route::any('create', 'AdminUserController@create');
         // 用户编辑
@@ -89,9 +89,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 用户修改密码
         Route::post('change', 'AdminUserController@change');
         // 平台列表
-        Route::get('app_list', 'AdminUserController@applicationList');
+        Route::post('app_list', 'AdminUserController@applicationList');
         // 店员用户列表
-        Route::get('clerk_list', 'AdminUserController@clerkList');
+        Route::post('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
