@@ -248,8 +248,10 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->where(function($query) {
                 $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-            })->orderBy($order_field, $order_by)
+            })->groupBy('yz_goods.id')
+            ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
+
 
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
