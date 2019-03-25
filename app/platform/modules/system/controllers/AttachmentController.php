@@ -271,33 +271,33 @@ class AttachmentController extends BaseController
     public function cos()
     {
         $cos = request()->cos;
-        switch($cos['url']) {
+        switch($cos['local']) {
             case '华北':
-                $cos['url'] = 'tj';
+                $cos['local'] = 'tj';
                 break;
             case '华东':
-                $cos['url'] = 'sh';
+                $cos['local'] = 'sh';
                 break;
             case '华南':
-                $cos['url'] = 'gz';
+                $cos['local'] = 'gz';
                 break;
             case '西南':
-                $cos['url'] = 'cd';
+                $cos['local'] = 'cd';
                 break;
             case '北京':
-                $cos['url'] = 'bj';
+                $cos['local'] = 'bj';
                 break;
             case '新加坡':
-                $cos['url'] = 'sgp';
+                $cos['local'] = 'sgp';
                 break;
             case '香港':
-                $cos['url'] = 'hk';
+                $cos['local'] = 'hk';
                 break;
             case '多伦多':
-                $cos['url'] = 'ca';
+                $cos['local'] = 'ca';
                 break;
             case '法兰克福':
-                $cos['url'] = 'ger';
+                $cos['local'] = 'ger';
                 break;
         }
 
