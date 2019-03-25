@@ -227,13 +227,14 @@ class AttachmentController extends BaseController
     public function oss()
     {
         $alioss = request()->alioss;
+
         $secret = strexists($alioss['secret'], '*') ? $this->remote['alioss']['secret'] : $alioss['secret'];
         $buckets = attachment_alioss_buctkets($alioss['key'], $secret);
         list($bucket, $url) = explode('@@', $alioss['bucket']);
 
         $result = attachment_newalioss_auth($alioss['key'], $secret, $bucket, $alioss['internal']);
         if (is_error($result)) {
-            return $this->error('OSS-Access Key ID 或 OSS-Access Key Secret错误，请重新填写');
+            return $this->errorJson('OSS-Access Key ID 或 OSS-Access Key Secret错误，请重新填写');
         }
         $ossurl = $buckets[$bucket]['location'].'.aliyuncs.com';
         if ($alioss['url']) {

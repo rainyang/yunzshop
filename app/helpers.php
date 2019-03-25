@@ -218,15 +218,24 @@ if (!function_exists("tomedia")) {
             return $src;
         }
 
-        if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
-            if (env('APP_Framework') == 'platform') {
-                $src = request()->getSchemeAndHttpHost() . '/' . $src;
+        if (env('APP_Framework') == 'platform') {
+            $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
+            dd(file_exists(base_path() . '/static/upload/' . $src));
+
+            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
+                $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
             } else {
-                $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+                $src = $remote['cos']['url']. $src;
             }
+
         } else {
-            $src = YunShop::app()->attachurl_remote . $src;
+            if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+                $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            } else {
+                $src = YunShop::app()->attachurl_remote . $src;
+            }
         }
+
         return $src;
     }
 }
@@ -1134,8 +1143,6 @@ if (!function_exists('file_remote_upload')) {
             return false;
         }
         if ($remote['type'] == '2') {
-//            load()->library('oss');
-//            load()->model('attachment');
             $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
             $host_name = $remote['alioss']['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
             $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
@@ -1150,12 +1157,10 @@ if (!function_exists('file_remote_upload')) {
             }
         } elseif ($remote['type'] == '4') {
             if ($remote['cos']['local']) {
-//                load()->library('cos');
-                qcloudcos\Cosapi::setRegion($remote['cos']['local']);
-                $uploadRet = qcloudcos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             } else {
-//                load()->library('cosv3');
-                $uploadRet = \Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
             if ($uploadRet['code'] != 0) {
                 $message = '';
@@ -1892,7 +1897,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {

@@ -1,6 +1,6 @@
 <?php
+namespace app\common\services\cos\Qcloud_cos;
 
-namespace app\common\services\Qcloud_cos;
 
 function my_curl_reset($handler)
 {

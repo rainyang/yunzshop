@@ -54,7 +54,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 附件设置-远程设置-阿里云搜索bucket
         Route::post('bucket', 'AttachmentController@bucket');
         // 附件设置-远程设置-测试阿里云配置
-        Route::post('oss', 'AttachmentController@oss');
+        Route::any('oss', 'AttachmentController@oss');
         // 附件设置-远程设置-测试腾讯云配置
         Route::post('cos', 'AttachmentController@cos');
         // 系统升级
