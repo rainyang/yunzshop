@@ -62,7 +62,7 @@ class CreditMergePayController extends MergePayController
             $redirect = $trade['redirect_url'];
         }
 
-         $share_bool = ShareCouponService::showIndex($orderPay->order_ids);
+         $share_bool = ShareCouponService::showIndex($orderPay->order_ids, \YunShop::app()->getMemberId());
 
          if ($share_bool) {
              $ids = rtrim(implode('_', $orderPay->order_ids), '_');

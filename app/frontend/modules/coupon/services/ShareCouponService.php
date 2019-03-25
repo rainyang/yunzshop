@@ -134,7 +134,7 @@ class ShareCouponService
      * @param array|string $order_ids
      * @return bool
      */
-    public static function showIndex($order_ids)
+    public static function showIndex($order_ids,$member_id)
     {
         if (!is_array($order_ids)) {
             if (strpos($order_ids, '_') !== false) {
@@ -145,7 +145,7 @@ class ShareCouponService
         }
 
         $share_model = ShoppingShareCoupon::whereIn('order_id', $order_ids)->get();
-        $member = Member::with(['yzMember'])->find(\YunShop::app()->getMemberId());
+        $member = Member::with(['yzMember'])->find($member_id);
 
         if ($share_model->isEmpty() || (!$member)) {
             return false;
