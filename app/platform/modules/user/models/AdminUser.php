@@ -245,7 +245,7 @@ class AdminUser extends Authenticatable
      * @param boolean $numeric 是否为纯数字
      * @return string
      */
-    private static function randNum($length, $numeric = FALSE) {
+    protected static function randNum($length, $numeric = FALSE) {
         $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
         $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
         if ($numeric) {

@@ -8,6 +8,12 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('register', 'RegisterController@showRegistrationForm')->name('admin.register');
     Route::post('register', 'RegisterController@register');
 
+    Route::any('changePwd', 'ResetpwdController@changePwd'); //修改密码
+    Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
+    Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
+
+
+
     Route::get('/', 'IndexController@index');
 });
 
@@ -43,8 +49,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('site', 'SiteController@index');
         // 附件设置-全局设置
         Route::any('globals', 'AttachmentController@globals');
-        // 附件设置-远程设置
+         // 附件设置-远程设置
         Route::any('remote', 'AttachmentController@remote');
+        // 附件设置-远程设置-阿里云搜索bucket
+        Route::post('bucket', 'AttachmentController@bucket');
+        // 附件设置-远程设置-测试阿里云配置
+        Route::post('oss', 'AttachmentController@oss');
+        // 附件设置-远程设置-测试腾讯云配置
+        Route::post('cos', 'AttachmentController@cos');
         // 系统升级
         Route::any('update/index', 'UpdateController@index');
         // 检查更新
@@ -55,6 +67,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('update/pirate', 'UpdateController@pirate');
         // 初始程序
         Route::any('update/startDownload', 'UpdateController@startDownload');
+        Route::any('sms', 'AttachmentController@sms');
         /* 上传 */
         // 图片
         Route::any('upload/upload', 'UploadController@upload');
@@ -65,19 +78,19 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::any('index', 'AdminUserController@index');
+        Route::get('index', 'AdminUserController@index');
         // 添加用户
         Route::any('create', 'AdminUserController@create');
         // 用户编辑
         Route::any('edit', 'AdminUserController@edit');
         // 用户修改状态
-        Route::any('status', 'AdminUserController@status');
+        Route::post('status', 'AdminUserController@status');
         // 用户修改密码
-        Route::any('change', 'AdminUserController@change');
+        Route::post('change', 'AdminUserController@change');
         // 平台列表
-        Route::any('app_list', 'AdminUserController@applicationList');
+        Route::get('app_list', 'AdminUserController@applicationList');
         // 店员用户列表
-        Route::any('clerk_list', 'AdminUserController@clerkList');
+        Route::get('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
@@ -97,9 +110,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
 		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传
         Route::post('all/upload/', 'AllUploadController@upload');
+        //本地图片列表
+        Route::any('all/list/', 'AllUploadController@getLocalList');
+
 		// Route::post('application/upload/', 'ApplicationController@upload');
-		Route::any('application/temp/', 'ApplicationController@temp');
-        Route::any('application/test/', 'ApplicationController@test');
+		Route::any('app/temp/', 'ApplicationController@temp');
+        Route::any('application/test/', 'ApplicationController@upload');
+        
+        Route::any('all/test/', 'AllUploadController@ossTest');
 
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');

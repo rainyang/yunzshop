@@ -1,6 +1,5 @@
 <?php
-
-namespace app\common\services\qcloudcos;
+namespace app\common\services\qcloud;
 
 
 class Conf {

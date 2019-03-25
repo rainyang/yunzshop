@@ -1025,7 +1025,7 @@ if (!function_exists('safe_gpc_path')) {
         $path = safe_gpc_string($value);
         $path = str_replace(array('..', '..\\', '\\\\' ,'\\', '..\\\\'), '', $path);
 
-        if (empty($path) || $path != $value) {
+        if (!$path || $path != $value) {
             $path = $default;
         }
 
@@ -1242,7 +1242,7 @@ if (!function_exists('safe_gpc_html')) {
         $value = safe_bad_str_replace($value);
 
         $value = safe_remove_xss($value);
-        if (empty($value) && $value != $default) {
+        if (!$value && $value != $default) {
             $value = $default;
         }
         return $value;
@@ -1252,7 +1252,7 @@ if (!function_exists('safe_gpc_html')) {
 if (!function_exists('safe_bad_str_replace')) {
     function safe_bad_str_replace($string)
     {
-        if (empty($string)) {
+        if (!$string) {
             return '';
         }
         $badstr = array("\0", "%00", "%3C", "%3E", '<?', '<%', '<?php', '{php', '../');
@@ -1279,7 +1279,7 @@ if (!function_exists('safe_remove_xss')) {
         preg_match_all('/href=[\'|\"](.*?)[\'|\"]|src=[\'|\"](.*?)[\'|\"]/i', $val, $matches);
         $url_list = array_merge($matches[1], $matches[2]);
         $encode_url_list = array();
-        if (!empty($url_list)) {
+        if ($url_list) {
             foreach ($url_list as $key => $url) {
                 $val = str_replace($url, 'we7_' . $key . '_we7placeholder', $val);
                 $encode_url_list[] = $url;
@@ -1311,7 +1311,7 @@ if (!function_exists('safe_remove_xss')) {
                 }
             }
         }
-        if (!empty($encode_url_list) && is_array($encode_url_list)) {
+        if ($encode_url_list && is_array($encode_url_list)) {
             foreach ($encode_url_list as $key => $url) {
                 $val = str_replace('we7_' . $key . '_we7placeholder', $url, $val);
             }
@@ -1365,7 +1365,6 @@ if (!function_exists('pagination')) {
         $pdata['tcount'] = $total;
         $pdata['tpage'] = (!$pageSize || $pageSize < 0) ? 1 : intval(ceil($total / $pageSize));
         if ($pdata['tpage'] <= 1) {
-//            dd($pdata['tpage'], $pageSize, $total);
             return '';
         }
         $cindex = $pageIndex;
@@ -1378,7 +1377,7 @@ if (!function_exists('pagination')) {
         $pdata['lindex'] = $pdata['tpage'];
 
         if ($context['isajax']) {
-            if (empty($url)) {
+            if (!$url) {
                 $url = '/index.php/admin/system/upload/image' . '?' . http_build_query($_GET);
             }
             $pdata['faa'] = 'href="javascript:;" page="' . $pdata['findex'] . '" ' . ($callbackfunc ? 'ng-click="' . $callbackfunc . '(\'' . $url . '\', \'' . $pdata['findex'] . '\', this);"' : '');
@@ -1690,9 +1689,9 @@ if (!function_exists('ihttp_response_parse')) {
 
         $split2 = explode("\r\n", $split1[0], 2);
         preg_match('/^(\S+) (\S+) (.*)$/', $split2[0], $matches);
-        $rlt['code'] = !empty($matches[2]) ? $matches[2] : 200;
-        $rlt['status'] = !empty($matches[3]) ? $matches[3] : 'OK';
-        $rlt['responseline'] = !empty($split2[0]) ? $split2[0] : '';
+        $rlt['code'] = $matches[2] ?  : 200;
+        $rlt['status'] = $matches[3] ?  : 'OK';
+        $rlt['responseline'] = $split2[0] ? : '';
         $header = explode("\r\n", $split2[1]);
         $isgzip = false;
         $ischunk = false;
@@ -1702,7 +1701,7 @@ if (!function_exists('ihttp_response_parse')) {
             $value = trim(substr($v, $pos + 1));
             if (is_array($rlt['headers'][$key])) {
                 $rlt['headers'][$key][] = $value;
-            } elseif (!empty($rlt['headers'][$key])) {
+            } elseif ($rlt['headers'][$key]) {
                 $temp = $rlt['headers'][$key];
                 unset($rlt['headers'][$key]);
                 $rlt['headers'][$key][] = $temp;
@@ -1757,7 +1756,7 @@ if (!function_exists('ihttp_response_parse_unchunk')) {
             $str .= substr($tmp, ($pos + $add), $len);
             $tmp = substr($tmp, ($len + $pos + $add));
             $check = trim($tmp);
-        } while (!empty($check));
+        } while ($check);
         unset($tmp);
         return $str;
     }
@@ -1885,9 +1884,9 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
-            app\common\services\qcloudcos\Cosapi:: setRegion($bucket_local);
-            app\common\services\qcloudcos\Cosapi:: setTimeout(180);
-            $uploadRet = app\common\services\qcloudcos\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
+            \app\common\services\qcloud\Cosapi::setTimeout(180);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -1899,7 +1898,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = app\common\services\Qcloud_cos\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {
@@ -1934,7 +1933,7 @@ if (!function_exists('attachment_cos_auth')) {
 if (!function_exists('file_tree')) {
     function file_tree($path, $include = array()) {
         $files = array();
-        if (!empty($include)) {
+        if ($include) {
             $ds = glob($path . '/{' . implode(',', $include) . '}', GLOB_BRACE);
         } else {
             $ds = glob($path . '/*');
@@ -1959,7 +1958,7 @@ if (!function_exists('file_tree')) {
 
 if (!function_exists('file_delete')) {
     function file_delete($file) {
-        if (empty($file)) {
+        if (!$file) {
             return false;
         }
         if (file_exists($file)) {
@@ -2018,5 +2017,29 @@ if (!function_exists('attachment_alioss_datacenters')) {
         );
 
         return $bucket_datacenter;
+    }
+}
+
+if (!function_exists('attachment_newalioss_auth')) {
+    function attachment_newalioss_auth($key, $secret, $bucket, $internal = false)
+    {
+        $buckets = attachment_alioss_buctkets($key, $secret);
+        $host = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
+        $url = 'http://' . $buckets[$bucket]['location'] . $host;
+        $filename = 'MicroEngine.ico';
+        try {
+            $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/images/global/' . $filename);
+        } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+            return error(1, $e->getMessage());
+        }
+        return 1;
+    }
+}
+
+if (!function_exists('getimagesizefromstring')) {
+    function getimagesizefromstring($string_data) {
+        $uri = 'data://application/octet-stream;base64,'  . base64_encode($string_data);
+        return getimagesize($uri);
     }
 }
