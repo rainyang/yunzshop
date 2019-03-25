@@ -114,6 +114,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::post('all/upload/', 'AllUploadController@upload');
         //本地图片列表
         Route::any('all/list/', 'AllUploadController@getLocalList');
+        //删除图片列表中的数据
+        Route::any('all/delImg/', 'AllUploadController@delLocalImg');
 
 		// Route::post('application/upload/', 'ApplicationController@upload');
 		Route::any('app/temp/', 'ApplicationController@temp');

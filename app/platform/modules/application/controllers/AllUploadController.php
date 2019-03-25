@@ -262,6 +262,22 @@ class AllUploadController extends BaseController
         return $this->successJson('获取成功', $data);
     }
 
+    public function delLocalImg()
+    {
+        $id = request()->id;
+        
+        $core = new CoreAttach();
+
+        if (!$core->find($id)) {
+            return $this->errorJson('请重新选择');
+        }
+        $res = $core->where('id', $id)->delete();
+        if ($res) {
+            return $this->successJson('删除成功');
+        }
+        return $this->errorJson('删除失败');
+    }
+
     //腾讯云上传
     public function CosUpload($file, $setting, $file_type)
     {
