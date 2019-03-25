@@ -26,15 +26,6 @@ class ResetpwdController extends BaseController
             return $this->errorJson('请填入手机号');
         }
 		
-		$captcha_status = SystemSetting::settingLoad('sms', 'system_sms');
-        // if ($captcha_status == 1) {
-		dd(app('captcha')->getCaptcha);
-            if ( app('captcha')->check(Input::get('captcha')) == false) {
-                return $this->errorJson('验证码错误');
-            }
-        // }
-        dd('w');
-
         $code = rand(1000, 9999);
 
         Cache::put($mobile.'_code', $code, 60 * 10);
