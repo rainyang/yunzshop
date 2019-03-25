@@ -350,6 +350,5 @@ class AttachmentController extends BaseController
                 }
             }
         }
-        return View('system.sms');
     }
 }
