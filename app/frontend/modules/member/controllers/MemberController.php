@@ -957,7 +957,7 @@ class MemberController extends ApiController
                 if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
                     $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(),
                         $posterModel->id))->getMemberPosterPath();
-                    return request()->getSchemeAndHttpHost() . '/' . substr($file_path, strpos($file_path, 'addons'));
+                    return request()->getSchemeAndHttpHost() . '/' . config('app.webPath') . $file_path;
                 }
             }
         }
