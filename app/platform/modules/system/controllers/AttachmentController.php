@@ -227,13 +227,14 @@ class AttachmentController extends BaseController
     public function oss()
     {
         $alioss = request()->alioss;
+
         $secret = strexists($alioss['secret'], '*') ? $this->remote['alioss']['secret'] : $alioss['secret'];
         $buckets = attachment_alioss_buctkets($alioss['key'], $secret);
         list($bucket, $url) = explode('@@', $alioss['bucket']);
 
         $result = attachment_newalioss_auth($alioss['key'], $secret, $bucket, $alioss['internal']);
         if (is_error($result)) {
-            return $this->error('OSS-Access Key ID 或 OSS-Access Key Secret错误，请重新填写');
+            return $this->errorJson('OSS-Access Key ID 或 OSS-Access Key Secret错误，请重新填写');
         }
         $ossurl = $buckets[$bucket]['location'].'.aliyuncs.com';
         if ($alioss['url']) {
@@ -270,6 +271,35 @@ class AttachmentController extends BaseController
     public function cos()
     {
         $cos = request()->cos;
+        switch($cos['local']) {
+            case '华北':
+                $cos['local'] = 'tj';
+                break;
+            case '华东':
+                $cos['local'] = 'sh';
+                break;
+            case '华南':
+                $cos['local'] = 'gz';
+                break;
+            case '西南':
+                $cos['local'] = 'cd';
+                break;
+            case '北京':
+                $cos['local'] = 'bj';
+                break;
+            case '新加坡':
+                $cos['local'] = 'sgp';
+                break;
+            case '香港':
+                $cos['local'] = 'hk';
+                break;
+            case '多伦多':
+                $cos['local'] = 'ca';
+                break;
+            case '法兰克福':
+                $cos['local'] = 'ger';
+                break;
+        }
 
         $secretkey = strexists($cos['secretkey'], '*') ? $this->remote['cos']['secretkey'] : trim($cos['secretkey']);
         $bucket =  str_replace("-{$cos['appid']}", '', trim($cos['bucket']));

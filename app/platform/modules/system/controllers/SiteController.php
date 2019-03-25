@@ -16,7 +16,7 @@ class SiteController extends BaseController
     public function index()
     {
         $set_data = request()->setdata;
-        $copyright = SystemSetting::settingLoad('copyright', 'system_copyright');
+        $copyright = SystemSetting::settingLoad('remote', 'system_copyright');
 
         if ($set_data) {
             $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
@@ -26,6 +26,8 @@ class SiteController extends BaseController
                 return $this->errorJson('失败', '');
             }
         }
+
+        return view('system.site');
 
         if ($copyright) {
             return $this->successJson('成功', $copyright);
