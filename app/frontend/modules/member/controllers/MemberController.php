@@ -1663,6 +1663,9 @@ class MemberController extends ApiController
             }
         }
 
+
+        //return $this->successJson('ok', $data);
+
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
             $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
@@ -1681,6 +1684,7 @@ class MemberController extends ApiController
 
         
         return $this->successJson('ok', $arr);
+
     }
 
 
