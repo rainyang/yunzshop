@@ -244,7 +244,7 @@ class AllUploadController extends BaseController
         
         $list = $core->paginate()->toArray();
 
-        foreach ($list['data'] as $v) {
+        foreach ($list['data'] as $k => $v) {
 
             if ($v['attachment']) {
 
@@ -256,7 +256,8 @@ class AllUploadController extends BaseController
                 $data['current_page'] = $list['current_page'];
                 $data['from'] = $list['from'];
                 $data['to'] = $list['to'];
-                $data['data'][] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['data'][$k]['id'] = $v['id'];
+                $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
             }
         }
 
