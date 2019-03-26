@@ -74,17 +74,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
             $this->paymentAmount = max($this->paymentAmount, 0);
 
         }
-//        $this->paymentAmount = $this->getPrice();
-//
-//        $this->paymentAmount -= $this->getSingleEnoughReduceAmount();
-//        $this->paymentAmount -= $this->getEnoughReduceAmount();
-//
-//        $this->paymentAmount -= $this->getCouponAmount();
-//        $this->paymentAmount -= $this->getDeductionAmount();
-//
-//        $this->paymentAmount = max($this->paymentAmount, 0);
-//        $result = $this->paymentAmount;
-//        unset($this->paymentAmount);
+
         return $this->paymentAmount;
     }
 
@@ -101,10 +91,10 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         ])->map(function (BaseDiscount $discount) {
             return new OrderGoodsDiscountPriceNode($this, $discount, 2000);
         });
-        $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2000));
+        $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2100));
         // 订单抵扣节点
         $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction){
-            return new OrderGoodsDeductionPriceNode($this, $preOrderGoodsDeduction, 2100);
+            return new OrderGoodsDeductionPriceNode($this, $preOrderGoodsDeduction, 2200);
 
         });
         // 按照weight排序

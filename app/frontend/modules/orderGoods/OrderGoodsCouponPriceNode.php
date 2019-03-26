@@ -26,7 +26,7 @@ class OrderGoodsCouponPriceNode extends BaseOrderGoodsPriceNode
      */
     function getPrice()
     {
-        return $this->orderGoodsPrice->getPriceBefore($this->getKey()) + $this->orderGoodsPrice->getCouponAmount();
+        return $this->orderGoodsPrice->getPriceBefore($this->getKey()) - $this->orderGoodsPrice->getCouponAmount();
     }
 
 }
