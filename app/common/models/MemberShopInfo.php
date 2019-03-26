@@ -68,6 +68,8 @@ class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
 
+    protected $connection = 'mysql';
+
     protected $table = 'yz_member';
 
     protected $guarded = [''];
