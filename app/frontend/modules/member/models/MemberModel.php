@@ -527,7 +527,7 @@ class MemberModel extends Member
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
         $path = \Storage::url('app/public/qr/');
 
-        QrCode::format($extend)->size(400)->generate($url,  $path . $filename);
+        QrCode::format($extend)->size(400)->generate($url,  base_path($path) . $filename);
 
         return request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $filename;
     }
@@ -764,7 +764,7 @@ class MemberModel extends Member
         self::createDir(storage_path('app/public/avatar'));
 
         $member_info['qr'] = self::getAgentQR();
-        $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . '/addons/yun_shop/storage/app/public/avatar/';
+        $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . config('app.webPath') . \Storage::url('app/public/avatar/');
 
         $shop = \Setting::get('shop.shop');
         $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';

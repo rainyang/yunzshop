@@ -204,8 +204,7 @@ class GoodsPosterController extends ApiController
     //商城logo 与 商城名称处理
     protected function createShopImage($target)
     {
-
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         $font = "source_han_sans";
         //计算商城名称的宽度
         $testbox = imagettfbbox($this->shopText['size'], 0, $font, $this->shopSet['name']);
@@ -303,7 +302,7 @@ class GoodsPosterController extends ApiController
      */
     private function mergeText($target, $params, $text)
     {
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         $font = "source_han_sans";
 
         // $font="c:/windows/fonts/simhei.ttf";
@@ -327,7 +326,7 @@ class GoodsPosterController extends ApiController
 
         $color  = imagecolorallocate($target, 107, 107, 107);
 
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         
         $font = "source_han_sans";
 
@@ -433,6 +432,11 @@ class GoodsPosterController extends ApiController
         $src = 'https://'.ltrim($src, '//');
         
         return $src;
+    }
+
+    private function writeEnv()
+    {
+        putenv('GDFONTPATH='.base_path('static/fonts'));
     }
 
 }

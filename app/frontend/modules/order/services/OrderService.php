@@ -58,12 +58,12 @@ class OrderService
                 'goods_option_id' => (int)$memberCart->option_id,
                 'total' => (int)$memberCart->total,
             ];
-            $orderGoods =  app('OrderManager')->make('PreOrderGoods', $data);
+            $orderGoods = app('OrderManager')->make('PreOrderGoods', $data);
             /**
              * @var PreOrderGoods $orderGoods
              */
-            $orderGoods->setRelation('goods',$memberCart->goods);
-            $orderGoods->setRelation('goodsOption',$memberCart->goodsOption);
+            $orderGoods->setRelation('goods', $memberCart->goods);
+            $orderGoods->setRelation('goodsOption', $memberCart->goodsOption);
             return $orderGoods;
         });
 
@@ -112,8 +112,8 @@ class OrderService
     {
         if (!isset($orderOperation)) {
             throw new AppException('未找到该订单');
-        }        
-        DB::transaction(function() use($orderOperation) {
+        }
+        DB::transaction(function () use ($orderOperation) {
             $orderOperation->handle();
         });
     }
@@ -156,6 +156,7 @@ class OrderService
 
         return self::OrderOperate($orderOperation);
     }
+
     /**
      * 强制关闭订单
      * @param $param
@@ -168,6 +169,7 @@ class OrderService
 
         return self::OrderOperate($orderOperation);
     }
+
     /**
      * 用户删除(隐藏)订单
      * @param $param
@@ -363,6 +365,23 @@ class OrderService
                 //dd($order->send_time);
                 OrderService::orderClose(['order_id' => $order->id]);
             });
+        }
+    }
+
+    /**
+     * @param $order
+     * @throws AppException
+     */
+    public static function fixVirtualOrder($order)
+    {
+        \YunShop::app()->uniacid = $order['uniacid'];
+        \Setting::$uniqueAccountId = $order['uniacid'];
+
+        if ($order['status'] == 1) {
+            OrderService::orderSend(['order_id' => $order['id']]);
+        }
+        if ($order['status'] == 2) {
+            OrderService::orderReceive(['order_id' => $order['id']]);
         }
     }
 }
