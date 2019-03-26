@@ -198,22 +198,10 @@ class AllUploadController extends BaseController
             $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
 
             if ($res) {
-                //存储至数据表中
-                $core = new \app\platform\modules\application\models\CoreAttach;
-
-                $d = [
-                    'uniacid' => \YunShop::app()->uniacid ? : 0,
-                    'uid' => \Auth::guard('admin')->user()->uid,
-                    'filename' => $originalName,
-                    'type' => $file_type == 'syst' ? 1 : 2, //类型1.图片; 2.音乐
-                    'attachment' => $newOriginalName
-                ];
-
-                $core->fill($d);
-                $validate = $core->validator();
-
-                if (!$validate->fails()) {
-                    $core->save();
+                
+                $log = $this->getData($originalName, $file_type, \Storage::disk($file_type)->url().$newOriginalName, 0);
+                if ($log != 1) {
+                    \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newOriginalName]);
                 }
             }
             
@@ -279,11 +267,48 @@ class AllUploadController extends BaseController
         if (!$core->find($id)) {
             return $this->errorJson('请重新选择');
         }
-        $res = $core->where('id', $id)->delete();
+        $detail = $core->find($id);
+
+        if ($detail['upload_type']== 2) {
+
+
+        } elseif ($detail['upload_type'] == 4) {
+
+        } else {
+            //删除文件
+        }
+
+        $res = $core->where('id', $id)->delete();  //删除数据
         if ($res) {
             return $this->successJson('删除成功');
         }
         return $this->errorJson('删除失败');
+    }
+    //上传记录表
+    public function getData($originalName, $file_type, $newOriginalName, $save_type)
+    {
+        //存储至数据表中
+        $core = new CoreAttach;
+
+        $d = [
+            'uniacid' => \YunShop::app()->uniacid ? : 0,
+            'uid' => \Auth::guard('admin')->user()->uid,
+            'filename' => $originalName,
+            'type' => $file_type == 'syst' ? 1 : 2, //类型1.图片; 2.音乐
+            'attachment' => $newOriginalName,
+            'upload_type' => $save_type
+        ];
+
+        $core->fill($d);
+        $validate = $core->validator();
+
+        if (!$validate->fails()) {
+            
+            if ($core->save()) {
+                return 1;
+            }
+        } 
+        return $validate->messages();
     }
 
     //腾讯云上传
@@ -314,10 +339,14 @@ class AllUploadController extends BaseController
 
         \Log::info('cos_upload_path: origin_path', [$truePath.$newFileName, file_get_contents($realPath)]);
 
-        $res = $cos->upload($setting['bucket'], file_get_contents($realPath), $truePath.$newFileName);  //执行上传
+        $res = $cos->upload($setting['bucket'], $truePath.$newFileName, file_get_contents($realPath));  //执行上传
         // $res = $cos->upload($setting['bucket'], $realPath.'/'.$originalName, $truePath.$newFileName, '', 1);  //执行上传
         \Log::info('cos_upload_res:', $res);
 
+        $log = $this->getData($originalName, $file_type, $truePath.$newFileName, 4);
+        if ($log != 1) {
+            \Log::info('新框架腾讯云上传存储失败', [$originalName, $truePath.$newFileName]);
+        }
         //检查 object 及服务器路径 权限
         // if ($res['code'] == 0 && $res['message'] == 'SUCCESS') { //V4版本
         if ($res['ETag']) {
@@ -406,6 +435,13 @@ class AllUploadController extends BaseController
             \Log::info('AliOss_res, and Content', [$res, file_get_contents($realPath)]);
         
         if ($res['info']['http_code'] == 200) {
+
+            $log = $this->getData($originalName, $file_type, $truePath, 2);
+
+            if ($log != 1) {
+                \Log::info('新框架阿里云上传存储失败', [$originalName, $truePath]);
+            }
+
             //检查 object bucket 权限
             if ($oss->getBucketAcl($setting['bucket']) == 'private' || $oss->getObjectAcl($setting['bucket'], $object) == 'private') {
                 //私有时访问加签
@@ -509,11 +545,30 @@ class AllUploadController extends BaseController
 
         $res = $cos->upload( 
             config('filesystems.disks.cos.bucket'),
-            'D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg',
-            'test/'.date('Y').'/'.$newFileName
+            'test/'.date('Y').'/'.$newFileName,
+            fopen('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', 'rb')
+            // $options = array('ContentType' => 'image/jpeg')
             // $path.$newName
         );
-        dd($res);
+                $log = $this->getData($originalName, 'image', 'test/'.date('Y').'/'.$newFileName, 4);
+
+        dd($res, $log);
+        header('Content-Type: image/jpeg');
+        //初始化
+        $curl = curl_init();
+        //设置抓取的url
+        curl_setopt($curl, CURLOPT_URL, $res['Location']);
+        //设置头文件的信息作为数据流输出
+        curl_setopt($curl, CURLOPT_HEADER, 1);
+        //设置获取的信息以文件流的形式返回，而不是直接输出。
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        //执行命令
+        $data = curl_exec($curl);
+        //关闭URL请求
+        curl_close($curl);
+        //显示获得的数据
+        print_r($data);
+        dd('a');
         // $cosApi->;
         $zip = new ImageZip();
         $res = $zip->makeThumb('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', 'D:\wamp\www\shop\storage\app\\'.md5('2w43d3').'.jpeg',  '36%');
