@@ -257,8 +257,10 @@ function yz_tomedia($src, $local_path = false)
 
     if (env('APP_Framework') == 'platform') {
         $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
-        if ($setting = $SystemSetting->getKeyList('remote')) {
-            $setting = $setting->toArray();
+        if ($remote = $SystemSetting->getKeyList('remote')) {
+            $res = $remote->toArray();
+
+            $setting[$res['key']] = unserialize($res['value']);
         }
     } else {
         global $_W;
@@ -308,8 +310,8 @@ function yz_tomedia($src, $local_path = false)
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
-    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(storage_path('static/upload/').$src))) {
-        $src = request()->getSchemeAndHttpHost() .  \Storage::url('static/upload/') . $src;
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('static/upload/').$src))) {
+        $src = request()->getSchemeAndHttpHost() .  '/static/upload/' . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
@@ -1165,9 +1167,9 @@ if (!function_exists('file_remote_upload')) {
             $host_name = $remote['alioss']['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
             $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
             try {
-                $ossClient = new \OSS\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
                 $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . '/static/upload/' . $filename);
-            } catch (\OSS\Core\OssException $e) {
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
             if ($auto_delete_local) {
