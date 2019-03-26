@@ -188,37 +188,38 @@ class MemberRelation
 
     public function change($member_id, $parent_id)
     {
-        $parent_relation = $this->hasRelationOfParent($member_id, 1);
-        $child_relation = $this->hasRelationOfChild($member_id);
+        if ($member_id != $parent_id) {
+            $parent_relation = $this->hasRelationOfParent($member_id, 1);
+            $child_relation = $this->hasRelationOfChild($member_id);
 
-        \Log::debug('------step2-------');
-        $this->map_relaton[] = [$parent_id, $member_id];
+            \Log::debug('------step2-------');
+            $this->map_relaton[] = [$parent_id, $member_id];
 
-        foreach ($child_relation as $rows) {
-            $ids[] = $rows['child_id'];
-        }
+            foreach ($child_relation as $rows) {
+                $ids[] = $rows['child_id'];
+            }
 
-        $memberInfo = MemberShopInfo::getParentOfMember($ids);
+            $memberInfo = MemberShopInfo::getParentOfMember($ids);
 
-        if (count($ids) != count($memberInfo)) {
-            throw new ShopException('关系链修改-数据异常');
-        }
+            if (count($ids) != count($memberInfo)) {
+                throw new ShopException('关系链修改-数据异常');
+            }
 
-        foreach ($ids as $rows) {
-            foreach ($memberInfo as $val) {
-                if ($rows == $val['member_id']) {
-                    $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
+            foreach ($ids as $rows) {
+                foreach ($memberInfo as $val) {
+                    if ($rows == $val['member_id']) {
+                        $this->map_relaton[] = [$val['parent_id'], $val['member_id']];
 
-                    break;
+                        break;
+                    }
                 }
             }
-        }
 
-        file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
-        if ($this->changeMemberOfRelation($member_id, $parent_id)) {
-            return ['status' => 1];
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
+            if ($this->changeMemberOfRelation($member_id, $parent_id)) {
+                return ['status' => 1];
+            }
         }
-
 
         return ['status' => 0];
     }
