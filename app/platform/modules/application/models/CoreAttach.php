@@ -17,6 +17,11 @@ class CoreAttach extends BaseModel
     protected $hidden  = ['deleted_at', 'updated_at'];
     public $timestamps = true;
 
+    // 存储在表中type字段的对应的类型
+    const IMAGE_TYPE = 1;// 图片 1
+    const VOICE_TYPE = 2;// 音频 2
+    const VIDEO_TYPE = 3;// 视频 3
+
     public function scopeSearch($query, $keyword)
     {
         if ($keyword['month'] && $keyword['year']) {
