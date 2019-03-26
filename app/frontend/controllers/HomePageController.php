@@ -494,7 +494,9 @@ class HomePageController extends ApiController
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
                 foreach ($Menu as $key=>$value){
                    // $Menu[$key]['name']=$Menu[$key]['id'];
-                     $Menu[$key]['url'] = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                     $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                      $Menu[$key]['url']= $url?:'';
+
                     //$Menu[$key]['url'] ="/addons/yun_shop/".'?#'.substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"#/")+1)."&mid=" . $mid . "&type=" . $type;
                 }
             }
