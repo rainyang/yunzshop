@@ -48,7 +48,6 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\helpers\Client;
 use app\common\services\plugin\huanxun\HuanxunSet;
 use Symfony\Component\HttpFoundation\Request;
-use Yunshop\Designer\models\Designer;
 class MemberController extends ApiController
 {
     protected $publicAction = [
@@ -845,12 +844,24 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
-        $designerModel = Designer::getDesignerByPageID($_GET['page_id']);
-        $arr=json_decode(htmlspecialchars_decode($designerModel->toArray()['page_info']),true)[0]['params'];
-        if (!empty($arr['title'])){
-            $share['title'] = $arr['title'];
-            $share['desc'] = $arr['desc'];
-            $share['icon'] = $arr['img'];
+        $designer = app('plugins')->isEnabled('designer') ? 1 : 0;
+        if ($designer) {
+            $substr = substr($url, strlen("page_id=") + strpos($url, "page_id="), (strlen($url) - strpos($url, "&i=")) * (-1));
+            $designerModel = \Yunshop\Designer\models\Designer::getDesignerByPageID($substr);
+            if (!empty($designerModel)) {
+                $page_info = $designerModel->toArray()['page_info'];
+                if (!empty($page_info)) {
+                    $arr = json_decode(htmlspecialchars_decode($page_info), true);
+                    if (is_array($arr) && !empty($arr[0]['params']) && !empty($arr[0]['params']['title'])) {
+                        $params = $arr[0]['params'];
+                        if (!empty($params) && !empty($params['title'])) {
+                            $share['title'] = $params['title'];
+                            $share['desc'] = $params['desc'];
+                            $share['icon'] = $params['img'];
+                        }
+                    }
+                }
+            }
         }
         $data = [
             'config' => $config,
