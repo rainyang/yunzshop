@@ -845,7 +845,7 @@ class MemberController extends ApiController
 //            $share['desc'] = "";
 //        }
         if (app('plugins')->isEnabled('designer')) {
-            $substr = substr($url, strlen("page_id=") + strpos($url, "page_id="), (strlen($url) - strpos($url, "&i=")) * (-1));
+            $substr = intval(substr($url, strlen("page_id=") + strpos($url, "page_id="), (strlen($url) - strpos($url, "&i=")) * (-1)));
             $designerModel = \Yunshop\Designer\models\Designer::getDesignerByPageID($substr);
             if (!empty($designerModel)) {
                 $page_info = $designerModel->toArray()['page_info'];
