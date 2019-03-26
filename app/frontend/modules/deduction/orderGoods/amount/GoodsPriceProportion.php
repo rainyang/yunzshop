@@ -21,7 +21,8 @@ class GoodsPriceProportion extends OrderGoodsDeductionAmount
      */
     public function getMaxAmount()
     {
-        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->getPriceBefore($this->getGoodsDeduction()->getCode()) / 100;
+
+        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->getPriceBeforeWeight($this->getGoodsDeduction()->getCode()) / 100;
 
         return max($result,0);
     }
@@ -32,7 +33,8 @@ class GoodsPriceProportion extends OrderGoodsDeductionAmount
      */
     public function getMinAmount()
     {
-        $result = $this->getGoodsDeduction()->getMinPriceProportion() * $this->orderGoods->getPriceBefore($this->getGoodsDeduction()->getCode().'MinDeduction') / 100;
+
+        $result = $this->getGoodsDeduction()->getMinPriceProportion() * $this->orderGoods->getPriceBeforeWeight($this->getGoodsDeduction()->getCode().'MinDeduction') / 100;
 
         return max($result,0);
     }

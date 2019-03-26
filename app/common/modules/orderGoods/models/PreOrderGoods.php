@@ -85,6 +85,15 @@ class PreOrderGoods extends OrderGoods
      * @return mixed
      * @throws AppException
      */
+    public function getPriceBeforeWeight($key)
+    {
+        return $this->getPriceCalculator()->getPriceBeforeWeight($key);
+    }
+    /**
+     * @param $key
+     * @return mixed
+     * @throws AppException
+     */
     public function getPriceAfter($key)
     {
         return $this->getPriceCalculator()->getPriceAfter($key);

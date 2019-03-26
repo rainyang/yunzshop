@@ -76,4 +76,22 @@ trait PriceNodeTrait
         }
         return $this->getPriceAfter($nodeKey);
     }
+    public function getPriceBeforeWeight($key){
+        $weight = 0;
+        foreach ($this->getPriceNodes() as $priceNode) {
+            if ($priceNode->getKey() == $key) {
+                break;
+            }
+            $weight = $priceNode->getWeight();
+        }
+
+        $nodeKey = $this->getPriceNodes()->filter(function ($priceNode) use ($weight){
+            return $priceNode->getWeight() < $weight;
+        })->last()->getKey();
+
+        if (empty($nodeKey)) {
+            throw new AppException("没有比{$weight}更权重更小节点了");
+        }
+        return $this->getPriceAfter($nodeKey);
+    }
 }

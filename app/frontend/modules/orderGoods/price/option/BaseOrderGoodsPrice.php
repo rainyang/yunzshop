@@ -104,7 +104,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2000));
         // 订单抵扣节点
         $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction){
-            return new OrderGoodsDeductionPriceNode($this, $preOrderGoodsDeduction, 2000);
+            return new OrderGoodsDeductionPriceNode($this, $preOrderGoodsDeduction, 2100);
 
         });
         // 按照weight排序
