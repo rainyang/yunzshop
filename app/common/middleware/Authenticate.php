@@ -33,6 +33,9 @@ class Authenticate
             ];
             $url = empty($guard) ? '/login' : (isset($login_path[$guard]) ? $login_path[$guard] : '/login');
 
+            if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+                return redirect()->guest();
+            }
             return $this->errorJson('请登录', ['login_status' => 1, 'login_url' => $url]);
         }
 
