@@ -103,6 +103,7 @@ class Client extends GSClient {
         } else {
             $request = $command->prepare();
         }
+
         return $expires ? $this->createPresignedUrl($request, $expires) : $request->getUrl();
     }
     public function Upload($bucket, $key, $body, $options = array()) {

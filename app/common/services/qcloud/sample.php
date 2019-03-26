@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-$cosClient = new Qcloud\Cos\Client(array(
+$cosClient = new app\common\services\qcloud\Client(array(
     'region' => 'COS_REGION', #地域，如ap-guangzhou,ap-beijing-1
     'credentials' => array(
         'secretId' => 'COS_KEY',
@@ -806,7 +806,7 @@ try {
         $name = $bucket['Name'];
         if (startsWith($name, 'lewzylu')) {
             try {
-                $cosClient2 = new Qcloud\Cos\Client(array(
+                $cosClient2 = new app\common\services\qcloud\Client(array(
                     'region' => $region,
                     'credentials' => array(
                         //getenv为获取本地环境变量，请替换为真实密钥

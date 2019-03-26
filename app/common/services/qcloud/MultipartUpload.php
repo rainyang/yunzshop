@@ -35,6 +35,7 @@ class MultipartUpload {
             }
 
             $body = new ReadLimitEntityBody($this->source, $this->partSize, $this->source->ftell());
+            dd($body);
             if ($body->getContentLength() == 0) {
                 break;
             }
