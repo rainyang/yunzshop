@@ -292,15 +292,12 @@ class AllUploadController extends BaseController
         if (!$setting) {
             return '请配置参数';
         }
+        $config['credentials']['appId'] = $setting['appid'];
+        $config['credentials']['secretId'] = $setting['secretid'];
+        $config['credentials']['secretKey'] = $setting['secretkey'];
+        $config['region'] = $setting['url'];
 
-        $config = [
-            'app_id'     => $setting['appid'],
-            'secret_id'  => $setting['secretid'],
-            'secret_key' => $setting['secretkey'],
-            // 'bucket'     => $setting['bucket'],
-            'region'     => $setting['url']
-        ];
-        $cos = new Api($config);
+        $cos = new Client($config);
         \Log::info('cos_config', [$config, $cos]);
 
         $originalName = $file->getClientOriginalName(); // 文件原名
@@ -319,14 +316,15 @@ class AllUploadController extends BaseController
 
         $res = $cos->upload($setting['bucket'], file_get_contents($realPath), $truePath.$newFileName);  //执行上传
         // $res = $cos->upload($setting['bucket'], $realPath.'/'.$originalName, $truePath.$newFileName, '', 1);  //执行上传
-
         \Log::info('cos_upload_res:', $res);
 
         //检查 object 及服务器路径 权限
-        if ($res['code'] == 0 && $res['message'] == 'SUCCESS') {
+        // if ($res['code'] == 0 && $res['message'] == 'SUCCESS') { //V4版本
+        if ($res['ETag']) {
             // 自定义域名拼接文件名
-            \Log::info('cos_upload_url', $setting['url'].$truePath.$newFileName);
-            return $setting['url'].$truePath.$newFileName;
+            \Log::info('return_url and cos_upload_url', [$res['Location'], $setting['url'].$truePath.$newFileName]);
+            // return $setting['url'].$truePath.$newFileName; 
+            return $res['Location'];
         }
         return '上传失败,请重试';
     }
