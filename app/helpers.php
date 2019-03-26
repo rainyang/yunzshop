@@ -257,8 +257,10 @@ function yz_tomedia($src, $local_path = false)
 
     if (env('APP_Framework') == 'platform') {
         $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
-        if ($setting = $SystemSetting->getKeyList('remote')) {
-            $setting = $setting->toArray();
+        if ($remote = $SystemSetting->getKeyList('remote')) {
+            $res = $remote->toArray();
+
+            $setting[$res['key']] = unserialize($res['value']);
         }
     } else {
         global $_W;
@@ -308,8 +310,8 @@ function yz_tomedia($src, $local_path = false)
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
-    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(storage_path('static/upload/').$src))) {
-        $src = request()->getSchemeAndHttpHost() .  \Storage::url('static/upload/') . $src;
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('static/upload/').$src))) {
+        $src = request()->getSchemeAndHttpHost() .  '/static/upload/' . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
