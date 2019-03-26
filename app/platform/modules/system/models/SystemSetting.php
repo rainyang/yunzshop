@@ -57,12 +57,12 @@ class SystemSetting extends BaseModel
      */
     public static function settingLoad($key = '', $cache_name = '')
     {
-        // if (!Cache::has($cache_name)) {
+         if (!Cache::has($cache_name)) {
             $result = self::getKeyList($key);
-            // Cache::put($cache_name, $result, 3600);
-        // } else {
-            // $result = Cache::get($cache_name);
-        // }
+             Cache::put($cache_name, $result, 3600);
+         } else {
+             $result = Cache::get($cache_name);
+         }
 
         if ($result) {
             $result = unserialize($result['value']);
@@ -73,6 +73,8 @@ class SystemSetting extends BaseModel
 
     public function getKeyList($key)
     {
-        return self::where('key', $key)->first();
+        return Cache::remember('remote:resource', 3600, function () use ($key) {
+            return self::where('key', $key)->first();
+        });
     }
 }

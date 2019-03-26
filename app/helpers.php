@@ -228,17 +228,25 @@ if (!function_exists("tomedia")) {
             return $src;
         }
 
-        if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
-            if (env('APP_Framework') == 'platform') {
-                $src = request()->getSchemeAndHttpHost() . '/' . $src;
-            } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(storage_path('static/upload/').$src))) {
-                $src = request()->getSchemeAndHttpHost() .  \Storage::url('static/upload/') . $src;
+        if (env('APP_Framework') == 'platform') {
+            $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
+            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
+                $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
             } else {
-                $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+                if ($remote['type'] == '2') {
+                    $src = $remote['alioss']['url'] . '/'. $src;
+                } else {
+                    $src = $remote['cos']['url'] . '/'. $src;
+                }
             }
         } else {
-            $src = YunShop::app()->attachurl_remote . $src;
+            if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+                $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            } else {
+                $src = YunShop::app()->attachurl_remote . $src;
+            }
         }
+
         return $src;
     }
 }
@@ -1119,7 +1127,7 @@ if (!function_exists('file_image_thumb')) {
         if ($org_info) {
             if ($width == 0 || $width > $org_info[0]) {
                 copy($srcfile, $desfile);
-                return str_replace(base_path() . '/', '', $desfile);
+                return str_replace(base_path() . '/static/upload/', '', $desfile);
             }
         }
         $scale_org = $org_info[0] / $org_info[1];
@@ -1129,7 +1137,7 @@ if (!function_exists('file_image_thumb')) {
             return false;
         }
 
-        return str_replace(base_path() . '/', '', $desfile);
+        return str_replace(base_path() . '/static/upload/', '', $desfile);
     }
 }
 
@@ -1153,14 +1161,12 @@ if (!function_exists('file_remote_upload')) {
             return false;
         }
         if ($remote['type'] == '2') {
-//            load()->library('oss');
-//            load()->model('attachment');
             $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
             $host_name = $remote['alioss']['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
             $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
             try {
                 $ossClient = new \OSS\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
-                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . $filename);
+                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . '/static/upload/' . $filename);
             } catch (\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
@@ -1169,12 +1175,10 @@ if (!function_exists('file_remote_upload')) {
             }
         } elseif ($remote['type'] == '4') {
             if ($remote['cos']['local']) {
-//                load()->library('cos');
-                qcloudcos\Cosapi::setRegion($remote['cos']['local']);
-                $uploadRet = qcloudcos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($remote['cos']['bucket'], base_path() . '/static/upload/' . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             } else {
-//                load()->library('cosv3');
-                $uploadRet = \Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
             if ($uploadRet['code'] != 0) {
                 $message = '';
@@ -1238,8 +1242,8 @@ if (!function_exists('file_delete')) {
         if (file_exists($file)) {
             @unlink($file);
         }
-        if (file_exists(base_path() . '/' . $file)) {
-            @unlink(base_path() . '/' . $file);
+        if (file_exists(base_path() . '/static/upload/' . $file)) {
+            @unlink(base_path() . '/static/upload/' . $file);
         }
 
         return true;
@@ -1899,7 +1903,7 @@ if (!function_exists('attachment_cos_auth')) {
             file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
             \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
             \app\common\services\qcloud\Cosapi::setTimeout(180);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -1911,7 +1915,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . 'static/upload/images/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {
@@ -1966,22 +1970,6 @@ if (!function_exists('file_tree')) {
         }
 
         return $files;
-    }
-}
-
-if (!function_exists('file_delete')) {
-    function file_delete($file) {
-        if (!$file) {
-            return false;
-        }
-        if (file_exists($file)) {
-            @unlink($file);
-        }
-        if (file_exists(base_path() . '/' . $file)) {
-            @unlink(base_path() . '/' . $file);
-        }
-
-        return true;
     }
 }
 
@@ -2042,7 +2030,7 @@ if (!function_exists('attachment_newalioss_auth')) {
         $filename = 'MicroEngine.ico';
         try {
             $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
-            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/images/global/' . $filename);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/global/' . $filename);
         } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
             return error(1, $e->getMessage());
         }
@@ -2054,5 +2042,49 @@ if (!function_exists('getimagesizefromstring')) {
     function getimagesizefromstring($string_data) {
         $uri = 'data://application/octet-stream;base64,'  . base64_encode($string_data);
         return getimagesize($uri);
+    }
+}
+
+if (!function_exists('buildCustomPostFields')) {
+
+    /**
+     * Build custom post fields for safe multipart POST request for php before 5.5.
+     * @param $fields array of key -> value fields to post.
+     * @return $boundary and encoded post fields.
+     */
+    function buildCustomPostFields($fields)
+    {
+        // invalid characters for "name" and "filename"
+        static $disallow = array("\0", "\"", "\r", "\n");
+
+        // initialize body
+        $body = array();
+
+        // build normal parameters
+        foreach ($fields as $key => $value) {
+            $key = str_replace($disallow, "_", $key);
+            $body[] = implode("\r\n", array(
+                "Content-Disposition: form-data; name=\"{$key}\"",
+                '',
+                filter_var($value),
+            ));
+        }
+
+        // generate safe boundary
+        do {
+            $boundary = "---------------------" . md5(mt_rand() . microtime());
+        } while (preg_grep("/{$boundary}/", $body));
+
+        // add boundary for each parameters
+        foreach ($body as &$part) {
+            $part = "--{$boundary}\r\n{$part}";
+        }
+        unset($part);
+
+        // add final boundary
+        $body[] = "--{$boundary}--";
+        $body[] = '';
+
+        return array($boundary, implode("\r\n", $body));
     }
 }

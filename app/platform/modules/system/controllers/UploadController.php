@@ -42,7 +42,7 @@ class UploadController extends BaseController
         $ext = pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
         $ext = strtolower($ext);
         $originname = $_FILES['file']['name'];
-        $filename = file_random_name(base_path() . '/' . $this->common['folder'], $ext);
+        $filename = file_random_name(base_path() . '/static/upload' . $this->common['folder'], $ext);
 
         $file = $this->file_upload($_FILES['file'], $this->common['type'], $this->common['folder'] . $filename, true);
         if (is_error($file)) {
@@ -50,7 +50,7 @@ class UploadController extends BaseController
         }
 
         $pathname = $file['path'];
-        $fullname = base_path() . '/' . $pathname;
+        $fullname = base_path() . '/static/upload/' . $pathname;
 
         return $this->saveData($this->common['type'], $fullname, $originname, $ext, $filename, $this->common['module_upload_dir'], $pathname, $this->common['option']);
     }
@@ -96,19 +96,19 @@ class UploadController extends BaseController
 
         $result = array();
         if (!$name || $name == 'auto') {
-            $path = "static/upload/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
-            Utils::mkdirs(base_path() . '/' . $path);
+            $path = "/{$type}s/{$this->uniacid}" . '/'.date('Y/m/');
+            Utils::mkdirs(base_path() . '/static/upload' . $path);
             $filename = file_random_name(base_path() . '/' . $path, $ext);
             $result['path'] = $path . $filename;
         } else {
-            Utils::mkdirs(dirname(base_path() . '/' . $name));
+            Utils::mkdirs(dirname(base_path() . '/static/upload/' . $name));
             if (!strexists($name, $ext)) {
                 $name .= '.' . $ext;
             }
             $result['path'] = $name;
         }
 
-        $save_path = base_path() . '/' . $result['path'];
+        $save_path = base_path() . '/static/upload/' . $result['path'];
         if (!file_move($file['tmp_name'], $save_path)) {
             return error(-1, '保存上传文件失败');
         }
@@ -145,7 +145,7 @@ class UploadController extends BaseController
                 } else {
                     $filename = pathinfo($thumbnail, PATHINFO_BASENAME);
                     $pathname = $thumbnail;
-                    $fullname = base_path() . '/' . $pathname;
+                    $fullname = base_path() . '/static/upload' . $pathname;
                 }
             }
         }
@@ -348,12 +348,12 @@ class UploadController extends BaseController
         }
 
         if ($option['global']) {
-            $folder = "static/upload/{$type}s/global/";
+            $folder = "{$type}s/global/";
             if ($dest_dir) {
                 $folder .= '' . $dest_dir . '/';
             }
         } else {
-            $folder = "static/upload/{$type}s/{$this->uniacid}";
+            $folder = "{$type}s/{$this->uniacid}";
             if (!$dest_dir) {
                 $folder .= '/' . date('Y/m/');
             } else {

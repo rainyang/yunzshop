@@ -10,12 +10,11 @@ namespace app\platform\modules\Application\controllers;
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
-// use app\common\services\qcloud\Api;
-use app\common\services\qcloud\Api;
+use app\common\services\qcloud\Client;
 use app\common\services\aliyunoss\OssClient;
 use app\common\services\aliyunoss\OSS\Core\OssException;
 use app\common\services\ImageZip;
-
+// use app\common\services\qcloudv5\Api;
 
 class AllUploadController extends BaseController
 {
@@ -132,8 +131,6 @@ class AllUploadController extends BaseController
                 
             if (in_array($ext, $defaultImgType)) {
 
-                $file_type = 'syst';
-
                 if ($sett['image_extentions'] && !in_array($ext, $img_type) ) {
                         \Log::info('local_file_type_is_not_set_type');
                     return '非规定类型的文件格式';
@@ -149,8 +146,6 @@ class AllUploadController extends BaseController
             }
 
             if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
-
-                $file_type = in_array($ext, $defaultVideoType) ? 'video' : 'audio';
 
                 if ($setting['audio_extentions'] && !in_array($ext, $img_type) ) {
                         \Log::info('local_audio_video_file_type_is_not_set_type');
@@ -241,14 +236,17 @@ class AllUploadController extends BaseController
     public function getLocalList()
     {
         $core = new CoreAttach();
-        
-        if (request()->search) {
-            $core = $core->search(request()->search);
+
+        $search['year'] = request()->year;
+        $search['month'] = request()->month;
+
+        if ($search) {
+            $core = $core->search($search);
         }
         
         $list = $core->paginate()->toArray();
 
-        foreach ($list['data'] as $v) {
+        foreach ($list['data'] as $k => $v) {
 
             if ($v['attachment']) {
 
@@ -257,13 +255,31 @@ class AllUploadController extends BaseController
                 $data['last_page'] = $list['last_page'];
                 $data['prev_page_url'] = $list['prev_page_url'];
                 $data['next_page_url'] = $list['next_page_url'];
+                $data['current_page'] = $list['current_page'];
                 $data['from'] = $list['from'];
                 $data['to'] = $list['to'];
-                $data['data'][] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['data'][$k]['id'] = $v['id'];
+                $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
             }
         }
 
         return $this->successJson('获取成功', $data);
+    }
+
+    public function delLocalImg()
+    {
+        $id = request()->id;
+        
+        $core = new CoreAttach();
+
+        if (!$core->find($id)) {
+            return $this->errorJson('请重新选择');
+        }
+        $res = $core->where('id', $id)->delete();
+        if ($res) {
+            return $this->successJson('删除成功');
+        }
+        return $this->errorJson('删除失败');
     }
 
     //腾讯云上传
@@ -277,7 +293,7 @@ class AllUploadController extends BaseController
             'app_id'     => $setting['appid'],
             'secret_id'  => $setting['secretid'],
             'secret_key' => $setting['secretkey'],
-            'bucket'     => $setting['bucket'],
+            // 'bucket'     => $setting['bucket'],
             'region'     => $setting['url']
         ];
         $cos = new Api($config);
@@ -297,7 +313,7 @@ class AllUploadController extends BaseController
 
         \Log::info('cos_upload_path: origin_path', [$truePath.$newFileName, file_get_contents($realPath)]);
 
-        $res = $cos->upload($setting['bucket'], file_get_contents($realPath), $truePath.$newFileName, '', 1);  //执行上传
+        $res = $cos->upload($setting['bucket'], file_get_contents($realPath), $truePath.$newFileName);  //执行上传
         // $res = $cos->upload($setting['bucket'], $realPath.'/'.$originalName, $truePath.$newFileName, '', 1);  //执行上传
 
         \Log::info('cos_upload_res:', $res);
@@ -445,8 +461,10 @@ class AllUploadController extends BaseController
         // $acl = $oss->getBucketAcl(config('filesystems.disks.oss.bucket')); dd($acl); //获取bucket 权限 return string
 
         // $res = $oss->PutBucketACL('test-yunshop-com', 'public-read'); dd($res); //修改bucket 权限
-        $bucketInfo = $oss->getBucketMeta(config('filesystems.disks.oss.bucket'));  dd(config('filesystems.disks.oss.bucket'), $bucketInfo);
-
+        $bucketInfo = $oss->getBucketMeta(config('filesystems.disks.oss.bucket'));  
+        // dd(config('filesystems.disks.oss.bucket'), $bucketInfo);
+        $newUrl = $oss->addBucketCname(config('filesystems.disks.oss.bucket'), config('filesystems.disks.oss.url'));
+        dd($newUrl);
         // $a = explode('.', $bucketInfo['info']['url']);
         // dd($a, $a[1].'.'.$a[2].'.'.$a[3]); //获取bucket信息
 
@@ -473,17 +491,31 @@ class AllUploadController extends BaseController
 
     public function cosTest()
     {
-        $config = config('filesystems.disks.cos');
-        unset($config['region']);
-        $cos = new Api($config); 
+        $config['credentials']['appId'] = config('filesystems.disks.cos.app_id');
+        $config['credentials']['secretId'] = config('filesystems.disks.cos.secret_id');
+        $config['credentials']['secretKey'] = config('filesystems.disks.cos.secret_key');
+        $config['region'] = config('filesystems.disks.cos.region');
+        // $config['endpoint'] = config('filesystems.disks.cos.endpoint');
+        // unset($config['region']);
+        $cos = new Client($config); 
         $check = '/images/0/2019/03/';
         $originalName = 'aaa222www11';
         $ext='png';
         $newFileName = date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        $newName = $this->getNewFileName('a2dw3', 'jpeg');
+        $path = substr($this->getOsPath('syst'), 1);
 
+        $res = $cos->upload( 
+            config('filesystems.disks.cos.bucket'),
+            'D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg',
+            'test/'.date('Y').'/'.$newFileName
+            // $path.$newName
+        );
+        dd($res);
+        // $cosApi->;
         $zip = new ImageZip();
         $res = $zip->makeThumb('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', 'D:\wamp\www\shop\storage\app\\'.md5('2w43d3').'.jpeg',  '36%');
-        dd($res);
+        // dd($res);
 
         $im = $this->imageDeal('D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg', '50%', $ext);
         dd($im);

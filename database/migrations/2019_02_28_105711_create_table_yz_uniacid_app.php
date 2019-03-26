@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableUniacidApplication extends Migration
+class CreateTableYzUniacidApp extends Migration
 {
     /**
      * Run the migrations.
@@ -24,11 +24,8 @@ class CreateTableUniacidApplication extends Migration
                 $table->string('descr')->nullable()->comment('应用描述');
                 $table->float('version')->nullable()->comment('应用版本');
                 $table->integer('validity_time')->comment('有效期');
-                
                 $table->tinyInteger('type')->comment('应用类型,1服务号 2订阅号 3企业号 4小程序5 PC应用6 APP应用 7小游戏');
-//
                 $table->tinyInteger('status')->nullable()->default(1)->comment('应用状态 0禁用1启用');
-
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();
