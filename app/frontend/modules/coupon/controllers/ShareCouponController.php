@@ -91,7 +91,7 @@ class ShareCouponController extends ApiController
             'set' =>  $this->set,
             'member_name' => $this->member->nickname?:$this->member->realname,
             'code' => $result['state'],
-            'mag'  => $result['msg'],
+            'msg'  => $result['msg'],
             'coupon' =>  $this->handleCoupon($result['data']),
         ];
 
