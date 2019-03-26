@@ -851,7 +851,7 @@ class MemberController extends ApiController
                 $page_info = $designerModel->toArray()['page_info'];
                 if (!empty($page_info)) {
                     $arr = json_decode(htmlspecialchars_decode($page_info), true);
-                    if (is_array($arr) && !empty($arr[0]['params']) && !empty($arr[0]['params']['title'])) {
+                    if (is_array($arr)) {
                         $params = $arr[0]['params'];
                         if (!empty($params) && !empty($params['title'])) {
                             $share['title'] = $params['title'];
