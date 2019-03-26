@@ -108,10 +108,11 @@ class IndexController extends ApiController
             }
             if (app('plugins')->isEnabled('love')){
                   foreach ($goodsList as &$goodsValue){
-                      $goodsValue->award_proportion= \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
+                      $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
                           ->where('uniacid',\Yunshop::app()->uniacid)
-                          ->where('goods_id',$goodsValue->gooods_id)
+                          ->where('goods_id',$goodsValue->goods_id)
                           ->first();
+                      $goodsValue->award_proportion = $love_value->award_proportion;
                   }
             }
             Cache::put('YZ_Index_goodsList', $goodsList, 4200);
