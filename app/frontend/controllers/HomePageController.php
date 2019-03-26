@@ -311,13 +311,6 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-        $title = $result['item']['pageinfo']['params']['title'];
-
-        if (!empty($title)){
-            $result['system']['share']['desc']= $result['item']['pageinfo']['params']['desc'];
-            $result['system']['share']['url']= $result['item']['pageinfo']['params']['img'];
-             $result['system']['share']['title']= $title;
-        }
         return $this->successJson('ok', $result);
     }
 
