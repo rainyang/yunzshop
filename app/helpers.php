@@ -1167,9 +1167,9 @@ if (!function_exists('file_remote_upload')) {
             $host_name = $remote['alioss']['internal'] ? '-internal.aliyuncs.com' : '.aliyuncs.com';
             $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . $host_name;
             try {
-                $ossClient = new \OSS\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
                 $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . '/static/upload/' . $filename);
-            } catch (\OSS\Core\OssException $e) {
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
             if ($auto_delete_local) {
