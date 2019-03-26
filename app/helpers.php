@@ -17,7 +17,11 @@ if (!function_exists("yz_tpl_ueditor")) {
 
         $s = '';
         if (!defined('TPL_INIT_UEDITOR')) {
-            $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
+            if (env('APP_Framework') == 'platform') {
+                $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor2.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
+            } else {
+                $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
+            }
         }
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
@@ -227,6 +231,8 @@ if (!function_exists("tomedia")) {
         if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
             if (env('APP_Framework') == 'platform') {
                 $src = request()->getSchemeAndHttpHost() . '/' . $src;
+            } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(storage_path('static/upload/').$src))) {
+                $src = request()->getSchemeAndHttpHost() .  \Storage::url('static/upload/') . $src;
             } else {
                 $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
             }
@@ -239,8 +245,13 @@ if (!function_exists("tomedia")) {
 
 function yz_tomedia($src, $local_path = false)
 {
+    $setting = [];
+
     if (env('APP_Framework') == 'platform') {
-        $setting = [];
+        $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
+        if ($setting = $SystemSetting->getKeyList('remote')) {
+            $setting = $setting->toArray();
+        }
     } else {
         global $_W;
         $setting = \setting_load();
@@ -289,6 +300,8 @@ function yz_tomedia($src, $local_path = false)
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(storage_path('static/upload/').$src))) {
+        $src = request()->getSchemeAndHttpHost() .  \Storage::url('static/upload/') . $src;
     } else {
         if ($setting['remote']['type'] == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
