@@ -132,7 +132,9 @@ Route::any('/', function () {
             \Log::debug('----CLI----');
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
             if (!empty($plugins_dir)) {
-                \Artisan::call('update:version', ['version' => $plugins_dir]);
+                if (app('plugins')->isEnabled($plugins_dir))  {
+                    \Artisan::call('update:version', ['version' => $plugins_dir]);
+                }
             }
             
             if (!empty($eid)) {
