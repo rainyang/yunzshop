@@ -237,13 +237,17 @@ class AllUploadController extends BaseController
     {
         $core = new CoreAttach();
 
-        $search['year'] = request()->year;
-        $search['month'] = request()->month;
+        if (request()->year != '不限') {
+            $search['year'] = request()->year;
+        }
 
+        if(request()->month != '不限') {
+            $search['month'] = request()->month;
+        }
         if ($search) {
             $core = $core->search($search);
         }
-        
+
         $list = $core->paginate()->toArray();
 
         foreach ($list['data'] as $k => $v) {

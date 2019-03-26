@@ -24,27 +24,51 @@ class CoreAttach extends BaseModel
 
     public function scopeSearch($query, $keyword)
     {
-        if ($keyword['year']) {
+        if ($keyword['month'] && $keyword['year']) {
 
-            $query = $query->whereBetween(
+           return $query->whereBetween('created_at', [
+                
+                mktime(0,0,0, $keyword['month'], 1, $keyword['year']),
+                mktime(23,59,59, $keyword['month']+1, 0, $keyword['year'])
+            ]);
+        }
+
+        if ($keyword['year']) {
+            return $query->whereBetween(
                 'created_at', 
                 [
-                    mktime(0,0,0, $keyword['month'] ? : 1, 1, $keyword['year']),
-                    mktime(23,59,59, $keyword['month']+1 ? : 12, 0, $keyword['year'])
+                    mktime(0,0,0, 1, 1, $keyword['year']),
+                    mktime(23,59,59,12, 31, $keyword['year'])
                 ]
             );
         }
 
         if ($keyword['month']) {
-
-            $query = $query->whereBetween(
+            return $query->whereBetween(
                 'created_at', 
                 [
-                    mktime(0,0,0, $keyword['month'], 1, $keyword['year'] ? : date('Y') ), 
-                    mktime(23,59,59, $keyword['month']+1, 0, $keyword['year'] ? : date('Y') ) 
+                    mktime(0,0,0, $keyword['month'], 1, date('Y')), 
+                    mktime(23,59,59, $keyword['month']+1, 0, date('Y')) 
                 ] 
             );
         }
+       
+        // dd(
+        //     $keyword['month'], 
+        //     $keyword['year'], 
+        //         //month
+        //     date('Y-m-d H:i:s', mktime(0,0,0, $keyword['month'], 1, date('Y')) ),
+
+        //     date('Y-m-d H:i:s', mktime(23,59,59, $keyword['month']+1, 0, date('Y')) ), 
+        //         //year
+        //     date('Y-m-d H:i:s', mktime(0,0,0, 1, 1, $keyword['year'])),
+
+        //     date('Y-m-d H:i:s', mktime(23,59,59,12, 31, $keyword['year'])),
+        //         //all
+        //     date('Y-m-d H:i:s', mktime(0,0,0, $keyword['month'], 1, $keyword['year'])),
+            
+        //     date('Y-m-d H:i:s', mktime(23,59,59, $keyword['month']+1, 0, $keyword['year']))
+        // );
     }
 
     public function atributeNames()
