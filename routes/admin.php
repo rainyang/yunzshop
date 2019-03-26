@@ -11,6 +11,8 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('changePwd', 'ResetpwdController@changePwd'); //修改密码
     Route::any('sendCode', 'ResetpwdController@sendCode'); //发送验证码
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
+    Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
+    Route::any('detail', 'ResetpwdController@detail'); //检查验证码
 
 
     Route::get('/', 'IndexController@index');
@@ -78,7 +80,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
     // 用户管理
     Route::group(['prefix' => 'user', 'namespace' => 'platform\modules\user\controllers'], function (){
         // 用户列表
-        Route::get('index', 'AdminUserController@index');
+        Route::post('index', 'AdminUserController@index');
         // 添加用户
         Route::any('create', 'AdminUserController@create');
         // 用户编辑
@@ -88,9 +90,9 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         // 用户修改密码
         Route::post('change', 'AdminUserController@change');
         // 平台列表
-        Route::get('app_list', 'AdminUserController@applicationList');
+        Route::post('app_list', 'AdminUserController@applicationList');
         // 店员用户列表
-        Route::get('clerk_list', 'AdminUserController@clerkList');
+        Route::post('clerk_list', 'AdminUserController@clerkList');
     });
  
     Route::group(['namespace' => 'platform\modules\application\controllers'], function () {
@@ -112,12 +114,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::post('all/upload/', 'AllUploadController@upload');
         //本地图片列表
         Route::any('all/list/', 'AllUploadController@getLocalList');
+        //删除图片列表中的数据
+        Route::any('all/delImg/', 'AllUploadController@delLocalImg');
 
 		// Route::post('application/upload/', 'ApplicationController@upload');
 		Route::any('app/temp/', 'ApplicationController@temp');
         Route::any('application/test/', 'ApplicationController@upload');
         
-        Route::any('all/test/', 'AllUploadController@ossTest');
+        Route::any('all/test/', 'AllUploadController@cosTest');
 
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');

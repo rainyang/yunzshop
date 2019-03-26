@@ -113,6 +113,8 @@ class AttachmentController extends BaseController
             }
         }
 
+        $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']);
+        
         return $this->successJson('成功', $this->remote);
     }
 
@@ -348,6 +350,5 @@ class AttachmentController extends BaseController
                 }
             }
         }
-        return View('system.sms');
     }
 }

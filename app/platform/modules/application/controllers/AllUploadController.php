@@ -10,8 +10,7 @@ namespace app\platform\modules\Application\controllers;
 use app\platform\controllers\BaseController;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
-// use app\common\services\qcloud\Api;
-use app\common\services\qcloud\Api;
+use app\common\services\qcloud\Client;
 use app\common\services\aliyunoss\OssClient;
 use app\common\services\aliyunoss\OSS\Core\OssException;
 use app\common\services\ImageZip;
@@ -237,14 +236,17 @@ class AllUploadController extends BaseController
     public function getLocalList()
     {
         $core = new CoreAttach();
-        
-        if (request()->search) {
-            $core = $core->search(request()->search);
+
+        $search['year'] = request()->year;
+        $search['month'] = request()->month;
+
+        if ($search) {
+            $core = $core->search($search);
         }
         
         $list = $core->paginate()->toArray();
 
-        foreach ($list['data'] as $v) {
+        foreach ($list['data'] as $k => $v) {
 
             if ($v['attachment']) {
 
@@ -253,13 +255,31 @@ class AllUploadController extends BaseController
                 $data['last_page'] = $list['last_page'];
                 $data['prev_page_url'] = $list['prev_page_url'];
                 $data['next_page_url'] = $list['next_page_url'];
+                $data['current_page'] = $list['current_page'];
                 $data['from'] = $list['from'];
                 $data['to'] = $list['to'];
-                $data['data'][] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['data'][$k]['id'] = $v['id'];
+                $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
             }
         }
 
         return $this->successJson('获取成功', $data);
+    }
+
+    public function delLocalImg()
+    {
+        $id = request()->id;
+        
+        $core = new CoreAttach();
+
+        if (!$core->find($id)) {
+            return $this->errorJson('请重新选择');
+        }
+        $res = $core->where('id', $id)->delete();
+        if ($res) {
+            return $this->successJson('删除成功');
+        }
+        return $this->errorJson('删除失败');
     }
 
     //腾讯云上传
@@ -471,9 +491,13 @@ class AllUploadController extends BaseController
 
     public function cosTest()
     {
-        $config = config('filesystems.disks.cos');
-        unset($config['region']);
-        $cos = new Api($config); 
+        $config['credentials']['appId'] = config('filesystems.disks.cos.app_id');
+        $config['credentials']['secretId'] = config('filesystems.disks.cos.secret_id');
+        $config['credentials']['secretKey'] = config('filesystems.disks.cos.secret_key');
+        $config['region'] = config('filesystems.disks.cos.region');
+        // $config['endpoint'] = config('filesystems.disks.cos.endpoint');
+        // unset($config['region']);
+        $cos = new Client($config); 
         $check = '/images/0/2019/03/';
         $originalName = 'aaa222www11';
         $ext='png';
@@ -484,7 +508,8 @@ class AllUploadController extends BaseController
         $res = $cos->upload( 
             config('filesystems.disks.cos.bucket'),
             'D:\wamp\www\shop\storage\app\public\201903203974dc2b7ba9eefbe640b5395a8de517.jpeg',
-            $path.$newName
+            'test/'.date('Y').'/'.$newFileName
+            // $path.$newName
         );
         dd($res);
         // $cosApi->;
