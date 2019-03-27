@@ -68,6 +68,8 @@ class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
 
+    protected $connection = 'mysql';
+
     protected $table = 'yz_member';
 
     protected $guarded = [''];
@@ -462,7 +464,7 @@ class MemberShopInfo extends BaseModel
 
                 $record->save();
 
-                $rs = event(new MemberCreateRelationEvent($uid, $parent_id));
+                $rs = event(new MemberChangeRelationEvent($uid, $parent_id));
 
                 \Log::debug('----change relation----', [$uid, $parent_id, $rs]);
 

@@ -49,13 +49,15 @@ class UpdateVersion extends Command
 
         //更新插件数据表
         $plugins = $this->argument('version');
-        //\Log::debug('---plugins---', $plugins);
+        \Log::debug('---plugins---', $plugins);
         if (!is_null($plugins)) {
             foreach ($plugins as $p) {
-                $path = 'plugins/' . $p . '/migrations';
+                if (app('plugins')->isEnabled($p))  {
+                    $path = 'plugins/' . $p . '/migrations';
 
-                if(is_dir(base_path($path) )){
-                    \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+                    if(is_dir(base_path($path) )){
+                        \Artisan::call('migrate',['--force' => true,'--path' => $path]);
+                    }
                 }
             }
         }
