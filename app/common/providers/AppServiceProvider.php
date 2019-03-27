@@ -2,14 +2,14 @@
 
 namespace app\common\providers;
 
-use app\common\models\AccountWechats;
-use app\common\services\mews\captcha\src\Captcha;
-
-use Setting;
-use Illuminate\Support\ServiceProvider;
 use App;
-use Illuminate\Support\Facades\DB;
+use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
+use app\common\services\mews\captcha\src\Captcha;
+use app\common\services\Utils;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
+use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -126,8 +126,7 @@ class AppServiceProvider extends ServiceProvider
 
             if (!empty(request('uniacid')) && request('uniacid') > 0) {
                 $uniacid = request('uniacid');
-                setcookie('uniacid', request('uniacid'), time() + 3600, '/admin');
-                setcookie('uniacid', request('uniacid'), time() + 3600, '/admin/shop');
+                Utils::addUniacid();
             }
 
             if (empty($uniacid) && isset($_COOKIE['uniacid'])) {

@@ -10,6 +10,7 @@ namespace app\common\middleware;
 
 
 use app\common\helpers\Url;
+use app\common\services\Utils;
 use app\platform\modules\application\models\AppUser;
 
 class ShopBootstrap
@@ -25,8 +26,7 @@ class ShopBootstrap
             if (!is_null($account) && in_array($account->role, $this->authRole)) {
 
                 $cfg['uniacid'] = $account->uniacid;
-                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin');
-                setcookie('uniacid', $account->uniacid, time() + 3600, '/admin/shop');
+                Utils::addUniacid();
                 \config::set('app.global', $cfg);
 
                 return redirect()->guest(Url::absoluteWeb('index.index'));

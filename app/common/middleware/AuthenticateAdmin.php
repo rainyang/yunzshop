@@ -8,16 +8,15 @@
 
 namespace app\common\middleware;
 
+use app\common\services\Utils;
 use app\common\traits\JsonTrait;
-use app\common\traits\MessageTrait;
 use app\platform\modules\application\models\AppUser;
 use app\platform\modules\application\models\UniacidApp;
 use Closure;
-use Illuminate\Support\Facades\Cookie;
 
 class AuthenticateAdmin
 {
-    use JsonTrait, MessageTrait;
+    use JsonTrait;
 
     protected $except = [
         'admin/index',
@@ -60,7 +59,7 @@ class AuthenticateAdmin
             }
 
             if ($msg) {
-                $this->removeUniacid();
+                Utils::removeUniacid();
 
                 return $this->errorJson($msg, ['status'=> -1]);
             }
@@ -121,7 +120,7 @@ class AuthenticateAdmin
         request()->session()->flush();
         request()->session()->regenerate();
 
-        Cookie::queue(Cookie::forget('uniacid'));
+        Utils::removeUniacid();
 
         return $this->errorJson('请重新登录', ['login_status' => 1, 'login_url' => '/#/login']);
 
@@ -135,15 +134,5 @@ class AuthenticateAdmin
     private function redirectToHome()
     {
         return redirect()->guest();
-    }
-
-    /**
-     * 清除uniacid
-     *
-     */
-    private function removeUniacid()
-    {
-        setcookie('uniacid', null, time() - 3600, '/admin');
-        setcookie('uniacid', null, time() - 3600, '/admin/shop');
     }
 }

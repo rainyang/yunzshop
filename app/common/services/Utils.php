@@ -309,4 +309,24 @@ class Utils
 
         return $filesystem->isDirectory($path);
     }
+
+    /**
+     * 清除uniacid
+     *
+     */
+    public static function removeUniacid()
+    {
+        setcookie('uniacid', null, time() - 3600, '/');
+        setcookie('uniacid', null, time() - 3600, '/admin');
+        setcookie('uniacid', null, time() - 3600, '/admin/shop');
+    }
+
+    /**
+     * 保存uniacid
+     */
+    public static function addUniacid()
+    {
+        setcookie('uniacid', request('uniacid'), time() + 3600, '/admin');
+        setcookie('uniacid', request('uniacid'), time() + 3600, '/admin/shop');
+    }
 }
