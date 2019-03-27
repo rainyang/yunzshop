@@ -252,7 +252,14 @@ if (!function_exists("tomedia")) {
     }
 }
 
-function yz_tomedia($src, $local_path = false, $upload_type = '')
+/**
+ * 获取附件的HTTP绝对路径
+ * @param string $src 附件地址
+ * @param bool $local_path 是否直接返回本地图片路径
+ * @param null $upload_type 上传图片时的类型，数据表 upload_type 字段(只需要在上传图片时，传参数，获取列表不需要传改参数)
+ * @return string
+ */
+function yz_tomedia($src, $local_path = false, $upload_type = null)
 {
     $setting = [];
     $sign = false;
