@@ -207,12 +207,10 @@ if (!function_exists("tomedia")) {
     /**
      * 获取附件的HTTP绝对路径
      * @param string $src 附件地址
-     * @param $upload_type
      * @param bool $local_path 是否直接返回本地图片路径
      * @return string
      */
-
-    function tomedia($src, $upload_type = '', $local_path = false)
+    function tomedia($src, $local_path = false)
     {
         if (empty($src)) {
             return '';
@@ -232,6 +230,7 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
+            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
             if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
             } else {
@@ -253,16 +252,20 @@ if (!function_exists("tomedia")) {
     }
 }
 
-function yz_tomedia($src, $local_path = false)
+function yz_tomedia($src, $local_path = false, $upload_type = '')
 {
     $setting = [];
+    $sign = false;
 
     if (env('APP_Framework') == 'platform') {
         $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
         if ($remote = $SystemSetting->getKeyList('remote')) {
             $res = $remote->toArray();
-
             $setting[$res['key']] = unserialize($res['value']);
+        }
+        $sign = true;
+        if (!$upload_type) {
+            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
         }
     } else {
         global $_W;
@@ -306,22 +309,22 @@ function yz_tomedia($src, $local_path = false)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-    if ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
+    if (!$sign && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
-    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('static/upload/').$src))) {
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload/' . $src;
     } else {
-        if ($setting['remote']['type'] == 1) {
+        if ($upload_type == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
-        } elseif ($setting['remote']['type'] == 2) {
+        } elseif ($upload_type == 2) {
             $attachurl_remote = $setting['remote']['alioss']['url'] . '/';
-        } elseif ($setting['remote']['type'] == 3) {
+        } elseif ($upload_type == 3) {
             $attachurl_remote = $setting['remote']['qiniu']['url'] . '/';
-        } elseif ($setting['remote']['type'] == 4) {
+        } elseif ($upload_type == 4) {
             $attachurl_remote = $setting['remote']['cos']['url'] . '/';
         }
 

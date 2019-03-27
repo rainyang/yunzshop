@@ -21,6 +21,10 @@ class CoreAttach extends BaseModel
     const IMAGE_TYPE = 1;// 图片 1
     const VOICE_TYPE = 2;// 音频 2
     const VIDEO_TYPE = 3;// 视频 3
+    // 存储在表中upload_type字段的对应的类型
+    const UPLOAD_LOCAL = 0;     // 本地
+    const UPLOAD_OSS = 2;       // 阿里云
+    const UPLOAD_COS = 4;       // 腾讯云
 
     public function scopeSearch($query, $keyword)
     {

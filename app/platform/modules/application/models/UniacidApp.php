@@ -17,7 +17,7 @@ class UniacidApp extends BaseModel
   	protected $guarded = [''];
   	// protected $dates = ['validity_time'];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
-                         'type', 'kind', 'title', 'descr', 'version', 'uniacid'];
+                         'type', 'kind', 'title', 'descr', 'version'];
     protected $appends = ['status_name'];
 
   	

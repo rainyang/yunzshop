@@ -47,6 +47,9 @@ class IndexController extends BaseController
                 //      echo $signature;
                 //      return  $_GET["echostr"];
                 //exit;
+            } else {
+                \Log::debug('----------公众号接入失败---------',$_GET);
+                \Setting::set('plugin.wechat.status', 0);
             }
         } else {// 不是接入，则触发事件，交给监听者处理.
             // 获取第三方库easyWechat的app对象
@@ -54,7 +57,7 @@ class IndexController extends BaseController
             $server = $wechatApp->server;
             try {
                 $message = $server->getMessage();// 异常代码
-                \Log::debug('----------微信公众号消息---------',$message);
+                // \Log::debug('----------微信公众号消息---------',$message);
                 event(new \app\common\events\WechatMessage($wechatApp,$server,$message));
             } catch (\Exception $exception) {
                 \Log::debug('----------公众号异常---------',$exception->getMessage());
