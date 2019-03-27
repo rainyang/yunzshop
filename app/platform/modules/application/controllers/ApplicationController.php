@@ -128,7 +128,6 @@ class ApplicationController extends BaseController
         if (request()->input()) {
 
             $data = $this->fillData(request()->input());
-            $data['uniacid'] = $id;
             $data['id'] = $id;
 
             $app->fill($data);
@@ -193,7 +192,7 @@ class ApplicationController extends BaseController
                 return $this->errorJson('操作失败');
             }
 
-            UniacidApp::where('id', $id)->update(['status'=> 0]);
+            $info->update(['status'=> 0]);
 
             // Cache::put($this->key . ':' . $id, UniacidApp::find($id));
         }
@@ -227,7 +226,7 @@ class ApplicationController extends BaseController
 
             //从回收站中恢复应用
             $res = UniacidApp::withTrashed()->where('id', $id)->restore();
-            UniacidApp::where('id', $id)->update(['status'=> 1]);
+            $info->update(['status'=> 1]);
         }
 
         if ($res) {
@@ -288,7 +287,6 @@ class ApplicationController extends BaseController
             'descr' => $data['descr'] ?  : '',
             'status' => $data['status'] ?  : 1,
             'creator' => \Auth::guard('admin')->user()->uid,
-            // 'uniacid' => $app->insertGetId() + 1,
             'version' => $data['version'] ?  : 0.00,
             'validity_time' => $data['validity_time'] ?  : 0,
         ];
