@@ -30,7 +30,7 @@ class ResetpwdController extends BaseController
 
         Cache::put($mobile.'_code', $code, 60 * 10);
         //检查次数及是否正确
-        if (!MemberService::smsSendLimit($uniacid, $mobile)) {
+        if (!MemberService::smsSendLimit(\YunShop::app()->uniacid? : 0, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
         	return $this->sendSmsV2($mobile, $code, $state);
