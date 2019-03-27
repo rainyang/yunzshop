@@ -13,6 +13,7 @@ use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
 use app\platform\modules\application\models\WechatAttachment;
 use app\common\services\Utils;
+use app\platform\modules\application\models\AppUser;
 
 class UploadController extends BaseController
 {
@@ -368,5 +369,48 @@ class UploadController extends BaseController
             'options' => $option,
             'folder' => $folder
         ];
+    }
+
+    public function delete()
+    {
+        $uid = \Auth::guard('admin')->user()->uid;
+        $is_founder = $uid == '1' ? 1 : 0;
+        $role = AppUser::where('uid', $uid)->first()['role'];
+        if (!$is_founder && $role != 'manager' && $role != 'owner') {
+            return $this->errorJson('您没有权限删除文件');
+        }
+        $id = request()->id;
+        if (!is_array($id)) {
+            $id = array(intval($id));
+        }
+        $id = safe_gpc_array($id);
+
+        $core_attach = CoreAttach::where('id', $id);
+
+        if (!$this->uniacid) {
+            $core_attach = $core_attach->where('uid', $uid);
+        } else {
+            $core_attach = $core_attach->where('uniacid', $this->uniacid);
+        }
+        $core_attach = $core_attach->first();
+
+        $delete_ids = array();
+        if ($core_attach['upload_type']) {
+            $status = file_remote_delete($core_attach['attachment'], $core_attach['upload_type'], $this->remote);
+        } else {
+            $status = file_delete($core_attach['attachment']);
+        }
+        if (is_error($status)) {
+            iajax(1, $status['message']);
+            exit;
+        }
+        $delete_ids[] = $core_attach['id'];
+
+        $core_attach->delete();
+        if ($core_attach->trashed()) {
+            return $this->successJson('删除成功');
+        } else {
+            return $this->errorJson('删除数据表数据失败');
+        }
     }
 }

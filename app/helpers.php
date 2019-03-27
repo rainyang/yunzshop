@@ -2102,3 +2102,75 @@ if (!function_exists('buildCustomPostFields')) {
         return array($boundary, implode("\r\n", $body));
     }
 }
+
+if (!function_exists('safe_gpc_array')) {
+    function safe_gpc_array($value, $default = array())
+    {
+        if (!$value || !is_array($value)) {
+            return $default;
+        }
+        foreach ($value as &$row) {
+            if (is_numeric($row)) {
+                $row = safe_gpc_int($row);
+            } elseif (is_array($row)) {
+                $row = safe_gpc_array($row, $default);
+            } else {
+                $row = safe_gpc_string($row);
+            }
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('safe_gpc_int')) {
+    function safe_gpc_int($value, $default = 0)
+    {
+        if (strpos($value, '.') !== false) {
+            $value = floatval($value);
+            $default = floatval($default);
+        } else {
+            $value = intval($value);
+            $default = intval($default);
+        }
+
+        if (!$value && $default != $value) {
+            $value = $default;
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('file_remote_delete')) {
+    function file_remote_delete($file, $upload_type, $remote)
+    {
+        if (!$file) {
+            return true;
+        }
+        if ($upload_type == '2') {
+            $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
+            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            try {
+                $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient->deleteObject($remote['alioss']['bucket'], $file);
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                return error(1, '删除oss远程文件失败');
+            }
+        } elseif ($upload_type == '4') {
+            $bucketName = $remote['cos']['bucket'];
+            $path = '/' . $file;
+            if ($remote['cos']['local']) {
+                \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
+                $result = \app\common\services\qcloud\Cosapi::delFile($bucketName, $path);
+            } else {
+                $result = \app\common\services\cos\Qcloud_cos\Cosapi::delFile($bucketName, $path);
+            }
+            if ($result['code']) {
+                return error(-1, '删除cos远程文件失败');
+            } else {
+                return true;
+            }
+        }
+
+        return true;
+    }
+}

@@ -33,6 +33,9 @@
                 fetch_url: function(fetch_urls) {
                     this.fetch_urls = fetch_urls
                 },
+                delete_url: function(a) {
+                    this.delete_url = a
+                },
                 init: function(b, c) {
                     var d = this;
                     let o = this.fetch_urls;
@@ -492,6 +495,8 @@
                         a.localPage(1)
                 },
                 localPage: function(c) {
+                    let o = this.delete_url;
+                    console.log(o);
                     var d = this;
                     if (d.options.isWechat) var e = d.options.type,
                         f = d.options.mode,
@@ -521,7 +526,7 @@
                                     d.localPage(a(this).attr("page"))
                                 }), k.find(".img-list li").click(function(b) {
                                     d.selectImage(a(b.target).parents("li"))
-                                }), d.options.isWechat ? d.weixinDeletefile() : d.deletefile())
+                                }), d.options.isWechat ? d.weixinDeletefile() : d.deletefile(o))
                         }),
                     d.options.isWechat || d.modalobj.find(".btn-select").unbind("click").click(function() {
                         return a(this).hasClass("btn-info") ? !1 : ("month" == a(this).data("type") && a(this).data("id") > 0 && (d.modalobj.find("#select-year .btn-info").data("id") || (d.modalobj.find("#select-year .btn-select").removeClass("btn-info"), d.modalobj.find("#select-year .btn-select").eq(1).addClass("btn-info"))), a(this).siblings().removeClass("btn-info"), a(this).addClass("btn-info"), void d.localPage(1))
@@ -542,12 +547,12 @@
                         }),
                         !1
                 },
-                deletefile: function() {
+                deletefile: function(o) {
                     var b = this;
                     b.modalobj.find("#history_image .img-list li .btnClose").unbind().click(function() {
                         var b = a(this),
                             c = a(this).data("id");
-                        return c ? (a.post("./index.php?c=utility&a=file&do=delete", {
+                        return c ? (a.post(o, {
                                 id: c
                             },
                             function(a) { (b.parent().remove(), util.message("删除成功", "", "success"))
