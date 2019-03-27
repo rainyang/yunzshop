@@ -9,6 +9,7 @@
 namespace app\common\middleware;
 
 use app\common\traits\JsonTrait;
+use app\common\traits\MessageTrait;
 use app\platform\modules\application\models\AppUser;
 use app\platform\modules\application\models\UniacidApp;
 use Closure;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class AuthenticateAdmin
 {
-    use JsonTrait;
+    use JsonTrait, MessageTrait;
 
     protected $except = [
         'admin/index',
@@ -39,26 +40,29 @@ class AuthenticateAdmin
         $cfg = \config::get('app.global');
 
         if (!empty($cfg['uniacid'])) {
+            $msg = '';
             $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
             if (is_null($sys_app)) {
+                $msg = '非法请求';
+
                 if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
                     return $this->redirectToHome();
                 }
-
-                $this->removeUniacid();
-
-                return $this->errorJson('非法请求');
             }
 
             if (!is_null($sys_app->deleted_at)) {
+                $msg = '平台已停用';
+
                 if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
                     return $this->redirectToHome();
                 }
+            }
 
+            if ($msg) {
                 $this->removeUniacid();
-                
-                return $this->errorJson('应用已停用');
+
+                return $this->errorJson($msg, ['status'=> -1]);
             }
         }
 
@@ -123,11 +127,20 @@ class AuthenticateAdmin
 
     }
 
+    /**
+     * 链接跳转
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     private function redirectToHome()
     {
         return redirect()->guest();
     }
 
+    /**
+     * 清除uniacid
+     *
+     */
     private function removeUniacid()
     {
         setcookie('uniacid', null, time() - 3600, '/admin');
