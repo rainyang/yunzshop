@@ -2,15 +2,31 @@
 
 namespace app\common\services\qcloud;
 
+
+class HttpRequest {
+    public $timeoutMs;        // int: the maximum number of milliseconds to perform this request.
+    public $url;              // string: the url this request will be sent to.
+    public $method;           // string: POST or GET.
+    public $customHeaders;    // array: custom modified, removed and added headers.
+    public $dataToPost;       // array: the data to post.
+    public $userData;         // any: user custom data.
+}
+
+class HttpResponse {
+    public $curlErrorCode;    // int: curl last error code.
+    public $curlErrorMessage; // string: curl last error message.
+    public $statusCode;       // int: http status code.
+    public $headers;          // array: response headers.
+    public $body;             // string: response body.
+}
+
 // A simple wrapper for libcurl using multi interface to do transfers in parallel.
 class LibcurlWrapper {
-    private $sequence;        // integer: sequence id for each request.
     private $curlMultiHandle; // curl handle: curl multi handle.
     private $curlHandleInfo;  // array: array of active curl handle.
     private $idleCurlHandle;  // array: idle curl handle which can be reused.
 
     public function __construct() {
-        $this->sequence = 0;
         $this->curlMultiHandle = curl_multi_init();
         $this->idleCurlHandle = array();
     }
@@ -24,8 +40,6 @@ class LibcurlWrapper {
     }
 
     public function startSendingRequest($httpRequest, $done) {
-        $this->sequence += 1;
-
         if (count($this->idleCurlHandle) !== 0) {
             $curlHandle = array_pop($this->idleCurlHandle);
         } else {
@@ -40,14 +54,14 @@ class LibcurlWrapper {
         curl_setopt($curlHandle, CURLOPT_HEADER, 1);
         curl_setopt($curlHandle, CURLOPT_RETURNTRANSFER, 1);
         $headers = $httpRequest->customHeaders;
-        array_push($headers, 'User-Agent:'.$this->getUserAgent());
+        array_push($headers, 'User-Agent:'.Conf::getUserAgent());
         if ($httpRequest->method === 'POST') {
             if (defined('CURLOPT_SAFE_UPLOAD')) {
                 curl_setopt($curlHandle, CURLOPT_SAFE_UPLOAD, true);
             }
 
             curl_setopt($curlHandle, CURLOPT_POST, true);
-            $arr = Helper::buildCustomPostFields($httpRequest->dataToPost);
+            $arr = buildCustomPostFields($httpRequest->dataToPost);
             array_push($headers, 'Expect: 100-continue');
             array_push($headers, 'Content-Type: multipart/form-data; boundary=' . $arr[0]);
             curl_setopt($curlHandle, CURLOPT_POSTFIELDS, $arr[1]);
@@ -56,10 +70,8 @@ class LibcurlWrapper {
 
         curl_multi_add_handle($this->curlMultiHandle, $curlHandle);
 
-
-        $this->curlHandleInfo[$this->sequence]['handle'] = $curlHandle;
-        $this->curlHandleInfo[$this->sequence]['done'] = $done;
-        $this->curlHandleInfo[$this->sequence]['request'] = $httpRequest;
+        $this->curlHandleInfo[$curlHandle]['done'] = $done;
+        $this->curlHandleInfo[$curlHandle]['request'] = $httpRequest;
     }
 
     public function performSendingRequest() {
@@ -97,17 +109,8 @@ class LibcurlWrapper {
     private function processResult($info) {
         $result = $info['result'];
         $handle = $info['handle'];
-        $sequence = 0;
-
-        foreach ($this->curlHandleInfo as $key => $info) {
-            if ($info['handle'] === $handle) {
-                $sequence = $key;
-                break;
-            }
-        }
-
-        $request = $this->curlHandleInfo[$sequence]['request'];
-        $done = $this->curlHandleInfo[$sequence]['done'];
+        $request = $this->curlHandleInfo[$handle]['request'];
+        $done = $this->curlHandleInfo[$handle]['done'];
         $response = new HttpResponse();
 
         if ($result !== CURLE_OK) {
@@ -136,7 +139,7 @@ class LibcurlWrapper {
             call_user_func($done, $request, $response);
         }
 
-        unset($this->curlHandleInfo[$sequence]);
+        unset($this->curlHandleInfo[$handle]);
         curl_multi_remove_handle($this->curlMultiHandle, $handle);
 
         array_push($this->idleCurlHandle, $handle);
@@ -146,16 +149,12 @@ class LibcurlWrapper {
         if (function_exists('curl_reset')) {
             curl_reset($handle);
         } else {
-            curl_setopt($handle, CURLOPT_URL, '');
-            curl_setopt($handle, CURLOPT_HTTPHEADER, array());
-            curl_setopt($handle, CURLOPT_POSTFIELDS, array());
-            curl_setopt($handle, CURLOPT_TIMEOUT, 0);
-            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($handle, CURLOPT_SSL_VERIFYHOST, 0);
+            curl_setopt($handler, CURLOPT_URL, '');
+            curl_setopt($handler, CURLOPT_HTTPHEADER, array());
+            curl_setopt($handler, CURLOPT_POSTFIELDS, array());
+            curl_setopt($handler, CURLOPT_TIMEOUT, 0);
+            curl_setopt($handler, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($handler, CURLOPT_SSL_VERIFYHOST, 0);
         }
-    }
-
-    private function getUserAgent() {
-        return 'cos-php-sdk-' . Api::VERSION;
     }
 }
