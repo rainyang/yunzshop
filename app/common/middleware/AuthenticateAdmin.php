@@ -37,17 +37,16 @@ class AuthenticateAdmin
     public function handle($request, Closure $next)
     {
         $cfg = \config::get('app.global');
-
-        //TODO 验证平台是否停用
+        
         if (!empty($cfg['uniacid'])) {
             $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
             if (is_null($sys_app)) {
-                //TODO 非法访问
+                return $this->errorJson('非法请求');
             }
 
-            if ($sys_app->deleted_at) {
-               //TODO 应用已停用
+            if (!is_null($sys_app->deleted_at)) {
+                return $this->errorJson('应用已停用');
             }
         }
 
