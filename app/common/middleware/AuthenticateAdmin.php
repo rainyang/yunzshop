@@ -46,6 +46,8 @@ class AuthenticateAdmin
                     return $this->redirectToHome();
                 }
 
+                $this->removeUniacid();
+
                 return $this->errorJson('非法请求');
             }
 
@@ -53,6 +55,9 @@ class AuthenticateAdmin
                 if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
                     return $this->redirectToHome();
                 }
+
+                $this->removeUniacid();
+                
                 return $this->errorJson('应用已停用');
             }
         }
@@ -121,5 +126,11 @@ class AuthenticateAdmin
     private function redirectToHome()
     {
         return redirect()->guest();
+    }
+
+    private function removeUniacid()
+    {
+        setcookie('uniacid', null, time() - 3600, '/admin');
+        setcookie('uniacid', null, time() - 3600, '/admin/shop');
     }
 }
