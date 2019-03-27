@@ -27,6 +27,8 @@ class SiteController extends BaseController
             }
         }
 
+        return view('system.site');
+
         if ($copyright) {
             return $this->successJson('成功', $copyright);
         } else {
