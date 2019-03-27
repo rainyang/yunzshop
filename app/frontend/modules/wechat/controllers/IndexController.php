@@ -43,6 +43,7 @@ class IndexController extends BaseController
             $tmpStr = sha1( $tmpStr );
             if ( $tmpStr == $signature ) {
                 \Log::debug('----------公众号接入成功---------',$_GET);
+                \Setting::set('plugin.wechat.status', 1);
                 //      echo $signature;
                 //      return  $_GET["echostr"];
                 //exit;
