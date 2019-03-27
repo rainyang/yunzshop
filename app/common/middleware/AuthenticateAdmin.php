@@ -37,15 +37,19 @@ class AuthenticateAdmin
     public function handle($request, Closure $next)
     {
         $cfg = \config::get('app.global');
-        
+
         if (!empty($cfg['uniacid'])) {
             $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
             if (is_null($sys_app)) {
+                $this->redirectToHome();
+
                 return $this->errorJson('非法请求');
             }
 
             if (!is_null($sys_app->deleted_at)) {
+                $this->redirectToHome();
+
                 return $this->errorJson('应用已停用');
             }
         }
@@ -109,5 +113,12 @@ class AuthenticateAdmin
 
         return $this->errorJson('请重新登录', ['login_status' => 1, 'login_url' => '/#/login']);
 
+    }
+
+    private function redirectToHome()
+    {
+        if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+            return redirect()->guest();
+        }
     }
 }
