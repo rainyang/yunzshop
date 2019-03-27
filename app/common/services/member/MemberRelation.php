@@ -125,49 +125,11 @@ class MemberRelation
      * @param $uid
      * @param $n_parent_id
      */
-    public function reAddMemberOfRelation($uid, $n_parent_id)
+    public function reAddMemberOfRelation()
     {
         foreach ($this->map_relaton as $reData) {
             $this->addMemberOfRelation($reData[1], $reData[0]);
         }
-
-        /*DB::transaction(function() use ($uid) {
-            //$reData = array_shift($this->map_relaton);
-
-            $this->map_parent_total = count($this->map_parent);
-
-            foreach ($this->map_relaton as $reData) {
-                if (!in_array($reData[0], $this->map_parent)) {
-                    $this->map_parent[] = $reData[0];
-
-                    $this->map_parent_total = count($this->map_parent);
-                }
-
-                foreach ($this->map_parent as $k => $p) {
-                    $parent_attr[] = [
-                        'uniacid'   => \YunShop::app()->uniacid,
-                        'parent_id'  => $p,
-                        'level'     => $this->map_parent_total - $k,
-                        'member_id' => $reData[1],
-                        'created_at' => time()
-                    ];
-
-
-                    $child_attr[] = [
-                        'uniacid'   => \YunShop::app()->uniacid,
-                        'child_id'  => $reData[1],
-                        'level'     => $this->map_parent_total - $k,
-                        'member_id' => $p,
-                        'created_at' => time()
-                    ];
-
-                    //       dd($child_attr);
-                }
-            }
-
-            $this->child->CreateData($child_attr);
-            $this->parent->CreateData($parent_attr);
-        });*/
     }
 
     /**
@@ -179,15 +141,15 @@ class MemberRelation
      * @throws \Exception
      * @throws \Throwable
      */
-    public function changeMemberOfRelation($uid, $o_parent_id, $n_parent_id)
+    public function changeMemberOfRelation($uid, $n_parent_id)
     {
         try {
-            DB::transaction(function() use ($uid, $o_parent_id, $n_parent_id) {
+            DB::transaction(function() use ($uid, $n_parent_id) {
                 $this->delMemberOfRelation($uid, $n_parent_id);
 
                 if ($n_parent_id) {
                     \Log::debug('------step4-------', $n_parent_id);
-                    $this->reAddMemberOfRelation($uid, $n_parent_id, $o_parent_id);
+                    $this->reAddMemberOfRelation();
                 }
             });
 
@@ -216,13 +178,21 @@ class MemberRelation
         if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
             \Log::debug('------step1-------');
             if ($this->addMemberOfRelation($member_id, $parent_id)) {
+
                 return ['status' => 1];
             }
         }
 
-        if (!$parent_relation->isEmpty()) {
-            \Log::debug('------step2-------');
+        return ['status' => 0];
+    }
+
+    public function change($member_id, $parent_id)
+    {
+        if ($member_id != $parent_id) {
+            $parent_relation = $this->hasRelationOfParent($member_id, 1);
             $child_relation = $this->hasRelationOfChild($member_id);
+
+            \Log::debug('------step2-------');
             $this->map_relaton[] = [$parent_id, $member_id];
 
             foreach ($child_relation as $rows) {
@@ -232,7 +202,7 @@ class MemberRelation
             $memberInfo = MemberShopInfo::getParentOfMember($ids);
 
             if (count($ids) != count($memberInfo)) {
-               throw new ShopException('关系链修改-数据异常');
+                throw new ShopException('关系链修改-数据异常');
             }
 
             foreach ($ids as $rows) {
@@ -245,21 +215,8 @@ class MemberRelation
                 }
             }
 
-            //修改上级非总店
-            if ($parent_id > 0) {
-                \Log::debug('------step3-------');
-                $parentInfo = $this->parent->getParentsOfMember($parent_id);
-                $parentTotal = count($parentInfo);
-
-                foreach ($parentInfo as $rows) {
-                    $this->map_parent[$parentTotal - $rows['level']] = $rows['parent_id'];
-                }
-
-                ksort($this->map_parent);
-            }
-
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
-            if ($this->changeMemberOfRelation($member_id, $parent_relation[0]->parent_id, $parent_id)) {
+            if ($this->changeMemberOfRelation($member_id, $parent_id)) {
                 return ['status' => 1];
             }
         }

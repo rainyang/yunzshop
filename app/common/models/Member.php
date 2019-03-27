@@ -96,6 +96,8 @@ use app\common\models\member\MemberInvitationCodeLog;
  */
 class Member extends BackendModel
 {
+    protected  $connection = 'mysql';
+    
     public $table = 'mc_members';
 
     public $timestamps = false;
