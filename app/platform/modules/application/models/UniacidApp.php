@@ -95,5 +95,10 @@ class UniacidApp extends BaseModel
 		return true;
     }
 
+    public static function getApplicationByid($id)
+    {
+        return self::withTrashed()->where('id', $id)->first();
+    }
+
 
 }

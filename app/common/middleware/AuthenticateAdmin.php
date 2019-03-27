@@ -10,6 +10,7 @@ namespace app\common\middleware;
 
 use app\common\traits\JsonTrait;
 use app\platform\modules\application\models\AppUser;
+use app\platform\modules\application\models\UniacidApp;
 use Closure;
 use Illuminate\Support\Facades\Cookie;
 
@@ -35,11 +36,24 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
+        $cfg = \config::get('app.global');
+
+        //TODO 验证平台是否停用
+        if (!empty($cfg['uniacid'])) {
+            $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
+
+            if (is_null($sys_app)) {
+                //TODO 非法访问
+            }
+
+            if ($sys_app->deleted_at) {
+               //TODO 应用已停用
+            }
+        }
+
         if (\Auth::guard('admin')->user()->uid == 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
-            $cfg = \config::get('app.global');
-
             if (!empty($cfg['uniacid'])) {
                 $this->uniacid = $cfg['uniacid'];
                 $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $cfg['uniacid']);
