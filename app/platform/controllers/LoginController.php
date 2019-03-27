@@ -9,9 +9,9 @@
 namespace app\platform\controllers;
 
 
+use app\common\services\Utils;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Lang;
 
 class LoginController extends BaseController
@@ -112,8 +112,7 @@ class LoginController extends BaseController
         request()->session()->flush();
         request()->session()->regenerate();
 
-        setcookie('uniacid', null, time() - 3600, '/admin');
-        setcookie('uniacid', null, time() - 3600, '/admin/shop');
+        Utils::removeUniacid();
 
         return $this->successJson('成功', []);
     }
