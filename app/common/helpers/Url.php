@@ -16,11 +16,7 @@ class Url
         }
         //$domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        if (env('APP_Framework') == 'platform') {
-            return self::getPath($module)  . $uri;
-        } else {
-            return self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
-        }
+        return self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     public static function shopSchemeUrl($uri)
@@ -31,11 +27,7 @@ class Url
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
 
-        if (env('APP_Framework') == 'platform') {
-            return $domain . self::getPath($module)  . $uri;
-        } else {
-            return $domain . self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
-        }
+        return $domain . self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     /**
@@ -223,7 +215,7 @@ class Url
     public static function getPath($module)
     {
         if (env('APP_Framework') == 'platform') {
-            return '/';
+            return '';
         }
 
         return '/addons/' . $module;
