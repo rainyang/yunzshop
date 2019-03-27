@@ -75,6 +75,35 @@ class Attachment extends BaseModel
      */
     public static function saveRemote($alioss, $cos, $remote)
     {
+        switch($cos['local']) {
+            case '华北':
+                $cos['local'] = 'tj';
+                break;
+            case '华东':
+                $cos['local'] = 'sh';
+                break;
+            case '华南':
+                $cos['local'] = 'gz';
+                break;
+            case '西南':
+                $cos['local'] = 'cd';
+                break;
+            case '北京':
+                $cos['local'] = 'bj';
+                break;
+            case '新加坡':
+                $cos['local'] = 'sgp';
+                break;
+            case '香港':
+                $cos['local'] = 'hk';
+                break;
+            case '多伦多':
+                $cos['local'] = 'ca';
+                break;
+            case '法兰克福':
+                $cos['local'] = 'ger';
+                break;
+        }
         $remotes = array(
             'type' => intval(request()->type),
             'alioss' => array(

@@ -154,7 +154,7 @@ class UploadController extends BaseController
             'ext' => $ext,
             'filename' => $pathname,
             'attachment' => $pathname,
-            'url' => tomedia($pathname),
+            'url' => yz_tomedia($pathname),
             'is_image' => $type == 'image' ? 1 : 0,
             'filesize' => filesize($fullname),
             'group_id' => intval(request()->group_id)
@@ -174,7 +174,7 @@ class UploadController extends BaseController
                 return $this->errorJson('远程附件上传失败，请检查配置并重新上传'.$remotestatus['message']);
             } else {
                 file_delete($pathname);
-                $info['url'] = tomedia($pathname, $this->remote['type']);
+                $info['url'] = yz_tomedia($pathname, false, $this->remote['type']);
             }
         }
 
@@ -245,10 +245,10 @@ class UploadController extends BaseController
 
         foreach ($core_attach as &$meterial) {
             if ($islocal) {
-                $meterial['url'] = tomedia($meterial['attachment'], $meterial['upload_type']);
+                $meterial['url'] = yz_tomedia($meterial['attachment']);
                 unset($meterial['uid']);
             } else {
-                $meterial['attach'] = tomedia($meterial['attachment'], $meterial['upload_type'], true);
+                $meterial['attach'] = yz_tomedia($meterial['attachment'], true);
                 $meterial['url'] = $meterial['attach'];
             }
         }
