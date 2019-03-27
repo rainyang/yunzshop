@@ -7,81 +7,10 @@ use app\platform\modules\application\models\UniacidApp;
 use app\common\helpers\Cache;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\application\models\AppUser;
-use app\common\services\AliOss;
-
-use app\common\services\qcloud;
 
 class ApplicationController extends BaseController
 {
     protected $key = 'application';
-
-    public function test()
-    {
-        $accessKeyId = 'LTAI5VawtDOhA5OL';
-        $accessKeySecret = 'zE4oQDzaXNLMT4YSkQMu3lR5TJ6q2D';
-        $endpoint = 'oss-cn-hangzhou.aliyuncs.com';
-        $bucket = 'shop-yunshop-com';
-        if (request()->input()) {
-        // $bucket = 'test-yunshop-com';
-        // $bucket = 'https://images.yunzshop.com';
-
-        // try {
-            
-        //     $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-        //     $listObjectInfo = $ossClient->listObjects($bucket);
-        //     dd($listObjectInfo);
-
-        //     $objectList = $listObjectInfo->getObjectList();
-        //     if (!empty($objectList)) {
-        //         foreach ($objectList as $objectInfo) {
-        //         print($objectInfo->getKey() . "\t" . $objectInfo->getSize() . "\t" . $objectInfo->getLastModified() . "\n");
-        //         }
-        //     }
-        // } catch (OssException $e) {
-        //     print $e->getMessage();
-        // }
-        // 
-        // $content = 'D:\wamp\www\shop\storage\app\public\201903145c8a41b16d8c57635.mp4';
-        $content = request()->file;
-
-        $filename = md5(rand(1,99999));
-
-        try {
-            //添加的文件大小不得超过5 GB。
-            $ossClient = new AliOss($accessKeyId, $accessKeySecret, $endpoint, $bucket);    
-            dd($ossClient->checkBucket($bucket));
-            
-            $res = $ossClient->upload($filename, $content);
-                    
-            $url = 'http://'.$bucket.'/'.$endpoint.'/'.$filename;
-            // $p = $ossClient->PutBucketPublicRead();
-
-            $ge = $ossClient->getObject($filename);
-
-            dd($filename,$res, $p, $ge);
-
-        } catch (OssException $e) {
-            print $e->getMessage();
-        }
-        //////////////////////////////////////////////////////////////////qcloud///////////////////////
-        // $secretId = "AKIDGPYa8gNUdZjmcGMYIPSRL8oMl2CDNua9"; //"云 API 密钥 SecretId";
-        // $secretKey = "Wq23sUu8E8pKchbJsKaeVAj6HF2d2ED3"; //"云 API 密钥 SecretKey";
-        // $region = "ap-beijing"; //设置一个默认的存储桶地域
-        // $cosClient = new qcloud\Client(
-        //     array(
-        //         'region' => $region,
-        //         'schema' => 'https', //协议头部，默认为http
-        //         'credentials'=> array(
-        //             'secretId'  => $secretId ,
-        //             'secretKey' => $secretKey
-        //         )
-        //     )
-        // );
-
-        // $qc = new qcloud();
-        }
-        return View('admin.application.upload');
-    }
 
     public function index()
     {
@@ -96,12 +25,14 @@ class ApplicationController extends BaseController
             return $this->errorJson($ids);
         }
 
-        if ($search) {
-            
-            $app = $app->whereIn('id', $ids)->search($search);
-        } 
+        if (\Auth::guard('admin')->user()->uid != 1) {
 
-            $list = $app->whereIn('id', $ids)->orderBy('id', 'desc')->paginate()->toArray();
+            $list = $app->whereIn('id', $ids)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
+
+        } else {
+
+            $list = $app->search($search)->orderBy('id', 'desc')->paginate()->toArray();
+        }
             
             foreach ($list['data'] as $key => $value) {
                 
