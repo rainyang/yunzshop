@@ -88,27 +88,23 @@ class ApplicationController extends BaseController
 
         $data = $this->fillData(request()->input());
 
-        $app->fill($data);
+        $id = $app->insertGetId($data); 
 
-        $validator = $app->validator();
-
-        if ($validator->fails()) {
-
-            return $this->errorJson($validator->messages());
-        
-        } else {
-
-            if ($app->save()) {
-                //更新缓存
+        if ($id) {
+            
+            $up = UniacidApp::where('id', $id)->update(['uniacid'=>$id]);  
+            
+            if (!$up) {
+                \Log::info('平台添加修改uniacid字段失败, id为',$id);
+            }
+            //更新缓存
 //                Cache::put($this->key.':'. $id, $app->find($id));
 //                Cache::put($this->key.'_num', $id);
+            return $this->successJson('添加成功');
 
-                return $this->successJson('添加成功');
+        } else {
 
-            } else {
-
-                return $this->errorJson('添加失败');
-            }
+            return $this->errorJson('添加失败');
         }
     }
 
@@ -129,6 +125,7 @@ class ApplicationController extends BaseController
 
             $data = $this->fillData(request()->input());
             $data['id'] = $id;
+            $data['uniacid'] = $id;
 
             $app->fill($data);
 
