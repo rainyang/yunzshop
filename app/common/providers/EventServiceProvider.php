@@ -110,15 +110,9 @@ class EventServiceProvider extends ServiceProvider
         AfterMemberReceivedCoupon::class=>[
             AfterMemberReceivedCouponListener::class
         ],
-<<<<<<< HEAD
-        UserActionEvent::class => [
-            UserActionListener::class,
-        ],
-=======
         MemberChangeRelationEvent::class=>[
             MemberChangeRelationEventListener::class
         ]
->>>>>>> d0c3c7e1344d4d7b4cb6767a15c4846948e03b8a
     ];
     /**
      * 注册监听者类
