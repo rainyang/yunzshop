@@ -42,14 +42,17 @@ class AuthenticateAdmin
             $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
             if (is_null($sys_app)) {
-                $this->redirectToHome();
+                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+                    return $this->redirectToHome();
+                }
 
                 return $this->errorJson('非法请求');
             }
 
             if (!is_null($sys_app->deleted_at)) {
-                $this->redirectToHome();
-
+                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+                    return $this->redirectToHome();
+                }
                 return $this->errorJson('应用已停用');
             }
         }
@@ -117,8 +120,6 @@ class AuthenticateAdmin
 
     private function redirectToHome()
     {
-        if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
-            return redirect()->guest();
-        }
+        return redirect()->guest();
     }
 }
