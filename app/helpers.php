@@ -207,10 +207,12 @@ if (!function_exists("tomedia")) {
     /**
      * 获取附件的HTTP绝对路径
      * @param string $src 附件地址
+     * @param $upload_type
      * @param bool $local_path 是否直接返回本地图片路径
      * @return string
      */
-    function tomedia($src, $local_path = false)
+
+    function tomedia($src, $upload_type = '', $local_path = false)
     {
         if (empty($src)) {
             return '';
@@ -230,12 +232,12 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
-            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
+            if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
             } else {
-                if ($remote['type'] == '2') {
+                if ($upload_type == '2') {
                     $src = $remote['alioss']['url'] . '/'. $src;
-                } else {
+                } elseif ($upload_type == '4') {
                     $src = $remote['cos']['url'] . '/'. $src;
                 }
             }

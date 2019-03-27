@@ -31,7 +31,6 @@ class UploadController extends BaseController
 
     public function upload()
     {
-//        dd( \Auth::guard('admin')->user()->uid, $this->global, $this->remote);
         if (!$_FILES['file']['name']) {
             return $this->errorJson('上传失败, 请选择要上传的文件！');
         }
@@ -175,7 +174,7 @@ class UploadController extends BaseController
                 return $this->errorJson('远程附件上传失败，请检查配置并重新上传'.$remotestatus['message']);
             } else {
                 file_delete($pathname);
-                $info['url'] = tomedia($pathname);
+                $info['url'] = tomedia($pathname, $this->remote['type']);
             }
         }
 
@@ -186,7 +185,8 @@ class UploadController extends BaseController
             'attachment' => $pathname ? : '',
             'type' => $type == 'image' ? 1 : ($type == 'audio'||$type == 'voice' ? 2 : 3),
             'module_upload_dir' => $module_upload_dir,
-            'group_id' => intval(request()->group_id)
+            'group_id' => intval(request()->group_id),
+            'upload_type' => $this->remote['type']
         ]);
 
         if ($core_attach) {
@@ -245,10 +245,10 @@ class UploadController extends BaseController
 
         foreach ($core_attach as &$meterial) {
             if ($islocal) {
-                $meterial['url'] = tomedia($meterial['attachment']);
+                $meterial['url'] = tomedia($meterial['attachment'], $meterial['upload_type']);
                 unset($meterial['uid']);
             } else {
-                $meterial['attach'] = tomedia($meterial['attachment'], true);
+                $meterial['attach'] = tomedia($meterial['attachment'], $meterial['upload_type'], true);
                 $meterial['url'] = $meterial['attach'];
             }
         }
