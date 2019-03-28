@@ -104,6 +104,7 @@ abstract class CouponPrice
     /**
      * 累加所有商品会员价
      * @return int
+     * @deprecated 替换为 getOrderGoodsCollectionPaymentAmount
      */
     protected function getOrderGoodsCollectionPrice()
     {
