@@ -616,7 +616,7 @@
                     e.image_url('/index.php/admin/system/upload/image?local=local&groupid=-999');
                     e.fetch_url('/index.php/admin/system/upload/fetch');
                     e.delet_url('/index.php/admin/system/upload/delete');
-                    e.video_url('/index.php/admin/system/upload/video');
+                    e.video_url('/index.php/admin/system/upload/video?local=local&type=video&pagesize=5');
                 })
     },
 

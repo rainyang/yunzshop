@@ -198,13 +198,20 @@ EOF;
         $options['direct'] = true;
         $options['multi'] = false;
         $options['type'] = 'video';
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
+        $util = 'util';
+        if (env('APP_Framework') == 'platform') {
+            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
+            $options['fileSizeLimit'] = intval($global['audio_limit']) * 1024;
+            $util = 'utils';
+        } else {
+            $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
+        }
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
 <script type="text/javascript">
 	function showVideoDialog(elm, options) {
-		require(["util"], function(util){
+		require(["'.$util.'"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
 			var val = ipt.val();

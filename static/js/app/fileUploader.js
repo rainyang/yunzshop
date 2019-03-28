@@ -718,11 +718,12 @@
                 },
                 deletevideofile: function() {
                     var b = this;
+                    let o = this.delete_urls;
                     b.modalobj.find("#history_video .history-content td .delete-video-file").unbind().click(function() {
                         if (confirm("确定要删除文件吗？")) {
                             var b = a(this),
                                 c = a(this).data("id");
-                            return c ? (a.post("./index.php?c=utility&a=file&do=delete", {
+                            return c ? (a.post(o, {
                                     id: c
                                 },
                                 function(a) { (b.parents('tr').remove(), util.message("删除成功", "", "success"))

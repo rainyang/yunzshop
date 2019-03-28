@@ -267,8 +267,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     if (env('APP_Framework') == 'platform') {
         $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
         if ($remote = $SystemSetting->settingLoad('remote', 'system_remote', true)) {
-            $res = $remote->toArray();
-            $setting[$res['key']] = unserialize($res['value']);
+            $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
         if (!$upload_type) {
@@ -2172,5 +2171,122 @@ if (!function_exists('file_remote_delete')) {
         }
 
         return true;
+    }
+}
+
+if (!function_exists('material_list')) {
+    function material_list($type = '', $server = '', $page = array('page_index' => 1, 'page_size' => 24), $uniacid = 0, $offset)
+    {
+        $core_attach = array('local' => new \app\platform\modules\application\models\CoreAttach, 'perm' => new app\platform\modules\application\models\WechatAttachment);
+        $conditions['uniacid'] = $uniacid;
+        $core_attach = $core_attach[$server];
+        switch ($type) {
+            case 'voice' :
+                $conditions['type'] = $server == 'local' ? 2 : 'voice';
+                break;
+            case 'video' :
+                $conditions['type'] = $server == 'local' ? 3 : 'video';
+                break;
+            default :
+                $conditions['type'] = $server == 'local' ? 1 : 'image';
+                break;
+        }
+        if ($server == 'local') {
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+        } else {
+            $conditions['model'] = 'perm';
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+            if ($type == 'video') {
+                foreach ($core_attach as &$row) {
+                    $row['tag'] = $row['tag'] == '' ? array() : iunserializer($row['tag']);
+                }
+                unset($row);
+            }
+        }
+
+        $pager = pagination($total, $page['page_index'], $page['page_size'], '', $context = array('before' => 5, 'after' => 4, 'isajax' => '1'));
+        $material_news = array('material_list' => $core_attach, 'page' => $pager);
+
+        return $material_news;
+    }
+}
+
+if (!function_exists('iunserializer')) {
+    function iunserializer($value)
+    {
+        if (!$value) {
+            return array();
+        }
+        if (!is_serialized($value)) {
+            return $value;
+        }
+        $result = unserialize($value);
+        if ($result === false) {
+            $temp = preg_replace_callback('!s:(\d+):"(.*?)";!s', function ($matchs) {
+                return 's:' . strlen($matchs[2]) . ':"' . $matchs[2] . '";';
+            }, $value);
+            return unserialize($temp);
+        } else {
+            return $result;
+        }
+    }
+}
+
+if (!function_exists('is_serialized')) {
+    function is_serialized($data, $strict = true)
+    {
+        if (!is_string($data)) {
+            return false;
+        }
+        $data = trim($data);
+        if ('N;' == $data) {
+            return true;
+        }
+        if (strlen($data) < 4) {
+            return false;
+        }
+        if (':' !== $data[1]) {
+            return false;
+        }
+        if ($strict) {
+            $lastc = substr($data, -1);
+            if (';' !== $lastc && '}' !== $lastc) {
+                return false;
+            }
+        } else {
+            $semicolon = strpos($data, ';');
+            $brace = strpos($data, '}');
+            if (false === $semicolon && false === $brace)
+                return false;
+            if (false !== $semicolon && $semicolon < 3)
+                return false;
+            if (false !== $brace && $brace < 4)
+                return false;
+        }
+        $token = $data[0];
+        switch ($token) {
+            case 's' :
+                if ($strict) {
+                    if ('"' !== substr($data, -2, 1)) {
+                        return false;
+                    }
+                } elseif (false === strpos($data, '"')) {
+                    return false;
+                }
+            case 'a' :
+                return (bool)preg_match("/^{$token}:[0-9]+:/s", $data);
+            case 'O' :
+                return false;
+            case 'b' :
+            case 'i' :
+            case 'd' :
+                $end = $strict ? '$' : '';
+                return (bool)preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
+        }
+        return false;
     }
 }

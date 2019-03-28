@@ -56,6 +56,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">首图视频</label>
+                            <div class="col-sm-9  col-md-6 col-xs-12">
+
+                                {!! app\common\helpers\ImageHelper::tplFormFieldVideo('widgets[video][goods_video]', $goods->hasOneGoodsVideo->goods_video) !!}
+                                {{--{!! tpl_form_field_video('widgets[video][goods_video]',$goods->hasOneGoodsVideo->goods_video) !!}--}}
+                                <span class="help-block">设置后商品详情首图默认显示视频，建议时长9-30秒</span>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">favorite icon</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
                                 {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!--}
@@ -81,12 +92,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">门店详情</label>
-                            <div class="col-sm-9 col-xs-12">
-                                {!! yz_tpl_ueditor('setdata[information]', $setdata->information) !!}
-                            </div>
-                        </div>
+
                     </div>
                     <div class="form-group col-sm-12 mrleft40 border-t">
                         <input type="submit" name="submit" value="提交" class="btn btn-success"
