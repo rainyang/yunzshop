@@ -1903,6 +1903,7 @@ if (!function_exists('attachment_cos_auth')) {
         if (!preg_match('/^[a-zA-Z0-9]{32}$/', $secret)) {
             return error(-1, '传入secretkey值不合法，请重新传入');
         }
+        $filename = '/logo.png';
         if ($bucket_local) {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/qcloud/Conf.php');
             if (!$con) {
@@ -1916,7 +1917,7 @@ if (!function_exists('attachment_cos_auth')) {
             file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
             \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
             \app\common\services\qcloud\Cosapi::setTimeout(180);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/stati/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/stati/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -1928,7 +1929,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {
@@ -2040,10 +2041,10 @@ if (!function_exists('attachment_newalioss_auth')) {
         $buckets = attachment_alioss_buctkets($key, $secret);
         $host = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
         $url = 'http://' . $buckets[$bucket]['location'] . $host;
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         try {
             $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
-            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/global/' . $filename);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/images/' . $filename);
         } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
             return error(1, $e->getMessage());
         }
