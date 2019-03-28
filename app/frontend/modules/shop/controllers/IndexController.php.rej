@@ -1,9 +1,0 @@
-diff a/app/frontend/modules/shop/controllers/IndexController.php b/app/frontend/modules/shop/controllers/IndexController.php	(rejected hunks)
-@@ -106,7 +106,6 @@
-             foreach ($goodsList as &$value) {
-                 $value->thumb = yz_tomedia($value->thumb);
-             }
--                foreach ($goodsList as &$goodsValue){
-             Cache::put('YZ_Index_goodsList', $goodsList, 4200);
- 
-         } else {
