@@ -266,7 +266,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
 
     if (env('APP_Framework') == 'platform') {
         $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
-        if ($remote = $SystemSetting->getKeyList('remote')) {
+        if ($remote = $SystemSetting->settingLoad('remote', 'system_remote', true)) {
             $res = $remote->toArray();
             $setting[$res['key']] = unserialize($res['value']);
         }
