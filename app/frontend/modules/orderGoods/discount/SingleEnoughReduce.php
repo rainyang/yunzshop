@@ -26,10 +26,6 @@ class SingleEnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
-        if(!$this->orderDiscountCalculated()){
-            // 确保订单优惠先行计算
-            return null;
-        }
         // (订单商品成交金额/订单中同种商品总成交金额 ) * 订单单品满减金额
         // 商品成交金额 = 订单成交价 - 商品等级优惠
         return ($this->orderGoods->getPriceBefore($this->getCode()) / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
