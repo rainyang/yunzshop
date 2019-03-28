@@ -22,6 +22,8 @@ abstract class GoodsDeduction
         $this->deductionSettingCollection = $deductionSettingCollection;
     }
 
+    abstract public function getCode();
+
     /**
      * @return DeductionSettingCollection
      */
@@ -49,7 +51,8 @@ abstract class GoodsDeduction
      * 获取商品最少可以抵扣的价格比例
      * @return float
      */
-    public function getMinPriceProportion(){
+    public function getMinPriceProportion()
+    {
         return $this->getDeductionSettingCollection()->getImportantAndValidMinPriceProportion();
     }
 
@@ -57,7 +60,8 @@ abstract class GoodsDeduction
      * 获取商品最少可以抵扣的固定金额
      * @return float
      */
-    public function getMinFixedAmount(){
+    public function getMinFixedAmount()
+    {
         return $this->getDeductionSettingCollection()->getImportantAndValidMinFixedAmount();
     }
 
@@ -65,7 +69,8 @@ abstract class GoodsDeduction
      * 获取抵扣金额最小值计算方式
      * @return string
      */
-    public function getMinDeductionAmountCalculationType(){
+    public function getMinDeductionAmountCalculationType()
+    {
         return $this->getDeductionSettingCollection()->getImportantAndValidMinCalculationType();
 
     }
