@@ -97,22 +97,22 @@
 
                 <div class='panel-heading'>购物分享设置</div>
                 <div class='panel-body'>
-                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品分享优惠券：</label>
-                        <div class="col-sm-4 col-xs-6">
-                            <label class="radio-inline">
-                                <input type="radio" name="coupon[shopping_share][share_open]" value="1" @if ($coupon['shopping_share']['share_open'] == 1) checked="checked" @endif />
-                                开启
-                            </label>
-                            <label class="radio-inline">
-                                <input type="radio" name="coupon[shopping_share][share_open]" value="0" @if ($coupon['shopping_share']['share_open'] == 0) checked="checked" @endif />
-                                关闭
-                            </label>
-                            <div class="help-block">
-                                会员购买指定商品，获得优惠券分享资格
-                            </div>
-                        </div>
-                    </div>
+                    {{--<div class="form-group">--}}
+                        {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品分享优惠券：</label>--}}
+                        {{--<div class="col-sm-4 col-xs-6">--}}
+                            {{--<label class="radio-inline">--}}
+                                {{--<input type="radio" name="coupon[shopping_share][share_open]" value="1" @if ($coupon['shopping_share']['share_open'] == 1) checked="checked" @endif />--}}
+                                {{--开启--}}
+                            {{--</label>--}}
+                            {{--<label class="radio-inline">--}}
+                                {{--<input type="radio" name="coupon[shopping_share][share_open]" value="0" @if ($coupon['shopping_share']['share_open'] == 0) checked="checked" @endif />--}}
+                                {{--关闭--}}
+                            {{--</label>--}}
+                            {{--<div class="help-block">--}}
+                                {{--会员购买指定商品，获得优惠券分享资格--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享限制：</label>
                         <div class="col-sm-4 col-xs-6">
