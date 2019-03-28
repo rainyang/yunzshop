@@ -23,18 +23,25 @@
                 show: function(a, b) {
                     return this.init(a, b)
                 },
-                upload_url: function(a) {
-                    this.upload_url = a
-                },
-                image_url: function(a) {
-                    this.image_url = a
-                },
+                upload_urls : null,
+                image_urls : null,
                 fetch_urls : null,
+                delete_urls : null,
+                video_urls : null,
+                upload_url: function(upload_urls) {
+                    this.upload_urls = upload_urls
+                },
+                image_url: function(image_urls) {
+                    this.image_urls = image_urls
+                },
                 fetch_url: function(fetch_urls) {
                     this.fetch_urls = fetch_urls
                 },
-                delete_url: function(a) {
-                    this.delete_url = a
+                delet_url: function(delete_urls) {
+                    this.delete_urls = delete_urls
+                },
+                video_url: function(video_urls) {
+                    this.video_urls = video_urls
                 },
                 init: function(b, c) {
                     var d = this;
@@ -292,7 +299,7 @@
                         dnd: "#dndArea",
                         paste: "#uploader",
                         swf: "./resource/componets/webuploader/Uploader.swf",
-                        server: p.options.isWechat ? "./index.php?c=utility&a=wechat_file&do=upload": this.upload_url + b,
+                        server: p.options.isWechat ? "./index.php?c=utility&a=wechat_file&do=upload": this.upload_urls + b,
                         compress: o,
                         accept: k,
                         fileNumLimit: l,
@@ -495,8 +502,7 @@
                         a.localPage(1)
                 },
                 localPage: function(c) {
-                    let o = this.delete_url;
-                    console.log(o);
+                    let o = this.delete_urls;
                     var d = this;
                     if (d.options.isWechat) var e = d.options.type,
                         f = d.options.mode,
@@ -509,7 +515,7 @@
                         };
                     else var i = d.modalobj.find("#select-year .btn-info").data("id"),
                         j = d.modalobj.find("#select-month .btn-info").data("id"),
-                        g = this.image_url,
+                        g = this.image_urls,
                         h = {
                             page: c,
                             year: i,
@@ -677,7 +683,7 @@
                             type: e,
                             psize: 5
                         };
-                    else var f = "./index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5",
+                    else var f = this.video_urls,
                         g = {
                             page: c
                         };
