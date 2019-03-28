@@ -22,7 +22,7 @@ trait PreOrderTrait
     {
         $this->beforeSaving();
         $this->save();
-
+        $this->afterSaving();
         $result = $this->push();
 
         if ($result === false) {

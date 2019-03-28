@@ -24,10 +24,10 @@ class McMappingFansModel extends McMappingFans
     protected $attributes = ['unionid' => '', 'groupid' => 0];
 
 
-    public function getOauthUserInfo()
+    /*public function getOauthUserInfo()
     {
         return mc_oauth_userinfo();
-    }
+    }*/
 
     /**
      * 获取粉丝uid
