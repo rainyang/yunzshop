@@ -107,8 +107,8 @@ class IndexController extends ApiController
                 $value->thumb = yz_tomedia($value->thumb);
             }
             if (app('plugins')->isEnabled('love')){
-                $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
-                $goodsList->love_name = $love_basics_set['name'];
+               // $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+               // $goodsList->love_name = $love_basics_set['name'];
                   foreach ($goodsList as &$goodsValue){
                       $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
                           ->where('uniacid',\Yunshop::app()->uniacid)
