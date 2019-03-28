@@ -37,7 +37,8 @@ class CreateGoodsService
 
 
         $this->params = new GoodsParam();
-        $this->goods_model = new Goods();
+        $this->goods_model = $this->getGoodsModel();
+
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
@@ -68,7 +69,7 @@ class CreateGoodsService
                 && $this->request->widgets['sale']['min_point_deduct'] > $goods_data['price']) {
                 return ['status' => -1, 'msg' => '积分最少抵扣金额大于商品现价'];
             }
-            $this->goods_model->setRawAttributes($goods_data);
+            $this->goods_model->fill($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             $this->goods_model->uniacid = \YunShop::app()->uniacid;
             $this->goods_model->weight = $this->goods_model->weight ? $this->goods_model->weight : 0;
@@ -90,5 +91,10 @@ class CreateGoodsService
         }
 
         $this->catetory_menus = CategoryService::getCategoryMultiMenu(['catlevel' => Setting::get('shop.category')['cat_level']]);
+    }
+
+    protected function getGoodsModel()
+    {
+        return new Goods();
     }
 }

@@ -154,7 +154,11 @@ class PluginsController extends BaseController
 //                        $api[$key]['description'] = $pluginsModel->getPlugin($key);
 //                    }
 //                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
-                    break;
+                break;
+                case 'blockchain':
+                    $blockchain[$key] = $plugin;
+                    $blockchain[$key]['description'] = app('plugins')->getPlugin($key)->description;
+                break;
             }
         }
 
@@ -163,9 +167,10 @@ class PluginsController extends BaseController
             'dividend'  => $dividend,
             'industry'  => $industry,
             'marketing' => $marketing,
-            'tool'      => $tool,
-            'recharge'  => $recharge,
-            'api'       => $api,
+            'tool' => $tool,
+            'recharge' => $recharge,
+            'blockchain' => $blockchain,
+            'api' => $api,
         ]);
     }
 

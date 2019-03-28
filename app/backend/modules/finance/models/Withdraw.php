@@ -26,6 +26,10 @@ class Withdraw extends \app\common\models\Withdraw
 
     public function scopeSearch($query, $search)
     {
+        if($search['member_id']) {
+            $query->where('member_id',$search['member_id']);
+        }
+
         if (isset($search['status']) && $search['status'] != "") {
             $query->ofStatus($search['status']);
         }

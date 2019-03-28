@@ -9,7 +9,6 @@
 namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
-use app\common\facades\Setting;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\Member;
@@ -20,8 +19,8 @@ use app\frontend\modules\member\services\MemberService;
 class LoginController extends ApiController
 {
     protected $publicController = ['Login'];
-    protected $publicAction = ['index', 'phoneSetGet'];
-    protected $ignoreAction = ['index', 'phoneSetGet'];
+    protected $publicAction = ['index', 'phoneSetGet', 'chekAccount'];
+    protected $ignoreAction = ['index', 'phoneSetGet', 'chekAccount'];
 
     public function index()
     {
@@ -101,5 +100,15 @@ class LoginController extends ApiController
             $phone_oauth = '0';
         }
         return $this->successJson('ok', ['phone_oauth' => $phone_oauth]);
+    }
+
+    public function chekAccount()
+    {
+        $type = \YunShop::request()->type ;
+
+        if (1 == $type) {
+            $member = MemberFactory::create($type);
+            $member->chekAccount();
+        }
     }
 }

@@ -96,6 +96,19 @@ class Goods extends BaseModel
      */
     const VIRTUAL_GOODS = 2;
 
+
+    /*
+        商品 plugin_id ：
+            0  => 平台商品
+            31 => 门店收银台
+            32 => 门店商品
+            40 => 租赁商品
+            41 => 网约车商品
+            92 => 供应商商品
+     */
+
+
+
     /**
      * 定义字段名
      *

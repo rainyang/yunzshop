@@ -38,7 +38,7 @@ class CashierIncomeController extends BaseController
                     $join->on('s.cashier_id', 'so.cashier_id')->where('so.created_at','>=' ,$searchTime[0])->where('so.created_at','<=',$searchTime[1]);
                 })
                 ->leftJoin('yz_order as o', function ($join) {
-                    $join->on('so.order_id', 'o.id')->where('o.status', 3);
+                    $join->on('so.order_id', 'o.id')->where('o.status', 3)->where('o.plugin_id',31);
                 })
                 ->where('s.uniacid', $uniacid)
                 ->selectRaw(''.$prefix.'s.cashier_id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
@@ -57,7 +57,7 @@ class CashierIncomeController extends BaseController
             $orderAndUnwithdraw = DB::table('yz_store as s')
                 ->leftJoin('yz_plugin_cashier_order as so', 's.cashier_id', 'so.cashier_id')
                 ->leftJoin('yz_order as o', function ($join) {
-                    $join->on('so.order_id', 'o.id')->where('o.status', 3);
+                    $join->on('so.order_id', 'o.id')->where('o.status', 3)->where('o.plugin_id',31);
                 })
                 ->where('s.uniacid', $uniacid)
                 ->selectRaw(''.$prefix.'s.cashier_id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
