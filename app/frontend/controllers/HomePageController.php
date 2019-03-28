@@ -139,12 +139,14 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-            $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
-            $page = (new DesignerService())->getPage($designerModel->toArray());
-            foreach ($page['data'] as $arr){
-                foreach ($arr as $value){
-                    if (isset($value['love'])){
-                        $result['designer']['designer_love_activity'] = $value['love'];
+            if ($pageId != 0) {
+                $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
+                $page = (new DesignerService())->getPage($designerModel->toArray());
+                foreach ($page['data'] as $arr) {
+                    foreach ($arr as $value) {
+                        if (isset($value['love'])) {
+                            $result['designer']['designer_love_activity'] = $value['love'];
+                        }
                     }
                 }
             }
