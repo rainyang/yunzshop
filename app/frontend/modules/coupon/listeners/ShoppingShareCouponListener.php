@@ -98,7 +98,7 @@ class ShoppingShareCouponListener
             'uniacid' => \YunShop::app()->uniacid,
             'member_id' => $this->order->uid,
             'order_id'  => $this->order->id,
-            'obtain_restriction' => $this->set['receive_limit'],
+            'obtain_restriction' => $this->set['receive_limit']?1:0,
             'share_coupon' => $this->dealWith($coupons),
         ];
 
