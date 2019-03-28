@@ -20,7 +20,8 @@ use app\common\helpers\PaginationHelper;
 use Yunshop\Diyform\admin\DiyformDataController;
 use app\common\models\MemberShopInfo;
 use app\common\models\member\MemberInvitationCodeLog;
-
+use Yunshop\Designer\services\DesignerService;
+use Yunshop\Love\Common\Services\SetService;
 class HomePageController extends ApiController
 {
     protected $publicAction = [
@@ -138,15 +139,17 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-//            $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
-//            $page = (new DesignerService())->getPage($designerModel->toArray());
-//            foreach ($page['data'] as $arr){
-//                foreach ($arr as $value){
-//                    if (isset($value['love'])){
-//                        $result['designer_love_activity'] = $value['love'];
-//                    }
-//                }
-//            }
+            $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
+            $page = (new DesignerService())->getPage($designerModel->toArray());
+            foreach ($page['data'] as $arr){
+                foreach ($arr as $value){
+                    if (isset($value['love'])){
+                        $result['designer']['designer_love_activity'] = $value['love'];
+                    }
+                }
+            }
+             $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+            $result['designer']['love_name'] = $love_basics_set['name'];
             //系统信息
             // TODO
             if (!Cache::has('designer_system')) {
