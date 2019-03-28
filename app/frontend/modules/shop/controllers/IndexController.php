@@ -111,6 +111,7 @@ class IndexController extends ApiController
                       $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
                           ->where('uniacid',\Yunshop::app()->uniacid)
                           ->where('goods_id',$goodsValue->goods_id)
+                          ->where('award',1)
                           ->first();
                       $goodsValue->award_proportion = $love_value->award_proportion;
                   }
