@@ -107,7 +107,9 @@ abstract class CouponPrice
      */
     protected function getOrderGoodsCollectionPrice()
     {
-        return $this->coupon->getOrderGoodsInScope()->getPrice();
+        return $this->coupon->getOrderGoodsInScope()->sum(function (PreOrderGoods $orderGoods) {
+            return $orderGoods->getPriceBefore('coupon');
+        });
     }
     /**
      * 累加所有商品支付金额
