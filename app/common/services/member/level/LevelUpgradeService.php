@@ -40,12 +40,12 @@ class LevelUpgradeService
         }
 
         $result = $this->check(0);
-        $this->setValidity(); // 设置会员等级期限
 
         if ($result) {
 
             return $this->upgrade($result);
         }
+        $this->setValidity(); // 设置会员等级期限
         return '';
     }
 
@@ -74,11 +74,10 @@ class LevelUpgradeService
 
         $result = $this->check(1);
 
-        $this->setValidity(); // 设置会员等级期限
-
         if ($result) {
             return $this->upgrade($result);
         }
+        $this->setValidity(); // 设置会员等级期限
         return '';
     }
 
@@ -238,6 +237,9 @@ class LevelUpgradeService
         if ($this->memberModel->save()) {
             //会员等级升级触发事件
             event(new MemberLevelUpgradeEvent($this->memberModel,false));
+
+            event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
+
             $this->notice();
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {

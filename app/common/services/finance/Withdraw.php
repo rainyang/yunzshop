@@ -11,7 +11,6 @@ namespace app\common\services\finance;
 use app\common\events\withdraw\WithdrawPayedEvent;
 use app\common\models\Income;
 use app\common\models\Withdraw as WithdrawModel;
-use Yunshop\Commission\models\Agents;
 
 class Withdraw
 {
@@ -32,10 +31,9 @@ class Withdraw
         }
         return static::otherWithdrawSuccess($withdrawSN);
     }
+
     public static function otherWithdrawSuccess($withdrawId)
     {
-        
-        
         $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '1') {
             return false;
@@ -43,29 +41,19 @@ class Withdraw
         $withdraw->pay_status = 1;
         //提现打款到账事件
         event(new WithdrawPayedEvent($withdraw));
-//        $withdraw = $withdraw->toArray();
-        
-        $commissionConfigs = \Config::get('income.commission');
-        //分销佣金 - 分销商增加已打佣金
-        if($withdraw['type'] == $commissionConfigs['class']){
-            Agents::addPayCommission($withdraw['member_id'], $withdraw['actual_amounts']);
-        }
-
-        
         //修改收入状态
         foreach ($withdraw['type_data']['incomes'] as $item) {
-            if($item['pay_status'] == '1'){
-                Income::updatedIncomePayStatus($item['id'], ['pay_status'=>'2']);
+            if ($item['pay_status'] == '1') {
+                Income::updatedIncomePayStatus($item['id'], ['pay_status' => '2']);
             }
         }
         //修改提现记录状态
         $updatedData = [
-            'status' => 2,
+            'status'     => 2,
             'arrival_at' => time(),
         ];
-        \Log::info('修改提现记录状态',print_r($updatedData,true));
+        \Log::info('修改提现记录状态', print_r($updatedData, true));
         return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);
-
     }
 
     public static function payFail($withdrawSN)
@@ -87,11 +75,11 @@ class Withdraw
         $withdraw = WithdrawModel::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '1' && $withdraw->status == '4') {
             $updatedData = [
-                'status' => 1,
+                'status'     => 1,
                 'arrival_at' => time(),
             ];
 
-            \Log::info('修改提现记录状态',print_r($updatedData,true));
+            \Log::info('修改提现记录状态', print_r($updatedData, true));
             return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);
         }
     }
