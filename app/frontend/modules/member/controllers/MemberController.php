@@ -1395,6 +1395,14 @@ class MemberController extends ApiController
                     'url'   => $url
                 ];
             });
+            if (app('plugins')->isEnabled('asset')) {
+                $data[] = [
+                    'name'  => 'asset',
+                    'title' => PLUGIN_ASSET_NAME,
+                    'class' => 'icon-member-credit01',
+                    'url'   => 'TransHome'
+                ];
+            }
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
@@ -1655,6 +1663,9 @@ class MemberController extends ApiController
             }
         }
 
+
+        //return $this->successJson('ok', $data);
+
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
             $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
@@ -1673,6 +1684,7 @@ class MemberController extends ApiController
 
         
         return $this->successJson('ok', $arr);
+
     }
 
 

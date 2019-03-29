@@ -35,7 +35,7 @@ class StoreIncomeController extends BaseController
                     $join->on('s.id','so.store_id')->where('so.created_at','>=' ,$searchTime[0])->where('so.created_at','<=',$searchTime[1]);
                 })
                 ->leftJoin('yz_order as o', function ($join) {
-                    $join->on('so.order_id','o.id')->where('o.status',3);
+                    $join->on('so.order_id','o.id')->where('o.status',3)->where('o.plugin_id',32);
                 })
                 ->where('s.uniacid', $uniacid)
                 ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')
@@ -54,7 +54,7 @@ class StoreIncomeController extends BaseController
             $orderAndUnwithdraw = DB::table('yz_store as s')
                 ->leftJoin('yz_plugin_store_order as so','s.id','so.store_id')
                 ->leftJoin('yz_order as o', function ($join) {
-                    $join->on('so.order_id','o.id')->where('o.status',3);
+                    $join->on('so.order_id','o.id')->where('o.status',3)->where('o.plugin_id',32);
                 })
                 ->where('s.uniacid', $uniacid)
                 ->selectRaw(''.$prefix.'s.id,max(store_name) as name, max(thumb) as thumb_url, sum(if(has_settlement=1 and has_withdraw=0,amount,0)) as un_withdraw, sum(price) as price')

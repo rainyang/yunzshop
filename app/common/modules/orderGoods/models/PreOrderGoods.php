@@ -62,10 +62,7 @@ class PreOrderGoods extends OrderGoods
      * @var Collection
      */
     public $coupons;
-    /**
-     * @var OrderGoodsDeductManager
-     */
-    private $orderGoodsDeduction;
+
 
     public function __construct(array $attributes = [])
     {
@@ -74,6 +71,33 @@ class PreOrderGoods extends OrderGoods
         $this->setRelation('orderGoodsDiscounts', $this->newCollection());
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     * @throws AppException
+     */
+    public function getPriceBefore($key)
+    {
+        return $this->getPriceCalculator()->getPriceBefore($key);
+    }
+    /**
+     * @param $key
+     * @return mixed
+     * @throws AppException
+     */
+    public function getPriceBeforeWeight($key)
+    {
+        return $this->getPriceCalculator()->getPriceBeforeWeight($key);
+    }
+    /**
+     * @param $key
+     * @return mixed
+     * @throws AppException
+     */
+    public function getPriceAfter($key)
+    {
+        return $this->getPriceCalculator()->getPriceAfter($key);
+    }
     /**
      * 为订单model提供的方法 ,设置所属的订单model
      * @param PreOrder $order

@@ -96,6 +96,8 @@ use app\common\models\member\MemberInvitationCodeLog;
  */
 class Member extends BackendModel
 {
+    protected  $connection = 'mysql';
+    
     public $table = 'mc_members';
 
     public $timestamps = false;
@@ -667,10 +669,9 @@ class Member extends BackendModel
      */
     public static function getIncomeCount()
     {
-        $incomeModel = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->get();
+        $amount = Income::getIncomes()->where('member_id', \YunShop::app()->getMemberId())->sum('amount');
 
-        if ($incomeModel) {
-            $amount = $incomeModel->sum('amount');
+        if ($amount) {
             return number_format($amount, 2);
         }
 
