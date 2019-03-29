@@ -156,7 +156,13 @@ class HomePageController extends ApiController
             $page_id = $pageId;
             if ($page_id) {
                 $page = (new OtherPageService())->getOtherPage($page_id);
-                $designerModel = Designer::getDesignerByPageID($page_id);
+                $designerID = $page_id;
+            } else {
+                $page = (new IndexPageService())->getIndexPage();
+                $designerID = $page->id;
+            }
+
+                $designerModel = Designer::getDesignerByPageID($designerID);
                 $pages = (new DesignerService())->getPage($designerModel->toArray());
                 foreach ($pages['data'] as $arr) {
                     foreach ($arr as $value) {
@@ -165,19 +171,7 @@ class HomePageController extends ApiController
                         }
                     }
                 }
-            } else {
-                $page = (new IndexPageService())->getIndexPage();
-                $goodsList=json_decode(htmlspecialchars_decode($page->toArray()['params']), true);
-                foreach ($goodsList as $params){
-                    if (!empty($params['params'])){
-                        foreach ($params['params'] as $key=>$love){
-                            if ($key == 'love'){
-                                $result['designer']['designer_love_activity'] = $love;
-                            }
-                        }
-                    }
-                }
-            }
+
 
 
 //           dd($page->toArray());
