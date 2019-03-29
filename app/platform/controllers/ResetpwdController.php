@@ -20,12 +20,16 @@ class ResetpwdController extends BaseController
 	{
 		$mobile = request()->mobile;
         $state = \YunShop::request()->state ? : '86';
-		
 
 		if (empty($mobile)) {
             return $this->errorJson('请填入手机号');
         }
 		
+        $uid = $this->checkUserOnMobile($mobile); 
+        if (!$uid) {
+            return $this->errorJson('该手机号不存在');
+        }
+        
         $code = rand(1000, 9999);
 
         Cache::put($mobile.'_code', $code, 60 * 10);

@@ -74,8 +74,5 @@ class SystemSetting extends BaseModel
     public static function getKeyList($key)
     {
         return self::where('key', $key)->first();
-//        return Cache::remember('remote:resource', 3600, function () use ($key) {
-//            return self::where('key', $key)->first();
-//        });
     }
 }
