@@ -33,7 +33,7 @@ class ShareCouponService
         $share_log = ShoppingShareCouponLog::uniacid()->shareCouponId($share_model->id)->shareUid($share_model->member_id)->receiveUid(\YunShop::app()->getMemberId())->first();
 
         if ($share_log) {
-            return self::toData('RT', '以领取不可重复领取');
+            return self::toData('RT', '已领取不可重复领取');
         } elseif(!$couponModel->status) {
             return self::toData('RT', '该优惠券已下架');
         } elseif (($couponModel->total != -1) && (1 > $lastTotal)) {

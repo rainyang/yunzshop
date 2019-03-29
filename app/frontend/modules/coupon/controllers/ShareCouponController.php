@@ -134,7 +134,7 @@ class ShareCouponController extends ApiController
         $data['api_limit'] = $this->handleCouponUseType($data);
         $now = strtotime('now');
         if ($data['time_limit'] == Coupon::COUPON_SINCE_RECEIVE) { //时间限制类型是"领取后几天有效"
-            $end = $data['time_days'] * 3600;
+            $end = $now + $data['time_days'] * 3600;
             if ($data['time_days'] == 0) {
                 $data['time_start'] = '不限时间使用'; //前端需要起止时间
                 $data['time_end'] = ''; //前端需要起止时间
