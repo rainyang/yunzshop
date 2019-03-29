@@ -86,6 +86,21 @@ class ApplicationController extends BaseController
     {
         $app = new UniacidApp();
 
+        //判断用户是否有权限添加平台
+        $uid = \Auth::guard('admin')->user()->uid;
+
+        $num = UniacidApp::where('creator', $uid)->count();
+
+        $realnum = AdminUser::find($uid)->application_number;
+
+        if ($uid != 1 && $num >= $realnum) {
+            return $this->errorJson('您无权限添加平台');
+        }
+
+        if (!request()->input()) {
+            return $this->errorJson('请输入参数');
+        }
+
         $data = $this->fillData(request()->input());
 
         $id = $app->insertGetId($data); 
@@ -157,6 +172,9 @@ class ApplicationController extends BaseController
         $app = new UniacidApp();
 
         $info = $app->find($id);
+
+        // $users = $info->getUniacidUser($id);
+        // dd($users);
 
         if (!$id || !$info) {
             return $this->errorJson('获取失败');
