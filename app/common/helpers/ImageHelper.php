@@ -146,29 +146,14 @@ class ImageHelper
 
             $s = '
 		<script type="text/javascript">
-			function uploadMultiImage(elm, opts, options) {
+			function uploadMultiImage(elm) {
+                var name = $(elm).next().val();
 				require(["'.$util.'"], function(util){
-					var btn = $(elm);
-					var ipt = btn.parent().prev();
-					var val = ipt.val();
-					var img = ipt.parent().next().children();
-					options = '.str_replace('"', '\'', json_encode($options)).';
-					util.image(val, function(url){
-						if(url.url){
-							if(img.length > 0){
-								img.get(0).src = url.url;
-							}
-							ipt.val(url.attachment);
-							ipt.attr("filename",url.filename);
-							ipt.attr("url",url.url);
-						}
-						if(url.media_id){
-							if(img.length > 0){
-								img.get(0).src = "";
-							}
-							ipt.val(url.media_id);
-						}
-					}, options);
+					util.image("", function(urls){
+						$.each(urls, function(idx, url){
+                            $(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
+                        });
+					}, ' . json_encode($options) . ');
 				});
 			}
 			function deleteMultiImage(elm){
@@ -179,6 +164,8 @@ class ImageHelper
 		</script>';
             define('TPL_INIT_MULTI_IMAGE', true);
         }
+
+
 
         $s .= <<<EOF
 <div class="input-group">
