@@ -14,11 +14,18 @@ class IndexController extends BaseController
 
     public function index()
     {
+        $role = 0;
         $user = \Auth::guard('admin')->user();
         
-       /* Cookie::queue('user_id', $user->uid);
-        Cookie::queue('user_name', $user->username);*/
+        if (1 == $user->uid) {
+            $role = 1;
+        }
 
-        return $this->successJson('', ['cookie' => $_COOKIE, 'cfg' => \config::get('app.global')]);
+        $data = [
+            'username' => $user->username,
+            'role' => $role
+        ];
+
+        return $this->successJson('', $data);
     }
 }
