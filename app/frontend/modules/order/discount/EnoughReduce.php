@@ -16,7 +16,8 @@ class EnoughReduce extends BaseDiscount
     protected $name = '全场满减优惠';
     /**
      * 获取总金额
-     * @return float
+     * @return int|mixed
+     * @throws \app\common\exceptions\AppException
      */
     protected function _getAmount()
     {
@@ -30,7 +31,7 @@ class EnoughReduce extends BaseDiscount
         }
         // 获取满减设置,按enough倒序
         $settings = collect(Setting::get('enoughReduce.enoughReduce'));
-//dump($settings);
+
         if (empty($settings)) {
             return 0;
         }
@@ -42,8 +43,8 @@ class EnoughReduce extends BaseDiscount
         // 订单总价满足金额,则返回优惠金额
         foreach ($settings as $setting) {
 
-            if ($this->order->price >= $setting['enough']) {
-                return min($setting['reduce'],$this->order->price);
+            if ($this->order->getPriceBefore($this->getCode()) >= $setting['enough']) {
+                return min($setting['reduce'],$this->order->getPriceBefore($this->getCode()));
             }
         }
         return 0;

@@ -444,7 +444,7 @@ class MemberController extends BaseController
 
                 if ($is_upgrade) {
                     //会员等级升级触发事件
-                    event(new MemberLevelUpgradeEvent($shopInfoModel));
+                    event(new MemberLevelUpgradeEvent($shopInfoModel, true));
                 }
 
                 if ($parame->data['agent']) {

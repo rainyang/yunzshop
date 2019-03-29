@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\order\models;
 
-use app\common\exceptions\AppException;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
@@ -16,8 +15,13 @@ use app\frontend\modules\deduction\OrderDeductionCollection;
 use app\frontend\modules\dispatch\models\OrderDispatch;
 use app\frontend\modules\dispatch\models\PreOrderAddress;
 use app\frontend\modules\order\discount\BaseDiscount;
+use app\frontend\modules\order\discount\OrderDiscountPriceNode;
+use app\frontend\modules\order\discount\OrderMinDeductionPriceNode;
+use app\frontend\modules\order\discount\OrderRestDeductionPriceNode;
 use app\frontend\modules\order\OrderDiscount;
 use app\common\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\order\PriceNode;
+use app\frontend\modules\order\PriceNodeTrait;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Illuminate\Support\Collection;
@@ -52,6 +56,8 @@ use Illuminate\Support\Collection;
 class PreOrder extends Order
 {
     use PreOrderTrait;
+    use PriceNodeTrait;
+
     protected $appends = ['pre_id'];
     protected $hidden = ['belongsToMember'];
     /**
@@ -73,8 +79,39 @@ class PreOrder extends Order
     protected $request;
     protected $attributes = ['id' => null];
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
+    public function _getPriceNodes()
+    {
+        // 订单节点
+        $nodeSettings = config('shop-foundation.order-price-nodes');
+        $nodes = collect($nodeSettings)->map(function ($nodeSetting) {
+            return call_user_func($nodeSetting['class'], $this);
+        });
+        // 订单优惠的节点
+        $discountNodes = $this->getDiscounts()->map(function (BaseDiscount $discount) {
+            return new OrderDiscountPriceNode($this, $discount, 2000);
+        });
+        // 订单最低抵扣节点
+        $deductionMinNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
+            return new OrderMinDeductionPriceNode($this, $orderDeduction, 9000);
+        });
+        // 订单剩余抵扣节点
+        $deductionRestNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
+            $a  = new OrderRestDeductionPriceNode($this, $orderDeduction, 9100);
+            //dump($a->getKey());
+            return $a;
+        });
 
-    public function __construct(array $attributes = [])
+        // 按照weight排序
+        return $nodes->merge($discountNodes)->merge($deductionMinNodes)->merge($deductionRestNodes)->sortBy(function (PriceNode $priceNode) {
+            return $priceNode->getWeight();
+        })->values();
+    }
+
+    function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->setRelation('orderSettings', $this->newCollection());
@@ -95,13 +132,20 @@ class PreOrder extends Order
         $this->setOrderGoods($orderGoods);
 
         $this->discount = new OrderDiscount($this);
-        $this->orderDispatch = new OrderDispatch($this);
 
         $this->afterCreating();
 
         $this->initAttributes();
 
         return $this;
+    }
+
+    public function getOrderDispatch()
+    {
+        if (!isset($this->orderDispatch)) {
+            $this->orderDispatch = new OrderDispatch($this);
+        }
+        return $this->orderDispatch;
     }
 
     /**
@@ -115,16 +159,23 @@ class PreOrder extends Order
         return $this->orderDeductManager;
     }
 
+    /**
+     * @return OrderDeductionCollection|static
+     * @throws \app\common\exceptions\AppException
+     */
     public function getCheckedOrderDeductions()
     {
         return $this->getOrderDeductManager()->getCheckedOrderDeductions();
     }
 
+    /**
+     * @return OrderDeductionCollection
+     * @throws \app\common\exceptions\AppException
+     */
     public function getOrderDeductions()
     {
         if (!$this->getRelation('orderDeductions')) {
-
-            return $this->getOrderDeductManager()->getOrderDeductions();
+            $this->setRelation('orderDeductions', $this->getOrderDeductManager()->getOrderDeductions());
         }
         return $this->orderDeductions;
     }
@@ -224,6 +275,7 @@ class PreOrder extends Order
 
     /**
      * 初始化属性
+     * @throws \app\common\exceptions\AppException
      */
     protected function initAttributes()
     {
@@ -306,40 +358,18 @@ class PreOrder extends Order
     /**
      * 计算订单成交价格
      * 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
-     * @return int
+     * @return float|mixed
+     * @throws \app\common\exceptions\AppException
      */
     protected function getPrice()
     {
-        if (array_key_exists('price', $this->attributes)) {
+        if (!array_key_exists('price', $this->attributes)) {
             // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
-
-            return $this->price;
+            $this->price = max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
         }
 
         //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
-        $this->price = $this->getOrderGoodsPrice();
-
-        $this->getDiscounts()->each(function (BaseDiscount $discount) {
-            // 每一种订单优惠
-            $this->price -= $discount->getAmount();
-
-        });
-
-        $this->price += $this->getDispatchAmount();
-
-        $this->price -= $this->getDeductionAmount();
-//        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-//            // 每一种最低抵扣金额 todo 考虑调整为最低限购
-//            $this->price -= $orderDeduction->getMinDeduction()->getMoney();
-//
-//        });
-//
-//        $this->getCheckedOrderDeductions()->each(function (PreOrderDeduction $orderDeduction) {
-//            // 每一种剩余抵扣金额
-//            $this->price -= $orderDeduction->getUsablePoint()->getMoney();
-//
-//        });
-        return max($this->price, 0);
+        return $this->price;
     }
 
     /**
@@ -362,15 +392,12 @@ class PreOrder extends Order
 
     /**
      * 获取订单抵扣金额
-     * @return int|mixed
+     * @return int
+     * @throws \app\common\exceptions\AppException
      */
     public function getDeductionAmount()
     {
-        if (!$this->getRelation('orderDeductions')) {
-            return $this->getOrderDeductManager()->getAmount() ?: 0;
-        }
-
-        return $this->orderDeductions->usedAmount();
+        return $this->getCheckedOrderDeductions()->sum('amount') ?: 0;
     }
 
     /**
@@ -380,7 +407,7 @@ class PreOrder extends Order
     public function getDispatchAmount()
     {
 
-        return $this->orderDispatch->getFreight();
+        return $this->getOrderDispatch()->getFreight();
     }
 
     /**
@@ -518,6 +545,4 @@ class PreOrder extends Order
             $item->afterSaving();
         });
     }
-
-
 }

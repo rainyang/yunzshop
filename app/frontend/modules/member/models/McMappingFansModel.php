@@ -111,7 +111,7 @@ class McMappingFansModel extends McMappingFans
      */
     public static function getFansData($openid)
     {
-        return self::select('fanid', 'uid')
+        return self::select('fanid', 'uid','follow')
             ->uniacid()
             ->where('openid', $openid)
             ->first();
