@@ -232,7 +232,7 @@ if (!function_exists("tomedia")) {
             $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
             if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
-                $src = request()->getSchemeAndHttpHost() . '/static/upload/' . $src;
+                $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
             } else {
                 if ($upload_type == '2') {
                     $src = $remote['alioss']['url'] . '/'. $src;
@@ -322,7 +322,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
-        $src = request()->getSchemeAndHttpHost() .  '/static/upload/' . $src;
+        $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         if ($upload_type == 1) {
             $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
@@ -2103,11 +2103,11 @@ if (!function_exists('buildCustomPostFields')) {
     }
 }
 
-if (!function_exists('resource_path')) {
-    function resource_path($file, $depth=2)
+if (!function_exists('resource_get')) {
+    function resource_get($file, $depth=2)
     {
         if (env('APP_Framework') == 'platform') {
-            return '' . $file;
+            return '/' . $file;
         }
 
         $path = $depth == 2 ? '../..' : '..' . '/addons/yun_shop/';
