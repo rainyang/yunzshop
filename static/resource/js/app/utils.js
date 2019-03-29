@@ -612,11 +612,11 @@
                             e && $.isFunction(t) && t(e)
                         },
                         n);
-                    e.upload_url('/index.php/admin/system/upload/upload?upload_type=');
-                    e.image_url('/index.php/admin/system/upload/image?local=local&groupid=-999');
-                    e.fetch_url('/index.php/admin/system/upload/fetch');
-                    e.delet_url('/index.php/admin/system/upload/delete');
-                    e.video_url('/index.php/admin/system/upload/video?local=local&type=video&pagesize=5');
+                    e.upload_url('/admin/system/upload/upload?upload_type=');
+                    e.image_url('/admin/system/upload/image?local=local&groupid=-999');
+                    e.fetch_url('/admin/system/upload/fetch');
+                    e.delet_url('/admin/system/upload/delete');
+                    e.video_url('/admin/system/upload/video?local=local&type=video&pagesize=5');
                 })
     },
 
