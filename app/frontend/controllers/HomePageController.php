@@ -156,10 +156,31 @@ class HomePageController extends ApiController
             $page_id = $pageId;
             if ($page_id) {
                 $page = (new OtherPageService())->getOtherPage($page_id);
+                $designerModel = Designer::getDesignerByPageID($page_id);
+                $pages = (new DesignerService())->getPage($designerModel->toArray());
+                foreach ($pages['data'] as $arr) {
+                    foreach ($arr as $value) {
+                        if (isset($value['love'])) {
+                            $result['designer']['designer_love_activity'] = $value['love'];
+                        }
+                    }
+                }
             } else {
                 $page = (new IndexPageService())->getIndexPage();
+                $goodsList=json_decode(htmlspecialchars_decode($page->toArray()['params']), true);
+                foreach ($goodsList as $params){
+                    if (!empty($params['params'])){
+                        foreach ($params['params'] as $key=>$love){
+                            if ($key == 'love'){
+                                $result['designer']['designer_love_activity'] = $love;
+                            }
+                        }
+                    }
+                }
             }
 
+
+//           dd($page->toArray());
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             /*if(empty($pageId)){ //如果是请求首页的数据
@@ -186,23 +207,6 @@ class HomePageController extends ApiController
                         }
                     }
                 }
-                if ($pageId != 0) {
-                    $designerID =  $page->toArray()['id'];
-                }else{
-                    $designerID = \Yunshop::request()->page_id;
-                }
-
-                $designerModel = Designer::getDesignerByPageID($designerID);
-                $page = (new DesignerService())->getPage($designerModel->toArray());
-                foreach ($page['data'] as $arr) {
-                    foreach ($arr as $value) {
-                        if (isset($value['love'])) {
-                            $result['designer']['designer_love_activity'] = $value['love'];
-                        }
-                    }
-                }
-
-
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
                     Cache::put($member_id . '_designer_default_0', $designer, 180);
