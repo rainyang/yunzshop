@@ -140,17 +140,7 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-            if ($pageId != 0) {
-                $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
-                $page = (new DesignerService())->getPage($designerModel->toArray());
-                foreach ($page['data'] as $arr) {
-                    foreach ($arr as $value) {
-                        if (isset($value['love'])) {
-                            $result['designer']['designer_love_activity'] = $value['love'];
-                        }
-                    }
-                }
-            }
+           
              $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
             $result['designer']['love_name'] = $love_basics_set['name'];
             //系统信息
@@ -168,6 +158,21 @@ class HomePageController extends ApiController
                 $page = (new OtherPageService())->getOtherPage($page_id);
             } else {
                 $page = (new IndexPageService())->getIndexPage();
+            }
+            if ($pageId != 0) {
+                $designerID =  $page->toArray()['id'];
+            }else{
+                $designerID = \Yunshop::request()->page_id;
+            }
+
+            $designerModel = Designer::getDesignerByPageID($designerID);
+            $page = (new DesignerService())->getPage($designerModel->toArray());
+            foreach ($page['data'] as $arr) {
+                foreach ($arr as $value) {
+                    if (isset($value['love'])) {
+                        $result['designer']['designer_love_activity'] = $value['love'];
+                    }
+                }
             }
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
