@@ -18,7 +18,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('/', 'IndexController@index');
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
