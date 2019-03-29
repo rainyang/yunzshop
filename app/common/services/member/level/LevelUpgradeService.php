@@ -236,7 +236,7 @@ class LevelUpgradeService
 
         if ($this->memberModel->save()) {
             //会员等级升级触发事件
-            event(new MemberLevelUpgradeEvent($this->memberModel));
+            event(new MemberLevelUpgradeEvent($this->memberModel,false));
 
             event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
 

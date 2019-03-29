@@ -47,7 +47,7 @@ class ImageHelper
         }
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
-                exit('图片上传目录错误,只能指定最多两级目录,如: "we7_store","we7_store/d1"');
+                exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
         $options['direct'] = true;

@@ -285,11 +285,11 @@ class MemberOfficeAccountService extends MemberService
     public function updateMemberInfo($member_id, $userinfo)
     {
         parent::updateMemberInfo($member_id, $userinfo);
-
+        \Log::debug('----update_mapping_fans----', $member_id);
         $record = array(
             //'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
+            'follow' => $userinfo['subscribe'] ?: 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 

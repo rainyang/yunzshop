@@ -9,16 +9,20 @@
 namespace app\common\middleware;
 
 
-use app\common\models\AccountWechats;
+use app\platform\modules\system\models\SystemSetting;
 
 class GlobalParams
 {
+    private $remoteServicer = [
+        '2' => 'alioss',
+        '4' => 'cos'
+    ];
+
     public function handle($request, \Closure $next, $guard = null)
     {
         $base_config = $this->setConfigInfo();
 
         \config::set('app.global', $base_config);
-        \config::set('app.sys_global', array_merge($request->input(), $_COOKIE));
 
         return $next($request);
     }
@@ -30,16 +34,48 @@ class GlobalParams
      */
     private function setConfigInfo()
     {
-        $cfg     = \config::get('app.global');
+        $cfg = \config::get('app.global');
 
-        $account = AccountWechats::getAccountByUniacid($cfg['uniacid']);
-        $cfg['account'] = $account ? $account->toArray() : '';
+        $att = $this->getRemoteServicerInfo();
 
-        if (request('uniacid')) {
+        $params = [
+            'acid'             => $cfg['uniacid'],
+            'openid'           => '',
+            'uid'              => \Auth::guard('admin')->user()->uid,
+            'siteroot'         => request()->getSchemeAndHttpHost() . '/',
+            'siteurl'          => request()->getUri(),
+            'attachurl'        => $att['attachurl'],
+            'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
+            'attachurl_remote' => $att['attachurl_remote']
+        ];
 
-            return $cfg;
+        return array_merge($cfg, $params);
+    }
+
+    private function getRemoteServicerInfo()
+    {
+        $systemSetting = new SystemSetting();
+
+        if ($remote = $systemSetting->getKeyList('remote')) {
+            $res = $remote->toArray();
+            $setting[$res['key']] = unserialize($res['value']);
         }
 
-        return array_merge($cfg, $_COOKIE);
+        if ($setting['remote']['type'] != 0) {
+            $server = $setting['remote'][$this->remoteServicer[$setting['remote']['type']]];
+            $url = isset($server['url']) ? $server['url'] : '';
+
+            $data = [
+                'attachurl' => $url,
+                'attachurl_remote' => $url
+            ];
+        } else {
+            $data = [
+                'attachurl' => request()->getSchemeAndHttpHost() . '/static/upload/',
+                'attachurl_remote' => ''
+            ];
+        }
+
+        return $data;
     }
 }
