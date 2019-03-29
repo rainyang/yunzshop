@@ -156,23 +156,9 @@ class HomePageController extends ApiController
             $page_id = $pageId;
             if ($page_id) {
                 $page = (new OtherPageService())->getOtherPage($page_id);
-                $designerID = $page_id;
             } else {
                 $page = (new IndexPageService())->getIndexPage();
-                $designerID = $page->id;
             }
-
-                $designerModel = Designer::getDesignerByPageID($designerID);
-                $pages = (new DesignerService())->getPage($designerModel->toArray());
-                foreach ($pages['data'] as $arr) {
-                    foreach ($arr as $value) {
-                        if (isset($value['love'])) {
-                            $result['designer']['designer_love_activity'] = $value['love'];
-                        }
-                    }
-                }
-
-
 
 //           dd($page->toArray());
 
