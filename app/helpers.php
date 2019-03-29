@@ -2110,9 +2110,9 @@ if (!function_exists('resource_get')) {
             return '/' . $file;
         }
 
-        $path = $depth == 2 ? '../..' : '..' . '/addons/yun_shop/';
+        $path = $depth == 2 ? '../..' : '..';
 
-        return $path . $file;
+        return $path . '/addons/yun_shop/' . $file;
     }
 }
 
