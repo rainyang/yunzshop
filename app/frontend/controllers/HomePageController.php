@@ -140,7 +140,7 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-           
+
              $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
             $result['designer']['love_name'] = $love_basics_set['name'];
             //系统信息
@@ -159,21 +159,7 @@ class HomePageController extends ApiController
             } else {
                 $page = (new IndexPageService())->getIndexPage();
             }
-            if ($pageId != 0) {
-                $designerID =  $page->toArray()['id'];
-            }else{
-                $designerID = \Yunshop::request()->page_id;
-            }
 
-            $designerModel = Designer::getDesignerByPageID($designerID);
-            $page = (new DesignerService())->getPage($designerModel->toArray());
-            foreach ($page['data'] as $arr) {
-                foreach ($arr as $value) {
-                    if (isset($value['love'])) {
-                        $result['designer']['designer_love_activity'] = $value['love'];
-                    }
-                }
-            }
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             /*if(empty($pageId)){ //如果是请求首页的数据
@@ -200,6 +186,22 @@ class HomePageController extends ApiController
                         }
                     }
                 }
+                if ($pageId != 0) {
+                    $designerID =  $page->toArray()['id'];
+                }else{
+                    $designerID = \Yunshop::request()->page_id;
+                }
+
+                $designerModel = Designer::getDesignerByPageID($designerID);
+                $page = (new DesignerService())->getPage($designerModel->toArray());
+                foreach ($page['data'] as $arr) {
+                    foreach ($arr as $value) {
+                        if (isset($value['love'])) {
+                            $result['designer']['designer_love_activity'] = $value['love'];
+                        }
+                    }
+                }
+
 
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
