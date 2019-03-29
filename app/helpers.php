@@ -2427,3 +2427,94 @@ if (!function_exists('is_serialized')) {
     }
 }
 
+if (!function_exists('ver_compare')) {
+    function ver_compare($version1, $version2)
+    {
+        $version1 = str_replace('.', '', $version1);
+        $version2 = str_replace('.', '', $version2);
+        $oldLength = istrlen($version1);
+        $newLength = istrlen($version2);
+        if (is_numeric($version1) && is_numeric($version2)) {
+            if ($oldLength > $newLength) {
+                $version2 .= str_repeat('0', $oldLength - $newLength);
+            }
+            if ($newLength > $oldLength) {
+                $version1 .= str_repeat('0', $newLength - $oldLength);
+            }
+            $version1 = intval($version1);
+            $version2 = intval($version2);
+        }
+        return version_compare($version1, $version2);
+    }
+}
+
+if (!function_exists('istrlen')) {
+    function istrlen($string, $charset = '')
+    {
+        $global = \config::get('app.global');
+        if (!$charset) {
+            $charset = $global['charset'];
+        }
+        if (strtolower($charset) == 'gbk') {
+            $charset = 'gbk';
+        } else {
+            $charset = 'utf8';
+        }
+        if (function_exists('mb_strlen') && extension_loaded('mbstring')) {
+            return mb_strlen($string, $charset);
+        } else {
+            $n = $noc = 0;
+            $strlen = strlen($string);
+
+            if ($charset == 'utf8') {
+
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t == 9 || $t == 10 || (32 <= $t && $t <= 126)) {
+                        $n++;
+                        $noc++;
+                    } elseif (194 <= $t && $t <= 223) {
+                        $n += 2;
+                        $noc++;
+                    } elseif (224 <= $t && $t <= 239) {
+                        $n += 3;
+                        $noc++;
+                    } elseif (240 <= $t && $t <= 247) {
+                        $n += 4;
+                        $noc++;
+                    } elseif (248 <= $t && $t <= 251) {
+                        $n += 5;
+                        $noc++;
+                    } elseif ($t == 252 || $t == 253) {
+                        $n += 6;
+                        $noc++;
+                    } else {
+                        $n++;
+                    }
+                }
+
+            } else {
+
+                while ($n < $strlen) {
+                    $t = ord($string[$n]);
+                    if ($t > 127) {
+                        $n += 2;
+                        $noc++;
+                    } else {
+                        $n++;
+                        $noc++;
+                    }
+                }
+
+            }
+
+            return $noc;
+        }
+    }
+}
+
+if (!function_exists('mb_strlen')) {
+    function mb_strlen($string, $charset = '') {
+        return istrlen($string, $charset);
+    }
+}
