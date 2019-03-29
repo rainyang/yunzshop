@@ -18,6 +18,7 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use app\common\helpers\PaginationHelper;
 use Yunshop\Diyform\admin\DiyformDataController;
+use Yunshop\Love\Common\Models\GoodsLove;
 use app\common\models\MemberShopInfo;
 use app\common\models\member\MemberInvitationCodeLog;
 use Yunshop\Designer\services\DesignerService;
@@ -187,6 +188,14 @@ class HomePageController extends ApiController
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
+                foreach ($designer['data'] as &$data){
+                    if ($data['temp']=='goods'){
+                        foreach ($data['data'] as &$goode_award){
+                            $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                        }
+                    }
+                }
+
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
                     Cache::put($member_id . '_designer_default_0', $designer, 180);
@@ -328,6 +337,13 @@ class HomePageController extends ApiController
         return $this->successJson('ok', $result);
     }
 
+    public function getLoveGoods($goods_id)
+    {
+        $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
+        $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
+        return $goods;
+
+    }
     /*
      * 获取分页数据
      */
