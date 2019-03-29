@@ -239,19 +239,24 @@ class AllUploadController extends BaseController
 
         foreach ($list['data'] as $k => $v) {
 
-            if ($v['attachment']) {
+            if ($v['attachment'] && $v['id']) {
 
-                $data['total'] = $list['total'];
-                $data['per_page'] = $list['per_page'];
-                $data['last_page'] = $list['last_page'];
-                $data['prev_page_url'] = $list['prev_page_url'];
-                $data['next_page_url'] = $list['next_page_url'];
-                $data['current_page'] = $list['current_page'];
-                $data['from'] = $list['from'];
-                $data['to'] = $list['to'];
                 $data['data'][$k]['id'] = $v['id'];
                 $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
             }
+        }
+        
+        $data['total'] = $list['total'];
+        $data['per_page'] = $list['per_page'];
+        $data['last_page'] = $list['last_page'];
+        $data['prev_page_url'] = $list['prev_page_url'];
+        $data['next_page_url'] = $list['next_page_url'];
+        $data['current_page'] = $list['current_page'];
+        $data['from'] = $list['from'];
+        $data['to'] = $list['to'];
+
+        if (!$data['data']) {
+            $data['data'] = [];
         }
 
         return $this->successJson('获取成功', $data);
