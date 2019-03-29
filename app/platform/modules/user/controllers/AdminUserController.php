@@ -260,21 +260,31 @@ class AdminUserController extends BaseController
         } else {
             $offset = ($page-1)*15;
         }
+
+        // 获取与用户关联的平台角色信息
         $user = AdminUser::with(['hasManyAppUser' => function ($query) use ($offset) {
             $query->with('hasOneApp');
             $query->offset($offset)->limit('15');
         }])->where('uid', $uid)->first();
 
-        $user['total'] = AppUser::where('uid', $uid)->paginate()->count();
-        $user['current_page'] = $page ? : 1;
-        $user['per_page'] = 15;
+        // 获取创始人
+        $uniacid_app = UniacidApp::where('creator', $uid)->first();
 
         if (!$user) {
             return $this->errorJson('未获取到该用户');
+        } else {
+            if ($user->hasManyAppUser->isEmpty() && !$uniacid_app) {
+                return $this->errorJson('该用户暂时没有平台');
+            }
         }
-        if ($user->hasManyAppUser->isEmpty()) {
-            return $this->errorJson('该用户暂时没有平台');
-        }
+
+        $user = $user->toArray();
+        // 添加创始人数据
+        array_push($user['has_many_app_user'], ['role_name' => '创始人', 'has_one_app' => $uniacid_app ? $uniacid_app->toArray() : [] ]);
+        $user['total'] = AppUser::where('uid', $uid)->count();
+        $uniacid_app ? $user['total'] += 1 : $user['total'] ;
+        $user['current_page'] = $page ? : 1;
+        $user['per_page'] = 15;
 
         return $this->successJson('成功', $user);
     }
