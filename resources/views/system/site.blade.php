@@ -67,6 +67,22 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他图片</label>
+                            <div class="col-sm-9  col-md-6 col-xs-12">
+
+                                {!! app\common\helpers\ImageHelper::tplFormFieldMultiImage('goods[thumb_url]',$goods['thumb_url']) !!}
+                                <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
+                                @if (!empty($goods['piclist']))
+                                    @foreach ($goods['piclist'] as $p)
+                                        <a href='{{yz_tomedia($p)}}' target='_blank'>
+                                            <img src="{{yz_tomedia($p)}}" style='height:100px;border:1px solid #ccc;padding:1px;float:left;margin-right:5px;' />
+                                        </a>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">favorite icon</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
                                 {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!--}

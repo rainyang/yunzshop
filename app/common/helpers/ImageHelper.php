@@ -128,7 +128,14 @@ class ImageHelper
     public static function tplFormFieldMultiImage($name, $value = array(), $options = array()) {
         $options['multiple'] = true;
         $options['direct'] = false;
-        $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+        $util = 'util';
+        if (env('APP_Framework') == 'platform') {
+            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
+            $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
+            $util = 'utils';
+        } else {
+            $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+        }
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
                 exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
@@ -136,24 +143,29 @@ class ImageHelper
         }
         $s = '';
         if (!defined('TPL_INIT_MULTI_IMAGE')) {
+
             $s = '
-<script type="text/javascript">
-	function uploadMultiImage(elm) {
-		var name = $(elm).next().val();
-		util.image( "", function(urls){
-			$.each(urls, function(idx, url){
-				$(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
-			});
-		}, ' . json_encode($options) . ');
-	}
-	function deleteMultiImage(elm){
-		require(["jquery"], function($){
-			$(elm).parent().remove();
-		});
-	}
-</script>';
+		<script type="text/javascript">
+			function uploadMultiImage(elm) {
+                var name = $(elm).next().val();
+				require(["'.$util.'"], function(util){
+					util.image("", function(urls){
+						$.each(urls, function(idx, url){
+                            $(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
+                        });
+					}, ' . json_encode($options) . ');
+				});
+			}
+			function deleteMultiImage(elm){
+                require(["jquery"], function($){
+                    $(elm).parent().remove();
+                });
+	        }
+		</script>';
             define('TPL_INIT_MULTI_IMAGE', true);
         }
+
+
 
         $s .= <<<EOF
 <div class="input-group">
