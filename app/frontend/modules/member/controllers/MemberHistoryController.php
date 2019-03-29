@@ -40,7 +40,6 @@ class MemberHistoryController extends ApiController
 
         if(\YunShop::request()->mark)
         {
-            dd(1);
             event(new MemberGoodsHistoryEvent($goodsId,\YunShop::request()->mark,\YunShop::request()->mark_id));
         }
 
