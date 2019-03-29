@@ -40,7 +40,6 @@ class CreateTableYzUniacidApp extends Migration
             });
         }
     }
-
     /**
      * Reverse the migrations.
      *
