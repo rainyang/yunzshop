@@ -48,27 +48,6 @@ return [
             'root' => storage_path('app'),
         ],
 
-        'syst' => [
-            'driver' => 'local',
-            'root' => base_path('static/upload/image/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/image/0/'.date('Y').'/'.date('m'),
-            'visibility' => 'public',
-        ],
-
-        'video' => [
-            'driver' => 'local',
-            'root' => base_path('static/upload/video/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/video/0/'.date('Y').'/'.date('m'),
-            'visibility' => 'public',
-        ],
-
-        'audio' => [
-            'driver' => 'local',
-            'root' => base_path('static/upload/audio/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/audio/0/'.date('Y').'/'.date('m'),
-            'visibility' => 'public',
-        ],
-
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

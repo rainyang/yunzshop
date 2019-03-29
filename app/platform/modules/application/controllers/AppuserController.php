@@ -82,8 +82,7 @@ class AppuserController extends BaseController
     {
     	$checkUser = AdminUser::find($data['uid']); 
 		//用户存在且状态有效, 角色为普通用户时可以添加
-        // if (!$checkUser || $checkUser->status != 0 || $checkUser->type != 1) {
-        if (!$checkUser ) {
+        if (!$checkUser || $checkUser->status != 2 || $checkUser->type != 1) {
         	return 'uid 无效';
         }
         //检测平台
@@ -98,6 +97,10 @@ class AppuserController extends BaseController
 		if(AppUser::where('uniacid', $data['uniacid'])->where('uid', $data['uid'])->first()) {
 			return '数据重复';
 		}
+
+        if ($data['uid'] == \Auth::guard('admin')->user()->uid) {
+            return '不能添加自己';
+        }
 
         return [
          		'uniacid' => $data['uniacid'],
@@ -115,6 +118,7 @@ class AppuserController extends BaseController
     	}
     	// return AdminUser::searchUsers($data)->get();
     	
-    	return $this->successJson('查询成功', AdminUser::where('uniacid', request()->uniacid)->where('username', 'like', '%'.$data['search']['realname'].'%')->get());
+    	return $this->successJson('查询成功', AdminUser::where('username', 'like', '%'.$data['search']['realname'].'%')
+            ->Orwhere('uid', $data['search']['realname'])->get());
     }
 }
