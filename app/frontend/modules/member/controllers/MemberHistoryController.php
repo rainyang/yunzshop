@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\events\member\MemberGoodsHistoryEvent;
 use app\frontend\modules\member\models\MemberFavorite;
 use app\frontend\modules\member\models\MemberHistory;
 
@@ -35,6 +36,11 @@ class MemberHistoryController extends ApiController
         $owner_id = intval(request()->owner_id);
         if (!$goodsId) {
             return $this->errorJson('未获取到商品ID，添加失败！');
+        }
+
+        if(\YunShop::request()->mark)
+        {
+            event(new MemberGoodsHistoryEvent($goodsId,\YunShop::request()->mark,\YunShop::request()->mark_id));
         }
 
         $historyModel = MemberHistory::getHistoryByGoodsId($memberId, $goodsId) ?: new MemberHistory();
