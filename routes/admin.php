@@ -18,7 +18,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('/', 'IndexController@index');
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
@@ -76,6 +76,7 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'shopbootstrap']], fun
         Route::any('upload/image', 'UploadController@image');
         Route::any('upload/fetch', 'UploadController@fetch');
         Route::any('upload/delete', 'UploadController@delete');
+        Route::any('upload/video', 'UploadController@video');
     });
 
     // 用户管理

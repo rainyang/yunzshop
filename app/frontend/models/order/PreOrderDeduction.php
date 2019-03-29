@@ -11,7 +11,6 @@ namespace app\frontend\models\order;
 use app\common\exceptions\MinOrderDeductionNotEnough;
 use app\common\models\order\OrderDeduction;
 use app\common\models\VirtualCoin;
-use app\framework\Support\Facades\Log;
 use app\frontend\models\MemberCoin;
 use app\frontend\modules\deduction\models\Deduction;
 use app\frontend\modules\deduction\OrderGoodsDeductionCollection;
@@ -87,7 +86,8 @@ class PreOrderDeduction extends OrderDeduction
     }
 
     /**
-     * @return mixed
+     * @return float|int
+     * @throws \app\common\exceptions\AppException
      */
     public function getCoinAttribute()
     {
@@ -96,12 +96,17 @@ class PreOrderDeduction extends OrderDeduction
 
     /**
      * @return mixed
+     * @throws \app\common\exceptions\AppException
      */
     public function getAmountAttribute()
     {
         return $this->getAmount();
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getAmount()
     {
         return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();
@@ -173,6 +178,7 @@ class PreOrderDeduction extends OrderDeduction
     /**
      * 订单中实际可用的此抵扣
      * @return $this|VirtualCoin
+     * @throws \app\common\exceptions\AppException
      */
     public function getUsablePoint()
     {
@@ -188,17 +194,20 @@ class PreOrderDeduction extends OrderDeduction
                 return $this->usablePoint;
             }
 
-            // 商品金额抵扣 不能超过订单除去运费后 使用其他抵扣金额后的价格
-
-            $deductionAmount = min($this->order->price - $this->order->getDeductionAmount() - $this->order->dispatch_price, $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney());
-
-            // 抵扣金额 = 商品抵扣金额 + 运费抵扣金额
-            $deductionAmount += $this->getMaxDispatchPriceDeduction()->getMoney();
+            // 商品金额抵扣+ 运费抵扣金额 不能超过订单当前抵扣项之前的金额
+            $deductionAmount = min(
+                $this->order->getPriceBefore($this->getCode() . 'RestDeduction') - $this->getMaxDispatchPriceDeduction()->getMoney(),
+                $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney()
+            );
+//dump($deductionAmount);
             trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
             trace_log()->deduction("订单抵扣", "{$this->name} 用户{$this->usablePoint->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
             // 用户可用虚拟币-最低抵扣 与订单抵扣虚拟币的最小值  todo 如果以后需要一种抵扣币抵扣两次时,会产生bug
 
-            $amount = min($this->getMemberCoin()->getMaxUsableCoin()->getMoney() - $this->getMinDeduction()->getMoney(), $deductionAmount);
+            $amount = min(
+                $this->getMemberCoin()->getMaxUsableCoin()->getMoney() - $this->getMinDeduction()->getMoney(),
+                $deductionAmount
+            );
 
             $this->usablePoint = $this->newCoin()->setMoney($amount);
             trace_log()->deduction("订单抵扣", "{$this->name} 可抵扣{$this->usablePoint->getMoney()}元");
@@ -214,7 +223,7 @@ class PreOrderDeduction extends OrderDeduction
     public function getOrderGoodsDeductionAmount()
     {
 
-        $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / $this->getMaxDeduction()->getMoney()) * $this->getUsablePoint()->getMoney();
+        $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / $this->getMaxDeduction()->getMoney()) * $this->amount;
         return $amount;
     }
 
@@ -287,16 +296,16 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
-        \Log::debug("监听抵扣",$this->getDeduction()->isEnableDeductDispatchPrice());
+        \Log::debug("监听抵扣", $this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
-        if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
+        if (!$this->getDeduction()->isEnableDeductDispatchPrice()) {
 
             //订单运费
             $amount = $this->order->getDispatchAmount();
 
             $result->setMoney($amount);
         }
-        \Log::debug("监听抵扣运费",$result);
+        \Log::debug("监听抵扣运费", $result);
         return $result;
     }
 
@@ -411,7 +420,7 @@ class PreOrderDeduction extends OrderDeduction
     {
         // 验证最低抵扣大于可用抵扣
         if ($this->getMemberCoin()->getMaxUsableCoin()->getMoney() < $this->getMinDeduction()->getMoney()) {
-            throw new MinOrderDeductionNotEnough("订单[{$this->getName()}]可抵扣金额{$this->getUsablePoint()->getMoney()}元,不满足最低抵扣金额{$this->getMinDeduction()->getMoney()}元");
+            throw new MinOrderDeductionNotEnough("会员[{$this->getName()}]抵扣余额可抵扣金额{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元,不满足最低抵扣金额{$this->getMinDeduction()->getMoney()}元");
         }
     }
 }

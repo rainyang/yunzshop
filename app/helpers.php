@@ -265,10 +265,9 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $SystemSetting = new \app\platform\modules\system\models\SystemSetting();
-        if ($remote = $SystemSetting->getKeyList('remote')) {
-            $res = $remote->toArray();
-            $setting[$res['key']] = unserialize($res['value']);
+        $systemSetting = new \app\platform\modules\system\models\SystemSetting();
+        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
+            $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
         if (!$upload_type) {
@@ -1904,6 +1903,7 @@ if (!function_exists('attachment_cos_auth')) {
         if (!preg_match('/^[a-zA-Z0-9]{32}$/', $secret)) {
             return error(-1, '传入secretkey值不合法，请重新传入');
         }
+        $filename = '/logo.png';
         if ($bucket_local) {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/qcloud/Conf.php');
             if (!$con) {
@@ -1917,7 +1917,7 @@ if (!function_exists('attachment_cos_auth')) {
             file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
             \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
             \app\common\services\qcloud\Cosapi::setTimeout(180);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/stati/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -1929,7 +1929,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {
@@ -2041,10 +2041,10 @@ if (!function_exists('attachment_newalioss_auth')) {
         $buckets = attachment_alioss_buctkets($key, $secret);
         $host = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
         $url = 'http://' . $buckets[$bucket]['location'] . $host;
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         try {
             $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
-            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/global/' . $filename);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/images/' . $filename);
         } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
             return error(1, $e->getMessage());
         }
@@ -2100,6 +2100,141 @@ if (!function_exists('buildCustomPostFields')) {
         $body[] = '';
 
         return array($boundary, implode("\r\n", $body));
+    }
+}
+
+if (!function_exists('resource_path')) {
+    function resource_path($file, $depth=2)
+    {
+        if (env('APP_Framework') == 'platform') {
+            return '' . $file;
+        }
+
+        $path = $depth == 2 ? '../..' : '..' . '/addons/yun_shop/';
+
+        return $path . $file;
+    }
+}
+
+if (!function_exists('tpl_form_field_image')) {
+    function tpl_form_field_image($name, $value = '', $default = '', $options = array())
+    {
+        if (empty($default)) {
+            $default = static_url('resource/images/nopic.jpg');
+        }
+        $val = $default;
+        if (!empty($value)) {
+            $val = tomedia($value);
+        }
+        if (!empty($options['global'])) {
+            $options['global'] = true;
+        } else {
+            $options['global'] = false;
+        }
+        if (empty($options['class_extra'])) {
+            $options['class_extra'] = '';
+        }
+        if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
+            if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
+                exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
+            }
+        }
+        $options['direct'] = true;
+        $options['multiple'] = false;
+        if (isset($options['thumb'])) {
+            $options['thumb'] = !empty($options['thumb']);
+        }
+        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+        $s = '';
+        if (!defined('TPL_INIT_IMAGE')) {
+            $s = '
+		<script type="text/javascript">
+			function showImageDialog(elm, opts, options) {
+				require(["util"], function(util){
+					var btn = $(elm);
+					var ipt = btn.parent().prev();
+					var val = ipt.val();
+					var img = ipt.parent().next().children();
+					options = '.str_replace('"', '\'', json_encode($options)).';
+					util.image(val, function(url){
+						if(url.url){
+							if(img.length > 0){
+								img.get(0).src = url.url;
+							}
+							ipt.val(url.attachment);
+							ipt.attr("filename",url.filename);
+							ipt.attr("url",url.url);
+						}
+						if(url.media_id){
+							if(img.length > 0){
+								img.get(0).src = "";
+							}
+							ipt.val(url.media_id);
+						}
+					}, options);
+				});
+			}
+			function deleteImage(elm){
+				$(elm).prev().attr("src", "static/resource/images/nopic.jpg");
+				$(elm).parent().prev().find("input").val("");
+			}
+		</script>';
+            define('TPL_INIT_IMAGE', true);
+        }
+
+        $s .= '
+		<div class="input-group ' . $options['class_extra'] . '">
+			<input type="text" name="' . $name . '" value="' . $value . '"' . ($options['extras']['text'] ? $options['extras']['text'] : '') . ' class="form-control" autocomplete="off">
+			<span class="input-group-btn">
+				<button class="btn btn-default" type="button" onclick="showImageDialog(this);">选择图片</button>
+			</span>
+		</div>
+		<div class="input-group ' . $options['class_extra'] . '" style="margin-top:.5em;">
+			<img src="' . $val . '" onerror="this.src=\'' . $default . '\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" ' . ($options['extras']['image'] ? $options['extras']['image'] : '') . ' width="150" />
+			<em class="close" style="position:absolute; top: 0px; right: -14px;" title="删除这张图片" onclick="deleteImage(this)">×</em>
+		</div>';
+        return $s;
+    }
+}
+
+if (!function_exists('tpl_form_field_color')) {
+    function tpl_form_field_color($name, $value = '')
+    {
+        $s = '';
+        if (!defined('TPL_INIT_COLOR')) {
+            $s = '
+		<script type="text/javascript">
+			$(function(){
+				$(".colorpicker").each(function(){
+					var elm = this;
+					util.colorpicker(elm, function(color){
+						$(elm).parent().prev().prev().val(color.toHexString());
+						$(elm).parent().prev().css("background-color", color.toHexString());
+					});
+				});
+				$(".colorclean").click(function(){
+					$(this).parent().prev().prev().val("");
+					$(this).parent().prev().css("background-color", "#FFF");
+				});
+			});
+		</script>';
+            define('TPL_INIT_COLOR', true);
+        }
+        $s .= '
+		<div class="row row-fix">
+			<div class="col-xs-8 col-sm-8" style="padding-right:0;">
+				<div class="input-group">
+					<input class="form-control" type="text" name="'.$name.'" placeholder="请选择颜色" value="'.$value.'">
+					<span class="input-group-addon" style="width:35px;border-left:none;background-color:'.$value.'"></span>
+					<span class="input-group-btn">
+						<button class="btn btn-default colorpicker" type="button">选择颜色 <i class="fa fa-caret-down"></i></button>
+						<button class="btn btn-default colorclean" type="button"><span><i class="fa fa-remove"></i></span></button>
+					</span>
+				</div>
+			</div>
+		</div>
+		';
+        return $s;
     }
 }
 
@@ -2174,3 +2309,121 @@ if (!function_exists('file_remote_delete')) {
         return true;
     }
 }
+
+if (!function_exists('material_list')) {
+    function material_list($type = '', $server = '', $page = array('page_index' => 1, 'page_size' => 24), $uniacid = 0, $offset)
+    {
+        $core_attach = array('local' => new \app\platform\modules\application\models\CoreAttach, 'perm' => new app\platform\modules\application\models\WechatAttachment);
+        $conditions['uniacid'] = $uniacid;
+        $core_attach = $core_attach[$server];
+        switch ($type) {
+            case 'voice' :
+                $conditions['type'] = $server == 'local' ? 2 : 'voice';
+                break;
+            case 'video' :
+                $conditions['type'] = $server == 'local' ? 3 : 'video';
+                break;
+            default :
+                $conditions['type'] = $server == 'local' ? 1 : 'image';
+                break;
+        }
+        if ($server == 'local') {
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+        } else {
+            $conditions['model'] = 'perm';
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+            if ($type == 'video') {
+                foreach ($core_attach as &$row) {
+                    $row['tag'] = $row['tag'] == '' ? array() : iunserializer($row['tag']);
+                }
+                unset($row);
+            }
+        }
+
+        $pager = pagination($total, $page['page_index'], $page['page_size'], '', $context = array('before' => 5, 'after' => 4, 'isajax' => '1'));
+        $material_news = array('material_list' => $core_attach, 'page' => $pager);
+
+        return $material_news;
+    }
+}
+
+if (!function_exists('iunserializer')) {
+    function iunserializer($value)
+    {
+        if (!$value) {
+            return array();
+        }
+        if (!is_serialized($value)) {
+            return $value;
+        }
+        $result = unserialize($value);
+        if ($result === false) {
+            $temp = preg_replace_callback('!s:(\d+):"(.*?)";!s', function ($matchs) {
+                return 's:' . strlen($matchs[2]) . ':"' . $matchs[2] . '";';
+            }, $value);
+            return unserialize($temp);
+        } else {
+            return $result;
+        }
+    }
+}
+
+if (!function_exists('is_serialized')) {
+    function is_serialized($data, $strict = true)
+    {
+        if (!is_string($data)) {
+            return false;
+        }
+        $data = trim($data);
+        if ('N;' == $data) {
+            return true;
+        }
+        if (strlen($data) < 4) {
+            return false;
+        }
+        if (':' !== $data[1]) {
+            return false;
+        }
+        if ($strict) {
+            $lastc = substr($data, -1);
+            if (';' !== $lastc && '}' !== $lastc) {
+                return false;
+            }
+        } else {
+            $semicolon = strpos($data, ';');
+            $brace = strpos($data, '}');
+            if (false === $semicolon && false === $brace)
+                return false;
+            if (false !== $semicolon && $semicolon < 3)
+                return false;
+            if (false !== $brace && $brace < 4)
+                return false;
+        }
+        $token = $data[0];
+        switch ($token) {
+            case 's' :
+                if ($strict) {
+                    if ('"' !== substr($data, -2, 1)) {
+                        return false;
+                    }
+                } elseif (false === strpos($data, '"')) {
+                    return false;
+                }
+            case 'a' :
+                return (bool)preg_match("/^{$token}:[0-9]+:/s", $data);
+            case 'O' :
+                return false;
+            case 'b' :
+            case 'i' :
+            case 'd' :
+                $end = $strict ? '$' : '';
+                return (bool)preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
+        }
+        return false;
+    }
+}
+

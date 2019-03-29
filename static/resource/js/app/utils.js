@@ -539,10 +539,10 @@
 					}
 				}
 			}, opts);
-            fileUploader.upload_url('/index.php/admin/system/upload/upload?upload_type=');
-            fileUploader.image_url('/index.php/admin/system/upload/image?local=local&groupid=-999');
-            fileUploader.fetch_url('/index.php/admin/system/upload/fetch');
-            fileUploader.delete_url('/index.php/admin/system/upload/delete');
+            fileUploader.upload_url('/admin/system/upload/upload?upload_type=');
+            fileUploader.image_url('/admin/system/upload/image?local=local&groupid=-999');
+            fileUploader.fetch_url('/admin/system/upload/fetch');
+            fileUploader.delet_url('/admin/system/upload/delete');
 		});
 	}; // end of image
 
@@ -567,33 +567,59 @@
 		});
 	};
 
-	util.audio = function(val, callback, base64options, options) {
-		var opts = {
-			type :'audio',
-			direct : false,
-			multiple : false,
-			path : '',
-			dest_dir : ''
-		};
-		if(val){
-			opts.path = val;
-		}
-		
-		opts = $.extend({}, opts, options);
-		opts.type = 'audio';
-		
-		require(['jquery', 'fileUploader'], function($, fileUploader){
-			fileUploader.show(function(audios){
-				if(audios){
-					if($.isFunction(callback)){
-						callback(audios);
-					}
-				}
-			}, opts);
-		});
-		
-	}; // end of audio
-	
+	// util.audio = function(val, callback, base64options, options) {
+	// 	var opts = {
+	// 		type :'audio',
+	// 		direct : false,
+	// 		multiple : false,
+	// 		path : '',
+	// 		dest_dir : ''
+	// 	};
+	// 	if(val){
+	// 		opts.path = val;
+	// 	}
+	//
+	// 	opts = $.extend({}, opts, options);
+	// 	opts.type = 'audio';
+	//
+	// 	require(['jquery', 'fileUploader'], function($, fileUploader){
+	// 		fileUploader.show(function(audios){
+	// 			if(audios){
+	// 				if($.isFunction(callback)){
+	// 					callback(audios);
+	// 				}
+	// 			}
+	// 		}, opts);
+	// 	});
+	//
+	// }; // end of audio
+    util.audio = function(e, t, i, o) {
+        var n = {
+            type: "voice",
+            direct: !1,
+            multiple: !1,
+            path: "",
+            dest_dir: "",
+            needType: 2
+        };
+        e && (n.path = e),
+        !i && o && (i = o),
+            n = $.extend({},
+                n, i),
+            require(["fileUploader"],
+                function(e) {
+                    e.show(function(e) {
+                            e && $.isFunction(t) && t(e)
+                        },
+                        n);
+                    e.upload_url('/admin/system/upload/upload?upload_type=');
+                    e.image_url('/admin/system/upload/image?local=local&groupid=-999');
+                    e.fetch_url('/admin/system/upload/fetch');
+                    e.delet_url('/admin/system/upload/delete');
+                    e.video_url('/admin/system/upload/video?local=local&type=video&pagesize=5');
+                })
+    },
+
 	/*
 		打开远程地址
 		@params string url 目标远程地址

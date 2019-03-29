@@ -340,7 +340,7 @@ class AttachmentController extends BaseController
             $cos['url'] = sprintf('https://%s-%s.cos%s.myqcloud.com', $bucket, $cos['appid'], $cos['local']);
         }
         $cos['url'] = rtrim($cos['url'], '/');
-        $auth= attachment_cos_auth($bucket, $cos['appid'], $cos['secretid'], $secretkey, $cos['local']);
+        $auth = attachment_cos_auth($bucket, $cos['appid'], $cos['secretid'], $secretkey, $cos['local']);
 
         if (is_error($auth)) {
             return $this->errorJson('配置失败，请检查配置' . $auth['message']);

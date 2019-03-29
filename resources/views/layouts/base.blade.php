@@ -77,6 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         'get_address' : '{!! yzWebUrl("address.get-address") !!}'
 
       };
+
     </script>
 
     <!-- jQuery 2.2.0 -->

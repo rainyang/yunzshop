@@ -221,7 +221,9 @@
                                     </div>
                                     <span class="help-block">&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:;" id="members_record">修改记录</a></span>
                                 </div>
+                                <span class="help-block">手动修改关系链可能会造成会员关系链异常，从而会导致分红、分销问题，请谨慎修改</span>
                             </div>
+
                         </div>
 
                         <div class="form-group">

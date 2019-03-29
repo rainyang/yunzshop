@@ -47,7 +47,7 @@ class ImageHelper
         }
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
-                exit('图片上传目录错误,只能指定最多两级目录,如: "we7_store","we7_store/d1"');
+                exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
         $options['direct'] = true;
@@ -198,13 +198,20 @@ EOF;
         $options['direct'] = true;
         $options['multi'] = false;
         $options['type'] = 'video';
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
+        $util = 'util';
+        if (env('APP_Framework') == 'platform') {
+            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
+            $options['fileSizeLimit'] = intval($global['audio_limit']) * 1024;
+            $util = 'utils';
+        } else {
+            $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
+        }
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
 <script type="text/javascript">
 	function showVideoDialog(elm, options) {
-		require(["util"], function(util){
+		require(["'.$util.'"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
 			var val = ipt.val();

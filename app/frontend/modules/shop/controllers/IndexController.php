@@ -106,6 +106,15 @@ class IndexController extends ApiController
             foreach ($goodsList as &$value) {
                 $value->thumb = yz_tomedia($value->thumb);
             }
+            if (app('plugins')->isEnabled('love')){
+                  foreach ($goodsList as &$goodsValue){
+                      $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
+                          ->where('uniacid',\Yunshop::app()->uniacid)
+                          ->where('goods_id',$goodsValue->goods_id)
+                          ->first();
+                      $goodsValue->award_proportion = $love_value->award_proportion;
+                  }
+            }
             Cache::put('YZ_Index_goodsList', $goodsList, 4200);
 
         } else {

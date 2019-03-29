@@ -18,10 +18,10 @@ class CreateImsYzCoreAttachment extends Migration
                 $table->increments('id');
                 $table->integer('uniacid')->default(0);  
                 $table->integer('uid')->default(0);  
-                $table->string('filename',255)->default('');  
-                $table->string('attachment',255)->default(''); 
-                $table->integer('type')->default(0);
-                $table->string('module_upload_dir',255)->default('');
+                $table->string('filename');
+                $table->string('attachment');
+                $table->tinyInteger('type');
+                $table->string('module_upload_dir', 100);
                 $table->integer('group_id')->nullable();
                 $table->tinyInteger('upload_type')->nullable();
                 $table->integer('created_at')->nullable();
