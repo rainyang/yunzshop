@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
+use app\common\events\member\MemberGoodsHistoryEvent;
 use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\goods\Privilege;
@@ -204,6 +205,11 @@ class GoodsController extends ApiController
 
         //判断是否酒店商品
         $goodsModel->is_hotel = $goodsModel->plugin_id == 33 ? 1 : 0;
+
+        if(\YunShop::request()->mark)
+        {
+            event(new MemberGoodsHistoryEvent($goodsModel,\YunShop::request()->mark,\YunShop::request()->mark_id));
+        }
 
         return $this->successJson('成功', $goodsModel);
     }
