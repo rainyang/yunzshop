@@ -2518,3 +2518,84 @@ if (!function_exists('mb_strlen')) {
         return istrlen($string, $charset);
     }
 }
+
+if (!function_exists('tpl_form_field_daterange')) {
+    function tpl_form_field_daterange($name, $value = array(), $time = false) {
+        $s = '';
+
+        if (empty($time) && !defined('TPL_INIT_DATERANGE_DATE')) {
+            $s = '
+<script type="text/javascript">
+	require(["daterangepicker"], function(){
+		$(function(){
+			$(".daterange.daterange-date").each(function(){
+				var elm = this;
+				$(this).daterangepicker({
+					startDate: $(elm).prev().prev().val(),
+					endDate: $(elm).prev().val(),
+					format: "YYYY-MM-DD"
+				}, function(start, end){
+					$(elm).find(".date-title").html(start.toDateStr() + " 至 " + end.toDateStr());
+					$(elm).prev().prev().val(start.toDateStr());
+					$(elm).prev().val(end.toDateStr());
+				});
+			});
+		});
+	});
+</script>
+';
+            define('TPL_INIT_DATERANGE_DATE', true);
+        }
+
+        if (!empty($time) && !defined('TPL_INIT_DATERANGE_TIME')) {
+            $s = '
+<script type="text/javascript">
+	require(["daterangepicker"], function(){
+		$(function(){
+			$(".daterange.daterange-time").each(function(){
+				var elm = this;
+				$(this).daterangepicker({
+					startDate: $(elm).prev().prev().val(),
+					endDate: $(elm).prev().val(),
+					format: "YYYY-MM-DD HH:mm",
+					timePicker: true,
+					timePicker12Hour : false,
+					timePickerIncrement: 1,
+					minuteStep: 1
+				}, function(start, end){
+					$(elm).find(".date-title").html(start.toDateTimeStr() + " 至 " + end.toDateTimeStr());
+					$(elm).prev().prev().val(start.toDateTimeStr());
+					$(elm).prev().val(end.toDateTimeStr());
+				});
+			});
+		});
+	});
+</script>
+';
+            define('TPL_INIT_DATERANGE_TIME', true);
+        }
+        if ($value['starttime'] !== false && $value['start'] !== false) {
+            if($value['start']) {
+                $value['starttime'] = empty($time) ? date('Y-m-d',strtotime($value['start'])) : date('Y-m-d H:i',strtotime($value['start']));
+            }
+            $value['starttime'] = empty($value['starttime']) ? (empty($time) ? date('Y-m-d') : date('Y-m-d H:i') ): $value['starttime'];
+        } else {
+            $value['starttime'] = '请选择';
+        }
+
+        if ($value['endtime'] !== false && $value['end'] !== false) {
+            if($value['end']) {
+                $value['endtime'] = empty($time) ? date('Y-m-d',strtotime($value['end'])) : date('Y-m-d H:i',strtotime($value['end']));
+            }
+            $value['endtime'] = empty($value['endtime']) ? $value['starttime'] : $value['endtime'];
+        } else {
+            $value['endtime'] = '请选择';
+        }
+        $s .= '
+	<input name="'.$name . '[start]'.'" type="hidden" value="'. $value['starttime'].'" />
+	<input name="'.$name . '[end]'.'" type="hidden" value="'. $value['endtime'].'" />
+	<button class="btn btn-default daterange '.(!empty($time) ? 'daterange-time' : 'daterange-date').'" type="button"><span class="date-title">'.$value['starttime'].' 至 '.$value['endtime'].'</span> <i class="fa fa-calendar"></i></button>
+	';
+        return $s;
+    }
+}
