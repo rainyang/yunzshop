@@ -539,10 +539,10 @@
 					}
 				}
 			}, opts);
-            fileUploader.upload_url('/index.php/admin/system/upload/upload?upload_type=');
-            fileUploader.image_url('/index.php/admin/system/upload/image?local=local&groupid=-999');
-            fileUploader.fetch_url('/index.php/admin/system/upload/fetch');
-            fileUploader.delet_url('/index.php/admin/system/upload/delete');
+            fileUploader.upload_url('/admin/system/upload/upload?upload_type=');
+            fileUploader.image_url('/admin/system/upload/image?local=local&groupid=-999');
+            fileUploader.fetch_url('/admin/system/upload/fetch');
+            fileUploader.delet_url('/admin/system/upload/delete');
 		});
 	}; // end of image
 
