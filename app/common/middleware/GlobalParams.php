@@ -56,9 +56,8 @@ class GlobalParams
     {
         $systemSetting = new SystemSetting();
 
-        if ($remote = $systemSetting->getKeyList('remote')) {
-            $res = $remote->toArray();
-            $setting[$res['key']] = unserialize($res['value']);
+        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
+            $setting[$remote['key']] = unserialize($remote['value']);
         }
 
         if ($setting['remote']['type'] != 0) {

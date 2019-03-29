@@ -266,9 +266,8 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
 
     if (env('APP_Framework') == 'platform') {
         $systemSetting = new \app\platform\modules\system\models\SystemSetting();
-        if ($remote = $systemSetting->getKeyList('remote')) {
-            $res = $remote->toArray();
-            $setting[$res['key']] = unserialize($res['value']);
+        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
+            $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
         if (!$upload_type) {
