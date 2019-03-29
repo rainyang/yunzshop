@@ -32,8 +32,8 @@ class ShoppingShareCouponLog extends BaseModel
             $model->shareUid($search['share_uid']);
         }
 
-        if ($search['share_uid']) {
-            $model->receiveUid($search['share_uid']);
+        if ($search['receive_uid']) {
+            $model->receiveUid($search['receive_uid']);
         }
 
 
@@ -69,9 +69,9 @@ class ShoppingShareCouponLog extends BaseModel
     }
 
     //以领取记录
-    public static function yiLog($order_ids, $member_id)
+    public static function yiLog($order_ids)
     {
-        return self::uniacid()->with('receiveMember')->whereIn('order_id', $order_ids)->receiveUid($member_id);
+        return self::uniacid()->with('receiveMember')->whereIn('order_id', $order_ids);
     }
 
 

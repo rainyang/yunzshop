@@ -103,7 +103,7 @@ class ShareCouponController extends ApiController
     {
         $order_ids = explode('_', rtrim(\YunShop::request()->order_ids, '_'));
 
-        $log_model = ShoppingShareCouponLog::yiLog($order_ids, \YunShop::app()->getMemberId())->paginate(15)->toArray();
+        $log_model = ShoppingShareCouponLog::yiLog($order_ids)->paginate(15)->toArray();
 
 
         $this->share_model->map(function ($model) {
@@ -113,7 +113,7 @@ class ShareCouponController extends ApiController
         $coupon_num = $this->share_model->sum('coupon_num');
 
         $returnData = [
-            'remainder' => $coupon_num - $log_model['total'],
+            'remainder' => $coupon_num,
             'total' => $log_model['total'],
             'current_page' => $log_model['current_page'],
             'last_page'   => $log_model['last_page'],
@@ -132,6 +132,23 @@ class ShareCouponController extends ApiController
         if (empty($data)) return [];
 
         $data['api_limit'] = $this->handleCouponUseType($data);
+        $now = strtotime('now');
+        if ($data['time_limit'] == Coupon::COUPON_SINCE_RECEIVE) { //时间限制类型是"领取后几天有效"
+            $end = $data['time_days'] * 3600;
+            if ($data['time_days'] == 0) {
+                $data['time_start'] = '不限时间使用'; //前端需要起止时间
+                $data['time_end'] = ''; //前端需要起止时间
+            } else {
+                $data['time_start'] = date('Y-m-d', $now); //前端需要起止时间
+                $data['time_end'] = date('Y-m-d', $end); //前端需要起止时间
+            }
+        } elseif ($data['time_limit'] == Coupon::COUPON_DATE_TIME_RANGE) { //时间限制类型是"时间范围"
+            $data['time_start'] = substr($data['time_start'], 0, 10); //为了和前面保持一致
+            $data['time_end'] = substr($data['time_end'], 0, 10); //为了和前面保持一致
+        } else {
+            $data['time_start'] = '优惠卷已经失效了'; //为了和前面保持一致
+            $data['time_end'] = '';
+        }
 
         return $data;
     }

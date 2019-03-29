@@ -18,7 +18,7 @@ class ShareCouponController extends BaseController
     public function log()
     {
         $search = \YunShop::request()->search;
-        $list = ShoppingShareCouponLog::getList($search)->paginate(15);
+        $list = ShoppingShareCouponLog::getList($search)->orderBy('id', 'desc')->paginate(15);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
         if(!$search['time']) {
