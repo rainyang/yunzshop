@@ -23,15 +23,25 @@
                 show: function(a, b) {
                     return this.init(a, b)
                 },
-                upload_url: function(a) {
-                    this.upload_url = a
-                },
-                image_url: function(a) {
-                    this.image_url = a
-                },
+                upload_urls : null,
+                image_urls : null,
                 fetch_urls : null,
+                delete_urls : null,
+                video_urls : null,
+                upload_url: function(upload_urls) {
+                    this.upload_urls = upload_urls
+                },
+                image_url: function(image_urls) {
+                    this.image_urls = image_urls
+                },
                 fetch_url: function(fetch_urls) {
                     this.fetch_urls = fetch_urls
+                },
+                delet_url: function(delete_urls) {
+                    this.delete_urls = delete_urls
+                },
+                video_url: function(video_urls) {
+                    this.video_urls = video_urls
                 },
                 init: function(b, c) {
                     var d = this;
@@ -289,7 +299,7 @@
                         dnd: "#dndArea",
                         paste: "#uploader",
                         swf: "./resource/componets/webuploader/Uploader.swf",
-                        server: p.options.isWechat ? "./index.php?c=utility&a=wechat_file&do=upload": this.upload_url + b,
+                        server: p.options.isWechat ? "./index.php?c=utility&a=wechat_file&do=upload": this.upload_urls + b,
                         compress: o,
                         accept: k,
                         fileNumLimit: l,
@@ -492,6 +502,7 @@
                         a.localPage(1)
                 },
                 localPage: function(c) {
+                    let o = this.delete_urls;
                     var d = this;
                     if (d.options.isWechat) var e = d.options.type,
                         f = d.options.mode,
@@ -504,7 +515,7 @@
                         };
                     else var i = d.modalobj.find("#select-year .btn-info").data("id"),
                         j = d.modalobj.find("#select-month .btn-info").data("id"),
-                        g = this.image_url,
+                        g = this.image_urls,
                         h = {
                             page: c,
                             year: i,
@@ -521,7 +532,7 @@
                                     d.localPage(a(this).attr("page"))
                                 }), k.find(".img-list li").click(function(b) {
                                     d.selectImage(a(b.target).parents("li"))
-                                }), d.options.isWechat ? d.weixinDeletefile() : d.deletefile())
+                                }), d.options.isWechat ? d.weixinDeletefile() : d.deletefile(o))
                         }),
                     d.options.isWechat || d.modalobj.find(".btn-select").unbind("click").click(function() {
                         return a(this).hasClass("btn-info") ? !1 : ("month" == a(this).data("type") && a(this).data("id") > 0 && (d.modalobj.find("#select-year .btn-info").data("id") || (d.modalobj.find("#select-year .btn-select").removeClass("btn-info"), d.modalobj.find("#select-year .btn-select").eq(1).addClass("btn-info"))), a(this).siblings().removeClass("btn-info"), a(this).addClass("btn-info"), void d.localPage(1))
@@ -542,12 +553,12 @@
                         }),
                         !1
                 },
-                deletefile: function() {
+                deletefile: function(o) {
                     var b = this;
                     b.modalobj.find("#history_image .img-list li .btnClose").unbind().click(function() {
                         var b = a(this),
                             c = a(this).data("id");
-                        return c ? (a.post("./index.php?c=utility&a=file&do=delete", {
+                        return c ? (a.post(o, {
                                 id: c
                             },
                             function(a) { (b.parent().remove(), util.message("删除成功", "", "success"))
@@ -672,7 +683,7 @@
                             type: e,
                             psize: 5
                         };
-                    else var f = "./index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5",
+                    else var f = this.video_urls,
                         g = {
                             page: c
                         };
@@ -707,11 +718,12 @@
                 },
                 deletevideofile: function() {
                     var b = this;
+                    let o = this.delete_urls;
                     b.modalobj.find("#history_video .history-content td .delete-video-file").unbind().click(function() {
                         if (confirm("确定要删除文件吗？")) {
                             var b = a(this),
                                 c = a(this).data("id");
-                            return c ? (a.post("./index.php?c=utility&a=file&do=delete", {
+                            return c ? (a.post(o, {
                                     id: c
                                 },
                                 function(a) { (b.parents('tr').remove(), util.message("删除成功", "", "success"))

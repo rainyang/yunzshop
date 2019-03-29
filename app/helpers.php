@@ -252,7 +252,14 @@ if (!function_exists("tomedia")) {
     }
 }
 
-function yz_tomedia($src, $local_path = false, $upload_type = '')
+/**
+ * 获取附件的HTTP绝对路径
+ * @param string $src 附件地址
+ * @param bool $local_path 是否直接返回本地图片路径
+ * @param null $upload_type 上传图片时的类型，数据表 upload_type 字段(只需要在上传图片时，传参数，获取列表不需要传改参数)
+ * @return string
+ */
+function yz_tomedia($src, $local_path = false, $upload_type = null)
 {
     $setting = [];
     $sign = false;
@@ -1897,6 +1904,7 @@ if (!function_exists('attachment_cos_auth')) {
         if (!preg_match('/^[a-zA-Z0-9]{32}$/', $secret)) {
             return error(-1, '传入secretkey值不合法，请重新传入');
         }
+        $filename = '/logo.png';
         if ($bucket_local) {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/qcloud/Conf.php');
             if (!$con) {
@@ -1910,7 +1918,7 @@ if (!function_exists('attachment_cos_auth')) {
             file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
             \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
             \app\common\services\qcloud\Cosapi::setTimeout(180);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/stati/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -1922,7 +1930,7 @@ if (!function_exists('attachment_cos_auth')) {
             $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
             $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
             file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $con);
-            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/upload/global/MicroEngine.ico', '/MicroEngine.ico', '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($bucket, base_path() . '/static/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         }
         if ($uploadRet['code'] != 0) {
             switch ($uploadRet['code']) {
@@ -2034,10 +2042,10 @@ if (!function_exists('attachment_newalioss_auth')) {
         $buckets = attachment_alioss_buctkets($key, $secret);
         $host = $internal ? '-internal.aliyuncs.com' : '.aliyuncs.com';
         $url = 'http://' . $buckets[$bucket]['location'] . $host;
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         try {
             $ossClient = new \app\common\services\aliyunoss\OssClient($key, $secret, $url);
-            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/global/' . $filename);
+            $ossClient->uploadFile($bucket, $filename, base_path() . '/static/images/' . $filename);
         } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
             return error(1, $e->getMessage());
         }
@@ -2230,3 +2238,193 @@ if (!function_exists('tpl_form_field_color')) {
         return $s;
     }
 }
+
+if (!function_exists('safe_gpc_array')) {
+    function safe_gpc_array($value, $default = array())
+    {
+        if (!$value || !is_array($value)) {
+            return $default;
+        }
+        foreach ($value as &$row) {
+            if (is_numeric($row)) {
+                $row = safe_gpc_int($row);
+            } elseif (is_array($row)) {
+                $row = safe_gpc_array($row, $default);
+            } else {
+                $row = safe_gpc_string($row);
+            }
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('safe_gpc_int')) {
+    function safe_gpc_int($value, $default = 0)
+    {
+        if (strpos($value, '.') !== false) {
+            $value = floatval($value);
+            $default = floatval($default);
+        } else {
+            $value = intval($value);
+            $default = intval($default);
+        }
+
+        if (!$value && $default != $value) {
+            $value = $default;
+        }
+        return $value;
+    }
+}
+
+if (!function_exists('file_remote_delete')) {
+    function file_remote_delete($file, $upload_type, $remote)
+    {
+        if (!$file) {
+            return true;
+        }
+        if ($upload_type == '2') {
+            $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
+            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            try {
+                $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient->deleteObject($remote['alioss']['bucket'], $file);
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                return error(1, '删除oss远程文件失败');
+            }
+        } elseif ($upload_type == '4') {
+            $bucketName = $remote['cos']['bucket'];
+            $path = '/' . $file;
+            if ($remote['cos']['local']) {
+                \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
+                $result = \app\common\services\qcloud\Cosapi::delFile($bucketName, $path);
+            } else {
+                $result = \app\common\services\cos\Qcloud_cos\Cosapi::delFile($bucketName, $path);
+            }
+            if ($result['code']) {
+                return error(-1, '删除cos远程文件失败');
+            } else {
+                return true;
+            }
+        }
+
+        return true;
+    }
+}
+
+if (!function_exists('material_list')) {
+    function material_list($type = '', $server = '', $page = array('page_index' => 1, 'page_size' => 24), $uniacid = 0, $offset)
+    {
+        $core_attach = array('local' => new \app\platform\modules\application\models\CoreAttach, 'perm' => new app\platform\modules\application\models\WechatAttachment);
+        $conditions['uniacid'] = $uniacid;
+        $core_attach = $core_attach[$server];
+        switch ($type) {
+            case 'voice' :
+                $conditions['type'] = $server == 'local' ? 2 : 'voice';
+                break;
+            case 'video' :
+                $conditions['type'] = $server == 'local' ? 3 : 'video';
+                break;
+            default :
+                $conditions['type'] = $server == 'local' ? 1 : 'image';
+                break;
+        }
+        if ($server == 'local') {
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+        } else {
+            $conditions['model'] = 'perm';
+            $core_attach = $core_attach->where($conditions)->orderBy('created_at', 'desc');
+            $total = $core_attach->count();
+            $core_attach = $core_attach->offset($offset)->limit($page['page_size'])->get();
+            if ($type == 'video') {
+                foreach ($core_attach as &$row) {
+                    $row['tag'] = $row['tag'] == '' ? array() : iunserializer($row['tag']);
+                }
+                unset($row);
+            }
+        }
+
+        $pager = pagination($total, $page['page_index'], $page['page_size'], '', $context = array('before' => 5, 'after' => 4, 'isajax' => '1'));
+        $material_news = array('material_list' => $core_attach, 'page' => $pager);
+
+        return $material_news;
+    }
+}
+
+if (!function_exists('iunserializer')) {
+    function iunserializer($value)
+    {
+        if (!$value) {
+            return array();
+        }
+        if (!is_serialized($value)) {
+            return $value;
+        }
+        $result = unserialize($value);
+        if ($result === false) {
+            $temp = preg_replace_callback('!s:(\d+):"(.*?)";!s', function ($matchs) {
+                return 's:' . strlen($matchs[2]) . ':"' . $matchs[2] . '";';
+            }, $value);
+            return unserialize($temp);
+        } else {
+            return $result;
+        }
+    }
+}
+
+if (!function_exists('is_serialized')) {
+    function is_serialized($data, $strict = true)
+    {
+        if (!is_string($data)) {
+            return false;
+        }
+        $data = trim($data);
+        if ('N;' == $data) {
+            return true;
+        }
+        if (strlen($data) < 4) {
+            return false;
+        }
+        if (':' !== $data[1]) {
+            return false;
+        }
+        if ($strict) {
+            $lastc = substr($data, -1);
+            if (';' !== $lastc && '}' !== $lastc) {
+                return false;
+            }
+        } else {
+            $semicolon = strpos($data, ';');
+            $brace = strpos($data, '}');
+            if (false === $semicolon && false === $brace)
+                return false;
+            if (false !== $semicolon && $semicolon < 3)
+                return false;
+            if (false !== $brace && $brace < 4)
+                return false;
+        }
+        $token = $data[0];
+        switch ($token) {
+            case 's' :
+                if ($strict) {
+                    if ('"' !== substr($data, -2, 1)) {
+                        return false;
+                    }
+                } elseif (false === strpos($data, '"')) {
+                    return false;
+                }
+            case 'a' :
+                return (bool)preg_match("/^{$token}:[0-9]+:/s", $data);
+            case 'O' :
+                return false;
+            case 'b' :
+            case 'i' :
+            case 'd' :
+                $end = $strict ? '$' : '';
+                return (bool)preg_match("/^{$token}:[0-9.E-]+;$end/", $data);
+        }
+        return false;
+    }
+}
+

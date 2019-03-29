@@ -44,10 +44,7 @@ class SystemSetting extends BaseModel
             // 修改
             $result = self::where('key', $key)->update(['value' => $data]);
         }
-        $result ? Cache::put($cache_name, ['value' => $data] , 3600) : null;
-        if ($key == 'remote') {
-            $result ? Cache::put('remote:resource', ['key' => $key, 'value' => $data] , 3600) : null;
-        }
+        $result ? Cache::put($cache_name, ['key' => $key, 'value' => $data] , 3600) : null;
 
         return $result;
     }
@@ -56,28 +53,29 @@ class SystemSetting extends BaseModel
      * 读取数据
      * @param string $key
      * @param string $cache_name
-     * @return SystemSetting
+     * @param bool $sign
+     * @return SystemSetting|mixed
      */
-    public static function settingLoad($key = '', $cache_name = '')
+    public static function settingLoad($key = '', $cache_name = '', $sign = false)
     {
-         if (!Cache::has($cache_name)) {
-             $result = self::getKeyList($key);
-             Cache::put($cache_name, $result, 3600);
-         } else {
-             $result = Cache::get($cache_name);
-         }
+        $result = Cache::remember($cache_name, 3600, function () use ($key) {
+            return self::getKeyList($key);
+        });
 
-        if ($result) {
+        if ($result && !$sign) {
             $result = unserialize($result['value']);
+        } else {
+            return $result;
         }
 
         return $result;
     }
 
-    public function getKeyList($key)
+    public static function getKeyList($key)
     {
-        return Cache::remember('remote:resource', 3600, function () use ($key) {
-            return self::where('key', $key)->first();
-        });
+        return self::where('key', $key)->first();
+//        return Cache::remember('remote:resource', 3600, function () use ($key) {
+//            return self::where('key', $key)->first();
+//        });
     }
 }

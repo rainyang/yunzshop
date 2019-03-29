@@ -114,6 +114,36 @@ class AttachmentController extends BaseController
         }
 
         $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']);
+
+        switch($this->remote['cos']['local']) {
+            case 'tj':
+                $this->remote['cos']['local'] = '华北';
+                break;
+            case 'sh':
+                $this->remote['cos']['local'] = '华东';
+                break;
+            case 'gz':
+                $this->remote['cos']['local'] = '华南';
+                break;
+            case 'cd':
+                $this->remote['cos']['local'] = '西南';
+                break;
+            case 'bj':
+                $this->remote['cos']['local'] = '北京';
+                break;
+            case 'sgp':
+                $this->remote['cos']['local'] = '新加坡';
+                break;
+            case 'hk':
+                $this->remote['cos']['local'] = '香港';
+                break;
+            case 'ca':
+                $this->remote['cos']['local'] = '多伦多';
+                break;
+            case 'ger':
+                $this->remote['cos']['local'] = '法兰克福';
+                break;
+        }
         
         return $this->successJson('成功', $this->remote);
     }
@@ -310,7 +340,7 @@ class AttachmentController extends BaseController
             $cos['url'] = sprintf('https://%s-%s.cos%s.myqcloud.com', $bucket, $cos['appid'], $cos['local']);
         }
         $cos['url'] = rtrim($cos['url'], '/');
-        $auth= attachment_cos_auth($bucket, $cos['appid'], $cos['secretid'], $secretkey, $cos['local']);
+        $auth = attachment_cos_auth($bucket, $cos['appid'], $cos['secretid'], $secretkey, $cos['local']);
 
         if (is_error($auth)) {
             return $this->errorJson('配置失败，请检查配置' . $auth['message']);

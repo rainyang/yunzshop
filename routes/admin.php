@@ -75,6 +75,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('upload/upload', 'UploadController@upload');
         Route::any('upload/image', 'UploadController@image');
         Route::any('upload/fetch', 'UploadController@fetch');
+        Route::any('upload/delete', 'UploadController@delete');
+        Route::any('upload/video', 'UploadController@video');
     });
 
     // 用户管理

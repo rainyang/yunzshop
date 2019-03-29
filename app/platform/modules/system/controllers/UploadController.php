@@ -13,6 +13,7 @@ use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\application\models\CoreAttach;
 use app\platform\modules\application\models\WechatAttachment;
 use app\common\services\Utils;
+use app\platform\modules\application\models\AppUser;
 
 class UploadController extends BaseController
 {
@@ -200,12 +201,11 @@ class UploadController extends BaseController
     public function image()
     {
         $year = request()->year;
-        $month = request()->month;
+        $month = intval(request()->month);
         $page = max(1, intval(request()->page));
         $groupid = intval(request()->groupid);
         $page_size = 24;
-        $islocal = request()->local == 'local';
-        $is_local_image = $islocal == 'local' ? true : false;
+        $is_local_image = $this->common['islocal'] == 'local' ? true : false;
         if ($page<=1) {
             $page = 0;
             $offset = ($page)*$page_size;
@@ -230,21 +230,22 @@ class UploadController extends BaseController
             $core_attach = $core_attach->where('group_id', -1);
         }
         if ($year || $month) {
-            $start_time = strtotime("{$year}-{$month}-01");
-            $end_time = strtotime('+1 month', $start_time);
+            $start_time = $month ? strtotime("{$year}-{$month}-01") : strtotime("{$year}-1-01");
+            $end_time = $month ? strtotime('+1 month', $start_time) : strtotime('+12 month', $start_time);
             $core_attach = $core_attach->where('created_at', '>=', $start_time)->where('created_at', '<=', $end_time);
         }
-        if ($islocal) {
+        if ($this->common['islocal']) {
             $core_attach = $core_attach->where('type', 1);
         } else {
             $core_attach = $core_attach->where('type', 'image');
         }
 
-        $count = $core_attach->orderby('created_at', 'desc')->get()->count();
-        $core_attach = $core_attach->orderby('created_at', 'desc')->offset($offset)->limit($page_size)->get();
+        $core_attach = $core_attach->orderby('created_at', 'desc');
+        $count = $core_attach->count();
+        $core_attach = $core_attach->offset($offset)->limit($page_size)->get();
 
         foreach ($core_attach as &$meterial) {
-            if ($islocal) {
+            if ($this->common['islocal']) {
                 $meterial['url'] = yz_tomedia($meterial['attachment']);
                 unset($meterial['uid']);
             } else {
@@ -331,6 +332,7 @@ class UploadController extends BaseController
         $option = array_elements(array('uploadtype', 'global', 'dest_dir'), $_POST);
         $option['width'] = intval($option['width']);
         $option['global'] = request()->global;
+        $islocal = request()->local == 'local';
 
         if (preg_match('/^[a-zA-Z0-9_\/]{0,50}$/', $dest_dir, $out)) {
             $dest_dir = trim($dest_dir, '/');
@@ -366,7 +368,84 @@ class UploadController extends BaseController
             'module_upload_dir' => $module_upload_dir,
             'type' => $type,
             'options' => $option,
-            'folder' => $folder
+            'folder' => $folder,
+            'islocal' => $islocal
         ];
+    }
+
+    public function delete()
+    {
+        $uid = \Auth::guard('admin')->user()->uid;
+        $is_founder = $uid == '1' ? 1 : 0;
+        $role = AppUser::where('uid', $uid)->first()['role'];
+        if (!$is_founder && $role != 'manager' && $role != 'owner') {
+            return $this->errorJson('您没有权限删除文件');
+        }
+        $id = request()->id;
+        if (!is_array($id)) {
+            $id = array(intval($id));
+        }
+        $id = safe_gpc_array($id);
+
+        $core_attach = CoreAttach::where('id', $id);
+
+        if (!$this->uniacid) {
+            $core_attach = $core_attach->where('uid', $uid);
+        } else {
+            $core_attach = $core_attach->where('uniacid', $this->uniacid);
+        }
+        $core_attach = $core_attach->first();
+
+        $delete_ids = array();
+        if ($core_attach['upload_type']) {
+            $status = file_remote_delete($core_attach['attachment'], $core_attach['upload_type'], $this->remote);
+        } else {
+            $status = file_delete($core_attach['attachment']);
+        }
+        if (is_error($status)) {
+            iajax(1, $status['message']);
+            exit;
+        }
+        $delete_ids[] = $core_attach['id'];
+
+        $core_attach->delete();
+        if ($core_attach->trashed()) {
+            return $this->successJson('删除成功');
+        } else {
+            return $this->errorJson('删除数据表数据失败');
+        }
+    }
+
+    public function video()
+    {
+        $server = $this->common['islocal'] ? 'local' : 'perm';
+        $page_index = max(1, request()->page);
+        $page_size = 10;
+        if ($page_index<=1) {
+            $page_index = 0;
+            $offset = ($page_index)*$page_size;
+        } else {
+            $offset = ($page_index-1)*$page_size;
+        }
+
+        $material_news_list = material_list('video', $server, array('page_index' => $page_index, 'page_size' => $page_size), $this->uniacid, $offset);
+        $material_list = $material_news_list['material_list'];
+        $pager = $material_news_list['page'];
+        foreach ($material_list as &$item) {
+            $item['createtime'] = $item['created_at']->timestamp;
+            $item['url'] = yz_tomedia($item['attachment']);
+            unset($item['uid']);
+        }
+        $result = array('items' => $material_list, 'pager' => $pager);
+        $array = [
+            'message' => [
+                'erron' => 0,
+                'message' => $result
+            ],
+            'redirect' => '',
+            'type' => 'ajax'
+        ];
+
+        return \GuzzleHttp\json_encode($array);
     }
 }

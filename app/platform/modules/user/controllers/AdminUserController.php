@@ -278,6 +278,7 @@ class AdminUserController extends BaseController
 
         return $this->successJson('成功', $user);
     }
+
     /**
      * 店员列表
      */

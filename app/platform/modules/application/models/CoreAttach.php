@@ -9,13 +9,17 @@
 namespace app\platform\modules\application\models;
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CoreAttach extends BaseModel
 {
+    use SoftDeletes;
+
     protected $table = 'yz_core_attachment';
     protected $guarded = [''];
     protected $hidden  = ['deleted_at', 'updated_at'];
     public $timestamps = true;
+    protected $datas = ['deleted_at'];
 
     // 存储在表中type字段的对应的类型
     const IMAGE_TYPE = 1;// 图片 1
