@@ -2620,3 +2620,27 @@ if (!function_exists('tpl_form_field_daterange')) {
         return $s;
     }
 }
+
+if (!function_exists('tpl_ueditor')) {
+    function tpl_ueditor($id, $value = '', $options = array())
+    {
+        $s = '';
+        $options['height'] = empty($options['height']) ? 200 : $options['height'];
+        $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
+        $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
+        $s .= "
+	<script type=\"text/javascript\">
+		require(['util'], function(util){
+			util.editor('" . ($id ? $id : "") . "', {
+			height : {$options['height']}, 
+			dest_dir : '" . ($options['dest_dir'] ? $options['dest_dir'] : "") . "',
+			image_limit : " . (intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024) . ",
+			allow_upload_video : " . ($options['allow_upload_video'] ? 'true' : 'false') . ",
+			audio_limit : " . (intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024) . ",
+			callback : ''
+			});
+		});
+	</script>";
+        return $s;
+    }
+}
