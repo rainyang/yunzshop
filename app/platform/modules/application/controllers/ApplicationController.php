@@ -14,8 +14,6 @@ class ApplicationController extends BaseController
 
     public function index()
     {
-        $str = '/static/upload/image/2019/03/201903209d2380338731d207bad3166dd5801633.jpeg';
-        dd(substr($str, 15));
         $search = request()->search;
         
         $app = new UniacidApp();
