@@ -272,7 +272,7 @@ class AdminUserController extends BaseController
         $avg = $page <= 1 ? intval(floor($total / $page_size)) : intval(ceil($total / $page_size));
 
         // 获取创始人
-        $uniacid_app = UniacidApp::where('creator', 1);
+        $uniacid_app = UniacidApp::where('creator', $uid);
         $user['total'] = $uniacid_app->count();
 
         $sign = false;
