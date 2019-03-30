@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
+use app\platform\modules\application\models\AppUser;
 
 class UniacidApp extends BaseModel
 {
@@ -38,15 +39,15 @@ class UniacidApp extends BaseModel
   			
   			if ($keyword['maturity'] == 1) {
   				// 到期
-	  			$query = $query->where('validity_time',  $keyword['maturity']);
+	  			$query = $query->where('validity_time', '<>', 0)->where('validity_time',  '<=', mktime(0,0,0, date('m'), date('d'), date('Y')));
 	  		}
 
 	  		if ($keyword['maturity'] == 2) {
-	  			$query = $query->where('validity_time', '!=' , $keyword['maturity']);
+	  			$query = $query->where('validity_time', 0)->Orwhere('validity_time', '>', mktime(0,0,0, date('m'), date('d'), date('Y')));
 	  		}
   		}
-
-  		return $query;
+        // dd($query->toSql(), date('Y-m-d'), $query->get()->toArray());
+        return $query;
   	}
 
     public function atributeNames() 
@@ -100,5 +101,9 @@ class UniacidApp extends BaseModel
         return self::withTrashed()->where('id', $id)->first();
     }
 
+    public function hasOneAdminUser()
+    {
+        return $this->hasOne(\app\platform\modules\user\models\AdminUser::class, 'uid', 'creator');
+    }
 
 }
