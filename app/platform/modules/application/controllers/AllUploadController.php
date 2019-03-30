@@ -156,9 +156,9 @@ class AllUploadController extends BaseController
 
         if ($local_res) {
             	
-            $log = $this->getData($originalName, $file_type, substr(\Storage::disk($file_type)->url().$newFileName, 15), 0);
+            $log = $this->getData($originalName, $file_type, $newFileName, 0);
             if ($log != 1) {
-                \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newFileName]);
+                \Log::info('新框架本地上传记录失败', [$originalName, $newFileName]);
                 return false;
             }
         }
@@ -166,7 +166,6 @@ class AllUploadController extends BaseController
         if ($setting['image']['zip_percentage']) {
             //执行图片压缩
             $imagezip = new ImageZip();
-
             $imagezip->makeThumb(
                 yz_tomedia($newFileName),
                 yz_tomedia($newFileName),
@@ -184,10 +183,9 @@ class AllUploadController extends BaseController
         }
 
         if ($remote['type'] != 0) {
-
-       		$res = file_remote_upload(substr(\Storage::disk($file_type)->url().$newFileName, 15), false, $remote);
-
-        } 
+                \Log::info('newFileName', $newFileName);
+       		$res = file_remote_upload($newFileName, true, $remote);
+        }
            \Log::info('do_upload_done', $res);
        	
         if (!$res) {
