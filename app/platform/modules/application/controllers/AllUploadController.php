@@ -150,12 +150,14 @@ class AllUploadController extends BaseController
                 }
             }
             //执行本地上传
+           	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
             // $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
-            // $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
-            $res = file_put_contents($this->getOsPath($file_type), file_get_contents($realPath));
+            	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
+            	
+            $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
             
             if ($res) {
-                
+                	
                 $log = $this->getData($originalName, $file_type, \Storage::disk($file_type)->url().$newOriginalName, 0);
                 if ($log != 1) {
                     \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newOriginalName]);
@@ -186,6 +188,7 @@ class AllUploadController extends BaseController
        		
        		$res = file_remote_upload($newFileName, true, $remote);
         }
+           \Log::info('do_upload_done', $res);
 
         if (!$res) {
         	//数据添加
@@ -230,6 +233,9 @@ class AllUploadController extends BaseController
         if(request()->month != '不限') {
             $search['month'] = request()->month;
         }
+
+        $core = $core->where('type', 1);
+
         if ($search) {
             $core = $core->search($search);
         }
