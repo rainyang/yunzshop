@@ -200,7 +200,6 @@ class AllUploadController extends BaseController
         }
         return $res;
     }
-/data/wwwroot/dev8.yunzshop.com/static/upload//0/2019/03/20190330d7c8149abed7404968ad1a8253bbfd07.jpeg 
     /**
      * 获取新文件名
      * @param  string $originalName 原文件名
