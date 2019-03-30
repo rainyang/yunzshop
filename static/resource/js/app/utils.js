@@ -532,17 +532,17 @@
 		opts.type = 'image';
 
 		require(['jquery', 'fileUploader'], function($, fileUploader){
-			fileUploader.show(function(images){
+            fileUploader.fetch_url('admin/system/upload/fetch');
+            fileUploader.upload_url('/admin/system/upload/upload?upload_type=');
+            fileUploader.image_url('/admin/system/upload/image?local=local&groupid=-999');
+            fileUploader.delet_url('/admin/system/upload/delete');
+            fileUploader.show(function(images){
 				if(images){
 					if($.isFunction(callback)){
 						callback(images);
 					}
 				}
 			}, opts);
-            fileUploader.upload_url('/admin/system/upload/upload?upload_type=');
-            fileUploader.image_url('/admin/system/upload/image?local=local&groupid=-999');
-            fileUploader.fetch_url('/admin/system/upload/fetch');
-            fileUploader.delet_url('/admin/system/upload/delete');
 		});
 	}; // end of image
 
@@ -608,15 +608,15 @@
                 n, i),
             require(["fileUploader"],
                 function(e) {
+                    e.fetch_url('admin/system/upload/fetch');
+                    e.upload_url('/admin/system/upload/upload?upload_type=');
+                    e.image_url('/admin/system/upload/image?local=local&groupid=-999');
+                    e.delet_url('/admin/system/upload/delete');
+                    e.video_url('/admin/system/upload/video?local=local&type=video&pagesize=5');
                     e.show(function(e) {
                             e && $.isFunction(t) && t(e)
                         },
                         n);
-                    e.upload_url('/admin/system/upload/upload?upload_type=');
-                    e.image_url('/admin/system/upload/image?local=local&groupid=-999');
-                    e.fetch_url('/admin/system/upload/fetch');
-                    e.delet_url('/admin/system/upload/delete');
-                    e.video_url('/admin/system/upload/video?local=local&type=video&pagesize=5');
                 })
     },
 
