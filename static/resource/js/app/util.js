@@ -532,6 +532,10 @@
 		opts.type = 'image';
 
 		require(['jquery', 'fileUploader'], function($, fileUploader){
+            fileUploader.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
+            fileUploader.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
+            fileUploader.fetch_url('./index.php?c=utility&a=file&do=fetch');
+            fileUploader.delet_url('./index.php?c=utility&a=file&do=delete');
 			fileUploader.show(function(images){
 				if(images){
 					if($.isFunction(callback)){
@@ -539,10 +543,6 @@
 					}
 				}
 			}, opts);
-            fileUploader.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
-            fileUploader.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
-            fileUploader.fetch_url('./index.php?c=utility&a=file&do=fetch');
-            fileUploader.delet_url('./index.php?c=utility&a=file&do=delete');
         });
 	}; // end of image
 
@@ -608,15 +608,15 @@
                 n, i),
             require(["fileUploader"],
                 function(e) {
-                    e.show(function(e) {
-                            e && $.isFunction(t) && t(e)
-                        },
-                        n);
                     e.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
                     e.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
                     e.fetch_url('./index.php?c=utility&a=file&do=fetch');
                     e.delet_url('./index.php?c=utility&a=file&do=delete');
                     e.video_url('./index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5');
+                    e.show(function(e) {
+                            e && $.isFunction(t) && t(e)
+                        },
+                        n);
                 })
     },
 	

@@ -305,9 +305,9 @@ class UploadController extends BaseController
         }
 
         $originname = pathinfo($url, PATHINFO_BASENAME);
-        $filename = file_random_name(base_path() . '/' . $this->common['folder'], $ext);
+        $filename = file_random_name(base_path() . '/static/upload/' . $this->common['folder'], $ext);
         $pathname = $this->common['folder'] . $filename;
-        $fullname = base_path() . '/' . $pathname;
+        $fullname = base_path() . '/static/upload/' . $pathname;
 
         if (file_put_contents($fullname, $resp['content']) == false) {
             return $this->errorJson('提取失败');
