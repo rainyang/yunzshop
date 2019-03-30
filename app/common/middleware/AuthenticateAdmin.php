@@ -36,6 +36,10 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
+        $check = $this->checkUserInfo();
+        if (!$check['result']) {
+            return $this->errorJson($check['msg'], ['status'=> -1]);
+        }
         $cfg = \config::get('app.global');
 
         if (\Route::getCurrentRoute()->getUri() == 'admin/shop' && isset($cfg['uniacid'])) {
@@ -134,5 +138,30 @@ class AuthenticateAdmin
     private function redirectToHome()
     {
         return redirect()->guest();
+    }
+
+    /**
+     * 检测用户信息
+     *
+     * @return array
+     */
+    private function checkUserInfo()
+    {
+        $user = \Auth::guard('admin')->user();
+        $result = 1;
+
+        if ($user->status == 3) {
+            $result = 0;
+            $msg = '您已被禁用，请联系管理员';
+        }
+        if ($user->endtime != 0 && $user->endtime <= time()) {
+            $result = 0;
+            $msg = '您的账号已过期，请联系管理员';
+        }
+
+        return [
+            'result' => $result,
+            'msg' => $msg
+        ];
     }
 }

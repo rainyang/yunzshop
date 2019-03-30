@@ -8,7 +8,6 @@
 
 namespace app\platform\controllers;
 
-
 class IndexController extends BaseController
 {
 
@@ -16,16 +15,17 @@ class IndexController extends BaseController
     {
         $role = 0;
         $user = \Auth::guard('admin')->user();
-        
+
         if (1 == $user->uid) {
             $role = 1;
         }
 
         $data = [
             'username' => $user->username,
-            'role' => $role
+            'role' => $role,
+            'avatar' => $user->hasOneProfile->avatar
         ];
 
-        return $this->successJson('', $data);
+        return $this->successJson('成功', $data);
     }
 }
