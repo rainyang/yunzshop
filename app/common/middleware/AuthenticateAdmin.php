@@ -147,21 +147,21 @@ class AuthenticateAdmin
      */
     private function checkUserInfo()
     {
-        $user = \Auth::guard('admin')->user();
-        $result = 1;
-
-        if ($user->status == 3) {
-            $result = 0;
-            $msg = '您已被禁用，请联系管理员';
-        }
-        if ($user->endtime != 0 && $user->endtime <= time()) {
-            $result = 0;
-            $msg = '您的账号已过期，请联系管理员';
-        }
-
-        return [
-            'result' => $result,
-            'msg' => $msg
-        ];
+//        $user = \Auth::guard('admin')->user();
+//        $result = 1;
+//
+//        if ($user->status == 3) {
+//            $result = 0;
+//            $msg = '您已被禁用，请联系管理员';
+//        }
+//        if ($user->endtime != 0 && $user->endtime <= time()) {
+//            $result = 0;
+//            $msg = '您的账号已过期，请联系管理员';
+//        }
+//
+//        return [
+//            'result' => $result,
+//            'msg' => $msg
+//        ];
     }
 }
