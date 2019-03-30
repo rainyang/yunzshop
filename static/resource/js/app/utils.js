@@ -532,7 +532,7 @@
 		opts.type = 'image';
 
 		require(['jquery', 'fileUploader'], function($, fileUploader){
-            fileUploader.fetch_url('admin/system/upload/fetch');
+            fileUploader.fetch_url('/admin/system/upload/fetch');
             fileUploader.upload_url('/admin/system/upload/upload?upload_type=');
             fileUploader.image_url('/admin/system/upload/image?local=local&groupid=-999');
             fileUploader.delet_url('/admin/system/upload/delete');
@@ -608,7 +608,7 @@
                 n, i),
             require(["fileUploader"],
                 function(e) {
-                    e.fetch_url('admin/system/upload/fetch');
+                    e.fetch_url('/admin/system/upload/fetch');
                     e.upload_url('/admin/system/upload/upload?upload_type=');
                     e.image_url('/admin/system/upload/image?local=local&groupid=-999');
                     e.delet_url('/admin/system/upload/delete');
