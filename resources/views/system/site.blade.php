@@ -83,6 +83,14 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-1 control-label">{{$lang['shopinfo']}}</label>
+                            <div class="col-sm-9 col-xs-12 col-md-11">
+                                {!! yz_tpl_ueditor('goods[content]', $goods['content']) !!}
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">favorite icon</label>
                             <div class="col-sm-9 col-xs-12 col-md-6 detail-logo">
                                 {--!! app\common\helpers\ImageHelper::tplFormFieldImage('setdata[title_icon]', $setdata->title_icon) !!--}

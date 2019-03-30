@@ -252,39 +252,61 @@ class AdminUserController extends BaseController
     public function applicationList()
     {
         $uid = request()->uid;
-        $page = request()->page;
+        $page = intval(request()->page);
+        $page_size = 15;
         // 如果page小于且等于1 就等于0 (因为offset是从0开始取数据)
         if ($page<=1) {
             $page = 0;
-            $offset = ($page)*15;
+            $offset = ($page)*$page_size;
         } else {
-            $offset = ($page-1)*15;
+            $offset = ($page-1)*$page_size;
         }
 
         // 获取与用户关联的平台角色信息
-        $user = AdminUser::with(['hasManyAppUser' => function ($query) use ($offset) {
+        $user = AdminUser::with(['hasManyAppUser' => function ($query) use ($offset, $page_size) {
             $query->with('hasOneApp');
-            $query->offset($offset)->limit('15');
+            $query->offset($offset)->limit($page_size);
         }])->where('uid', $uid)->first();
 
+        $total = AppUser::where('uid', $uid)->count();
+        $avg = $page <= 1 ? intval(floor($total / $page_size)) : intval(ceil($total / $page_size));
+
         // 获取创始人
-        $uniacid_app = UniacidApp::where('creator', $uid)->first();
+        $uniacid_app = UniacidApp::where('creator', 1);
+        $user['total'] = $uniacid_app->count();
+
+        $sign = false;
+        if ($page >= $avg) {
+            $sign = true;
+            $offset = 0;
+            $rem = $total % $page_size;
+            $mod = 0;
+            if ($page == $avg) {
+                $mod = $rem;
+            } else {
+                $offset = ($page-$avg)*$page_size;
+            }
+
+            $uniacid_apps = $uniacid_app->offset($offset-$rem)->limit($page_size-$mod)->get();
+        }
+        $user['total'] += $total;
 
         if (!$user) {
             return $this->errorJson('未获取到该用户');
-        } else {
-            if ($user->hasManyAppUser->isEmpty() && !$uniacid_app) {
+        } elseif ($user->hasManyAppUser->isEmpty() && $uniacid_apps->isEmpty()) {
                 return $this->errorJson('该用户暂时没有平台');
-            }
         }
 
         $user = $user->toArray();
-        // 添加创始人数据
-        array_push($user['has_many_app_user'], ['role_name' => '创始人', 'has_one_app' => $uniacid_app ? $uniacid_app->toArray() : [] ]);
-        $user['total'] = AppUser::where('uid', $uid)->count();
-        $uniacid_app ? $user['total'] += 1 : $user['total'] ;
+        if ($sign && !$uniacid_apps->isEmpty()) {
+            $uniacid_apps = $uniacid_apps->toArray();
+            // 添加创始人数据
+            foreach ($uniacid_apps as $item) {
+                array_push($user['has_many_app_user'], ['role_name' => '创始人', 'has_one_app' => $item ?  : [] ]);
+            }
+        }
         $user['current_page'] = $page ? : 1;
-        $user['per_page'] = 15;
+        $user['per_page'] = $page_size;
 
         return $this->successJson('成功', $user);
     }
