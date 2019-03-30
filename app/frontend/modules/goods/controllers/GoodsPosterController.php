@@ -230,7 +230,7 @@ class GoodsPosterController extends ApiController
 
     private function getGoodsPosterPath()
     {
-        $path = \Storage::urls('app/public/goods/'.\YunShop::app()->uniacid) . "/";
+        $path = \Storage::url('app/public/goods/'.\YunShop::app()->uniacid) . "/";
 
         Utils::mkdirs($path);
 
