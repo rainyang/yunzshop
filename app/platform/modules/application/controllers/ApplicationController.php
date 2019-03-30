@@ -13,7 +13,7 @@ class ApplicationController extends BaseController
     protected $key = 'application';
 
     public function index()
-    {
+    {   
         $search = request()->search;
         
         $app = new UniacidApp();

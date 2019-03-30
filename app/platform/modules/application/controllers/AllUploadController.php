@@ -145,22 +145,19 @@ class AllUploadController extends BaseController
                 return '文件大小超出规定值';
             }
         }
-        //执行本地上传
        	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
 
         	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
-
-        $local_res = \Storage::disk($file_type)->put($newFileName, file_get_contents($realPath));
+       
+        //执行本地上传
+        $local_res = \Storage::disk($file_type)->put(substr($newFileName, 14), file_get_contents($realPath));
         	
-        	\Log::info('local_upload', $res);
+        	\Log::info('local_upload', $local_res);
 
-        if ($local_res) {
+        if (!$local_res) {
             	
-            $log = $this->getData($originalName, $file_type, $newFileName, 0);
-            if ($log != 1) {
-                \Log::info('新框架本地上传记录失败', [$originalName, $newFileName]);
-                return false;
-            }
+            \Log::info('新框架本地上传记录失败', [$originalName, $newFileName]);
+            return '本地上传失败';
         }
 
         if ($setting['image']['zip_percentage']) {
@@ -182,13 +179,13 @@ class AllUploadController extends BaseController
         	);
         }
 
-        if ($remote['type'] != 0) {
+        if ($remote['type'] != 0) { //远程上传
                 \Log::info('newFileName', $newFileName);
        		$res = file_remote_upload($newFileName, true, $remote);
         }
            \Log::info('do_upload_done', $res);
        	
-        if (!$res) {
+        if (!$res || $local_res) {
         	//数据添加
         	$this->getData($originalName, $file_type, $newFileName, $remote['type']);
        		return yz_tomedia($newFileName);
@@ -221,7 +218,7 @@ class AllUploadController extends BaseController
             $search['month'] = request()->month;
         }
 
-        $core = $core->where('type', 1);
+        $core = $core->where('type', 1)->orderBy('id', 'desc');
 
         if ($search) {
             $core = $core->search($search);
@@ -234,7 +231,7 @@ class AllUploadController extends BaseController
             if ($v['attachment'] && $v['id']) {
 
                 $data['data'][$k]['id'] = $v['id'];
-                $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['data'][$k]['url'] = yz_tomedia($v['attachment']);
             }
         }
         
@@ -267,8 +264,11 @@ class AllUploadController extends BaseController
         $setting = SystemSetting::settingLoad('remote', 'system_remote');
 
         if ($core['upload_type']== 2) { //oss
-            
-            $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
+            try {
+                $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
+            } catch (OssException $e) {
+                return $this->errorJson($e->getErrorMessage());
+            }
 
             $res = $oss->deleteObject($setting['alioss']['bucket'], $core['attachment']); //info['url'] 
 
@@ -278,16 +278,21 @@ class AllUploadController extends BaseController
             }
 
         } elseif ($core['upload_type'] == 4) { //cos
+            try {
 
-            $cos = new Api([
-                'app_id' => $setting['cos']['appid'],
-                'secret_id' => $setting['cos']['secretid'],
-                'secret_key' => $setting['cos']['secretkey'],
-                'region' => $setting['cos']['url']
-            ]);
+	            $cos = new Api([
+	                'app_id' => $setting['cos']['appid'],
+	                'secret_id' => $setting['cos']['secretid'],
+	                'secret_key' => $setting['cos']['secretkey'],
+	                'region' => $setting['cos']['url']
+	            ]);
+            	
+            	$res = $cos->delFile($setting['cos']['bucket'], $core['attachment']); //[code =0  'message'='SUCCESS']
+            	\Log::info('delFile_in_cos and res', [$core['attachment'], $res]);
 
-            $res = $cos->delFile($setting['cos']['bucket'], $core['attachment']); //[code =0  'message'='SUCCESS']
-            	\Log::info('delFile_in_cos', $core['attachment']);
+            } catch (\Exception $e) {
+            	return $this->errorJson('腾讯云配置错误');
+            }
 
             if ($res['code'] != 0 || $res['message'] != 'SUCCESS') {
                 //删除失败
@@ -297,8 +302,8 @@ class AllUploadController extends BaseController
 
         } else {
             //删除文件
-            $res = \app\common\services\Storage::remove($core['attachment']);
-            if (!$res) {
+            $res = \app\common\services\Storage::remove(yz_tomedia($core['attachment']));
+            if ($res !== true) {
                 \Log::info('本地图片删除失败', $core['attachment']);
             }
         }
