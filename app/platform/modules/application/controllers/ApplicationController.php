@@ -14,6 +14,8 @@ class ApplicationController extends BaseController
 
     public function index()
     {
+        $str = '/static/upload/image/2019/03/201903209d2380338731d207bad3166dd5801633.jpeg';
+        dd(substr($str, 15));
         $search = request()->search;
         
         $app = new UniacidApp();
@@ -341,33 +343,33 @@ class ApplicationController extends BaseController
 
     public function temp()
     {
-        if (request()->input()) {
+        // if (request()->input()) {
             
-            $file = request()->file;
-            // dd($file);
-            if ($file) {
+        //     $file = request()->file;
+        //     // dd($file);
+        //     if ($file) {
 
-            $first = explode(',', $file);
-            $ext = explode(';', explode('/', $first[0])[1])[0];
+        //     $first = explode(',', $file);
+        //     $ext = explode(';', explode('/', $first[0])[1])[0];
 
-            //解码
-            $content = base64_decode($first[1]); 
-            //自定义路径
-            // $path = config('filesystems.disks.public')['root'].'/';
+        //     //解码
+        //     $content = base64_decode($first[1]); 
+        //     //自定义路径
+        //     // $path = config('filesystems.disks.public')['root'].'/';
 
-            // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
+        //     // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
             
-            $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
+        //     $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
 
-            $url = $path.$filename;
+        //     $url = $path.$filename;
             
-            // UploadedFile::store($url);
-            $res = \Storage::disk('public')->put($url, $content);
-            // dd($res);
-            return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$filename);
+        //     // UploadedFile::store($url);
+        //     $res = \Storage::disk('public')->put($url, $content);
+        //     // dd($res);
+        //     return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$filename);
 
-            }
-        }
+        //     }
+        // }
         return View('admin.application.upload');
     }
 }
