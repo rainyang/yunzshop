@@ -122,7 +122,7 @@ class AllUploadController extends BaseController
                 
             if (in_array($ext, $defaultImgType)) {
 
-                if ($setting['image_extentions'] && !in_array($ext, $img_type) ) {
+                if ($setting['image_extentions'] && !in_array($ext, array_filter($setting['image_extentions'])) ) {
                         \Log::info('local_file_type_is_not_set_type');
                     return '非规定类型的文件格式';
                 }
@@ -137,7 +137,7 @@ class AllUploadController extends BaseController
 
             if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
 
-                if ($setting['audio_extentions'] && !in_array($ext, $img_type) ) {
+                if ($setting['audio_extentions'] && !in_array($ext, array_filter($setting['audio_extentions'])) ) {
                         \Log::info('local_audio_video_file_type_is_not_set_type');
 
                     return '非规定类型的文件格式';
@@ -151,8 +151,9 @@ class AllUploadController extends BaseController
             }
             //执行本地上传
             // $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
-            $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
-
+            // $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
+            $res = file_put_contents($this->getOsPath($file_type), file_get_contents($realPath));
+            
             if ($res) {
                 
                 $log = $this->getData($originalName, $file_type, \Storage::disk($file_type)->url().$newOriginalName, 0);
@@ -161,15 +162,24 @@ class AllUploadController extends BaseController
                 }
             }
             
-            if ($percent) {
+            if ($setting['image']['zip_percentage']) {
                 //执行图片压缩
                 $imagezip = new ImageZip();
 
                 $zipOrNot = $imagezip->makeThumb(
-                    \Storage::disk($file_type)->url().$newOriginalName,
-                    \Storage::disk($file_type)->url().$newOriginalName,
-                    $percent
+                    yz_tomedia($newOriginalName),
+                    yz_tomedia($newOriginalName),
+                    $setting['image']['zip_percentage']
                 );
+            }
+            
+            if ($setting['thumb_width'] == 1) {
+            	$imagezip = new ImageZip();
+            	$zip = $imagezip->makeThumb(
+            		yz_tomedia($originalName),
+            		yz_tomedia($originalName),
+            		$setting['thumb_width']
+            	);
             }
             
         } else {
@@ -194,7 +204,7 @@ class AllUploadController extends BaseController
     {
         $uniacid = \YunShop::app()->uniacid ? : 0 ;
 
-        return '/'.$file_type.'/'.$uniacid.'/'.date('Y').'/'.date('m').'/';
+        return $file_type.'/'.$uniacid.'/'.date('Y').'/'.date('m').'/';
     }
 
     /**
@@ -284,6 +294,7 @@ class AllUploadController extends BaseController
             ]);
 
             $res = $cos->delFile($setting['cos']['bucket'], $core['attachment']); //[code =0  'message'='SUCCESS']
+            	\Log::info('delFile_in_cos', $core['attachment']);
 
             if ($res['code'] != 0 || $res['message'] != 'SUCCESS') {
                 //删除失败

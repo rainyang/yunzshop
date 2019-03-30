@@ -47,10 +47,10 @@ class ImageZip{
       *
       * @param  String  $srcFile  原始文件路径
       * @param  String  $dstFile  目标文件路径
-      * @param  string  $percent  压缩百分比
+      * @param  string  $number  压缩百分比
       * @return  Boolean  生成成功则返回true，否则返回false
       */
-    public function makeThumb($srcFile, $dstFile, $percent) {
+    public function makeThumb($srcFile, $dstFile, $number) {
         if ($size = getimagesize($srcFile)) {
            $srcWidth = $size[0];
            $srcHeight = $size[1];
@@ -71,7 +71,11 @@ class ImageZip{
            }
            
            // header("Content-type:$mime");
-           $arr = $this->getNewSizeInPercent(substr($percent, 0, -1), $srcWidth, $srcHeight);
+           if (!strstr($number, '%')) {
+                $arr = $this->getNewSizeInFix(intval($number), $srcHeight, $srcWidth, $srcHeight);
+           } else {
+                $arr = $this->getNewSizeInPercent(substr($number, 0, -1), $srcWidth, $srcHeight);
+           }
            // dd($arr); die;
 
            $thumbWidth = $arr['width'];
