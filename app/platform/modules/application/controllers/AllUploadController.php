@@ -101,7 +101,8 @@ class AllUploadController extends BaseController
 
         $realPath = $file->getRealPath();
 
-        $newFileName = $this->getNewFileName($originalName, $ext);
+        $newFileName = $this->getNewFileName($originalName, $ext); 
+        	\Log::info('up_newFileName', $newFileName);
 
         if (in_array($ext, $defaultImgType)) {
             $file_type = 'image';
@@ -151,11 +152,13 @@ class AllUploadController extends BaseController
             }
             //执行本地上传
            	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
-            // $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
+
             	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
 
             $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
-            
+            	
+            	\Log::info('local_upload', $res);
+
             if ($res) {
                 	
                 $log = $this->getData($originalName, $file_type, substr(\Storage::disk($file_type)->url().$newOriginalName, 15), 0);
@@ -163,7 +166,7 @@ class AllUploadController extends BaseController
                     \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newOriginalName]);
                 }
             }
-            
+    
             if ($setting['image']['zip_percentage']) {
                 //执行图片压缩
                 $imagezip = new ImageZip();
@@ -175,7 +178,7 @@ class AllUploadController extends BaseController
                 );
             }
             
-            if ($setting['thumb_width'] == 1) {
+            if ($setting['thumb_width'] == 1 && $setting['thumb_width']) {
             	$imagezip = new ImageZip();
             	$zip = $imagezip->makeThumb(
             		yz_tomedia($originalName),
@@ -199,26 +202,16 @@ class AllUploadController extends BaseController
     }
 
     /**
-     * 生成文件存放路径
-     * @param  string $file_type 文件类型:syst图片,audio音频,video视频
-     * @return string            路径
-     */
-    public function getOsPath($file_type)
-    {
-        $uniacid = \YunShop::app()->uniacid ? : 0 ;
-
-        return $file_type.'/'.$uniacid.'/'.date('Y').'/'.date('m').'/';
-    }
-
-    /**
      * 获取新文件名
      * @param  string $originalName 原文件名
      * @param  string $ext          文件扩展名
      * @return string               新文件名
      */
-    public function getNewFileName($originalName, $ext)
+    public function getNewFileName($originalName, $ext, $file_type)
     {
-        return date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        $uniacid = \YunShop::app()->uniacid ? : 0 ;
+
+        return $file_type.'/'.$uniacid.'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
 
 	//获取本地已上传图片的列表
