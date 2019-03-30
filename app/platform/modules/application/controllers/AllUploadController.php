@@ -153,12 +153,12 @@ class AllUploadController extends BaseController
            	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
             // $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
             	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
-            	
+
             $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
             
             if ($res) {
                 	
-                $log = $this->getData($originalName, $file_type, \Storage::disk($file_type)->url().$newOriginalName, 0);
+                $log = $this->getData($originalName, $file_type, substr(\Storage::disk($file_type)->url().$newOriginalName, 15), 0);
                 if ($log != 1) {
                     \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newOriginalName]);
                 }
