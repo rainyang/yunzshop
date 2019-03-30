@@ -36,10 +36,10 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
-        $check = $this->checkUserInfo();
-        if (!$check['result']) {
-            return $this->errorJson($check['msg'], ['status'=> -1]);
-        }
+//        $check = $this->checkUserInfo();
+//        if (!$check['result']) {
+//            return $this->errorJson($check['msg'], ['status'=> -1]);
+//        }
         $cfg = \config::get('app.global');
 
         if (\Route::getCurrentRoute()->getUri() == 'admin/shop' && isset($cfg['uniacid'])) {
