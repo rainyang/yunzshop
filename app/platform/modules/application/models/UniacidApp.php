@@ -39,11 +39,11 @@ class UniacidApp extends BaseModel
   			
   			if ($keyword['maturity'] == 1) {
   				// 到期
-	  			$query = $query->where('validity_time', '<>', 0)->where('validity_time',  '<=', mktime(0,0,0, date('m'), date('d'), date('Y')));
+	  			$query = $query->where('validity_time', '<>', 0)->where('validity_time',  '<', mktime(0,0,0, date('m'), date('d'), date('Y')));
 	  		}
 
 	  		if ($keyword['maturity'] == 2) {
-	  			$query = $query->where('validity_time', 0)->Orwhere('validity_time', '>', mktime(0,0,0, date('m'), date('d'), date('Y')));
+	  			$query = $query->where('validity_time', 0)->Orwhere('validity_time', '>=', mktime(0,0,0, date('m'), date('d'), date('Y')));
 	  		}
   		}
         // dd($query->toSql(), date('Y-m-d'), $query->get()->toArray());
