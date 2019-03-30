@@ -101,9 +101,6 @@ class AllUploadController extends BaseController
 
         $realPath = $file->getRealPath();
 
-        $newFileName = $this->getNewFileName($originalName, $ext); 
-        	\Log::info('up_newFileName', $newFileName);
-
         if (in_array($ext, $defaultImgType)) {
             $file_type = 'image';
         } elseif (in_array($ext, $defaultAudioType)) {
@@ -111,6 +108,9 @@ class AllUploadController extends BaseController
         } elseif (in_array($ext, $defaultVideoType)) {
             $file_type = 'video';
         }
+
+        $newFileName = $this->getNewFileName($originalName, $ext, $file_type); 
+        	\Log::info('up_newFileName', $newFileName);
 
         $setting = SystemSetting::settingLoad('global', 'system_global');
 
@@ -200,7 +200,7 @@ class AllUploadController extends BaseController
         }
         return $res;
     }
-
+/data/wwwroot/dev8.yunzshop.com/static/upload//0/2019/03/20190330d7c8149abed7404968ad1a8253bbfd07.jpeg 
     /**
      * 获取新文件名
      * @param  string $originalName 原文件名
