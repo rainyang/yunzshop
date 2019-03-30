@@ -73,7 +73,6 @@ class AllUploadController extends BaseController
     {
     	if (!$file->isValid()) {
                     \Log::info('no_upload_file');
-
             return false;
         }
 
@@ -101,8 +100,6 @@ class AllUploadController extends BaseController
 
         $realPath = $file->getRealPath();
 
-        $newFileName = $this->getNewFileName($originalName, $ext);
-
         if (in_array($ext, $defaultImgType)) {
             $file_type = 'image';
         } elseif (in_array($ext, $defaultAudioType)) {
@@ -111,86 +108,84 @@ class AllUploadController extends BaseController
             $file_type = 'video';
         }
 
+        $newFileName = $this->getNewFileName($originalName, $ext, $file_type); 
+        	\Log::info('up_newFileName', $newFileName);
+
         $setting = SystemSetting::settingLoad('global', 'system_global');
 
         $remote = SystemSetting::settingLoad('remote', 'system_remote');
                     \Log::info('system_setting', [$setting, $remote]);
+            
+        if (in_array($ext, $defaultImgType)) {
 
-        if ($remote['type'] == 0) {
-            //判断是否属于设置的类型
-            \Log::info('upload_local_file');
-                
-            if (in_array($ext, $defaultImgType)) {
-
-                if ($setting['image_extentions'] && !in_array($ext, array_filter($setting['image_extentions'])) ) {
-                        \Log::info('local_file_type_is_not_set_type');
-                    return '非规定类型的文件格式';
-                }
-
-                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] * 1024 : 1024*1024*5; //默认大小为5M
-
-                if ($file->getClientSize() > $defaultImgSize) {
-                        \Log::info('local_file_size_is_not_set_size');
-                    return '文件大小超出规定值';
-                }
+            if ($setting['image_extentions'] && !in_array($ext, array_filter($setting['image_extentions'])) ) {
+                    \Log::info('local_file_type_is_not_set_type');
+                return '非规定类型的文件格式';
             }
 
-            if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
+            $defaultImgSize = $setting['img_size'] ? $setting['img_size'] * 1024 : 1024*1024*5; //默认大小为5M
 
-                if ($setting['audio_extentions'] && !in_array($ext, array_filter($setting['audio_extentions'])) ) {
-                        \Log::info('local_audio_video_file_type_is_not_set_type');
-
-                    return '非规定类型的文件格式';
-                }
-                $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] * 1024 : 1024*1024*30; //音视频最大 30M
-
-                if ($file->getClientSize() > $defaultAudioSize) {
-                        \Log::info('local_audio_video_file_size_is_not_set_size');
-                    return '文件大小超出规定值';
-                }
+            if ($file->getClientSize() > $defaultImgSize) {
+                    \Log::info('local_file_size_is_not_set_size');
+                return '文件大小超出规定值';
             }
-            //执行本地上传
-           	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
-            // $res =  $this->uploadLocal($file, $file_type, $setting['zip_percentage']);
-            	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
+        }
+
+        if (in_array($ext, $defaultAudioType) || in_array($ext, $defaultVideoType)) {
+
+            if ($setting['audio_extentions'] && !in_array($ext, array_filter($setting['audio_extentions'])) ) {
+                    \Log::info('local_audio_video_file_type_is_not_set_type');
+
+                return '非规定类型的文件格式';
+            }
+            $defaultAudioSize = $setting['audio_limit'] ? $setting['audio_limit'] * 1024 : 1024*1024*30; //音视频最大 30M
+
+            if ($file->getClientSize() > $defaultAudioSize) {
+                    \Log::info('local_audio_video_file_size_is_not_set_size');
+                return '文件大小超出规定值';
+            }
+        }
+       	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
+
+        	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
+       
+        //执行本地上传
+        $local_res = \Storage::disk($file_type)->put(substr($newFileName, 14), file_get_contents($realPath));
+        	
+        	\Log::info('local_upload', $local_res);
+
+        if (!$local_res) {
             	
-            $res = \Storage::disk($file_type)->put($newOriginalName, file_get_contents($realPath));
-            
-            if ($res) {
-                	
-                $log = $this->getData($originalName, $file_type, \Storage::disk($file_type)->url().$newOriginalName, 0);
-                if ($log != 1) {
-                    \Log::info('新框架本地上传记录失败', [$originalName, \Storage::disk($file_type)->url().$newOriginalName]);
-                }
-            }
-            
-            if ($setting['image']['zip_percentage']) {
-                //执行图片压缩
-                $imagezip = new ImageZip();
+            \Log::info('新框架本地上传记录失败', [$originalName, $newFileName]);
+            return '本地上传失败';
+        }
 
-                $zipOrNot = $imagezip->makeThumb(
-                    yz_tomedia($newOriginalName),
-                    yz_tomedia($newOriginalName),
-                    $setting['image']['zip_percentage']
-                );
-            }
-            
-            if ($setting['thumb_width'] == 1) {
-            	$imagezip = new ImageZip();
-            	$zip = $imagezip->makeThumb(
-            		yz_tomedia($originalName),
-            		yz_tomedia($originalName),
-            		$setting['thumb_width']
-            	);
-            }
-            
-        } else {
-       		
+        if ($setting['image']['zip_percentage']) {
+            //执行图片压缩
+            $imagezip = new ImageZip();
+            $imagezip->makeThumb(
+                yz_tomedia($newFileName),
+                yz_tomedia($newFileName),
+                $setting['image']['zip_percentage']
+            );
+        }
+        
+        if ($setting['thumb_width'] == 1 && $setting['thumb_width']) {
+        	$imagezip = new ImageZip();
+        	$imagezip->makeThumb(
+        		yz_tomedia($newFileName),
+        		yz_tomedia($newFileName),
+        		$setting['thumb_width']
+        	);
+        }
+
+        if ($remote['type'] != 0) { //远程上传
+                \Log::info('newFileName', $newFileName);
        		$res = file_remote_upload($newFileName, true, $remote);
         }
            \Log::info('do_upload_done', $res);
-
-        if (!$res) {
+       	
+        if (!$res || $local_res) {
         	//数据添加
         	$this->getData($originalName, $file_type, $newFileName, $remote['type']);
        		return yz_tomedia($newFileName);
@@ -199,26 +194,15 @@ class AllUploadController extends BaseController
     }
 
     /**
-     * 生成文件存放路径
-     * @param  string $file_type 文件类型:syst图片,audio音频,video视频
-     * @return string            路径
-     */
-    public function getOsPath($file_type)
-    {
-        $uniacid = \YunShop::app()->uniacid ? : 0 ;
-
-        return $file_type.'/'.$uniacid.'/'.date('Y').'/'.date('m').'/';
-    }
-
-    /**
      * 获取新文件名
      * @param  string $originalName 原文件名
      * @param  string $ext          文件扩展名
      * @return string               新文件名
      */
-    public function getNewFileName($originalName, $ext)
+    public function getNewFileName($originalName, $ext, $file_type)
     {
-        return date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        // $uniacid = \YunShop::app()->uniacid ? : 0 ;
+        return $file_type.'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
 
 	//获取本地已上传图片的列表
@@ -234,7 +218,7 @@ class AllUploadController extends BaseController
             $search['month'] = request()->month;
         }
 
-        $core = $core->where('type', 1);
+        $core = $core->where('type', 1)->orderBy('id', 'desc');
 
         if ($search) {
             $core = $core->search($search);
@@ -247,7 +231,7 @@ class AllUploadController extends BaseController
             if ($v['attachment'] && $v['id']) {
 
                 $data['data'][$k]['id'] = $v['id'];
-                $data['data'][$k]['url'] = $this->proto.$_SERVER['HTTP_HOST'].$this->path.$v['attachment'];
+                $data['data'][$k]['url'] = yz_tomedia($v['attachment']);
             }
         }
         
@@ -280,8 +264,11 @@ class AllUploadController extends BaseController
         $setting = SystemSetting::settingLoad('remote', 'system_remote');
 
         if ($core['upload_type']== 2) { //oss
-            
-            $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
+            try {
+                $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
+            } catch (OssException $e) {
+                return $this->errorJson($e->getErrorMessage());
+            }
 
             $res = $oss->deleteObject($setting['alioss']['bucket'], $core['attachment']); //info['url'] 
 
@@ -291,16 +278,21 @@ class AllUploadController extends BaseController
             }
 
         } elseif ($core['upload_type'] == 4) { //cos
+            try {
 
-            $cos = new Api([
-                'app_id' => $setting['cos']['appid'],
-                'secret_id' => $setting['cos']['secretid'],
-                'secret_key' => $setting['cos']['secretkey'],
-                'region' => $setting['cos']['url']
-            ]);
+	            $cos = new Api([
+	                'app_id' => $setting['cos']['appid'],
+	                'secret_id' => $setting['cos']['secretid'],
+	                'secret_key' => $setting['cos']['secretkey'],
+	                'region' => $setting['cos']['url']
+	            ]);
+            	
+            	$res = $cos->delFile($setting['cos']['bucket'], $core['attachment']); //[code =0  'message'='SUCCESS']
+            	\Log::info('delFile_in_cos and res', [$core['attachment'], $res]);
 
-            $res = $cos->delFile($setting['cos']['bucket'], $core['attachment']); //[code =0  'message'='SUCCESS']
-            	\Log::info('delFile_in_cos', $core['attachment']);
+            } catch (\Exception $e) {
+            	return $this->errorJson('腾讯云配置错误');
+            }
 
             if ($res['code'] != 0 || $res['message'] != 'SUCCESS') {
                 //删除失败
@@ -310,8 +302,8 @@ class AllUploadController extends BaseController
 
         } else {
             //删除文件
-            $res = \app\common\services\Storage::remove($core['attachment']);
-            if (!$res) {
+            $res = \app\common\services\Storage::remove(yz_tomedia($core['attachment']));
+            if ($res !== true) {
                 \Log::info('本地图片删除失败', $core['attachment']);
             }
         }
@@ -323,7 +315,7 @@ class AllUploadController extends BaseController
     }
 
     //上传记录表
-    public function getData($originalName, $file_type, $newOriginalName, $save_type)
+    public function getData($originalName, $file_type, $newFileName, $save_type)
     {
         //存储至数据表中
         $core = new CoreAttach;
@@ -345,7 +337,7 @@ class AllUploadController extends BaseController
             'uid' => \Auth::guard('admin')->user()->uid,
             'filename' => $originalName,
             'type' => $type, //类型1.图片; 2.音乐
-            'attachment' => $newOriginalName,
+            'attachment' => $newFileName,
             'upload_type' => $save_type
         ];
 
