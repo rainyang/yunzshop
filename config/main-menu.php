@@ -2684,6 +2684,29 @@ return [
                         'parents'           => ['finance', 'finance_point',],
                     ],
 
+                    'point_queue'=> [
+                        'name'              => '积分队列',
+                        'url'               => 'point.queue.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_queue',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
+
+                    'point_queue_log'=> [
+                        'name'              => '队列明细',
+                        'url'               => 'point.queue-log.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-file-text-o',
+                        'sort'              => 0,
+                        'item'              => 'point_queue_log',
+                        'parents'           => ['finance', 'finance_point',],
+                    ],
 
                     'point_love_see'             => [
                         'name'              => '查看转出设置',
