@@ -368,7 +368,6 @@ class HomePageController extends ApiController
 
     public function designerShare()
     {
-
         $i         = \YunShop::request()->i;
         $mid       = \YunShop::request()->mid;
         $type      = \YunShop::request()->type;
@@ -488,7 +487,6 @@ class HomePageController extends ApiController
                 'isshow' => false
             ];
         }
-        dd($result);
         return $this->successJson('ok', $result);
     }
     /*
