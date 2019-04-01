@@ -104,7 +104,7 @@ class AuthenticateAdmin
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
             if (!in_array($uri, $this->authApi)) {
-                return $this->errorJson('无访问权限API', ['status' => self::API_STATUS]);
+                return $this->errorJson('无访问权限', ['status' => self::API_STATUS]);
             }
 
             if (!empty($cfg['uniacid'])) {
