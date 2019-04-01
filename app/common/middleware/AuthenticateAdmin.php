@@ -54,7 +54,13 @@ class AuthenticateAdmin
         'admin/shop',
         'admin/application',
         'admin/application/recycle',
-        'admin/appuser'
+        'admin/appuser',
+        'admin/all/upload/',
+        'admin/application/getApp',
+        'admin/application/delete/{id}',
+        'admin/application/add/',
+        'admin/application/update/{id}',
+        'admin/application/switchStatus/{id}'
     ];
 
     /**
