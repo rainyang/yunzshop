@@ -11,7 +11,6 @@ namespace app\common\middleware;
 use app\common\services\Utils;
 use app\common\traits\JsonTrait;
 use app\platform\modules\application\models\AppUser;
-use app\platform\modules\application\models\UniacidApp;
 use Closure;
 
 class AuthenticateAdmin
