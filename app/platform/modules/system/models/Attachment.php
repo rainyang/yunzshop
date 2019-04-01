@@ -110,6 +110,7 @@ class Attachment extends BaseModel
                 'key' => $alioss['key'],
                 'secret' => !(strpos($alioss['secret'], '*') === FALSE) ? $remote['alioss']['secret'] : $alioss['secret'],
                 'bucket' => $alioss['bucket'],
+                'loca_name' => $alioss['loca_name'],
                 'internal' => $alioss['internal']
             ),
             'cos' => array(
@@ -121,7 +122,7 @@ class Attachment extends BaseModel
                 'url' => trim($cos['url'])
             )
         );
-
+        
         if ($remotes['type'] == '2') {
             $buckets = attachment_alioss_buctkets($remotes['alioss']['key'], $remotes['alioss']['secret']);
             if (is_error($buckets)) {
@@ -143,6 +144,7 @@ class Attachment extends BaseModel
                 }
                 $remotes['alioss']['url'] = $url;
             }
+            $remotes['alioss']['bucket'] = $alioss['bucket'];
         } elseif ($remotes['type'] == '4') {
             $remotes['cos']['bucket'] = str_replace("-{$remotes['cos']['appid']}", '', trim($remotes['cos']['bucket']));
 

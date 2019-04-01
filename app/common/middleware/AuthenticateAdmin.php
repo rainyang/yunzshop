@@ -38,7 +38,7 @@ class AuthenticateAdmin
     {
         $check = $this->checkUserInfo();
         if (!$check['result']) {
-            return $this->errorJson($check['msg'], ['status'=> -1]);
+            return $this->errorJson($check['msg'], ['status'=> -2]);
         }
         $cfg = \config::get('app.global');
 
