@@ -96,6 +96,7 @@ class MemberShopInfo extends \app\common\models\MemberShopInfo
         return self::uniacid()
             ->select(['member_id', 'parent_id'])
             ->whereIN('member_id', $uid)
+            ->distinct()
             ->get();
     }
 }

@@ -12,6 +12,11 @@ use app\frontend\modules\deduction\GoodsDeduction;
 
 class PointGoodsDeduction extends GoodsDeduction
 {
+    public function getCode()
+    {
+        return 'point';
+    }
+
     public function deductible($goods)
     {
         return true;

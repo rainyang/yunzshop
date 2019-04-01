@@ -36,7 +36,9 @@ abstract class BaseDiscount
     {
         $this->order = $order;
     }
-
+    public function getCode(){
+        return $this->code;
+    }
     /**
      * @return bool
      */
