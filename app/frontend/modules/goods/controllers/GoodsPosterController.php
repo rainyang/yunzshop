@@ -175,18 +175,20 @@ class GoodsPosterController extends ApiController
         
         //商品二维码
         $goodsQr =  $this->generateQr();
-        
-        if ($this->goodsModel->hasOneShare->share_title) {
-            $text = $this->goodsModel->hasOneShare->share_title;
-        } else {
-            $text = $this->goodsModel->title;
+        if ($this->type != 2){
+            if ($this->goodsModel->hasOneShare->share_title) {
+                $text = $this->goodsModel->hasOneShare->share_title;
+            } else {
+                $text = $this->goodsModel->title;
+            }
+
+            $target = $this->mergeQrImage($target, $goodsQr);
+
+            $target = $this->mergeText($target, $this->goodsText, $text);
+
+            $target = $this->mergePriceText($target);
         }
 
-        $target = $this->mergeQrImage($target, $goodsQr);
-        
-        $target = $this->mergeText($target, $this->goodsText, $text);
-
-        $target = $this->mergePriceText($target);
        
         // header ( "Content-type: image/png" );
         // imagePng ( $target );
@@ -363,6 +365,7 @@ class GoodsPosterController extends ApiController
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
 
         } else if ($this->type == 2){
+            $url = 'pages/index/index';
 //            $url  = ;?\
         }else {
             //门店商品二维码
