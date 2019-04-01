@@ -54,7 +54,7 @@ use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
-
+use app\common\facades\Setting;
 
 
 class MemberController extends BaseController
@@ -170,7 +170,7 @@ class MemberController extends BaseController
         $password = \YunShop::request()['password'];
         $confirm_password = \YunShop::request()['confirm_password'];
         $uniacid = \YunShop::app()->uniacid;
-
+        $member = Setting::get('shop.member');
         //获取图片
         $member_set = \Setting::get('shop.member');
         \Log::info('member_set', $member_set);
@@ -263,7 +263,14 @@ class MemberController extends BaseController
             $data = MemberModel::userData($member_info, $yz_member);
             return $this->message("添加用户成功", yzWebUrl('member.member.index'));
         }
-        return view('member.add-member',['img'=>yz_tomedia($avatar)])->render();
+
+        if (empty($member['headimg'])) {
+            $val = static_url('resource/images/nopic.jpg');
+            $headimg = yz_tomedia($val);
+        }else{
+            $headimg = yz_tomedia($member['headimg']);
+        }
+        return view('member.add-member',['img'=>$headimg])->render();
     }
 
 
