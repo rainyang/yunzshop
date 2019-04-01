@@ -17,13 +17,72 @@ class AuthenticateAdmin
 {
     use JsonTrait;
 
+    /**
+     * 公众号状态
+     *
+     */
+    const UNIACID_STATUS = -1;
+
+    /**
+     * 用户状态
+     *
+     */
+    const USER_STATUS = -2;
+
+    /**
+     * API访问状态
+     *
+     */
+    const API_STATUS = -3;
+
+    /**
+     * 公共接口
+     *
+     * @var array
+     */
     protected $except = [
         'admin/index',
     ];
 
+    /**
+     * 非管理员有效访问接口
+     *
+     * @var array
+     */
+    protected $authApi = [
+        'admin/index',
+        'admin/shop',
+        'admin/application',
+        'admin/application/recycle',
+        'admin/appuser',
+        'admin/all/upload/',
+        'admin/application/getApp',
+        'admin/application/delete/{id}',
+        'admin/application/add/',
+        'admin/application/update/{id}',
+        'admin/application/switchStatus/{id}'
+    ];
+
+    /**
+     * 访问用户
+     *
+     * @var null
+     */
     private $account = null;
+
+    /**
+     * 公众号
+     *
+     * @var int
+     */
     private $uniacid = 0;
-    private $role    = ['role' => '', 'isfounder' => false];
+
+    /**
+     * 用户角色
+     *
+     * @var array
+     */
+    private $role = ['role' => '', 'isfounder' => false];
 
     /**
      * Handle an incoming request.
@@ -40,16 +99,20 @@ class AuthenticateAdmin
         $uri   = \Route::getCurrentRoute()->getUri();
 
         if (!in_array($uri, $this->except) && $msg = $this->errorMsg()) {
-            return $this->errorJson($msg, ['status' => -1]);
+            return $this->errorJson($msg, ['status' => self::UNIACID_STATUS]);
         }
 
         if (!$check['result']) {
-            return $this->errorJson($check['msg'], ['status' => -2]);
+            return $this->errorJson($check['msg'], ['status' => self::USER_STATUS]);
         }
 
         if (\Auth::guard('admin')->user()->uid == 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
+            if (!in_array($uri, $this->authApi)) {
+                return $this->errorJson('无访问权限', ['status' => self::API_STATUS]);
+            }
+
             if (!empty($cfg['uniacid'])) {
                 $this->uniacid = $cfg['uniacid'];
                 $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $cfg['uniacid']);
