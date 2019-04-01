@@ -18,13 +18,17 @@ class PointQueueJob implements  ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
+    private $uniacid;
+
     public function __construct($uniacid)
     {
         \YunShop::app()->uniacid = $uniacid;
+        $this->uniacid = $uniacid;
     }
 
     public function handle()
     {
+        \YunShop::app()->uniacid = $this->uniacid;
         $queues = $this->getQueues();
         if ($queues->isEmpty()) {
             return;
