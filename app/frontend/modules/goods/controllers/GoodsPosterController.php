@@ -365,7 +365,8 @@ class GoodsPosterController extends ApiController
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
 
         } else if ($this->type == 2){
-            $url = 'pages/index/index';
+            //小程序海报生成
+            $url = yzAppFullUrl('pages/index/index');
 //            $url  = ;?\
         }else {
             //门店商品二维码
