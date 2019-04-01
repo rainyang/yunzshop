@@ -29,7 +29,7 @@ if (!function_exists("yz_tpl_ueditor")) {
             } else {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
                 $upload_url = './index.php?c=utility&a=file&do=upload&upload_type=';
-                $image_url = '/admin/system/upload/image?local=local&groupid=-999';
+                $image_url = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
                 $fetch_url = './index.php?c=utility&a=file&do=fetch';
                 $delet_url = './index.php?c=utility&a=file&do=delete';
                 $video_url = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
@@ -70,6 +70,10 @@ if (!function_exists("yz_tpl_ueditor")) {
 				editor.registerCommand(uiName, {
 					execCommand:function(){
 						require(['fileUploader'], function(uploader){
+						    uploader.upload_url('".$upload_url."');
+                            uploader.image_url('".$image_url."');
+                            uploader.fetch_url('".$fetch_url."');
+                            uploader.delet_url('".$delet_url."');
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
@@ -93,10 +97,6 @@ if (!function_exists("yz_tpl_ueditor")) {
 									editor.execCommand('insertimage', imglist);
 								}
 							}, opts);
-							uploader.upload_url('".$upload_url."');
-                            uploader.image_url('".$image_url."');
-                            uploader.fetch_url('".$fetch_url."');
-                            uploader.delet_url('".$delet_url."');
 						});
 					}
 				});
