@@ -36,39 +36,14 @@ class AuthenticateAdmin
      */
     public function handle($request, Closure $next)
     {
+        $cfg   = \config::get('app.global');
         $check = $this->checkUserInfo();
+
         if (!$check['result']) {
             return $this->errorJson($check['msg'], ['status'=> -2]);
         }
-        $cfg = \config::get('app.global');
 
-        if ((\Route::getCurrentRoute()->getUri() == 'admin/shop' && isset($cfg['uniacid']))
-              || (\Route::getCurrentRoute()->getUri() != 'admin/shop' && $cfg['uniacid'] > 0)) {
-            $msg = '';
-            $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
-
-            if (is_null($sys_app)) {
-                $msg = '非法请求';
-
-                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
-                    return $this->redirectToHome();
-                }
-            }
-
-            if (!is_null($sys_app->deleted_at)) {
-                $msg = '平台已停用';
-
-                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
-                    return $this->redirectToHome();
-                }
-            }
-
-            if ($msg) {
-                Utils::removeUniacid();
-
-                return $this->errorJson($msg, ['status'=> -1]);
-            }
-        }
+        $this->validateUniacid($cfg);
 
         if (\Auth::guard('admin')->user()->uid == 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
@@ -164,5 +139,39 @@ class AuthenticateAdmin
             'result' => $result,
             'msg' => $msg
         ];
+    }
+
+    private function validateUniacid($cfg)
+    {
+        $uri = \Route::getCurrentRoute()->getUri();
+        $msg = '';
+
+        if (($uri == 'admin/shop' && isset($cfg['uniacid']))
+            || ($uri != 'admin/shop' && $uri != 'admin/index' && $cfg['uniacid'] > 0)) {
+
+            $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
+
+            if (is_null($sys_app)) {
+                $msg = '非法请求';
+
+                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+                    return $this->redirectToHome();
+                }
+            }
+
+            if (!is_null($sys_app->deleted_at)) {
+                $msg = '平台已停用';
+
+                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
+                    return $this->redirectToHome();
+                }
+            }
+
+            if ($msg) {
+                Utils::removeUniacid();
+
+                return $this->errorJson($msg, ['status'=> -1]);
+            }
+        }
     }
 }
