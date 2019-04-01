@@ -292,4 +292,13 @@ EOF;
         }
         return $avatar;
     }
+
+    public static function getImageUrl($path, $file)
+    {
+        if (env('APP_Framework') == 'platform') {
+            return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'storage')) . '/' . $file;
+        } else {
+            return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . '/' . $file;
+        }
+    }
 }
