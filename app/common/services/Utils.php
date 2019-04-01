@@ -324,9 +324,13 @@ class Utils
     /**
      * 保存uniacid
      */
-    public static function addUniacid()
+    public static function addUniacid($uniacid = null)
     {
-        setcookie('uniacid', request('uniacid'), time() + 3600, '/admin');
-        setcookie('uniacid', request('uniacid'), time() + 3600, '/admin/shop');
+        if (is_null($uniacid)) {
+            $uniacid = request('uniacid');
+        }
+
+        setcookie('uniacid', $uniacid, time() + 3600, '/admin');
+        setcookie('uniacid', $uniacid, time() + 3600, '/admin/shop');
     }
 }

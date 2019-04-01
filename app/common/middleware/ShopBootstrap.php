@@ -11,10 +11,13 @@ namespace app\common\middleware;
 
 use app\common\helpers\Url;
 use app\common\services\Utils;
+use app\common\traits\JsonTrait;
 use app\platform\modules\application\models\AppUser;
 
 class ShopBootstrap
 {
+    use JsonTrait;
+
     private $authRole = ['operator'];
 
     public function handle($request, \Closure $next, $guard = null)
@@ -24,12 +27,11 @@ class ShopBootstrap
             $account = AppUser::getAccount(\Auth::guard('admin')->user()->uid);
 
             if (!is_null($account) && in_array($account->role, $this->authRole)) {
-
                 $cfg['uniacid'] = $account->uniacid;
-                Utils::addUniacid();
+                Utils::addUniacid($account->uniacidb);
                 \config::set('app.global', $cfg);
 
-                return redirect()->guest(Url::absoluteWeb('index.index'));
+                return $this->successJson('成功', ['url' => Url::absoluteWeb('index.index')]);
             }
         }
 
