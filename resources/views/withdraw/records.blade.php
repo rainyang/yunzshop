@@ -91,6 +91,14 @@
             <input type="hidden" name="search[status]" value="{{$search['status']}}">
 
             <div class="form-group col-xs-12 col-sm-8 col-lg-11">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员ID</label>
+                <div class="col-xs-12 col-sm-8 col-lg-9">
+                    <input class="form-control" name="search[member_id]" id="" type="text"
+                           value="{{$search['member_id']}}" placeholder="会员ID">
+                </div>
+            </div>
+
+            <div class="form-group col-xs-12 col-sm-8 col-lg-11">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
                 <div class="col-xs-12 col-sm-8 col-lg-9">
                     <input class="form-control" name="search[member]" id="" type="text"

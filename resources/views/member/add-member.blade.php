@@ -9,8 +9,6 @@
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
                     <li><a href="#">&nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;会员详情</a></li>
-                    <li><a href="javascript:void"><i class="fa fa-angle-double-right"></i></a></li>
-                    <li class="active"> <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -26,7 +24,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{{$member['avatar']}}'
+                                <img src='{{$img}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
                                 {{$member['nickname']}}
                             </div>
@@ -43,7 +41,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">登录密码</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="password" class="form-control" id="password1"/>
+                                <input type="password" name="password" class="form-control" id="password1"/>
                             </div>
                             <p id="p_ti"></p>
                         </div>
@@ -51,7 +49,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认密码</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="confirm_password" class="form-control" id="password2"/>
+                                <input type="password" name="confirm_password" class="form-control" id="password2"/>
                             </div>
                         </div>
 

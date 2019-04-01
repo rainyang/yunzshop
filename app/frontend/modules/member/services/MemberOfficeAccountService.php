@@ -8,19 +8,15 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\facades\Setting;
+use app\common\helpers\Cache;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
-use app\common\models\MemberGroup;
-use app\common\models\MemberShopInfo;
 use app\common\services\Session;
-use app\frontend\models\McGroupsModel;
 use app\frontend\modules\member\models\McMappingFansModel;
-use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
-use app\frontend\modules\member\models\SubMemberModel;
-use app\common\facades\Setting;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -46,16 +42,7 @@ class MemberOfficeAccountService extends MemberService
         $appId = $account->key;
         $appSecret = $account->secret;
 
-        if ($params['scope'] == 'user_info') {
-            $callback = Url::absoluteApi('member.login.index', ['type' => 1, 'scope' => 'user_info']);
-
-
-        } else {
-            $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-              //$callback = Url::absoluteApp('login_validate', ['mid' => Member::getMid()]);
-
-            \Log::debug('---------callback--------', [$callback]);
-        }
+        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
         $state = 'yz-' . session_id();
 
@@ -102,14 +89,8 @@ class MemberOfficeAccountService extends MemberService
             exit;
         }
 
-        if (\YunShop::request()->scope == 'user_info') {
-            return show_json(1, 'user_info_api');
-        } else {
-            //return show_json(1, ['redirect_url' => $redirect_url]);
-            \Log::debug('------------redirect_url----------', [$redirect_url]);
-            redirect($redirect_url)->send();
-            exit;
-        }
+        redirect($redirect_url)->send();
+        exit;
     }
 
     /**
@@ -243,7 +224,7 @@ class MemberOfficeAccountService extends MemberService
             } else {
                 $redirect_url = $yz_redirect . '&t=' . time();
             }
-\Log::debug('-----------------client_url----------------', [$redirect_url]);
+
             Session::set('client_url', $redirect_url);
         } else {
             Session::set('client_url', '');
@@ -304,11 +285,11 @@ class MemberOfficeAccountService extends MemberService
     public function updateMemberInfo($member_id, $userinfo)
     {
         parent::updateMemberInfo($member_id, $userinfo);
-
+        \Log::debug('----update_mapping_fans----', $member_id);
         $record = array(
             //'openid' => $userinfo['openid'],
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
+            'follow' => $userinfo['subscribe'] ?: 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
@@ -364,7 +345,7 @@ class MemberOfficeAccountService extends MemberService
             //'openid' => $userinfo['openid'],
             'uid'       => $member_id,
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
+            'follow' => $userinfo['subscribe'] ?: 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
@@ -410,5 +391,56 @@ class MemberOfficeAccountService extends MemberService
             $redirect_url = Url::absoluteApp('login', ['i' => $uniacid, 'type' => $type, 'mid' => $mid, 'yz_redirect' => $yz_redirect]);
             redirect($redirect_url)->send();
         }
+    }
+
+    public function chekAccount()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+        $code = \YunShop::request()->code;
+        $account = AccountWechats::getAccountByUniacid($uniacid);
+        $appId = $account->key;
+        $appSecret = $account->secret;
+        $state = 'yz-' . session_id();
+
+        $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+
+        $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+        $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
+
+        if (!empty($code)) {
+            $redirect_url = $this->_getClientRequestUrl();
+
+            $token = \Curl::to($tokenurl)
+                ->asJsonResponse(true)
+                ->get();
+
+            if (!empty($token) && !empty($token['errmsg']) && $token['errmsg'] == 'invalid code') {
+                return show_json(5, 'token请求错误');
+            }
+
+            $userinfo = $this->getUserInfo($appId, $appSecret, $token);
+
+            if (is_array($userinfo) && !empty($userinfo['errcode'])) {
+                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
+                return show_json(-3, '微信登陆授权失败');
+            }
+
+            $fans_info = McMappingFansModel::getFansById(\YunShop::app()->getMemberId());
+
+            if ($fans_info->openid != $userinfo['openid']) {
+                \Log::debug('----openid error----');
+                session_destroy();
+                Cache::forget('chekAccount');
+                redirect($redirect_url)->send();
+            }
+        } else {
+            $this->_setClientRequestUrl();
+
+            redirect($authurl)->send();
+            exit;
+        }
+
+        redirect($redirect_url)->send();
+        exit;
     }
 }

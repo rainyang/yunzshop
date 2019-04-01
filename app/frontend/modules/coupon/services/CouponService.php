@@ -36,7 +36,7 @@ class CouponService
      */
     public function getOrderDiscountPrice()
     {
-        return $this->getAllValidCoupons()->sum(function ($coupon) {
+        return $this->getAllValidCoupons()->sum(function (Coupon $coupon) {
             if(!$coupon->valid()){
                 return 0;
             }

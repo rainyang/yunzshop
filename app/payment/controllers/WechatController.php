@@ -81,6 +81,13 @@ class WechatController extends PaymentController
                 redirect(Url::absoluteApp('home'))->send();
             }
 
+            //优惠卷分享页
+            $share_bool = \app\frontend\modules\coupon\services\ShareCouponService::showIndex($orderPay->order_ids, $orderPay->uid);
+            if ($share_bool) {
+                $ids = rtrim(implode('_', $orderPay->order_ids), '_');
+                redirect(Url::absoluteApp('coupon/share/'.$ids, ['i' => \YunShop::app()->uniacid, 'mid'=> $orderPay->uid]))->send();
+            }
+
             if ($orders->count() > 1) {
                 redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
