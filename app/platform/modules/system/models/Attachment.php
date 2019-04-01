@@ -110,6 +110,7 @@ class Attachment extends BaseModel
                 'key' => $alioss['key'],
                 'secret' => !(strpos($alioss['secret'], '*') === FALSE) ? $remote['alioss']['secret'] : $alioss['secret'],
                 'bucket' => $alioss['bucket'],
+                'loca_name' => $alioss['loca_name'],
                 'internal' => $alioss['internal']
             ),
             'cos' => array(
