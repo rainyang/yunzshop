@@ -989,7 +989,7 @@ class MemberController extends ApiController
         $space = ($width - $str_lenght) / 2;
 
         $uniacid = \YunShop::app()->uniacid;
-        $path    = \Storage::url('app/public/personalposter/' . $uniacid);
+        $path    = storage_path('app/public/personalposter/' . $uniacid);
 
         Utils::mkdirs($path);
 
@@ -1047,7 +1047,8 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        $imgUrl = request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $file;
+        $imgUrl = ImageHelper::getImageUrl($path, $file);
+
         return $imgUrl;
     }
 
