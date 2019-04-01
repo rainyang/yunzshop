@@ -214,6 +214,19 @@ class PreOrder extends Order
     public function beforeCreating()
     {
 
+        $this->setOrderAddress();
+        //临时处理，无扩展性
+        if ($this->getRequest()->input('mark') !== 'undefined') {
+            $this->mark = $this->getRequest()->input('mark', '');
+        }
+
+    }
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function setOrderAddress()
+    {
         $this->dispatch_type_id = $this->getRequest()->input('dispatch_type_id', 0);
         /**
          * @var PreOrderAddress $orderAddress
@@ -221,11 +234,6 @@ class PreOrder extends Order
         $orderAddress = app('OrderManager')->make('PreOrderAddress');
 
         $orderAddress->setOrder($this);
-        //临时处理，无扩展性
-        if ($this->getRequest()->input('mark') !== 'undefined') {
-            $this->mark = $this->getRequest()->input('mark', '');
-        }
-
     }
 
     /**
