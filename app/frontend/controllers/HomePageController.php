@@ -317,6 +317,55 @@ class HomePageController extends ApiController
         return $this->successJson('ok', $result);
     }
 
+    public function renobationShare(){
+        $pageId    = (int)\YunShop::request()->page_id ?: 0;
+        if (app('plugins')->isEnabled('designer')) {
+            $page_id = $pageId;
+            if ($page_id) {
+                $page = (new OtherPageService())->getOtherPage($page_id);
+            } else {
+                $page = (new IndexPageService())->getIndexPage();
+            }
+
+            if ($page) {
+                $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+
+                $result['item'] = $designer;
+                //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
+                if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
+                    $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                } else {
+                    $result['item']['topmenu'] = [
+                        'menus'  => [],
+                        'params' => [],
+                        'isshow' => false
+                    ];
+                }
+
+            } elseif (empty($pageId)) { //如果是请求首页的数据, 提供默认值
+                $result['default']         = self::defaultDesign();
+                $result['item']['data']    = ''; //前端需要该字段
+                $footerMenuType            = 1;
+                $result['item']['topmenu'] = [
+                    'menus'  => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
+            } else { //如果是请求预览装修的数据
+                $result['item']['data']    = ''; //前端需要该字段
+                $footerMenuType            = 0;
+                $result['item']['topmenu'] = [
+                    'menus'  => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
+            }
+        }else{
+            return $this->errorJson('失败，未开启装修插件');
+        }
+        return $this->successJson('ok', $result);
+    }
+
     public function designerShare()
     {
 
