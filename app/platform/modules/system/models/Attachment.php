@@ -122,8 +122,7 @@ class Attachment extends BaseModel
                 'url' => trim($cos['url'])
             )
         );
-
-
+        
         if ($remotes['type'] == '2') {
             $buckets = attachment_alioss_buctkets($remotes['alioss']['key'], $remotes['alioss']['secret']);
             if (is_error($buckets)) {
