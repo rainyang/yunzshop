@@ -74,6 +74,9 @@
 .kingtimes {
     background-image: url('../img/industry/kingtimes.png');
 }
+.help_user_buying {
+    background-image: url('../img/industry/help_user_buying.png');
+}
 
 .point_activity {
     background-image: url('../img/marketing/point_activity.png');
@@ -243,4 +246,7 @@
 }
 .we7_wmall {
     background-image: url('../img/api/we7_wmall.png');
+}
+.asset {
+    background-image: url('../img/blockchain/asset.png');
 }

@@ -5,19 +5,20 @@ namespace app\common\providers;
 
 
 //use app\backend\modules\charts\listeners\Statistics;
-use app\backend\modules\charts\modules\member\listeners\MemberLowerListener;
 use app\backend\modules\charts\listeners\OrderStatistics;
+use app\backend\modules\charts\modules\member\listeners\MemberLowerListener;
 use app\backend\modules\charts\modules\phone\listeners\PhoneAttribution;
 use app\backend\modules\charts\modules\team\listeners\TeamRank;
 use app\backend\modules\goods\listeners\LimitBuy;
+use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
-
 use app\common\events\PayLog;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
+use app\common\listeners\member\MemberChangeRelationEventListener;
 use app\common\listeners\member\MemberCreateRelationEventListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
@@ -35,6 +36,7 @@ use app\common\modules\process\StateContainer;
 use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use app\frontend\modules\coupon\listeners\CouponSend;
+use app\frontend\modules\coupon\listeners\ShoppingShareCouponListener;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
@@ -100,6 +102,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterMemberReceivedCoupon::class=>[
             AfterMemberReceivedCouponListener::class
+        ],
+        MemberChangeRelationEvent::class=>[
+            MemberChangeRelationEventListener::class
         ]
     ];
     /**
@@ -122,6 +127,8 @@ class EventServiceProvider extends ServiceProvider
         \app\common\listeners\member\level\LevelListener::class,
         \app\common\listeners\balance\BalanceListener::class,
 
+        //订单支付后，获取分享优惠卷资格
+        ShoppingShareCouponListener::class,
 
         \app\frontend\modules\coupon\listeners\CouponDiscount::class,
         PointListener::class,

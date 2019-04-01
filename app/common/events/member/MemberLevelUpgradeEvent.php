@@ -15,14 +15,22 @@ use app\common\models\MemberShopInfo;
 class MemberLevelUpgradeEvent extends Event
 {
     protected $memberModel;
+    protected $isManual;
 
-    public function __construct(MemberShopInfo $memberModel)
+    public function __construct(MemberShopInfo $memberModel, $isManual)
     {
         $this->memberModel = $memberModel;
+        $this->isManual = $isManual;
     }
 
-    public function getMemberModel(){
+    public function getMemberModel()
+    {
         return $this->memberModel;
+    }
+
+    public function isManual()
+    {
+        return $this->isManual;
     }
 
 }

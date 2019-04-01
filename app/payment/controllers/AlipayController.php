@@ -49,7 +49,7 @@ class AlipayController extends PaymentController
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
                 if ($_POST['sign_type'] == 'RSA2') {
                     if (strpos($_POST['out_trade_no'], '_') !== false) {
-                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], '_')+1);
                     } else {
                         $out_trade_no = $_POST['out_trade_no'];
                     }
@@ -93,7 +93,7 @@ class AlipayController extends PaymentController
             if ($_POST['trade_status'] == 'TRADE_SUCCESS') {
                 if ($_POST['sign_type'] == 'RSA2') {
                     if (strpos($_POST['out_trade_no'], '_') !== false) {
-                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], 'PN'));
+                        $out_trade_no = substr($_POST['out_trade_no'], strpos($_POST['out_trade_no'], '_')+1);
                     } else {
                         $out_trade_no = $_POST['out_trade_no'];
                     }

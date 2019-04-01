@@ -62,7 +62,8 @@
     </div>
 </div>
 
-<div class="form-group">
+
+{{--<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型2</label>
     <div class="col-sm-9 col-xs-12">
         <div style="float: left" id="ttttype2">
@@ -78,7 +79,7 @@
             @endif
         </div>
     </div>
-</div>
+</div>--}}
 
 <div id="need_address_idx" class="form-group" @if ($goods['type'] != 2) style="display: none"  @endif>
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单是否需要地址</label>

@@ -760,6 +760,17 @@ return [
                         'item'              => 'coupon_coupon_log',
                         'parents'           => ['Goods', 'coupon',],
                     ],
+                    'share_coupon_log' => [
+                        'name'              => '分享领取记录',
+                        'url'               => 'coupon.share-coupon.log',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 1,
+                        'icon'              => 'fa-pencil',
+                        'sort'              => '3',
+                        'item'              => 'share_coupon_log',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
                 ],
             ],
 
@@ -780,6 +791,18 @@ return [
                 'item'              => 'search_filtering',
                 'parents'           => ['Goods',],
                 'child'             => [
+                    'filtering_search' => [
+                        'name'              => '标签组列表',
+                        'url'               => 'filtering.filtering.get-search-label',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'icon'              => 'fa-sitemap',
+                        'sort'              => '2',
+                        'item'              => 'filtering_search',
+                        'parents'           => ['Goods','search_filtering'],
+                        'child'             => []
+                    ],
                     'filtering_group_index' => [
                         'name'              => '标签组列表',
                         'url'               => 'filtering.filtering.index',

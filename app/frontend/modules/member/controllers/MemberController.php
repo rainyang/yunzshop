@@ -13,9 +13,10 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
-use app\common\components\BaseController;
+use app\common\exceptions\MemberNotLoginException;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
+use app\common\helpers\Client;
 use app\common\helpers\ImageHelper;
 use app\common\helpers\Url;
 use app\common\models\AccountWechats;
@@ -25,29 +26,29 @@ use app\common\models\McMappingFans;
 use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\member\MemberInviteGoodsLogController;
 use app\common\models\MemberShopInfo;
+use app\common\services\alipay\OnekeyLogin;
+use app\common\services\plugin\huanxun\HuanxunSet;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\frontend\models\Member;
+use app\frontend\models\OrderListModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
-use app\frontend\models\OrderListModel;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Request;
 use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
+use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
-use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
-use app\common\services\alipay\OnekeyLogin;
-use app\common\helpers\Client;
-use app\common\services\plugin\huanxun\HuanxunSet;
-use Symfony\Component\HttpFoundation\Request;
+use Yunshop\Designer\models\Designer;
+
 class MemberController extends ApiController
 {
     protected $publicAction = [
@@ -73,6 +74,8 @@ class MemberController extends ApiController
     {
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
+
+        $this->chkAccount();
 
         if (!empty($member_id)) {
 
@@ -844,24 +847,6 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
-        if (app('plugins')->isEnabled('designer')) {
-            $substr = intval(substr($url, strlen("page_id=") + strpos($url, "page_id="), (strlen($url) - strpos($url, "&i=")) * (-1)));
-            $designerModel = \Yunshop\Designer\models\Designer::getDesignerByPageID($substr);
-            if (!empty($designerModel)) {
-                $page_info = $designerModel->toArray()['page_info'];
-                if (!empty($page_info)) {
-                    $arr = json_decode(htmlspecialchars_decode($page_info), true);
-                    if (is_array($arr)) {
-                        $params = $arr[0]['params'];
-                        if (!empty($params) && !empty($params['title'])) {
-                            $share['title'] = $params['title'];
-                            $share['desc'] = $params['desc'];
-                            $share['icon'] = $params['img'];
-                        }
-                    }
-                }
-            }
-        }
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置
@@ -1411,6 +1396,14 @@ class MemberController extends ApiController
                     'url'   => $url
                 ];
             });
+            if (app('plugins')->isEnabled('asset')) {
+                $data[] = [
+                    'name'  => 'asset',
+                    'title' => PLUGIN_ASSET_NAME,
+                    'class' => 'icon-member-credit01',
+                    'url'   => 'TransHome'
+                ];
+            }
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
@@ -1671,6 +1664,9 @@ class MemberController extends ApiController
             }
         }
 
+
+        //return $this->successJson('ok', $data);
+
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
             $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
@@ -1689,6 +1685,7 @@ class MemberController extends ApiController
 
         
         return $this->successJson('ok', $arr);
+
     }
 
 
@@ -1947,5 +1944,18 @@ class MemberController extends ApiController
             }
         }
         return $is_bind_mobile;
+    }
+
+    public function chkAccount()
+    {
+        $type = \YunShop::request()->type;
+        $mid = Member::getMid();
+
+        if (1 == $type && !Cache::has('chekAccount')) {
+            Cache::put('chekAccount', 1, 360);
+            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
+        }
     }
 }

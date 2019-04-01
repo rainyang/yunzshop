@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Adv;
 use app\common\helpers\Cache;
-
+use Yunshop\Love\Common\Services\SetService;
 /**
  * Created by PhpStorm.
  * Author: 芸众商城 www.yunzshop.com
@@ -105,6 +105,18 @@ class IndexController extends ApiController
 //                });
             foreach ($goodsList as &$value) {
                 $value->thumb = yz_tomedia($value->thumb);
+            }
+            if (app('plugins')->isEnabled('love')){
+               // $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+               // $goodsList->love_name = $love_basics_set['name'];
+                  foreach ($goodsList as &$goodsValue){
+                      $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
+                          ->where('uniacid',\Yunshop::app()->uniacid)
+                          ->where('goods_id',$goodsValue->goods_id)
+                          ->where('award',1)
+                          ->first();
+                      $goodsValue->award_proportion = $love_value->award_proportion;
+                  }
             }
             Cache::put('YZ_Index_goodsList', $goodsList, 4200);
 
