@@ -50,6 +50,11 @@ class OutlayService
         return $this->getIncomeSet('poundage_rate');
     }
 
+    public function getPoundageType()
+    {
+        return $this->withdrawModel->poundage_type;
+    }
+
 
     /**
      * @return float
@@ -58,8 +63,9 @@ class OutlayService
     {
         $rate = $this->getPoundageRate();
         $amount = $this->getWithdrawAmount();
+        $type = $this->getPoundageType();
 
-        return $this->calculate($amount, $rate);
+        return $this->calculate($amount, $rate,$type);
     }
 
 
@@ -68,6 +74,10 @@ class OutlayService
      */
     public function getServiceTaxRate()
     {
+        if(in_array($this->withdrawModel->mark, ['StoreCashier','StoreWithdraw','StoreBossWithdraw']))
+        {
+            return 0;
+        }
         return $this->getWithdrawSet('servicetax_rate');
     }
 
@@ -98,6 +108,14 @@ class OutlayService
         return $this->getWithdrawSet('special_poundage');
     }
 
+    /**
+     * @return float
+     */
+    public function getToBalancePoundageType()
+    {
+        return $this->getWithdrawSet('special_poundage_type');
+    }
+
 
     /**
      * @return float
@@ -106,8 +124,9 @@ class OutlayService
     {
         $rate = $this->getToBalancePoundageRate();
         $amount = $this->getWithdrawAmount();
+        $type = $this->getToBalancePoundageType();
 
-        return $this->calculate($amount, $rate);
+        return $this->calculate($amount, $rate,$type);
     }
 
 
@@ -116,6 +135,10 @@ class OutlayService
      */
     public function getToBalanceServiceTaxRate()
     {
+        if(in_array($this->withdrawModel->mark, ['StoreCashier','StoreWithdraw','StoreBossWithdraw']))
+        {
+            return 0;
+        }
         return $this->getWithdrawSet('special_service_tax');
     }
 
@@ -154,8 +177,12 @@ class OutlayService
      * @param $rate
      * @return float
      */
-    private function calculate($amount, $rate)
+    private function calculate($amount, $rate,$type=0)
     {
+        if($type == 1)
+        {
+            return $rate;
+        }
         return bcdiv(bcmul($amount, $rate, 2), 100, 2);
     }
 

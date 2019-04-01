@@ -112,6 +112,9 @@ class PointService
     const POINT_MODE_RECEIVE_OVERDUE = 26;
     const POINT_MODE_RECEIVE_OVERDUE_ATTACHED = '领取失效';
 
+    const POINT_MODE_COMMISSION_TRANSFER = 27;
+    const POINT_MODE_COMMISSION_TRANSFER_ATTACHED = '分销佣金转入';
+
 
 
     const POINT = 0;
@@ -284,7 +287,7 @@ class PointService
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (19):
-                $mode_attribute = self::POINT_MODE_SIGN_REWARD_ATTACHED;
+                $mode_attribute = trans('Yunshop\Sign::sign.plugin_name') ? trans('Yunshop\Sign::sign.plugin_name').'奖励' : self::POINT_MODE_SIGN_REWARD_ATTACHED;
                 break;
             case (20):
                 $mode_attribute = self::POINT_MODE_COURIER_REWARD_ATTACHED;
@@ -303,6 +306,9 @@ class PointService
                 break;
             case (26):
                 $mode_attribute = self::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
+                break;
+            case (27):
+                $mode_attribute = self::POINT_MODE_COMMISSION_TRANSFER_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;

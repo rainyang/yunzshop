@@ -236,7 +236,8 @@
                                                 <input type="text" name="withdraw[balance][poundage]"
                                                        class="form-control" value="{{ $set['poundage'] or '' }}"
                                                        placeholder="请输入提现手续费计算值"/>
-                                                <div class="input-group-addon" id="poundage_unit">%</div>
+                                                <div class="input-group-addon" id="poundage_unit">@if($set['poundage_type'] == 1) 元 @else
+                                                        % @endif</div>
                                             </div>
                                         </label>
                                     </div>
