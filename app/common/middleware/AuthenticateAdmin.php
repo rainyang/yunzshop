@@ -39,11 +39,13 @@ class AuthenticateAdmin
         $cfg   = \config::get('app.global');
         $check = $this->checkUserInfo();
 
+        if ($msg = $this->errorMsg()) {
+            return $this->errorJson($msg, ['status'=> -1]);
+        }
+
         if (!$check['result']) {
             return $this->errorJson($check['msg'], ['status'=> -2]);
         }
-
-        $this->validateUniacid($cfg);
 
         if (\Auth::guard('admin')->user()->uid == 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
@@ -107,16 +109,6 @@ class AuthenticateAdmin
     }
 
     /**
-     * 链接跳转
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function redirectToHome()
-    {
-        return redirect()->guest();
-    }
-
-    /**
      * 检测用户信息
      *
      * @return array
@@ -141,37 +133,20 @@ class AuthenticateAdmin
         ];
     }
 
-    private function validateUniacid($cfg)
+    /**
+     * 获取错误信息
+     *
+     * @return mixed
+     */
+    private function errorMsg()
     {
-        $uri = \Route::getCurrentRoute()->getUri();
-        $msg = '';
+        if (\Cache::has('app.access')) {
+            $msg = \Cache::get('app.access');
 
-        if (($uri == 'admin/shop' && isset($cfg['uniacid']))
-            || ($uri != 'admin/shop' && $uri != 'admin/index' && $cfg['uniacid'] > 0)) {
+            \Cache::forget('app.access');
+            Utils::removeUniacid();
 
-            $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
-
-            if (is_null($sys_app)) {
-                $msg = '非法请求';
-
-                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
-                    return $this->redirectToHome();
-                }
-            }
-
-            if (!is_null($sys_app->deleted_at)) {
-                $msg = '平台已停用';
-
-                if (strpos($_SERVER['REQUEST_URI'], '/admin/shop') !== false) {
-                    return $this->redirectToHome();
-                }
-            }
-
-            if ($msg) {
-                Utils::removeUniacid();
-
-                return $this->errorJson($msg, ['status'=> -1]);
-            }
+            return $msg;
         }
     }
 }
