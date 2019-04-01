@@ -26,7 +26,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝</label>
                             <div class="col-sm-9 col-xs-12">
-                                <img src='{{$member['avatar']}}'
+                                <img src='{{$img}}'
                                      style='width:100px;height:100px;padding:1px;border:1px solid #ccc'/>
                                 {{$member['nickname']}}
                             </div>
@@ -43,7 +43,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">登录密码</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="password" class="form-control" id="password1"/>
+                                <input type="password" name="password" class="form-control" id="password1"/>
                             </div>
                             <p id="p_ti"></p>
                         </div>
@@ -51,7 +51,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认密码</label>
                             <div class="col-sm-9 col-xs-12">
-                                <input type="text" name="confirm_password" class="form-control" id="password2"/>
+                                <input type="password" name="confirm_password" class="form-control" id="password2"/>
                             </div>
                         </div>
 
