@@ -38,13 +38,14 @@ class AuthenticateAdmin
     {
         $cfg   = \config::get('app.global');
         $check = $this->checkUserInfo();
+        $uri   = \Route::getCurrentRoute()->getUri();
 
-        if ($msg = $this->errorMsg()) {
-            return $this->errorJson($msg, ['status'=> -1]);
+        if (!in_array($uri, $this->except) && $msg = $this->errorMsg()) {
+            return $this->errorJson($msg, ['status' => -1]);
         }
 
         if (!$check['result']) {
-            return $this->errorJson($check['msg'], ['status'=> -2]);
+            return $this->errorJson($check['msg'], ['status' => -2]);
         }
 
         if (\Auth::guard('admin')->user()->uid == 1) {
@@ -55,7 +56,7 @@ class AuthenticateAdmin
                 $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $cfg['uniacid']);
 
                 if (!is_null($this->account)) {
-                   $this->setRole();
+                    $this->setRole();
                 } else {
                     $this->relogin();
                 }
@@ -87,7 +88,7 @@ class AuthenticateAdmin
         if (\Auth::guard('admin')->user()->uid === 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
-            $this->role    = ['role' => $this->account->role, 'isfounder' => false];
+            $this->role = ['role' => $this->account->role, 'isfounder' => false];
         }
     }
 
@@ -115,21 +116,21 @@ class AuthenticateAdmin
      */
     private function checkUserInfo()
     {
-        $user = \Auth::guard('admin')->user();
+        $user   = \Auth::guard('admin')->user();
         $result = 1;
 
         if ($user->status == 3) {
             $result = 0;
-            $msg = '您已被禁用，请联系管理员';
+            $msg    = '您已被禁用，请联系管理员';
         }
         if ($user->endtime != 0 && $user->endtime <= time()) {
             $result = 0;
-            $msg = '您的账号已过期，请联系管理员';
+            $msg    = '您的账号已过期，请联系管理员';
         }
 
         return [
             'result' => $result,
-            'msg' => $msg
+            'msg'    => $msg
         ];
     }
 

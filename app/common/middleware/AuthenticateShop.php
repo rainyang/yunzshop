@@ -16,7 +16,7 @@ class AuthenticateShop
 {
     public function handle($request, Closure $next)
     {
-        $cfg   = \config::get('app.global');
+        $cfg = \config::get('app.global');
 
         if (!$this->validateUniacid($cfg)) {
             return $this->redirectToHome();
@@ -31,7 +31,7 @@ class AuthenticateShop
      */
     private function validateUniacid($cfg)
     {
-        $msg = '';
+        $msg     = '';
         $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
         if (is_null($sys_app)) {
@@ -43,7 +43,7 @@ class AuthenticateShop
         }
 
         if ($msg) {
-            \Cache::put('app.access', $msg);
+            \Cache::put('app.access', $msg, 1);
 
             return false;
         }
