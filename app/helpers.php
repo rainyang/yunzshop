@@ -2644,3 +2644,14 @@ if (!function_exists('tpl_ueditor')) {
         return $s;
     }
 }
+
+if (!function_exists('image_put_path')) {
+    function image_put_path()
+    {
+        if (env('APP_Framework') == 'platform') {
+            return base_path('static/upload/');
+        }
+
+        return IA_ROOT . '/attachment/';
+    }
+}
