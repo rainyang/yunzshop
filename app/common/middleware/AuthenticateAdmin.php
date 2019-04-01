@@ -42,7 +42,8 @@ class AuthenticateAdmin
         }
         $cfg = \config::get('app.global');
 
-        if (\Route::getCurrentRoute()->getUri() == 'admin/shop' && isset($cfg['uniacid'])) {
+        if ((\Route::getCurrentRoute()->getUri() == 'admin/shop' && isset($cfg['uniacid']))
+              || (\Route::getCurrentRoute()->getUri() != 'admin/shop' && $cfg['uniacid'] > 0)) {
             $msg = '';
             $sys_app = UniacidApp::getApplicationByid($cfg['uniacid']);
 
