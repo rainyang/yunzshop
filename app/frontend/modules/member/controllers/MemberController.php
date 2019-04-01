@@ -46,7 +46,6 @@ use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
-
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 

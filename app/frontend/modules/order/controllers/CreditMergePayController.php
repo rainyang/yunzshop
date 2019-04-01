@@ -14,6 +14,8 @@ use app\common\exceptions\AppException;
 use app\common\services\password\PasswordService;
 use app\common\services\PayFactory;
 use app\frontend\models\OrderPay;
+use app\frontend\modules\coupon\services\ShareCouponService;
+use app\common\helpers\Url;
 
 class CreditMergePayController extends MergePayController
 {
@@ -36,6 +38,7 @@ class CreditMergePayController extends MergePayController
          */
         $orderPay = OrderPay::find(request()->input('order_pay_id'));
         // \Log::info('--orderPay', $orderPay);
+
         $result = $orderPay->getPayResult(PayFactory::PAY_CREDIT);
         // \Log::info('--result', $result);
         if (!$result) {
@@ -54,10 +57,18 @@ class CreditMergePayController extends MergePayController
         // \Log::info('---trade-----', $trade);
 
         $redirect = '';
-        
+
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'];
         }
+
+         $share_bool = ShareCouponService::showIndex($orderPay->order_ids, \YunShop::app()->getMemberId());
+
+         if ($share_bool) {
+             $ids = rtrim(implode('_', $orderPay->order_ids), '_');
+             $redirect = Url::absoluteApp('coupon/share/'.$ids, ['i' => \YunShop::app()->uniacid, 'mid'=> \YunShop::app()->getMemberId()]);
+         }
+
 
         return $this->successJson('成功', ['redirect' => $redirect]);
     }
