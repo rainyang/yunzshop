@@ -21,6 +21,14 @@ class AuthenticateAdmin
         'admin/index',
     ];
 
+    protected $authApi = [
+        'admin/index',
+        'admin/shop',
+        'admin/application',
+        'admin/application/recycle',
+        'admin/appuser'
+    ];
+
     private $account = null;
     private $uniacid = 0;
     private $role    = ['role' => '', 'isfounder' => false];
@@ -50,6 +58,10 @@ class AuthenticateAdmin
         if (\Auth::guard('admin')->user()->uid == 1) {
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
+            if (!in_array($uri, $this->authApi)) {
+                return $this->errorJson('api无权限', ['status' => -1]);
+            }
+
             if (!empty($cfg['uniacid'])) {
                 $this->uniacid = $cfg['uniacid'];
                 $this->account = AppUser::getAccount(\Auth::guard('admin')->user()->uid, $cfg['uniacid']);
