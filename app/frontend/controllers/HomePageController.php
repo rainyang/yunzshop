@@ -140,9 +140,10 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-
-             $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
-            $result['designer']['love_name'] = $love_basics_set['name'];
+           if (app('plugins')->isEnabled('love')){
+               $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+               $result['designer']['love_name'] = $love_basics_set['name'];
+           }
             //系统信息
             // TODO
             if (!Cache::has('designer_system')) {
