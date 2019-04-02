@@ -57,7 +57,7 @@ class GoodsPosterController extends ApiController
        
         $this->storeid = intval(\YunShop::request()->storeid);
         $this->hotel_id = intval(\YunShop::request()->hotel_id);
-
+        $this->type = intval(\YunShop::request()->type);
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
@@ -364,7 +364,9 @@ class GoodsPosterController extends ApiController
             //商城商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
 
-        } else {
+        } else if ($this->type == 2){
+//            $url  = ;?\
+        }else {
             //门店商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
         }
@@ -375,10 +377,10 @@ class GoodsPosterController extends ApiController
 
         $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
 
-        if (!is_file($path.'/'.$file)) {
+//        if (!is_file($path.'/'.$file)) {
 
             \QrCode::format('png')->size(200)->generate($url, $path.'/'.$file);
-        }
+//        }
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
         // unlink($path.'/'.$file);
 
