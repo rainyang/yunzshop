@@ -201,7 +201,6 @@ class AllUploadController extends BaseController
      */
     public function getNewFileName($originalName, $ext, $file_type)
     {
-        // $uniacid = \YunShop::app()->uniacid ? : 0 ;
         return $file_type.'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
 

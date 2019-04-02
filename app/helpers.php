@@ -16,7 +16,7 @@ if (!function_exists("yz_tpl_ueditor")) {
         }
 
         $s = '';
-        $fileUploader = $file_dir.'/static/js/fileUploader.js';
+        $fileUploader = $file_dir.'/static/js/fileUploader.min.js';
         if (!defined('TPL_INIT_UEDITOR')) {
             if (env('APP_Framework') == 'platform') {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor2.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
@@ -25,7 +25,6 @@ if (!function_exists("yz_tpl_ueditor")) {
                 $fetch_url = '/admin/system/upload/fetch';
                 $delet_url = '/admin/system/upload/delete';
                 $video_url = '/admin/system/upload/video?local=local&type=video&pagesize=5';
-                $fileUploader = $file_dir.'/static/js/app/fileUploader.js';
             } else {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
                 $upload_url = './index.php?c=utility&a=file&do=upload&upload_type=';
