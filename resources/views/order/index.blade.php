@@ -185,7 +185,7 @@
                                                 Excel
                                             </button>
                                             <button type="submit" name="direct_export" value="1" id="direct-export" class="btn btn-info">导出
-                                                直推 Excel
+                                                直推 Excel（经销商）
                                             </button>
                                         @show
                                         @if( $requestSearch['plugin'] != "fund")
