@@ -23,7 +23,6 @@ use app\frontend\modules\member\models\MemberWechatModel;
 use app\frontend\modules\member\models\smsSendLimitModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
-use app\frontend\modules\member\models\McMappingFansModel;
 
 class MemberService
 {
@@ -843,11 +842,6 @@ class MemberService
     {
         \Log::debug('----unionid---', $UnionidInfo->member_id);
         \Log::debug('----fans----', $fansInfo->uid);
-
-        if($userInfo['subscribe'] !== $fansInfo->follow){
-            $data['subscribe'] = $userinfo['subscribe'];
-            McMappingFansModel::updateData($UnionidInfo->member_id,$data);
-        }
 
         if ($UnionidInfo->member_id != $fansInfo->uid) {
             /*
