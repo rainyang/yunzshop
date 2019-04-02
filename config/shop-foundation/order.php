@@ -18,6 +18,7 @@ return array(
             \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
+            \app\frontend\modules\order\operations\member\Coupon::class, //分享优惠卷
 
         ],
         'waitReceive' => [
@@ -27,6 +28,7 @@ return array(
             \app\frontend\modules\order\operations\member\ContactCustomerService::class,
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
+            \app\frontend\modules\order\operations\member\Coupon::class, //分享优惠卷
         ],
         'complete' => [
             \app\frontend\modules\order\operations\member\ExpressInfo::class,
@@ -36,6 +38,7 @@ return array(
             \app\frontend\modules\order\operations\member\Refunding::class,
             \app\frontend\modules\order\operations\member\Refunded::class,
             \app\frontend\modules\order\operations\member\CheckInvoice::class,
+            \app\frontend\modules\order\operations\member\Coupon::class, //分享优惠卷
 
         ],
         'close' => [

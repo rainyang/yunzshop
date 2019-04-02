@@ -8,6 +8,8 @@
 
 namespace app\frontend\modules\orderGoods\discount;
 
+use app\common\modules\orderGoods\models\PreOrderGoods;
+
 class EnoughReduce extends BaseDiscount
 {
     protected $code = 'enoughReduce';
@@ -19,13 +21,12 @@ class EnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
-        if(!$this->orderDiscountCalculated()){
+        if (!$this->orderDiscountCalculated()) {
             // 确保订单优惠先行计算
             return null;
         }
         // (支付金额/订单中同种商品已计算的支付总价 ) * 全场满减金额
-        // todo 这里应该使用 商品成交金额-优先级更高的N种优惠金额之和
-        return ($this->orderGoods->getPrice() / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
+        return ($this->orderGoods->getPriceBefore($this->getCode()) / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
     }
 
     /**
@@ -45,6 +46,8 @@ class EnoughReduce extends BaseDiscount
      */
     protected function getOrderGoodsPrice()
     {
-        return $this->orderGoods->order->orderGoods->getPrice();
+        return $this->orderGoods->order->orderGoods->sum(function (PreOrderGoods $preOrderGoods) {
+            return $preOrderGoods->getPriceBefore($this->getCode());
+        });
     }
 }

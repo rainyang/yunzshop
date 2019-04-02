@@ -46,6 +46,8 @@ use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
+use Yunshop\TeamDividend\models\YzMemberModel;
+use Yunshop\Designer\models\Designer;
 
 class MemberController extends ApiController
 {
@@ -845,7 +847,6 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
-
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置

@@ -10,8 +10,6 @@
                 <ul class="add-snav">
                     <li class="active"><a href="{{yzWebUrl('member.member.index')}}">会员管理</a></li>
                     <li><a href="javascript:void"> &nbsp;<i class="fa fa-angle-double-right"></i> &nbsp;全部会员</a></li>
-                    <li><a href="javascript:void"><i class="fa fa-angle-double-right"></i></a></li>
-                    <li class="active"> <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a></li>
                 </ul>
             </div>
             <!-- 新增加右侧顶部三级菜单结束 -->
@@ -199,7 +197,11 @@
                         </div>
 
                     </form>
+
                 </div>
+            </div>
+            <div class="clearfix panel-heading">
+                <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a>
             </div>
             <div class="clearfix">
                 <div class="panel panel-default">

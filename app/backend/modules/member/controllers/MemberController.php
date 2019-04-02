@@ -54,7 +54,7 @@ use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\models\Agents;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
-
+use app\common\facades\Setting;
 
 
 class MemberController extends BaseController
@@ -170,6 +170,15 @@ class MemberController extends BaseController
         $password = \YunShop::request()['password'];
         $confirm_password = \YunShop::request()['confirm_password'];
         $uniacid = \YunShop::app()->uniacid;
+        $member = Setting::get('shop.member');
+        //获取图片
+        $member_set = \Setting::get('shop.member');
+        \Log::info('member_set', $member_set);
+        if (isset($member_set) && $member_set['headimg']) {
+            $avatar = replace_yunshop($member_set['headimg']);
+        } else {
+            $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+        }
 
         if ((\Request::getMethod() == 'POST')) {
 //            $msg = MemberService::validate($mobile, $password, $confirm_password,'Backstage');
@@ -190,16 +199,6 @@ class MemberController extends BaseController
             //添加mc_members表
             $default_groupid = Member_Group::getDefaultGroupId($uniacid)->first();
             \Log::info('default_groupid', $default_groupid);
-
-            //获取图片
-            $member_set = \Setting::get('shop.member');
-            \Log::info('member_set', $member_set);
-            if (isset($member_set) && $member_set['headimg']) {
-                $avatar = replace_yunshop($member_set['headimg']);
-            } else {
-                $avatar = Url::shopUrl('static/images/photo-mr.jpg');
-            }
-            \Log::info('avatar', $avatar);
 
             $data = array(
                 'uniacid' => $uniacid,
@@ -264,7 +263,14 @@ class MemberController extends BaseController
             $data = MemberModel::userData($member_info, $yz_member);
             return $this->message("添加用户成功", yzWebUrl('member.member.index'));
         }
-        return view('member.add-member')->render();
+
+        if (empty($member['headimg'])) {
+            $val = static_url('resource/images/nopic.jpg');
+            $headimg = yz_tomedia($val);
+        }else{
+            $headimg = yz_tomedia($member['headimg']);
+        }
+        return view('member.add-member',['img'=>$headimg])->render();
     }
 
 
@@ -444,7 +450,7 @@ class MemberController extends BaseController
 
                 if ($is_upgrade) {
                     //会员等级升级触发事件
-                    event(new MemberLevelUpgradeEvent($shopInfoModel));
+                    event(new MemberLevelUpgradeEvent($shopInfoModel, true));
                 }
 
                 if ($parame->data['agent']) {
