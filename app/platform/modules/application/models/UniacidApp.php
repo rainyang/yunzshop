@@ -16,7 +16,6 @@ class UniacidApp extends BaseModel
 	protected $table = 'yz_uniacid_app';
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
-  	// protected $dates = ['validity_time'];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'descr', 'version'];
     protected $appends = ['status_name'];
@@ -24,12 +23,9 @@ class UniacidApp extends BaseModel
   	
   	public function scopeSearch($query, $keyword)
   	{
-  		
-  		$query = $query->where('status', 1);
-
-      if (!$keyword) {
-        return $query;
-      }
+        if (!$keyword) {
+            return $query;
+        }
 
   		if ($keyword['name']) {
   			$query = $query->where('name', 'like', '%'.$keyword['name'].'%');
@@ -46,7 +42,6 @@ class UniacidApp extends BaseModel
 	  			$query = $query->where('validity_time', 0)->Orwhere('validity_time', '>=', mktime(0,0,0, date('m'), date('d'), date('Y')));
 	  		}
   		}
-        // dd($query->toSql(), date('Y-m-d'), $query->get()->toArray());
         return $query;
   	}
 

@@ -61,7 +61,8 @@ class AuthenticateAdmin
         'admin/application/add',
         'admin/application/update/{id}',
         'admin/application/switchStatus/{id}',
-        'admin/all/list'
+        'admin/all/list',
+        'admin/all/delImg/'
     ];
 
     /**

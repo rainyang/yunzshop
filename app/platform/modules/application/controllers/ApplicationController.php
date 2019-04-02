@@ -27,11 +27,11 @@ class ApplicationController extends BaseController
 
         if (\Auth::guard('admin')->user()->uid != 1) {
 
-            $list = $app->whereIn('id', $ids)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
+            $list = $app->whereIn('id', $ids)->where('status', 1)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
 
         } else {
 
-            $list = $app->search($search)->orderBy('id', 'desc')->paginate()->toArray();
+            $list = $app->where('status', 1)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
         }
             
             foreach ($list['data'] as $key => $value) {
@@ -57,8 +57,7 @@ class ApplicationController extends BaseController
 
         $appUser = AppUser::where('uid', $uid)->get();
 
-        // if (!$user || !$appUser || $user->type != 0 ) {
-        if (!$user || !$appUser ) {
+        if (!$user || !$appUser || $user->type == 3 ) {
             return '您无权限查看平台应用';
         }
 
@@ -113,8 +112,7 @@ class ApplicationController extends BaseController
                 \Log::info('平台添加修改uniacid字段失败, id为',$id);
             }
             //更新缓存
-//                Cache::put($this->key.':'. $id, $app->find($id));
-//                Cache::put($this->key.'_num', $id);
+
             return $this->successJson('添加成功');
 
         } else {
@@ -206,8 +204,7 @@ class ApplicationController extends BaseController
             if (!$info->delete()) {
                 return $this->errorJson('操作失败');
             }
-
-            $info->update(['status'=> 0]);
+            UniacidApp::withTrashed()->where('id', $id)->update(['status'=>0]);
 
             // Cache::put($this->key . ':' . $id, UniacidApp::find($id));
         }
@@ -245,8 +242,6 @@ class ApplicationController extends BaseController
         }
 
         if ($res) {
-            //更新缓存
-            // Cache::put($this->key . ':' . $id, UniacidApp::find($id), $info->validity_time);
 
             return $this->successJson('操作成功');
         } else {
@@ -261,15 +256,20 @@ class ApplicationController extends BaseController
 
         $app = new UniacidApp();
 
-        if ($search) {
-            $app = $app->search($search);
-        }
+        if (\Auth::guard('admin')->user()->uid != 1) {
 
-        $list = $app
-            ->onlyTrashed()
-            ->orderBy('id', 'desc')
-            ->paginate()
-            ->toArray();
+            $list = $app->onlyTrashed()->where('creator', \Auth::guard('admin')->user()->uid)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
+
+        } else  {
+
+            $list = $app
+                ->onlyTrashed()
+                ->search($search)
+                ->orderBy('id', 'desc')
+                ->paginate()
+                ->toArray();
+        }
+        
 
         foreach ($list['data'] as $key => $value) {
                 
@@ -305,69 +305,5 @@ class ApplicationController extends BaseController
             'version' => $data['version'] ?  : 0.00,
             'validity_time' => $data['validity_time'] ?  : 0,
         ];
-    }
-
-    public function upload()
-    {
-        $file = request()->file('file');
-        \Log::info('file', $file);
-
-        if (!$file) {
-            return $this->errorJson('请传入正确参数');
-        }
-        if ($file->isValid()) {
-            $originalName = $file->getClientOriginalName(); // 文件原名
-            \Log::info('originalName', $originalName);
-            $realPath = $file->getRealPath();   //临时文件的绝对路径
-            \Log::info('realPath', $realPath);
-
-            $ext = $file->getClientOriginalExtension();
-            \Log::info('ext', $ext);
-            
-            // $path = config('filesystems.disks.public')['root'].'/';   //后期存放路径
-
-            $newOriginalName = date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
-            \Log::info('newOriginalName', $newOriginalName);
-
-            $res = \Storage::disk('public')->put($newOriginalName, file_get_contents($realPath));
-            \Log::info('res-path', [$res, \Storage::disk('public')]);
-
-            // $proto = explode('/', $_SERVER['SERVER_PROTOCOL'])[0] === 'https' ? 'https://' : 'http://';
-            $proto = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https://' : 'http://';
-
-            return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$newOriginalName);
-        }
-    }
-
-    public function temp()
-    {
-        // if (request()->input()) {
-            
-        //     $file = request()->file;
-        //     // dd($file);
-        //     if ($file) {
-
-        //     $first = explode(',', $file);
-        //     $ext = explode(';', explode('/', $first[0])[1])[0];
-
-        //     //解码
-        //     $content = base64_decode($first[1]); 
-        //     //自定义路径
-        //     // $path = config('filesystems.disks.public')['root'].'/';
-
-        //     // $extPath = str_replace(substr($path, -7, 1), "\\", $path);
-            
-        //     $filename = date('Ymd').uniqid().rand(1, 9999).'.'.$ext;
-
-        //     $url = $path.$filename;
-            
-        //     // UploadedFile::store($url);
-        //     $res = \Storage::disk('public')->put($url, $content);
-        //     // dd($res);
-        //     return $this->successJson('上传成功', $proto.$_SERVER['HTTP_HOST'].'/storage/app/public/'.$filename);
-
-        //     }
-        // }
-        return View('admin.application.upload');
     }
 }
