@@ -58,9 +58,10 @@ class AuthenticateAdmin
         'admin/all/upload/',
         'admin/application/getApp',
         'admin/application/delete/{id}',
-        'admin/application/add/',
+        'admin/application/add',
         'admin/application/update/{id}',
-        'admin/application/switchStatus/{id}'
+        'admin/application/switchStatus/{id}',
+        'admin/all/list'
     ];
 
     /**
@@ -110,6 +111,7 @@ class AuthenticateAdmin
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
             if (!in_array($uri, $this->authApi)) {
+
                 return $this->errorJson('无访问权限', ['status' => self::API_STATUS]);
             }
 
