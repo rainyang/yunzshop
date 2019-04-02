@@ -190,6 +190,14 @@ class HomePageController extends ApiController
                             }
                         }
                     }
+                }else{
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = 0;
+                            }
+                        }
+                    }
                 }
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
