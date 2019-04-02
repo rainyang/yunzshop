@@ -57,6 +57,6 @@ class Authenticate
             file_put_contents($file, $f_data);
         }
 
-        //TODO install.lock
+        //TODO /bootstrap/install.lock
     }
 }

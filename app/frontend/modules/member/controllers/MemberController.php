@@ -1047,7 +1047,9 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        $imgUrl = ImageHelper::getImageUrl($path, $file);
+        $file = $path . '/' . $file;
+
+        $imgUrl = ImageHelper::getImageUrl($file);
 
         return $imgUrl;
     }
