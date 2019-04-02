@@ -140,7 +140,8 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-           if (app('plugins')->isEnabled('love')){
+            $is_love = app('plugins')->isEnabled('love');
+           if ($is_love){
                $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
                $result['designer']['love_name'] = $love_basics_set['name'];
            }
@@ -181,10 +182,20 @@ class HomePageController extends ApiController
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
-                foreach ($designer['data'] as &$data){
-                    if ($data['temp']=='goods'){
-                        foreach ($data['data'] as &$goode_award){
-                            $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                if ($is_love){
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                            }
+                        }
+                    }
+                }else{
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = 0;
+                            }
                         }
                     }
                 }
