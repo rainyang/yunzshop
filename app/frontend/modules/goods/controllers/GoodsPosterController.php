@@ -361,16 +361,15 @@ class GoodsPosterController extends ApiController
 
     private function generateQr()
     {
-        if (empty($this->storeid)) {
-            //商城商品二维码
-            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
-
-        } else if ($this->type == 2){
+        if($this->type == 2){
             //小程序海报生成
             $url = yzAppFullUrl("/pages/detail_v2/detail_v2?id=".$this->goodsModel->id);
             $img = $this->getWxacode($url);
             return $img;
-//           $url  = ;?\
+        }
+        if (empty($this->storeid)) {
+            //商城商品二维码
+            $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
         }else {
             //门店商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
@@ -451,8 +450,9 @@ class GoodsPosterController extends ApiController
         $token = $this->getToken();
         $url .= "access_token=" . $token;
         $postdata = [
-            "scene"=>12,
-            "page" => $goods_url
+            "scene"=>$this->goodsModel->id,
+            "page" => $goods_url,
+            "width"=>200
         ];
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
