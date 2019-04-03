@@ -171,12 +171,11 @@ class GoodsPosterController extends ApiController
             $goodsThumb = $this->goodsModel->thumb;
         }
 
-
+        $target = $this->mergeGoodsImage($target, $goodsThumb);
         
         //商品二维码
         $goodsQr =  $this->generateQr();
         if ($this->type != 2){
-            $target = $this->mergeGoodsImage($target, $goodsThumb);
             if ($this->goodsModel->hasOneShare->share_title) {
                 $text = $this->goodsModel->hasOneShare->share_title;
             } else {
@@ -189,8 +188,7 @@ class GoodsPosterController extends ApiController
 
             $target = $this->mergePriceText($target);
         }else{
-
-            $target = $this->smallProgramQrImage($target, $goodsQr);
+            $target = $this->mergeQrImage($target, $goodsQr);
         }
 
        
@@ -286,19 +284,6 @@ class GoodsPosterController extends ApiController
         return $target;
     }
 
-    /**
-     * 合并商品二维码 到 $target
-     * @param [type] $target [description]
-     * @param [type] $img    [description]
-     */
-    private function smallProgramQrImage($target, $img)
-    {
-        $width  = imagesx($img);
-        $height = imagesy($img);
-        imagecopyresized($target, $img, 30, 180, 0, 0, 540, 540, $width, $height);
-        imagedestroy($img);
-        return $target;
-    }
     /**
      * 合并商品二维码 到 $target
      * @param [type] $target [description]
