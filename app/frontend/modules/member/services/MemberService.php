@@ -842,6 +842,7 @@ class MemberService
     {
         \Log::debug('----unionid---', $UnionidInfo->member_id);
         \Log::debug('----fans----', $fansInfo->uid);
+
         if ($UnionidInfo->member_id != $fansInfo->uid) {
             /*
             //小程序

@@ -140,19 +140,11 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
-            if ($pageId != 0) {
-                $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->page_id);
-                $page = (new DesignerService())->getPage($designerModel->toArray());
-                foreach ($page['data'] as $arr) {
-                    foreach ($arr as $value) {
-                        if (isset($value['love'])) {
-                            $result['designer']['designer_love_activity'] = $value['love'];
-                        }
-                    }
-                }
-            }
-             $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
-            $result['designer']['love_name'] = $love_basics_set['name'];
+            $is_love = app('plugins')->isEnabled('love');
+           if ($is_love){
+               $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+               $result['designer']['love_name'] = $love_basics_set['name'];
+           }
             //系统信息
             // TODO
             if (!Cache::has('designer_system')) {
@@ -169,6 +161,8 @@ class HomePageController extends ApiController
             } else {
                 $page = (new IndexPageService())->getIndexPage();
             }
+
+//           dd($page->toArray());
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             /*if(empty($pageId)){ //如果是请求首页的数据
@@ -188,14 +182,23 @@ class HomePageController extends ApiController
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
                 }
-                foreach ($designer['data'] as &$data){
-                    if ($data['temp']=='goods'){
-                        foreach ($data['data'] as &$goode_award){
-                            $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                if ($is_love){
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                            }
+                        }
+                    }
+                }else{
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = 0;
+                            }
                         }
                     }
                 }
-
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
                     Cache::put($member_id . '_designer_default_0', $designer, 180);
@@ -510,102 +513,56 @@ class HomePageController extends ApiController
      */
     public static function defaultMenu($i, $mid, $type)
     {
-        $CustomizeMenu = DesignerMenu::getDefaultMenu();
-        if(!empty($CustomizeMenu)){
-            $CustomizeMenu_list=$CustomizeMenu->toArray();
-            if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
-                $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
-                foreach ($Menu as $key=>$value){
-                   // $Menu[$key]['name']=$Menu[$key]['id'];
-                     $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
-                      $Menu[$key]['url']= $url?:'';
-
-                    //$Menu[$key]['url'] ="/addons/yun_shop/".'?#'.substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"#/")+1)."&mid=" . $mid . "&type=" . $type;
-                }
-            }
-        }
-        else {
-            //默认菜单
-            $Menu = Array(
-                Array(
-                    "id" => 1,
-                    "title" => "首页",
-                    "icon" => "fa fa-home",
-                    "url" => "/addons/yun_shop/?#/home?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                    "name" => "home",
-                    "subMenus" => [],
-                    "textcolor" => "#70c10b",
-                    "bgcolor" => "#24d7e6",
-                    "bordercolor" => "#bfbfbf",
-                    "iconcolor" => "#666666"
-                ),
-                Array(
-                    "id" => "menu_1489731310493",
-                    "title" => "分类",
-                    "icon" => "fa fa-th-large",
-                    "url" => "/addons/yun_shop/?#/category?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                    "name" => "category",
-                    "subMenus" => [],
-                    "textcolor" => "#70c10b",
-                    "bgcolor" => "#24d7e6",
-                    "iconcolor" => "#666666",
-                    "bordercolor" => "#bfbfbf"
-                ),
-                Array(
-                    "id" => "menu_1489735163419",
-                    "title" => "购物车",
-                    "icon" => "fa fa-cart-plus",
-                    "url" => "/addons/yun_shop/?#/cart?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                    "name" => "cart",
-                    "subMenus" => [],
-                    "textcolor" => "#70c10b",
-                    "bgcolor" => "#24d7e6",
-                    "iconcolor" => "#666666",
-                    "bordercolor" => "#bfbfbf"
-                ),
-                Array(
-                    "id" => "menu_1491619644306",
-                    "title" => "会员中心",
-                    "icon" => "fa fa-user",
-                    "url" => "/addons/yun_shop/?#/member?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                    "name" => "member",
-                    "subMenus" => [],
-                    "textcolor" => "#70c10b",
-                    "bgcolor" => "#24d7e6",
-                    "iconcolor" => "#666666",
-                    "bordercolor" => "#bfbfbf"
-                ),
-            );
-            $promoteMenu      = Array(
-                "id"          => "menu_1489731319695",
-                "classt"      => "no",
-                "title"       => "推广",
-                "icon"        => "fa fa-send",
-                "url"         => "/addons/yun_shop/?#/member/extension?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                "name"        => "extension",
+        $defaultMenu = Array(
+            Array(
+                "id"          => 1,
+                "title"       => "首页",
+                "icon"        => "fa fa-home",
+                "url"         => "/addons/yun_shop/?#/home?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+                "name"        => "home",
                 "subMenus"    => [],
-                "textcolor"   => "#666666",
-                "bgcolor"     => "#837aef",
+                "textcolor"   => "#70c10b",
+                "bgcolor"     => "#24d7e6",
+                "bordercolor" => "#bfbfbf",
+                "iconcolor"   => "#666666"
+            ),
+            Array(
+                "id"          => "menu_1489731310493",
+                "title"       => "分类",
+                "icon"        => "fa fa-th-large",
+                "url"         => "/addons/yun_shop/?#/category?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+                "name"        => "category",
+                "subMenus"    => [],
+                "textcolor"   => "#70c10b",
+                "bgcolor"     => "#24d7e6",
                 "iconcolor"   => "#666666",
                 "bordercolor" => "#bfbfbf"
-            );
-            $extension_status = Setting::get('shop_app.pay.extension_status');
-            if (isset($extension_status) && $extension_status == 0) {
-                $extension_status = 0;
-            } else {
-                $extension_status = 1;
-            }
-            if ($type == 7 && $extension_status == 0) {
-                unset($promoteMenu);
-            } else {
-                //是否显示推广按钮
-                if (PortType::popularizeShow($type)) {
-                    $Menu[4] = $Menu[3]; //第 5 个按钮改成"会员中心"
-                    $Menu[3] = $Menu[2]; //第 4 个按钮改成"购物车"
-                    $Menu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
-                }
-            }
-        }
+            ),
+            Array(
+                "id"          => "menu_1489735163419",
+                "title"       => "购物车",
+                "icon"        => "fa fa-cart-plus",
+                "url"         => "/addons/yun_shop/?#/cart?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+                "name"        => "cart",
+                "subMenus"    => [],
+                "textcolor"   => "#70c10b",
+                "bgcolor"     => "#24d7e6",
+                "iconcolor"   => "#666666",
+                "bordercolor" => "#bfbfbf"
+            ),
+            Array(
+                "id"          => "menu_1491619644306",
+                "title"       => "会员中心",
+                "icon"        => "fa fa-user",
+                "url"         => "/addons/yun_shop/?#/member?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+                "name"        => "member",
+                "subMenus"    => [],
+                "textcolor"   => "#70c10b",
+                "bgcolor"     => "#24d7e6",
+                "iconcolor"   => "#666666",
+                "bordercolor" => "#bfbfbf"
+            ),
+        );
 
         //如果开启了"会员关系链", 则默认菜单里面添加"推广"菜单
         /*
@@ -616,8 +573,37 @@ class HomePageController extends ApiController
         }
         */
         //if($relation->status == 1){
+        $promoteMenu      = Array(
+            "id"          => "menu_1489731319695",
+            "classt"      => "no",
+            "title"       => "推广",
+            "icon"        => "fa fa-send",
+            "url"         => "/addons/yun_shop/?#/member/extension?i=" . $i . "&mid=" . $mid . "&type=" . $type,
+            "name"        => "extension",
+            "subMenus"    => [],
+            "textcolor"   => "#666666",
+            "bgcolor"     => "#837aef",
+            "iconcolor"   => "#666666",
+            "bordercolor" => "#bfbfbf"
+        );
+        $extension_status = Setting::get('shop_app.pay.extension_status');
+        if (isset($extension_status) && $extension_status == 0) {
+            $extension_status = 0;
+        } else {
+            $extension_status = 1;
+        }
+        if ($type == 7 && $extension_status == 0) {
+            unset($promoteMenu);
+        } else {
+            //是否显示推广按钮
+            if (PortType::popularizeShow($type)) {
+                $defaultMenu[4] = $defaultMenu[3]; //第 5 个按钮改成"会员中心"
+                $defaultMenu[3] = $defaultMenu[2]; //第 4 个按钮改成"购物车"
+                $defaultMenu[2] = $promoteMenu; //在第 3 个按钮的位置加入"推广"
+            }
+        }
 
-        return $Menu;
+        return $defaultMenu;
 
     }
 

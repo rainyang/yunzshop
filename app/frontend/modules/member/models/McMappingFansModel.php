@@ -24,10 +24,10 @@ class McMappingFansModel extends McMappingFans
     protected $attributes = ['unionid' => '', 'groupid' => 0];
 
 
-    public function getOauthUserInfo()
+    /*public function getOauthUserInfo()
     {
         return mc_oauth_userinfo();
-    }
+    }*/
 
     /**
      * 获取粉丝uid
@@ -111,7 +111,7 @@ class McMappingFansModel extends McMappingFans
      */
     public static function getFansData($openid)
     {
-        return self::select('fanid', 'uid')
+        return self::select('fanid', 'uid','follow')
             ->uniacid()
             ->where('openid', $openid)
             ->first();
