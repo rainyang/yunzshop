@@ -79,6 +79,11 @@ class GoodsPosterController extends ApiController
                 $this->shopSet['logo'] = $hotel->thumb;
             }
         }
+        if ($this->type == 2){
+            if (!app('plugins')->isEnabled('min-app')) {
+                return $this->errorJson('未开启小程序插件');
+            }
+        }
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
         $this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('status', 1)->find($id);
 
@@ -188,7 +193,7 @@ class GoodsPosterController extends ApiController
 
             $target = $this->mergePriceText($target);
         }else{
-            $target = $this->mergeQrImage($target, $goodsQr);
+            $target = $this->mergeQrImage($target, $goodsQr,300,720);
         }
 
        
@@ -289,11 +294,11 @@ class GoodsPosterController extends ApiController
      * @param [type] $target [description]
      * @param [type] $img    [description]
      */
-    private function mergeQrImage($target, $img)
+    private function mergeQrImage($target, $img,$dst_x=400,$dst_y=750)
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 400, 750, 0, 0, $width, $height);
+        imagecopy($target, $img, 300, 720, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -453,8 +458,8 @@ class GoodsPosterController extends ApiController
         $url .= "access_token=" . $token;
         $postdata = [
             "scene"=>$this->goodsModel->id,
-//            "page" => $goods_url,
-            "page" => "pages/index/index",
+            "page" => $goods_url,
+//            "page" => "pages/index/index",
             "width"=>200
         ];
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
@@ -482,7 +487,6 @@ class GoodsPosterController extends ApiController
     //获取token的url参数拼接
     public function getTokenUrlStr()
     {
-        if (app('plugins')->isEnabled('min-app')){
             $set = Setting::get('plugin.min_app');
             $getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?"; //获取token的url
             $WXappid     =  $set['key']; //APPID
@@ -492,7 +496,7 @@ class GoodsPosterController extends ApiController
             $str .= "appid=" . $WXappid . "&";
             $str .= "secret=" . $WXsecret;
             return $str;
-        }
+
 
     }
 
