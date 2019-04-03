@@ -235,9 +235,6 @@ class ListController extends BaseController
     public function directExport($orders)
     {
         if (\YunShop::request()->direct_export == 1) {
-            if (!app('plugins')->isEnabled('team-dividend')) {
-                return $this->error('未开启经销商插件无法导出');
-            }
             $export_page = request()->export_page ? request()->export_page : 1;
             $orders = $orders->with([
                 'discounts',
@@ -254,14 +251,15 @@ class ListController extends BaseController
             $team_list = TeamDividendLevelModel::getList()->get();
 
             $levelId = [];
+            $level_name = [];
             foreach ($team_list as $level) {
-                $export_data[0][] = $level->level_name;
+                $level_name[] = $level->level_name;
                 $levelId[] = $level->id;
             }
 
             if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
-                $export_data[0] = array_merge($export_data[0],$this->getColumns());
+                $export_data[0] = array_merge($level_name,$this->getColumns());
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
 
                     $level = $this->getLevel($item, $levelId);
