@@ -1,5 +1,12 @@
 <?php
 
+if (env('APP_Framework') == 'platform') {
+    $attachment = 'static/upload';
+} else {
+    $attachment = '../../attachment';
+}
+
+
 return [
 
     /*
@@ -77,14 +84,14 @@ return [
 
         'avatar' => [
             'driver' => 'local',
-            'root' => base_path('../../attachment/avatar'),
+            'root' => base_path($attachment .'/avatar'),
             'url' => env('APP_URL').'/attachment/avatar',
             'visibility' => 'public',
         ],
 
         'image' => [
             'driver' => 'local',
-            'root' => base_path('../../attachment/image'),
+            'root' => base_path($attachment . '/image'),
             'url' => env('APP_URL').'image',
             'visibility' => 'public',
         ],
