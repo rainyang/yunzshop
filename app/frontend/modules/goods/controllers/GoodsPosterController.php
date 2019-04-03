@@ -368,6 +368,8 @@ class GoodsPosterController extends ApiController
         } else if ($this->type == 2){
             //小程序海报生成
             $url = yzAppFullUrl("/pages/detail_v2/detail_v2?id=".$this->goodsModel->id);
+            $img = $this->getWxacode($url);
+            return $img;
 //           $url  = ;?\
         }else {
             //门店商品二维码
@@ -444,13 +446,13 @@ class GoodsPosterController extends ApiController
         return $src;
     }
    //生成小程序二维码
-    function getWxacode(){
+    function getWxacode($goods_url){
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
         $token = $this->getToken();
         $url .= "access_token=" . $token;
         $postdata = [
             "scene"=>12,
-            "page" => "pages/index/index"
+            "page" => $goods_url
         ];
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
@@ -459,9 +461,9 @@ class GoodsPosterController extends ApiController
         }
         $res = $this->curl_post($url,json_encode($postdata),$options=array());
         $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
-        $r = file_put_contents($file,$res);
-        return $r;
-
+        $r = file_put_contents($path.'/'.$file, $res);
+        $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
+        return $img;
     }
 
 
