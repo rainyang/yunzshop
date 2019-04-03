@@ -363,7 +363,7 @@ class GoodsPosterController extends ApiController
     {
         if($this->type == 2){
             //小程序海报生成
-            $url = yzAppFullUrl("/pages/detail_v2/detail_v2?id=".$this->goodsModel->id);
+            $url = "/pages/detail_v2/detail_v2?id=".$this->goodsModel->id;
             $img = $this->getWxacode($url);
             return $img;
         }
@@ -451,7 +451,8 @@ class GoodsPosterController extends ApiController
         $url .= "access_token=" . $token;
         $postdata = [
             "scene"=>$this->goodsModel->id,
-            "page" => $goods_url,
+//            "page" => $goods_url,
+            "page" => "pages/index/index",
             "width"=>200
         ];
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
@@ -461,7 +462,7 @@ class GoodsPosterController extends ApiController
         }
         $res = $this->curl_post($url,json_encode($postdata),$options=array());
         $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
-        $r = file_put_contents($path.'/'.$file, $res);
+        file_put_contents($path.'/'.$file, $res);
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
         return $img;
     }
