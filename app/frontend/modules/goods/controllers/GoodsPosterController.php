@@ -298,7 +298,7 @@ class GoodsPosterController extends ApiController
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 300, 720, 0, 0, $width, $height);
+        imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
