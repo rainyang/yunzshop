@@ -263,7 +263,7 @@ class InstallController
         }catch (\Exception $e){
             return $this->errorJson($e->getMessage());
         }
-        
+
         fopen($this->user_txt, 'w+');
         file_put_contents($this->user_txt, serialize($user));
 
