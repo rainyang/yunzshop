@@ -190,7 +190,9 @@ class InstallController
 
         $ret = [];
         for($i=0; $i<count($check); $i++) {
-            $ret[][$check_filename[$i]] = (bool)$this->check_writeable($check[$i]);
+            $ret[$i]['name'] =  $check_filename[$i];
+            $ret[$i]['need'] =  '可写';
+            $ret[$i]['value'] = (bool)$this->check_writeable($check[$i]);
         }
 
         return $this->successJson('成功', $ret);
@@ -252,6 +254,7 @@ class InstallController
         try{
             DB::connection('mysql')->getPdo();
         }catch (\Exception $e){
+
             return $this->errorJson($e->getMessage());
         }
 
