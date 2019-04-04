@@ -18,8 +18,8 @@ class CreateImsYzWechatRuleTable extends Migration
                 $table->increments('id');
                 $table->integer('uniacid')->default(0);
                 $table->string('name')->default('')->nullable();
-                $table->string('module')->default('');
-                $table->integer('displayorder')->default(0);
+                $table->string('module')->default('')->nullable();
+                $table->integer('displayorder')->default(0)->nullable();
                 $table->integer('status')->default(0)->nullable();
                 $table->string('containtype')->default('')->nullable();
                 $table->integer('reply_type')->default(0)->nullable();
