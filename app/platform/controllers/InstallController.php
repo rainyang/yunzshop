@@ -294,7 +294,12 @@ class InstallController
 
         exec('php artisan migrate',$result); //执行命令
 
-        return $this->successJson('成功', $result);
+        if ($result['0'] == "Nothing to migrate." || $result['0'] == 'Migration table created successfully.') {
+            fopen(base_path()."/bootstrap/install.lock", "w+");
+            return $this->successJson('成功');
+        }
+
+        return $this->errorJson('失败', $result);
     }
 
     private function successJson($message = '成功', $data = [])
@@ -313,5 +318,10 @@ class InstallController
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8']);
+    }
+
+    public function delete()
+    {
+        @unlink(base_path().'/app/platform/controllers/InstallController.php');
     }
 }
