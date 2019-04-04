@@ -67,7 +67,7 @@ class InstallController
         // 检测 mysql_connect
         $ret['mysql_connect'] = function_exists('mysql_connect');
         // 检测 file_get_content
-        $ret['file_get_content'] = function_exists('file_get_content');
+        $ret['file_get_content'] = function_exists('file_get_contents');
         // 检测 exec
         $ret['exec'] = function_exists('exec');
 
@@ -127,6 +127,8 @@ class InstallController
      */
     public function createData()
     {
+        ini_set('max_execution_time','0');
+
         include_once base_path() . '/sql.php';
 
         exec('php artisan migrate',$result); //执行命令
@@ -140,9 +142,9 @@ class InstallController
     public function setInformation()
     {
         $set = request()->set;
+        $user = request()->user;
 
         $filename = base_path().'/.env';
-
         $env = file_get_contents($filename);
 
         foreach ($set as $item=>$value) {
@@ -172,20 +174,20 @@ class InstallController
         }
 
         // 保存站点名称
-        $site_name = SystemSetting::settingSave($set['name'], 'copyright', 'system_copyright');
+        $site_name = SystemSetting::settingSave($user['name'], 'copyright', 'system_copyright');
         if (!$site_name) {
             return $this->errorJson('失败', '');
         }
 
         // 保存超级管理员信息
-        $user['username'] = $set['username'];
-        $user['password'] = $set['password'];
         if (!$user['username'] || !$user['password']) {
             return $this->errorJson('用户名或密码不能为空');
-        } elseif ($user['password'] !== $set['repassword']) {
+        } elseif ($user['password'] !== $user['repassword']) {
             return $this->errorJson('两次密码不一致');
         }
         $user['password'] = bcrypt($user['password']);
+        unset($user['name']);
+        unset($user['repassword']);
         $user_model = new AdminUser;
         $user_model->fill($user);
 
