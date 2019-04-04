@@ -16,7 +16,14 @@ Route::group(['namespace' => 'platform\controllers'], function () {
 
 
     Route::get('/', 'IndexController@index');
+
+    // 安装向导
+    Route::any('install/check', 'InstallController@check');     // 运行环境检测
+    Route::any('install/file_power', 'InstallController@filePower');     // 文件权限设置
+    Route::any('install/create_data', 'InstallController@createData');     // 创建数据
+    Route::any('install/set_info', 'InstallController@setInformation');     // 账号设置
 });
+
 
 Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
 
@@ -70,13 +77,13 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/startDownload', 'UpdateController@startDownload');
         //短信设置
         Route::any('sms', 'AttachmentController@sms');
-        /* 上传 */
-        // 图片
-        Route::any('upload/upload', 'UploadController@upload');
-        Route::any('upload/image', 'UploadController@image');
-        Route::any('upload/fetch', 'UploadController@fetch');
-        Route::any('upload/delete', 'UploadController@delete');
-        Route::any('upload/video', 'UploadController@video');
+        // 上传
+        Route::any('upload/upload', 'UploadController@upload');     // 上传图片 or 视频 or 音频
+        Route::any('upload/image', 'UploadController@image');       // 图片列表
+        Route::any('upload/fetch', 'UploadController@fetch');       // 获取远程图片
+        Route::any('upload/delete', 'UploadController@delete');     // 删除图片
+        Route::any('upload/video', 'UploadController@video');       // 音频视频列表
+
     });
 
     // 用户管理

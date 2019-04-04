@@ -23,7 +23,9 @@ class AccountWechats extends BaseModel
 
     public static function getAccountByUniacid($uniacid)
     {
-        return self::where('uniacid', $uniacid)->first();
+        if (file_exists(base_path().'/bootstrap/install.lock')) {
+            return self::where('uniacid', $uniacid)->first();
+        }
     }
 
     /**
