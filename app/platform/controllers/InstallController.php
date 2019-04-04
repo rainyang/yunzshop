@@ -254,7 +254,6 @@ class InstallController
         try{
             DB::connection('mysql')->getPdo();
         }catch (\Exception $e){
-
             return $this->errorJson($e->getMessage());
         }
 
@@ -318,6 +317,13 @@ class InstallController
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8']);
+    }
+
+    public function deleteData()
+    {
+        $sql = 'TRUNCATE TABLE ims_yz_system_setting;TRUNCATE TABLE ims_yz_admin_users';
+
+        DB::unprepared($sql);
     }
 
     public function delete()

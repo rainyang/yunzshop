@@ -613,6 +613,19 @@ CREATE TABLE IF NOT EXISTS ims_yz_goods_privilege (
 
 
 
+# Dump of table ims_core_sessions
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_core_sessions (
+  `sid` char(32) NOT NULL primary key,
+  `uniacid` int(10) NOT NULL,
+  `openid` varchar(50) NOT NULL,
+  `data` varchar(5000) NOT NULL,
+  `expiretime` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+
+
 # Dump of table ims_yz_goods_return
 # ------------------------------------------------------------
 
