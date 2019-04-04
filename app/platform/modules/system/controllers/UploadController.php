@@ -26,7 +26,7 @@ class UploadController extends BaseController
     {
         $this->global = SystemSetting::settingLoad('global', 'system_global');
         $this->remote = SystemSetting::settingLoad('remote', 'system_remote');
-        $this->uniacid = \YunShop::app()->uniacid ?  : 0 ;
+        $this->uniacid = \config::get('app.global.uniacid') ?  : 0 ;
         $this->common = $this->common();
     }
 
