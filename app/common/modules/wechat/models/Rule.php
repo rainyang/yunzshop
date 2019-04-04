@@ -31,6 +31,7 @@ class Rule extends BaseModel
 
     const MODULE_INDEX = 1;
 
+    const  WECHAT_MODULE = 'wechat';//公众号插件模块回复
 
     public function rules()
     {
@@ -57,21 +58,12 @@ class Rule extends BaseModel
             'reply_type' => '回复类型',
         ];
     }
-
-    // 通过id获取模型对象
-    public static function getRuleById($id)
-    {
-        return static::uniacid()->find($id);
-    }
-
-    // 通过id获取规则及关键字
-    public static function getRuleAndKeywordsByRuleId($id)
-    {
-        return static::uniacid()->with('hasManyKeywords')->find($id);
-    }
-
     public function hasManyKeywords()
     {
         return $this->hasMany(RuleKeyword::class,'rid','id');
+    }
+    public static function getRuleByName($name)
+    {
+        return self::uniacid()->where('name', $name)->first();
     }
 }
