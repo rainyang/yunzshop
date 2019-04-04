@@ -20,10 +20,9 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     // 安装向导
     Route::post('install/check', 'InstallController@check');     // 运行环境检测
     Route::post('install/file_power', 'InstallController@filePower');     // 文件权限设置
-    Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
+    Route::get('install/set_info', 'InstallController@setInformation');     // 账号设置
     Route::post('install/create_data', 'InstallController@createData');     // 创建数据
-    Route::post('install/delete', 'InstallController@delete');     // 删除控制器
-    Route::any('install/delete_data', 'InstallController@deleteData');     // 删除控制器
+    Route::any('install/delete', 'InstallController@delete');     // 删除控制器
 });
 
 

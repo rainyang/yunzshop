@@ -15,6 +15,13 @@ use app\platform\modules\user\models\AdminUser;
 
 class InstallController
 {
+    public $user_txt;
+
+    public function __construct()
+    {
+        $this->user_txt = base_path().'/app/platform/controllers/user.txt';
+    }
+
     /**
      * 运行环境检测
      */
@@ -257,29 +264,10 @@ class InstallController
             return $this->errorJson($e->getMessage());
         }
 
-        // 保存站点名称
-        $site_name = SystemSetting::settingSave($user['name'], 'copyright', 'system_copyright');
-        if (!$site_name) {
-            return $this->errorJson('失败', '');
-        }
+        fopen($this->user_txt, 'w+');
+        file_put_contents($this->user_txt, serialize($user));
 
-        // 保存超级管理员信息
-        if (!$user['username'] || !$user['password']) {
-            return $this->errorJson('用户名或密码不能为空');
-        } elseif ($user['password'] !== $user['repassword']) {
-            return $this->errorJson('两次密码不一致');
-        }
-        $user['password'] = bcrypt($user['password']);
-        unset($user['name']);
-        unset($user['repassword']);
-        $user_model = new AdminUser;
-        $user_model->fill($user);
-
-        if ($user_model->save()) {
-           return $this->successJson('创建数据成功');
-        } else {
-            return $this->errorJson('创建数据失败');
-        }
+        return $this->successJson('成功');
     }
 
     /**
@@ -298,7 +286,33 @@ class InstallController
             return $this->successJson('成功');
         }
 
-        return $this->errorJson('失败', $result);
+        $user = unserialize(file_get_contents($this->user_txt));
+
+        // 保存站点名称
+        $site_name = SystemSetting::settingSave($user['name'], 'copyright', 'system_copyright');
+        if (!$site_name) {
+            return $this->errorJson('失败', '');
+        }
+
+        // 保存超级管理员信息
+        if (!$user['username'] || !$user['password']) {
+            return $this->errorJson('用户名或密码不能为空');
+        } elseif ($user['password'] !== $user['repassword']) {
+            return $this->errorJson('两次密码不一致');
+        }
+        $user['password'] = bcrypt($user['password']);
+        unset($user['name']);
+        unset($user['repassword']);
+        $user_model = new AdminUser;
+        $user_model->fill($user);
+
+        if (!$user_model->save()) {
+            $this->errorJson('创建数据失败');
+        }
+
+        @unlink(base_path().'/app/platform/controllers/user.txt');
+
+        return $this->errorJson($result);
     }
 
     private function successJson($message = '成功', $data = [])
@@ -317,13 +331,6 @@ class InstallController
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8']);
-    }
-
-    public function deleteData()
-    {
-        $sql = 'TRUNCATE TABLE ims_yz_system_setting;TRUNCATE TABLE ims_yz_admin_users';
-
-        DB::unprepared($sql);
     }
 
     public function delete()
