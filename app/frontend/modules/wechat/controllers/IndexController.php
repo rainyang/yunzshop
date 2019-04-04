@@ -44,7 +44,7 @@ class IndexController extends BaseController
             if ( $tmpStr == $signature ) {
                 \Log::debug('----------公众号接入成功---------',$_GET);
                 \Setting::set('plugin.wechat.status', 1);
-                return $signature;
+                return $_GET["echostr"];
             } else {
                 \Log::debug('----------公众号接入失败---------',$_GET);
             }
@@ -54,8 +54,9 @@ class IndexController extends BaseController
             $server = $wechatApp->server;
             try {
                 $message = $server->getMessage();// 异常代码
-                // \Log::debug('----------微信公众号消息---------',$message);
-                event(new \app\common\events\WechatMessage($wechatApp,$server,$message));
+                if (\Setting::get('plugin.wechat.is_open')) {//公众号开启，才进行事件触发
+                    event(new \app\common\events\WechatMessage($wechatApp,$server,$message));
+                }
             } catch (\Exception $exception) {
                 \Log::debug('----------公众号异常---------',$exception->getMessage());
             }

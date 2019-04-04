@@ -126,12 +126,6 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         //删除图片列表中的数据
         Route::any('all/delImg/', 'AllUploadController@delLocalImg');
 
-		// Route::post('application/upload/', 'ApplicationController@upload');
-		Route::any('app/temp/', 'ApplicationController@temp');
-        Route::any('application/test/', 'ApplicationController@upload');
-        
-        Route::any('all/test/', 'AllUploadController@cosTest');
-
 		//平台用户管理
 		Route::any('appuser/', 'AppuserController@index');
 		//添加平台用户

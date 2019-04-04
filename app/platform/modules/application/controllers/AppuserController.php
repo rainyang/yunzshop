@@ -15,7 +15,6 @@ class AppuserController extends BaseController
 
 	public function index()
 	{
-        // dd(request()->search);
 		$list = AppUser::where('uniacid', request()->uniacid)->with('hasOneUser')->search(request()->search ? : '')->orderBy('id', 'desc')->paginate()->toArray();
 
 		return $this->successJson('获取成功', $list);
@@ -58,7 +57,6 @@ class AppuserController extends BaseController
                 }
             }
         }
-		 // return View('admin.appuser.form');
     }
 
 	public function delete()

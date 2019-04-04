@@ -293,12 +293,12 @@ EOF;
         return $avatar;
     }
 
-    public static function getImageUrl($path, $file)
+    public static function getImageUrl($file)
     {
         if (env('APP_Framework') == 'platform') {
-            return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'storage')) . '/' . $file;
+            return request()->getSchemeAndHttpHost() . DIRECTORY_SEPARATOR . substr($file, strpos($file, 'storage'));
         } else {
-            return request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . '/' . $file;
+            return request()->getSchemeAndHttpHost() . DIRECTORY_SEPARATOR . substr($file, strpos($file, 'addons'));
         }
     }
 }

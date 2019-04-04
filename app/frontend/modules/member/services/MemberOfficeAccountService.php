@@ -345,7 +345,7 @@ class MemberOfficeAccountService extends MemberService
             //'openid' => $userinfo['openid'],
             'uid'       => $member_id,
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
+            'follow' => $userinfo['subscribe'] ?: 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 

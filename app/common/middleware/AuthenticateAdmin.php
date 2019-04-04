@@ -55,13 +55,17 @@ class AuthenticateAdmin
         'admin/application',
         'admin/application/recycle',
         'admin/appuser',
+        'admin/appuser/add',
+        'admin/appuser/delete',
+        'admin/appuser/checkname',
         'admin/all/upload/',
         'admin/application/getApp',
         'admin/application/delete/{id}',
         'admin/application/add',
         'admin/application/update/{id}',
         'admin/application/switchStatus/{id}',
-        'admin/all/list'
+        'admin/all/list',
+        'admin/all/delImg/'
     ];
 
     /**
