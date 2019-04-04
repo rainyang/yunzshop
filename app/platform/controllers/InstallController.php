@@ -259,11 +259,11 @@ class InstallController
         }
 
         try{
-            DB::connection('mysql')->getPdo();
+            new \PDO("mysql:host=".$set['DB_HOST'].";dbname=".$set['DB_DATABASE'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
         }catch (\Exception $e){
             return $this->errorJson($e->getMessage());
         }
-
+        
         fopen($this->user_txt, 'w+');
         file_put_contents($this->user_txt, serialize($user));
 
