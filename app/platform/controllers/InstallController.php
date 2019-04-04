@@ -24,8 +24,6 @@ class InstallController
         $ret['server_os'] = php_uname();
         // 服务器域名
         $ret['server_name'] =  $_SERVER['SERVER_NAME'];
-        // Web服务器环境
-        $ret['server_environment'] = PHP_OS;
         // PHP版本
         $ret['php_version'] = PHP_VERSION;
         // 程序安装目录
@@ -39,6 +37,32 @@ class InstallController
         // 上传限制
         $ret['upload_size'] = @ini_get('file_uploads') ? ini_get('upload_max_filesize') : 'unknow';
 
+        $server_info = [
+            [
+                'name' => '服务器操作系统',
+                'value' => $ret['server_os'],
+            ],
+            [
+                'name' => '服务器域名',
+                'value' => $ret['server_name'],
+            ],
+            [
+                'name' => 'PHP版本',
+                'value' => $ret['php_version'],
+            ],
+            [
+                'name' => '程序安装目录',
+                'value' => $ret['servier_dir'],
+            ],
+            [
+                'name' => '磁盘剩余空间',
+                'value' => $ret['server_disk'],
+            ],
+            [
+                'name' => '上传限制大小',
+                'value' => $ret['upload_size'],
+            ],
+        ];
 
         // 检测PHP版本必须为5.6
         $ret['php_version_remark'] = true;
@@ -58,11 +82,61 @@ class InstallController
         // GD 库版本
         $ret['php_gd_version'] = gd_info()['GD Version'];
         // 检测 session.auto_start开启
-        $ret['php_session'] = strtolower(ini_get('session.auto_start')) == '0' || 'off' ? true : false;
+        $ret['php_session_auto_start'] = strtolower(ini_get('session.auto_start')) == '0' || 'off' ? true : false;
         // 检测 json
         $ret['json'] = extension_loaded('json') && function_exists('json_decode') && function_exists('json_encode');
 
-
+        $sysytem_environment = [
+            [
+                'name' => 'PHP版本',
+                'need' => '5.6',
+                'optimum' => '5.6',
+                'check' => $ret['php_version_remark'],
+                'value' => $ret['php_version'],
+            ],
+            [
+                'name' => 'cURL',
+                'need' => '支持',
+                'optimum' => '无限制',
+                'check' => $ret['php_curl'],
+                'value' => $ret['php_curl_version'],
+            ],
+            [
+                'name' => 'PDO',
+                'need' => '支持',
+                'optimum' => '无限制',
+                'check' => $ret['php_pdo'],
+                'value' => $ret['php_pdo'] ? '支持' : '不支持',
+            ],
+            [
+                'name' => 'openSSL',
+                'need' => '支持',
+                'optimum' => '无限制',
+                'check' => $ret['php_openssl'],
+                'value' => $ret['php_openssl'] ? '支持' : '不支持',
+            ],
+            [
+                'name' => 'GD',
+                'need' => '支持',
+                'optimum' => 'GD2',
+                'check' => $ret['php_gd'],
+                'value' => $ret['php_gd_version'],
+            ],
+            [
+                'name' => 'session.auto_start',
+                'need' => '不支持',
+                'optimum' => '不支持',
+                'check' => $ret['php_session_auto_start'],
+                'value' => $ret['php_session_auto_start'] ? '支持' : '不支持',
+            ],
+            [
+                'name' => 'json',
+                'need' => '支持',
+                'optimum' => '无限制',
+                'check' => $ret['json'],
+                'value' => $ret['json'] ? '支持' : '不支持',
+            ],
+        ];
 
         // 检测 mysql_connect
         $ret['mysql_connect'] = function_exists('mysql_connect');
@@ -71,8 +145,30 @@ class InstallController
         // 检测 exec
         $ret['exec'] = function_exists('exec');
 
+        $check_function = [
+            [
+                'name' => 'mysql_connect',
+                'need' => '支持',
+                'value' => $ret['mysql_connect'] ? '支持' : '不支持',
+            ],
+            [
+                'name' => 'file_get_content',
+                'need' => '支持',
+                'value' => $ret['file_get_content'] ? '支持' : '不支持',
+            ],
+            [
+                'name' => 'exec',
+                'need' => '支持',
+                'value' => $ret['exec'] ? '支持' : '不支持',
+            ],
+        ];
 
-        return $this->successJson('成功', $ret);
+
+        return $this->successJson('成功', [
+            'server_info'=> $server_info,
+            'sysytem_environment' => $sysytem_environment,
+            'check_function' => $check_function
+        ]);
     }
 
     /**
@@ -94,7 +190,7 @@ class InstallController
 
         $ret = [];
         for($i=0; $i<count($check); $i++) {
-            $ret[][$check_filename[$i]] = $this->check_writeable($check[$i]);
+            $ret[][$check_filename[$i]] = (bool)$this->check_writeable($check[$i]);
         }
 
         return $this->successJson('成功', $ret);
@@ -120,20 +216,6 @@ class InstallController
             }
         }
         return $writeable;
-    }
-
-    /**
-     * 创建数据
-     */
-    public function createData()
-    {
-        ini_set('max_execution_time','0');
-
-        include_once base_path() . '/sql.php';
-
-        exec('php artisan migrate',$result); //执行命令
-
-        return $this->successJson('成功', $result);
     }
 
     /**
@@ -196,6 +278,20 @@ class InstallController
         } else {
             return $this->errorJson('创建数据失败');
         }
+    }
+
+    /**
+     * 创建数据
+     */
+    public function createData()
+    {
+        ini_set('max_execution_time','0');
+
+        include_once base_path() . '/sql.php';
+
+        exec('php artisan migrate',$result); //执行命令
+
+        return $this->successJson('成功', $result);
     }
 
     private function successJson($message = '成功', $data = [])
