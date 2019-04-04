@@ -19,6 +19,13 @@ class RuleKeyword extends BaseModel
     protected $guarded = [''];
     use SoftDeletes;
 
+    // module字段从微擎兼容下来，新框架中它的意义在于，海报插件使用了该字段，仅仅是为了兼容微擎
+    // 由于海报使用了module字段，海报会检查module字段是否为yun_shop，才进行处理微信消息
+    // 沿用这个想法，则公众号插件也对该字段赋值为wechat，以此判断是否公众号插件进行处理
+    // 为兼容海报插件，该字段在新框架也是需要的
+    // 目前只有两种方式对该字段赋值，1.海报插件对其赋值为yun_shop 2.公众号插件对其赋值为wechat
+    protected static $module = 'yun_shop';//海报需要的字段，海报插件进行处理
+
     /**
      * 字段规则
      *
@@ -55,42 +62,25 @@ class RuleKeyword extends BaseModel
         ];
     }
 
-    // 通过id获取模型对象
-    public static function getKeywordsInfo($id)
+    public static function destroyKeywordByRuleId($roleId)
     {
-        if (empty($id)) {
-            return null;
-        } else {
-            return static::uniacid()->select('id','content','rid')->with('hasOneRule')->find($id);
-        }
+        return static::uniacid()
+            ->where('rid', $roleId)
+            ->where('module', static::$module)
+            ->delete();
     }
+
+    public static function updateKeywordByRoleId($roleId, $keyword)
+    {
+        return static::uniacid()
+            ->where('rid', $roleId)
+            ->where('module', static::$module)
+            ->update(['content' => trim($keyword)]);
+    }
+
     public function hasOneRule()
     {
         return $this->hasOne(Rule::class,'id','rid')->select('id','name');
-    }
-
-    // 获取所有关键字
-    public static function getRuleKeywords()
-    {
-        return static::uniacid()->get();
-    }
-
-    // 通过id获取模型对象
-    public static function getRuleKeywordById($id)
-    {
-        return static::uniacid()->find($id);
-    }
-
-    // 通过rid获取多个关键字对象
-    public static function getRuleKeywordsByRid($rid)
-    {
-        return static::uniacid()->where('rid',$rid)->get();
-    }
-
-    // 通过rid获取多个关键字id
-    public static function getRuleKeywordIdsByRid($rid)
-    {
-        return static::select('id')->uniacid()->where('rid',$rid)->get();
     }
 
     // 通过关键字获取规则
@@ -113,6 +103,21 @@ class RuleKeyword extends BaseModel
         } else {
             return $accurate;
         }
+    }
+
+    public static function hasKeyword($keyword)
+    {
+        $id = self::uniacid()->where('module', static::$module)->where('content', $keyword)->value('id');
+
+        return empty($id) ? false : $id;
+    }
+
+    public static function delKeyword($keyword)
+    {
+        return self::uniacid()
+            ->where('module', static::$module)
+            ->where('content', $keyword)
+            ->delete();
     }
 
 }
