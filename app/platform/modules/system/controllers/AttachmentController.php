@@ -350,9 +350,6 @@ class AttachmentController extends BaseController
         if (!$response) {
             return $this->errorJson('配置失败，腾讯cos访问url错误');
         }
-        if (intval($response['code']) != 200) {
-            return $this->errorJson('配置失败，腾讯cos访问url错误,请保证bucket为公共读取的');
-        }
         $image = getimagesizefromstring($response['content']);
         if ($image && strexists($image['mime'], 'image')) {
             return $this->successJson('配置成功');
