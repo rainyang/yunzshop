@@ -11,7 +11,7 @@ class YzPluginUniacidSeeder extends Seeder
     public function __construct()
     {
         if (env('APP_Framework') == 'platform') {
-            $this->uniTable = 'yz_uni_account';
+            $this->uniTable = 'yz_uniacid_app';
         }
     }
 

@@ -74,22 +74,6 @@ CREATE TABLE IF NOT EXISTS ims_yz_balance (
 
 
 
-# Dump of table ims_yz_uni_account
-# ------------------------------------------------------------
-
-CREATE TABLE IF NOT EXISTS ims_yz_uni_account (
-  `uniacid` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `groupid` int(10) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `default_acid` int(10) unsigned NOT NULL,
-  `rank` int(10) DEFAULT NULL,
-  `title_initial` varchar(1) NOT NULL,
-  PRIMARY KEY (`uniacid`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
-
-
 # Dump of table ims_yz_balance_recharge
 # ------------------------------------------------------------
 
