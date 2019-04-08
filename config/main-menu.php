@@ -771,6 +771,18 @@ return [
                         'item'              => 'share_coupon_log',
                         'parents'           => ['Goods', 'coupon',],
                     ],
+
+                    'getSearchStore' => [
+                        'name'              => '搜索门店',
+                        'url'               => 'goods.goods.get-search-store',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'icon'              => 'fa-pencil',
+                        'sort'              => '3',
+                        'item'              => 'coupon_coupon_log',
+                        'parents'           => ['Goods', 'coupon',],
+                    ],
                 ],
             ],
 
