@@ -3320,6 +3320,18 @@ return [
                         'parents'       => ['system', 'Setting', 'setting_shop'],
                     ],
 
+                    'setting_order' => [
+                        'name'          => '订单',
+                        'url'           => 'setting.shop.order',
+                        'url_params'    => '',
+                        'permit'        => 1,
+                        'menu'          => 1,
+                        'icon'          => '',
+                        'sort'          => '3',
+                        'item'          => 'setting_order',
+                        'parents'       => ['system', 'Setting', 'setting_shop'],
+                    ],
+
                     'setting_category' => [
                         'name'          => '分类',
                         'url'           => 'setting.shop.category',
