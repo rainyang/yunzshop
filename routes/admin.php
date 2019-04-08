@@ -22,7 +22,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::post('install/file_power', 'InstallController@filePower');     // 文件权限设置
     Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
     Route::post('install/create_data', 'InstallController@createData');     // 创建数据
-    Route::any('install/delete', 'InstallController@delete');     // 删除控制器
+    Route::post('install/delete', 'InstallController@delete');     // 删除控制器
 });
 
 

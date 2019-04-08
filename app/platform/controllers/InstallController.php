@@ -279,13 +279,28 @@ class InstallController
 
         include_once base_path() . '/sql.php';
 
-        exec('php artisan migrate',$result); //执行命令
+//        try{
+//            exec('php artisan migrate',$result); //执行命令
+//        }catch (\Exception $e) {
+//            $e->getMessage();
+//        }
 
-        if ($result['0'] == "Nothing to migrate." || $result['0'] == 'Migration table created successfully.') {
-            fopen(base_path()."/bootstrap/install.lock", "w+");
-            return $this->successJson('成功');
+        $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+        $update     = new \app\common\services\AutoUpdate(null, null, 300);
+        $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+        if (!empty($plugins_dir)) {
+            try{
+                \Artisan::call('update:version', ['version' => $plugins_dir]);
+            }catch (\Exception $e) {
+                return $this->errorJson($e->getMessage());
+            }
         }
 
+        $user_model = new AdminUser;
+        if ($user_model->find(1)) {
+            return $this->successJson('成功');
+        }
+        // 取出账号设置的信息
         $user = unserialize(file_get_contents($this->user_txt));
 
         // 保存站点名称
@@ -303,7 +318,6 @@ class InstallController
         $user['password'] = bcrypt($user['password']);
         unset($user['name']);
         unset($user['repassword']);
-        $user_model = new AdminUser;
         $user_model->fill($user);
 
         if (!$user_model->save()) {
@@ -312,7 +326,8 @@ class InstallController
 
         @unlink(base_path().'/app/platform/controllers/user.txt');
 
-        return $this->errorJson($result);
+        fopen(base_path()."/bootstrap/install.lock", "w+");
+        return $this->successJson('成功');
     }
 
     private function successJson($message = '成功', $data = [])
