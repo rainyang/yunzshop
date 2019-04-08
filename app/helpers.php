@@ -1501,6 +1501,13 @@ if (!function_exists('pagination')) {
 }
 
 if (!function_exists('http_build_query')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $formdata
+     * @param null $numeric_prefix
+     * @param null $arg_separator
+     * @return bool|string
+     */
     function http_build_query($formdata, $numeric_prefix = null, $arg_separator = null)
     {
         if (!is_array($formdata))
@@ -1512,6 +1519,11 @@ if (!function_exists('http_build_query')) {
 }
 
 if (!function_exists('ihttp_get')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $url
+     * @return array
+     */
     function ihttp_get($url)
     {
         return ihttp_request($url);
@@ -1519,6 +1531,14 @@ if (!function_exists('ihttp_get')) {
 }
 
 if (!function_exists('ihttp_request')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $url
+     * @param string $post
+     * @param array $extra
+     * @param int $timeout
+     * @return array
+     */
     function ihttp_request($url, $post = '', $extra = array(), $timeout = 60)
     {
         if (function_exists('curl_init') && function_exists('curl_exec') && $timeout > 0) {
@@ -1568,6 +1588,14 @@ if (!function_exists('ihttp_request')) {
 }
 
 if (!function_exists('ihttp_build_curl')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $url
+     * @param $post
+     * @param $extra
+     * @param $timeout
+     * @return resource
+     */
     function ihttp_build_curl($url, $post, $extra, $timeout)
     {
         if (!function_exists('curl_init') || !function_exists('curl_exec')) {
@@ -1657,6 +1685,12 @@ if (!function_exists('ihttp_build_curl')) {
 }
 
 if (!function_exists('ihttp_parse_url')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $url
+     * @param bool $set_default_port
+     * @return array|mixed
+     */
     function ihttp_parse_url($url, $set_default_port = false)
     {
         if (!$url) {
@@ -1695,6 +1729,12 @@ if (!function_exists('ihttp_parse_url')) {
 }
 
 if (!function_exists('error')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $errno
+     * @param string $message
+     * @return array
+     */
     function error($errno, $message = '')
     {
         return array(
@@ -1705,6 +1745,14 @@ if (!function_exists('error')) {
 }
 
 if (!function_exists('http_build_recursive')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $formdata
+     * @param $separator
+     * @param string $key
+     * @param string $prefix
+     * @return string
+     */
     function http_build_recursive($formdata, $separator, $key = '', $prefix = '')
     {
         $rlt = '';
@@ -1726,6 +1774,12 @@ if (!function_exists('http_build_recursive')) {
 }
 
 if (!function_exists('ihttp_response_parse')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $data
+     * @param bool $chunked
+     * @return array
+     */
     function ihttp_response_parse($data, $chunked = false)
     {
         $rlt = array();
@@ -1785,6 +1839,11 @@ if (!function_exists('ihttp_response_parse')) {
 }
 
 if (!function_exists('ihttp_response_parse_unchunk')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param null $str
+     * @return bool|string|null
+     */
     function ihttp_response_parse_unchunk($str = null)
     {
         if (!is_string($str) or strlen($str) < 1) {
@@ -1814,6 +1873,13 @@ if (!function_exists('ihttp_response_parse_unchunk')) {
 }
 
 if (!function_exists('ihttp_build_httpbody')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $url
+     * @param $post
+     * @param $extra
+     * @return array|mixed|string
+     */
     function ihttp_build_httpbody($url, $post, $extra)
     {
         $urlset = ihttp_parse_url($url, true);
@@ -1895,15 +1961,20 @@ if (!function_exists('ihttp_socketopen')) {
 }
 
 if (!function_exists('ihttp_allow_host')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $host
+     * @return bool
+     */
     function ihttp_allow_host($host)
     {
         if (strexists($host, '@')) {
             return false;
         }
         $pattern = "/^(10|172|192|127)/";
-        if (preg_match($pattern, $host) && isset($_W['setting']['ip_white_list'])) {
-            $ip_white_list = '';
-//            $ip_white_list = $_W['setting']['ip_white_list'];
+        $global = \config::get('app.global');
+        if (preg_match($pattern, $host) && isset($global['setting']['ip_white_list'])) {
+            $ip_white_list = $global['setting']['ip_white_list'];
             if ($ip_white_list && isset($ip_white_list[$host]) && !$ip_white_list[$host]['status']) {
                 return false;
             }

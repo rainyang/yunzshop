@@ -15,6 +15,7 @@ use app\platform\modules\application\models\CoreAttach;
 use app\platform\modules\application\models\WechatAttachment;
 use app\common\services\Utils;
 use app\platform\modules\application\models\AppUser;
+use Ixudra\Curl\Facades\Curl;
 
 class UploadController extends BaseController
 {
@@ -219,7 +220,7 @@ class UploadController extends BaseController
         } else {
             $core_attach = new CoreAttach;
         }
-        $core_attach = $core_attach->uniacid()->where('module_upload_dir', $this->common['module_upload_dir']);
+        $core_attach = $core_attach->where('uniacid', $this->uniacid)->where('module_upload_dir', $this->common['module_upload_dir']);
 
         if (!$this->uniacid) {
             $core_attach = $core_attach->where('uid', \Auth::guard('admin')->user()->uid);
@@ -275,11 +276,8 @@ class UploadController extends BaseController
         $url = trim(request()->url);
         $size = intval($_FILES['file']['size']);
         $resp = ihttp_get($url);
-        if (is_error($resp)) {
-            return $this->errorJson('提取文件失败, 错误信息: ' . $resp['message']);
-        }
-        if (intval($resp['code']) != 200) {
-            return $this->errorJson('提取文件失败: 未找到该资源文件.');
+        if (!$resp) {
+            return $this->errorJson('提取文件失败');
         }
         if ($this->common['type'] == 'image') {
             switch ($resp['headers']['Content-Type']) {
