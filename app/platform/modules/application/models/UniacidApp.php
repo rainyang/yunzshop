@@ -17,7 +17,7 @@ class UniacidApp extends BaseModel
 	protected $search_fields = ['name', 'validity_time'];
   	protected $guarded = [''];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
-                         'type', 'kind', 'title', 'descr', 'version'];
+                         'type', 'kind', 'title', 'description', 'version'];
     protected $appends = ['status_name'];
 
   	
@@ -53,7 +53,7 @@ class UniacidApp extends BaseModel
             'name' => "应用名称",
             'kind' => "行业分类",
             'title' => "应用标题",
-            'descr' => "应用描述",
+            'description' => "应用描述",
             'version' => "应用版本",
             'type' => '应用类型',
             'status' => "应用状态",
@@ -70,7 +70,7 @@ class UniacidApp extends BaseModel
             'kind' => '',
             'type' => '',
             'title' => '',
-            'descr' => '',
+            'description' => '',
             'status' => '',
             'version' => '',
             'validity_time' => 'numeric',

@@ -57,7 +57,7 @@ class ApplicationController extends BaseController
 
         $appUser = AppUser::where('uid', $uid)->get();
 
-        if (!$user || !$appUser || $user->type == 3 ) {
+        if (!$user || !$appUser || $user->type == 3) {
             return '您无权限查看平台应用';
         }
 
@@ -299,7 +299,7 @@ class ApplicationController extends BaseController
             'kind' => $data['kind'] ?  : '',
             'type' => $data['type'] ?  : 2,
             'title' => $data['title'] ?  : '',
-            'descr' => $data['descr'] ?  : '',
+            'description' => $data['description'] ?  : '',
             'status' => $data['status'] ?  : 1,
             'creator' => \Auth::guard('admin')->user()->uid,
             'version' => $data['version'] ?  : 0.00,
