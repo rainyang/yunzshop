@@ -402,8 +402,7 @@ class UploadController extends BaseController
             $status = file_delete($core_attach['attachment']);
         }
         if (is_error($status)) {
-            iajax(1, $status['message']);
-            exit;
+            return $this->errorJson($status['message']);
         }
         $delete_ids[] = $core_attach['id'];
 
