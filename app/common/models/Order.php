@@ -835,7 +835,7 @@ class Order extends BaseModel
 
         if (\Setting::get('shop.order.paid_process')) {
             //同步
-            event(new AfterOrderPaidEvent($this->order));
+            event(new AfterOrderPaidEvent($this));
 
         } else {
             //异步
@@ -852,7 +852,7 @@ class Order extends BaseModel
 
         if (\Setting::get('shop.order.receive_process')) {
             //同步
-            event(new AfterOrderReceivedEvent($this->order));
+            event(new AfterOrderReceivedEvent($this));
 
         } else {
             //异步
