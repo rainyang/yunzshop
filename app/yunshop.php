@@ -220,9 +220,16 @@ class YunShop
      */
     public static function isRole()
     {
-        global $_W;
+        if (env('APP_Framework') == 'platform') {
+            $global_params = \config('app.global');
+        } else {
+            global $_W;
+
+            $global_params = $_W;
+        }
+
         if (app('plugins')->isEnabled('supplier')) {
-            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $global_params['uid'])->first();
             if (!$res) {
                 return false;
             }
