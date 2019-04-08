@@ -180,21 +180,25 @@ class GoodsPosterController extends ApiController
         
         //商品二维码
         $goodsQr =  $this->generateQr();
-        if ($this->type != 2){
+
             if ($this->goodsModel->hasOneShare->share_title) {
                 $text = $this->goodsModel->hasOneShare->share_title;
             } else {
                 $text = $this->goodsModel->title;
             }
 
-            $target = $this->mergeQrImage($target, $goodsQr);
+            if ($this->type == 2){
+                $target = $this->mergeQrImage($target, $goodsQr,300,720);
+            }else{
+                $target = $this->mergeQrImage($target, $goodsQr);
+            }
 
             $target = $this->mergeText($target, $this->goodsText, $text);
 
             $target = $this->mergePriceText($target);
-        }else{
-            $target = $this->mergeQrImage($target, $goodsQr,300,720);
-        }
+
+
+
 
        
         // header ( "Content-type: image/png" );
