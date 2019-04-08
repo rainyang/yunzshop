@@ -15,6 +15,13 @@ use app\platform\modules\user\models\AdminUser;
 
 class InstallController
 {
+    public $user_txt;
+
+    public function __construct()
+    {
+        $this->user_txt = base_path().'/app/platform/controllers/user.txt';
+    }
+
     /**
      * 运行环境检测
      */
@@ -252,10 +259,34 @@ class InstallController
         }
 
         try{
-            DB::connection('mysql')->getPdo();
+            new \PDO("mysql:host=".$set['DB_HOST'].";dbname=".$set['DB_DATABASE'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
         }catch (\Exception $e){
             return $this->errorJson($e->getMessage());
         }
+
+        fopen($this->user_txt, 'w+');
+        file_put_contents($this->user_txt, serialize($user));
+
+        return $this->successJson('成功');
+    }
+
+    /**
+     * 创建数据
+     */
+    public function createData()
+    {
+        ini_set('max_execution_time','0');
+
+        include_once base_path() . '/sql.php';
+
+        exec('php artisan migrate',$result); //执行命令
+
+        if ($result['0'] == "Nothing to migrate." || $result['0'] == 'Migration table created successfully.') {
+            fopen(base_path()."/bootstrap/install.lock", "w+");
+            return $this->successJson('成功');
+        }
+
+        $user = unserialize(file_get_contents($this->user_txt));
 
         // 保存站点名称
         $site_name = SystemSetting::settingSave($user['name'], 'copyright', 'system_copyright');
@@ -275,30 +306,13 @@ class InstallController
         $user_model = new AdminUser;
         $user_model->fill($user);
 
-        if ($user_model->save()) {
-           return $this->successJson('创建数据成功');
-        } else {
-            return $this->errorJson('创建数据失败');
-        }
-    }
-
-    /**
-     * 创建数据
-     */
-    public function createData()
-    {
-        ini_set('max_execution_time','0');
-
-        include_once base_path() . '/sql.php';
-
-        exec('php artisan migrate',$result); //执行命令
-
-        if ($result['0'] == "Nothing to migrate." || $result['0'] == 'Migration table created successfully.') {
-            fopen(base_path()."/bootstrap/install.lock", "w+");
-            return $this->successJson('成功');
+        if (!$user_model->save()) {
+            $this->errorJson('创建数据失败');
         }
 
-        return $this->errorJson('失败', $result);
+        @unlink(base_path().'/app/platform/controllers/user.txt');
+
+        return $this->errorJson($result);
     }
 
     private function successJson($message = '成功', $data = [])
@@ -317,13 +331,6 @@ class InstallController
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8']);
-    }
-
-    public function deleteData()
-    {
-        $sql = 'TRUNCATE TABLE ims_yz_system_setting;TRUNCATE TABLE ims_yz_admin_users';
-
-        DB::unprepared($sql);
     }
 
     public function delete()

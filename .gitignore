@@ -26,3 +26,4 @@ vendor/
 /addons/*
 CZendLoader.MemoryBase@l@193488477
 /bootstrap/install.lock
+/app/platform/controllers/user.txt

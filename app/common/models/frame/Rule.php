@@ -31,6 +31,12 @@ class Rule extends BaseModel
             $param = $param ?: array('containtype'=> 'basic', 'reply_type'=> '1');
             $this->attributes = array_merge($this->attributes, $param);
         }
+        // 新框架兼容微擎
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_wechat_rule';
+        } else {
+            $this->table = 'rule';
+        }
 
         parent::__construct();
     }
