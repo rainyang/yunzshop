@@ -59,7 +59,7 @@ class Authenticate
 
         //TODO /bootstrap/install.lock
         if (!file_exists(base_path().'/bootstrap/install.lock')){
-            return $this->errorJson('您还没有操作安装向导，请重试');
+            return $this->errorJson('您还没有操作安装向导，请重试', ['status' => -4]);
         }
     }
 }
