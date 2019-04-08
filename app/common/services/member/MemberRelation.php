@@ -36,7 +36,7 @@ class MemberRelation
      */
     public function createParentOfMember()
     {
-        \Log::debug('------queue parent start-----');
+        \Log::debug('------queue parent start-----', \YunShop::app()->uniacid);
         /*$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid));
         dispatch($job);*/
 
