@@ -36,7 +36,9 @@ class InstallController
         $end = strripos($temp[0][0],"[")+1;
         $version = substr($temp[0][0], $end, $first-$end);
 
-        return $this->successJson('成功', $version);
+        return $this->successJson('成功', [
+            'version' => $version
+        ]);
     }
 
     /**
