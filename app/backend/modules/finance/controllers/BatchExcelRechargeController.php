@@ -75,7 +75,7 @@ class BatchExcelRechargeController extends BaseController
     {
         $exportData[0] = ["会员ID", "充值数量"];
 
-        \Excel::create('批量充值积分模板', function ($excel) use ($exportData) {
+        \Excel::create('批量充值模板', function ($excel) use ($exportData) {
             $excel->setTitle('Office 2005 XLSX Document');
             $excel->setCreator('芸众商城');
             $excel->setLastModifiedBy("芸众商城");
