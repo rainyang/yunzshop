@@ -149,7 +149,7 @@ class BatchExcelRechargeController extends BaseController
                 'member_id'    => $memberId,
                 'change_value' => $rechargeValue,
                 'remark'       => 'Excel批量充值' . $rechargeValue . "元",
-                'source'       => ConstService::SOURCE_RECHARGE,
+                'source'       => ConstService::SOURCE_EXCEL_RECHARGE,
                 'relation'     => '',
                 'operator'     => ConstService::OPERATOR_SHOP,
                 'operator_id'  => \YunShop::app()->uid
