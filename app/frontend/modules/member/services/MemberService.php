@@ -358,10 +358,16 @@ class MemberService
     public static function checkCode()
     {
         $code = \YunShop::request()->code;
+        $mobile = \YunShop::request()->mobile;
 
         if ((Session::get('codetime') + 60 * 5) < time()) {
             return show_json('0', '验证码已过期,请重新获取');
         }
+
+        if (Session::get('code_mobile') != $mobile) {
+            return show_json('0', '手机号错误,请重新获取');
+        }
+
         if (Session::get('code') != $code) {
             return show_json('0', '验证码错误,请重新获取');
         }
