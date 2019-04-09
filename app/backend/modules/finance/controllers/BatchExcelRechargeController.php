@@ -130,13 +130,14 @@ class BatchExcelRechargeController extends BaseController
         $values = $this->getRow();
 
         foreach ($values as $value) {
+            $this->handleNum += 1;
+
             $memberId = trim($value[0]);
             $rechargeValue = trim($value[1]);
 
             if (!$memberId || !$rechargeValue || $rechargeValue < 0) {
                 continue;
             }
-            $this->handleNum += 1;
             $this->balanceRecharge($memberId, $rechargeValue);
         }
     }
