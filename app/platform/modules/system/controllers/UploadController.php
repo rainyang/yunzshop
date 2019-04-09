@@ -395,7 +395,6 @@ class UploadController extends BaseController
         }
         $core_attach = $core_attach->first();
 
-        $delete_ids = array();
         if ($core_attach['upload_type']) {
             $status = file_remote_delete($core_attach['attachment'], $core_attach['upload_type'], $this->remote);
         } else {
@@ -404,7 +403,6 @@ class UploadController extends BaseController
         if (is_error($status)) {
             return $this->errorJson($status['message']);
         }
-        $delete_ids[] = $core_attach['id'];
 
         $core_attach->delete();
         if ($core_attach->trashed()) {
