@@ -22,6 +22,23 @@ class InstallController
         $this->user_txt = base_path().'/app/platform/controllers/user.txt';
     }
 
+    public function agreement()
+    {
+        $file = base_path().'/manifest.xml';
+        $con = file_get_contents($file);
+
+        $xmlTag = 'version';
+        preg_match_all("/<".$xmlTag.">.*<\/".$xmlTag.">/", $con, $temp);
+
+        // 返回 ] 第一次出现的位置
+        $first = strpos($temp[0][0],"]");
+        // 返回 [ 最后一次出现的位置
+        $end = strripos($temp[0][0],"[")+1;
+        $version = substr($temp[0][0], $end, $first-$end);
+
+        return $this->successJson('成功', $version);
+    }
+
     /**
      * 运行环境检测
      */

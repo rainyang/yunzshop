@@ -18,6 +18,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::get('/', 'IndexController@index');
 
     // 安装向导
+    Route::post('install/agreement', 'InstallController@agreement');     // 安装协议
     Route::post('install/check', 'InstallController@check');     // 运行环境检测
     Route::post('install/file_power', 'InstallController@filePower');     // 文件权限设置
     Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
