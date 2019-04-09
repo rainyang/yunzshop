@@ -561,7 +561,7 @@
                         return c ? (a.post(o, {
                                 id: c
                             },
-                            function(a) { (b.parent().remove(), util.message("删除成功", "", "success"))
+                            function(a) { !(a.error) ? (b.parents().remove(), util.message("删除成功", "", "success")) : util.message(a.message, "", "error");
                             }), !1) : !1
                     })
                 },
@@ -726,7 +726,7 @@
                             return c ? (a.post(o, {
                                     id: c
                                 },
-                                function(a) { (b.parents('tr').remove(), util.message("删除成功", "", "success"))
+                                function(a) { !(a.error) ? (b.parents('tr').remove(), util.message("删除成功", "", "success")) : util.message(a.message, "", "error");
                                 }), !1) : !1
                         }
                     })
