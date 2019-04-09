@@ -416,7 +416,7 @@ class UploadController extends BaseController
     {
         $server = $this->common['islocal'] ? 'local' : 'perm';
         $page_index = max(1, request()->page);
-        $page_size = 10;
+        $page_size = 5;
         if ($page_index<=1) {
             $page_index = 0;
             $offset = ($page_index)*$page_size;

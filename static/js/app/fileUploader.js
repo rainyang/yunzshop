@@ -693,8 +693,8 @@
                             c = c.message.message,
                                 b.isEmpty(c.items) ? c: c.items = d.foritem(c.items),
                                 h.find(".history-content").html('<i class="fa fa-spinner fa-pulse"></i>'),
-                                b.isEmpty(c.items) ? h.find(".history-content").css("text-align", "left").html('<i class="fa fa-info-circle"></i> 暂无数据') : (h.data("attachment", c.items), h.find(".history-content").empty(), h.find(".history-content").html(b.template(d.buildHtml()[d.options.isWechat ? "weixin_localVideoDialogLi": "localVideoDialogLi"])(c)), h.find("#image-list-pager").html(c.page), h.find(".pagination a").click(function() {
-                                    d.localVideoPage(a(this).attr("pager"))
+                                b.isEmpty(c.items) ? h.find(".history-content").css("text-align", "left").html('<i class="fa fa-info-circle"></i> 暂无数据') : (h.data("attachment", c.items), h.find(".history-content").empty(), h.find(".history-content").html(b.template(d.buildHtml()[d.options.isWechat ? "weixin_localVideoDialogLi": "localVideoDialogLi"])(c)), h.find("#image-list-pager").html(c.pager), h.find(".pagination a").click(function() {
+                                    d.localVideoPage(a(this).attr("page"))
                                 }), h.find(".js-btn-select").click(function(b) {
                                     a(b.target).toggleClass("btn-primary"),
                                         d.options.isWechat ? d.options.direct && d.modalobj.find("#history_video").find(".modal-footer .btn-primary").trigger("click") : d.options.multiple || d.modalobj.find("#history_video").find(".modal-footer .btn-primary").trigger("click")
