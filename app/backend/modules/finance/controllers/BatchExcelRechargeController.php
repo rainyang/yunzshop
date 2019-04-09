@@ -145,11 +145,10 @@ class BatchExcelRechargeController extends BaseController
     private function balanceRecharge($memberId, $rechargeValue)
     {
         try {
-            $result = (new BalanceChange())->recharge([
+            $result = (new BalanceChange())->excelRecharge([
                 'member_id'    => $memberId,
                 'change_value' => $rechargeValue,
                 'remark'       => 'Excel批量充值' . $rechargeValue . "元",
-                'source'       => ConstService::SOURCE_EXCEL_RECHARGE,
                 'relation'     => '',
                 'operator'     => ConstService::OPERATOR_SHOP,
                 'operator_id'  => \YunShop::app()->uid
