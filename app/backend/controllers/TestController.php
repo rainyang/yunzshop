@@ -28,6 +28,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
+use app\common\events\order\AfterOrderCanceledEvent;
+use app\common\facades\Setting;
 
 
 class TestController extends BaseController
@@ -398,44 +400,19 @@ echo '<pre>'; print_r($attr);
     protected $GoodsGroupTable = 'yz_goods_group_goods';
     protected $DesignerTable = 'yz_designer';
     public function test(){
-        $list = \Illuminate\Support\Facades\DB::table($this->DesignerTable)->get();
-        $lists = collect($list);
-
-        if($list) {
-            foreach ($list as $v) {//循环所有的门店装修页面
-
-                $datas = json_decode(htmlspecialchars_decode($v['datas']), true);
-                $data = collect($datas);
-                $count =  0;
-                foreach ($data as $item){//循环商品组里的商品
-                    ++$count;
-                    if ($item['temp'] == 'goods' ||  $item['temp'] == 'flashsale'){//判断是否是商品组
-
-                        if($data->count() == $count){//给商品组最后一个加上标识符
-                            $data['Identification'] = 1;
-                        }else{
-                            $data['Identification'] = 0;
-                        }
-                        foreach ($item['data'] as $items){
-                            \Illuminate\Support\Facades\DB::table('yz_goods_group_goods')->insert([
-                                'group_goods_id' => $items['id'],
-                                'uniacid' => \Yunshop::app()->uniacid,
-                                'group_id' => $item['id'],
-                                'goods_id' => $items['goodid'],
-                                'goods' => serialize($items),
-                                'group_type' => $v['page_type'],
-                                'Identification' => $data['Identification'],
-                                'temp' => $item['temp']
-                            ]);
-
-                        }
-                    }
-                }
-            }
-
-        }else{
-            echo "DesignerTable没有数据\n";
-        }
+        (new \Yunshop\TripartiteProvider\admin\tripartiteProvider\ListController)->updatePlatform(
+            [
+                "uid" => "21",
+                "nickname" => "[21]贾丰臣",
+                "domain" => "www.wq.cn",
+                "uniacid" => "2",
+                "name" => "敖德萨所多",
+                "realname" => "订单",
+                "mobile" => "12312321333",
+                "platform_domain" => "www.wq.com",
+                "platform_uniacid" => "2"
+]
+        );
     }
 
 }

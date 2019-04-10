@@ -14,6 +14,7 @@ use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\OtherMessageService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
