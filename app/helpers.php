@@ -26,7 +26,7 @@ if (!function_exists("yz_tpl_ueditor")) {
                 $delet_url = '/admin/system/upload/delete';
                 $video_url = '/admin/system/upload/video?local=local&type=video&pagesize=5';
             } else {
-                $s .= '<script type="text/javascript" src="' . $file_dir .'"/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '"/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
+                $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
                 $upload_url = './index.php?c=utility&a=file&do=upload&upload_type=';
                 $image_url = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
                 $fetch_url = './index.php?c=utility&a=file&do=fetch';
