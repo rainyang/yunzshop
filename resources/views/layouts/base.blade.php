@@ -160,6 +160,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @endif
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
+    <script type="text/javascript">
+        let util = 'util';
+        let u_url = 'static/resource/js/app/';
+        let util_url = '';
+        @if (env('APP_Framework') == 'platform')
+            util = 'utils';
+            util_url = '/'+u_url+util;
+        @else
+            util_url = '/addons/yun_shop/'+u_url+util;
+        @endif
+        require.config({
+            paths:{
+                util:util_url
+            }
+        });
+    </script>
+
 
 </head>
 

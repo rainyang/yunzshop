@@ -56,14 +56,16 @@ class ImageHelper
             $options['thumb'] = !empty($options['thumb']);
         }
         $util = 'util';
+        $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
             $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
             $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
             $util = 'utils';
+            $util_url = '/'.$u_url.$util;
         } else {
+            $util_url = '/addons/yun_shop/'.$u_url.$util;
             $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         }
-        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -135,19 +137,21 @@ class ImageHelper
         $options['multiple'] = true;
         $options['direct'] = false;
         $util = 'util';
+        $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
             $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
             $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
             $util = 'utils';
+            $util_url = '/'.$u_url.$util;
         } else {
             $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+            $util_url = '/addons/yun_shop'.$u_url.$util;
         }
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
                 exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
-        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
         $s = '';
         if (!defined('TPL_INIT_MULTI_IMAGE')) {
 
@@ -223,14 +227,16 @@ EOF;
         $options['multi'] = false;
         $options['type'] = 'video';
         $util = 'util';
+        $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
             $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
             $options['fileSizeLimit'] = intval($global['audio_limit']) * 1024;
             $util = 'utils';
+            $util_url = '/'.$u_url.$util;
         } else {
+            $util_url = '/addons/yun_shop/'.$u_url.$util;
             $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
         }
-        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
