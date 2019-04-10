@@ -2756,3 +2756,53 @@ if (!function_exists('iserializer')) {
         return serialize($value);
     }
 }
+
+if (!function_exists('tpl_form_field_date')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $name
+     * @param string $value
+     * @param bool $withtime
+     * @return string
+     */
+    function tpl_form_field_date($name, $value = '', $withtime = false)
+    {
+        return _tpl_form_field_date($name, $value, $withtime);
+    }
+}
+
+if (!function_exists('tpl_form_field_date')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $name
+     * @param string $value
+     * @param bool $withtime
+     * @return string
+     */
+    function _tpl_form_field_date($name, $value = '', $withtime = false)
+    {
+        $s = '';
+        $withtime = !$withtime ? false : true;
+        if ($value) {
+            $value = strexists($value, '-') ? strtotime($value) : $value;
+        } else {
+            $value = TIMESTAMP;
+        }
+        $value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
+        $s .= '<input type="text" name="' . $name . '"  value="' . $value . '" placeholder="请选择日期时间" readonly="readonly" class="datetimepicker form-control" style="padding-left:12px;" />';
+        $s .= '
+		<script type="text/javascript">
+			require(["datetimepicker"], function(){
+					var option = {
+						lang : "zh",
+						step : 5,
+						timepicker : ' . (!empty($withtime) ? "true" : "false") . ',
+						closeOnDateSelect : true,
+						format : "Y-m-d' . (!empty($withtime) ? ' H:i"' : '"') . '
+					};
+				$(".datetimepicker[name = \'' . $name . '\']").datetimepicker(option);
+			});
+		</script>';
+        return $s;
+    }
+}
