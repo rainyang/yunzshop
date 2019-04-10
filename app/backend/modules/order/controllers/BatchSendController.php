@@ -34,7 +34,7 @@ class BatchSendController extends BaseController
     {
         $send_data = request()->send;
         if (\Request::isMethod('post')) {
-            if ($send_data['express_company_name'] == "顺丰" && $send_data['express_code'] != "shunfeng") {
+            if ($send_data['express_company_name'] == "顺丰" && $send_data['express_code'] != "SF") {
                 return $this->message('上传失败，请重新上传', Url::absoluteWeb('order.batch-send.index'), 'error');
             }
 
