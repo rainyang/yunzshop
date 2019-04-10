@@ -2520,6 +2520,12 @@ if (!function_exists('is_serialized')) {
 }
 
 if (!function_exists('ver_compare')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $version1
+     * @param $version2
+     * @return mixed
+     */
     function ver_compare($version1, $version2)
     {
         $version1 = str_replace('.', '', $version1);
@@ -2541,6 +2547,12 @@ if (!function_exists('ver_compare')) {
 }
 
 if (!function_exists('istrlen')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $string
+     * @param string $charset
+     * @return int
+     */
     function istrlen($string, $charset = '')
     {
         $global = \config::get('app.global');
@@ -2612,6 +2624,13 @@ if (!function_exists('mb_strlen')) {
 }
 
 if (!function_exists('tpl_form_field_daterange')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $name
+     * @param array $value
+     * @param bool $time
+     * @return string
+     */
     function tpl_form_field_daterange($name, $value = array(), $time = false) {
         $s = '';
 
@@ -2724,5 +2743,16 @@ if (!function_exists('image_put_path')) {
         }
 
         return IA_ROOT . '/attachment/';
+    }
+}
+
+if (!function_exists('iserializer')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $value
+     * @return string
+     */
+    function iserializer($value) {
+        return serialize($value);
     }
 }
