@@ -56,22 +56,22 @@ return [
         ],
         'syst_image' => [
             'driver' => 'local',
-            'root' => base_path('static/upload/image/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/image/'.date('Y').'/'.date('m'),
+            'root' => base_path('static/upload/images/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/images/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
         'video' => [
             'driver' => 'local',
-            'root' => base_path('static/upload/video/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/video/'.date('Y').'/'.date('m'),
+            'root' => base_path('static/upload/videos/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/videos/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
         'audio' => [
             'driver' => 'local',
-            'root' => base_path('static/upload/audio/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/audio/'.date('Y').'/'.date('m'),
+            'root' => base_path('static/upload/audios/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/audios/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 

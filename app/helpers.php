@@ -241,7 +241,7 @@ if (!function_exists("tomedia")) {
         //如果远程地址中包含本地host也检测是否远程图片
         if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
             $urls = parse_url($src);
-            $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+            $src = $t = substr($urls['path'], strpos($urls['path'], 'image'));
         }
         $t = strtolower($src);
         if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
