@@ -63,7 +63,7 @@ class ImageHelper
         } else {
             $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         }
-        $util_url = resource_get('static/resource/js/'.$util);
+        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -147,6 +147,7 @@ class ImageHelper
                 exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
+        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
         $s = '';
         if (!defined('TPL_INIT_MULTI_IMAGE')) {
 
@@ -154,6 +155,11 @@ class ImageHelper
 		<script type="text/javascript">
 			function uploadMultiImage(elm) {
                 var name = $(elm).next().val();
+                require.config({
+                    paths:{
+                        "'.$util.'":"'.$util_url.'"
+                    }
+                });
 				require(["'.$util.'"], function(util){
 					util.image("", function(urls){
 						$.each(urls, function(idx, url){
@@ -224,11 +230,17 @@ EOF;
         } else {
             $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
         }
+        $util_url = '../'.resource_get('static/resource/js/app/'.$util);
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
 <script type="text/javascript">
 	function showVideoDialog(elm, options) {
+	    require.config({
+            paths:{
+                "'.$util.'":"'.$util_url.'"
+            }
+        });
 		require(["'.$util.'"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
