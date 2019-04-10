@@ -100,6 +100,11 @@ return [
             'driver' => 'local',
             'root' => storage_path('cert'),
         ],
+        // 批量发货上传excel文件保存路径
+        'recharge' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/recharge'),
+        ],
 
         // 批量发货上传excel文件保存路径
         'orderexcel' => [

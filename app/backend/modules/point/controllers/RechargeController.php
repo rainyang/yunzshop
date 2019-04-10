@@ -53,6 +53,19 @@ class RechargeController extends BaseController
         $result = $this->tryRecharge();
 
         if ($result === true && $this->rechargeModel->status == RechargeModel::STATUS_SUCCESS) {
+            $temp_id = \Setting::get('shop.notice.point_change');
+
+            $params = [
+                ['name' => '时间', 'value' => date('Y-m-d H:i:s')],
+                ['name' => '积分变动金额', 'value' => $this->getRechargeData()['money'] ],
+                ['name' => '积分变动类型', 'value' => $this->rechargeModel->getTypeNameComment() ],
+                ['name' => '变动后积分数值', 'value' => $this->memberModel->credit1+$this->getRechargeData()['money']]
+            ];
+
+            $msg = \app\common\models\notice\MessageTemp::getSendMsg($temp_id, $params);
+
+            \app\common\services\MessageService::notice($temp_id, $msg, $this->memberModel->uid, \YunShop::app()->uniacid);
+
             return $this->message('积分充值成功', $this->successUrl());
         }
         return view('point.recharge', $this->getResultData());

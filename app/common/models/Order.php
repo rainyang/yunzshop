@@ -11,7 +11,9 @@ namespace app\common\models;
 
 use app\backend\modules\order\observers\OrderObserver;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
 use app\common\exceptions\AppException;
 use app\common\models\order\Express;
@@ -831,20 +833,34 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        $this->dispatch(new OrderPaidEventQueueJob($this->id));
-        OrderPaidJob::create([
-            'order_id' => $this->id,
-        ]);
+        if (\Setting::get('shop.order.paid_process')) {
+            //同步
+            event(new AfterOrderPaidEvent($this));
+
+        } else {
+            //异步
+            $this->dispatch(new OrderPaidEventQueueJob($this->id));
+            OrderPaidJob::create([
+                'order_id' => $this->id,
+            ]);
+        }
     }
 
     public function fireReceivedEvent()
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderReceivedEventQueueJob($this->id));
-        OrderReceivedJob::create([
-            'order_id' => $this->id,
-        ]);
+        if (\Setting::get('shop.order.receive_process')) {
+            //同步
+            event(new AfterOrderReceivedEvent($this));
+
+        } else {
+            //异步
+            $this->dispatch(new OrderReceivedEventQueueJob($this->id));
+            OrderReceivedJob::create([
+                'order_id' => $this->id,
+            ]);
+        }
     }
 
     public function orderCreatedJob()
