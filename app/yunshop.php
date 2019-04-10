@@ -261,8 +261,12 @@ class YunShop
         if (self::$_app !== null) {
             //新框架加载yunshop机制不同
             if (env('APP_Framework') == 'platform') {
-                self::$_app = new YunApp();
-                return self::$_app;
+                if (!preg_match("/cli/i", php_sapi_name())) {
+                    self::$_app = new YunApp();
+                    return self::$_app;
+                } else {
+                    return self::$_app;
+                }
             } else {
                 return self::$_app;
             }

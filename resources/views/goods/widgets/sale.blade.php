@@ -82,13 +82,35 @@
             <input type="text" name="widgets[sale][point]" value="{{ $item->point }}" class="form-control"/>
             <span class="input-group-addon">积分</span>
         </div>
+
         <span class="help-block">
             如果设置空，则走积分统一设置<br>
             如果设置0，则不赠送<br>
         如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分<br>
             如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</span>
+
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='widgets[sale][point_type]' value='0' @if(!$item->point_type) checked @endif/>
+                订单完成立即赠送
+            </label>
+            <label class='radio-inline'>
+                <input type='radio' name='widgets[sale][point_type]' value='1' @if( $item->point_type == 1) checked @endif/>
+                每月1号赠送
+            </label>
+        </div>
     </div>
 </div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div id="widgets_sale_point" class='input-group col-md-3' @if(!$item->point_type) style="display:none" @endif>
+        <span class="input-group-addon">每月赠送</span>
+        <input onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''" type="text" name="widgets[sale][max_once_point]" value="{{ $item->max_once_point }}"
+               class="form-control"/>
+        <span class="input-group-addon">积分</span>
+    </div>
+</div>
+
 {{--<div class="form-group">--}}
     {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">红包</label>--}}
     {{--<div class="col-xs-12 col-sm-9 col-md-10">--}}
@@ -251,6 +273,17 @@
         }
         $("#modal-goods-push .close").click();
     }
+
+    $(function () {
+        $(":radio[name='widgets[sale][point_type]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#widgets_sale_point").show();
+            }
+            else {
+                $("#widgets_sale_point").hide();
+            }
+        });
+    });
 </script>
 
 
