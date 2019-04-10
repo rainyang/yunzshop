@@ -11,6 +11,7 @@ namespace app\common\models\user;
 
 use app\common\models\BaseModel;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class UserProfile extends BaseModel
 {
