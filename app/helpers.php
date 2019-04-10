@@ -2771,7 +2771,7 @@ if (!function_exists('tpl_form_field_date')) {
     }
 }
 
-if (!function_exists('tpl_form_field_date')) {
+if (!function_exists('_tpl_form_field_date')) {
     /**
      * 为了兼容微擎使用此方法
      * @param $name
