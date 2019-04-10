@@ -141,12 +141,8 @@ class UserProfile extends BaseModel
         $rules =  [
             'realname' => 'required|max:10',
 
-            'mobile' => 'required|regex:/^1\d{10}$/|unique:users_profile'
+            'mobile' => ['required|regex:/^1\d{10}$/',Rule::unique($this->table)->ignore($this->id)]
         ];
-
-        if (env('APP_Framework') == 'platform') {
-            $rules['mobile'] = 'required|regex:/^1\d{10}$/|unique:yz_users_profile';
-        }
 
         return $rules;
     }
