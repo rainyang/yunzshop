@@ -14,6 +14,7 @@ use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\OtherMessageService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -69,15 +70,26 @@ class orderListener
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
         $events->listen(AfterOrderReceivedEvent::class, self::class . '@onReceived');
-        $events->listen(AfterOrderPaidEvent::class, \app\common\listeners\member\AfterOrderPaidListener::class.'@handle',1);
-        $events->listen(AfterOrderReceivedEvent::class, \app\common\listeners\member\AfterOrderReceivedListener::class.'@handle',1);
+        $events->listen(AfterOrderPaidEvent::class, \app\common\listeners\member\AfterOrderPaidListener::class . '@handle', 1);
+        $events->listen(AfterOrderReceivedEvent::class, \app\common\listeners\member\AfterOrderReceivedListener::class . '@handle', 1);
 
         // 订单自动任务
         $events->listen('cron.collectJobs', function () {
+            // 虚拟订单修复
+            \Log::info("--虚拟订单修复--");
+            \Cron::add("VirtualOrderFix", '*/60 * * * * *', function () {
+                $orders = DB::table('yz_order')->whereIn('status', [1, 2])->where('is_virtual', 1)->get();
+                // 所有超时未收货的订单,遍历执行收货
+                $orders->each(function ($order) {
+                    OrderService::fixVirtualOrder($order);
+
+                });
+                // todo 使用队列执行
+            });
             $uniAccount = UniAccount::get();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
-                \Setting::$uniqueAccountId = $uniacid= $u->uniacid;
+                \Setting::$uniqueAccountId = $uniacid = $u->uniacid;
 
                 // 订单自动收货执行间隔时间 默认60分钟
                 $receive_min = (int)\Setting::get('shop.trade.receive_time') ?: 60;
@@ -85,7 +97,7 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.receive')) {
                     // 开启自动收货时
                     \Log::info("--订单自动完成start--");
-                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () use($uniacid) {
+                    \Cron::add("OrderReceive{$u->uniacid}", '*/' . $receive_min . ' * * * * *', function () use ($uniacid) {
                         // 所有超时未收货的订单,遍历执行收货
                         OrderService::autoReceive($uniacid);
                         // todo 使用队列执行
@@ -99,7 +111,7 @@ class orderListener
                 if ((int)\Setting::get('shop.trade.close_order_days')) {
                     // 开启自动关闭时
                     \Log::info("--订单自动关闭start--");
-                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () use($uniacid) {
+                    \Cron::add("OrderClose{$u->uniacid}", '*/' . $close_min . ' * * * * *', function () use ($uniacid) {
                         // 所有超时付款的订单,遍历执行关闭
                         OrderService::autoClose($uniacid);
                         // todo 使用队列执行

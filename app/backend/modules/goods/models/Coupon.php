@@ -31,13 +31,14 @@ class Coupon extends GoodsCoupon
     {
         $couponModel = self::getModel($goodsId,$operate);
 
-        $array = [];
         $array = [
             'goods_id'      => $goodsId,
             'is_give'       => $data['is_give']?:0,
             'send_type'     => $data['send_type']?:0,
             'send_num'      => $data['send_num']?:0,
-            'coupon'        => $couponModel->recombination($data)
+            'coupon'        => $couponModel->recombination($data),
+            'shopping_share' => $data['shopping_share']?:'0',
+            'share_coupon'  => $couponModel->recombination($data['share_coupon']),
         ];
 
         $couponModel->fill($array);
@@ -72,14 +73,16 @@ class Coupon extends GoodsCoupon
             'is_give'       => $data['is_give'],
             'send_type'     => $data['send_type'],
             'send_num'      => $data['send_num'] ?: '0',
-            'coupon'        => $couponModel->recombination($data)
+            'coupon'        => $couponModel->recombination($data),
+            'shopping_share' => $data['shopping_share']?:'0',
+            'share_coupon'  => $couponModel->recombination($data['share_coupon']),
         ];
 
         //判断deleted
         if ($operate == 'deleted') {
             return $couponModel->delete();
         }
-        $data['goods_id'] = $goodsId;
+
         $couponModel->fill($array);
         return $couponModel->save();
     }

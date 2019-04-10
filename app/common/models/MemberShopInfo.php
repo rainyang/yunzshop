@@ -68,6 +68,8 @@ class MemberShopInfo extends BaseModel
 {
     use SoftDeletes;
 
+    protected $connection = 'mysql';
+
     protected $table = 'yz_member';
 
     protected $guarded = [''];
@@ -460,51 +462,56 @@ class MemberShopInfo extends BaseModel
                 $record->uid = $uid;
                 $record->parent_id = $member->parent_id;
 
-                $member->parent_id = $parent_id;
-                $member->inviter = 1;
-
-                $member->save();
                 $record->save();
 
-                event(new MemberCreateRelationEvent($uid, $parent_id));
+                $rs = event(new MemberChangeRelationEvent($uid, $parent_id));
 
-                if ($plugin_team) {
-                    $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
+                \Log::debug('----change relation----', [$uid, $parent_id, $rs]);
 
-                    if (!is_null($team)) {
-                        $team->parent_id = $parent_id;
-                        $team->relation = $member->relation;
+                if (1 == $rs[0]['status']) {
+                    $member->parent_id = $parent_id;
+                    $member->inviter = 1;
 
-                        $team->save();
-                    }
-                }
+                    $member->save();
 
-                if ($plugin_commission) {
-                    $agents = Agents::uniacid()->where('member_id', $uid)->first();
+                    if ($plugin_team) {
+                        $team = TeamDividendAgencyModel::getAgentByUidId($uid)->first();
 
-                    if (!is_null($agents)) {
-                        $agents->parent_id = $parent_id;
-                        $agents->parent = $member->relation;
+                        if (!is_null($team)) {
+                            $team->parent_id = $parent_id;
+                            $team->relation = $member->relation;
 
-                        $agents->save();
+                            $team->save();
+                        }
                     }
 
-                    $agent_data = [
-                        'member_id' => $uid,
-                        'parent_id' => $parent_id,
-                        'parent' => $member->relation
-                    ];
+                    if ($plugin_commission) {
+                        $agents = Agents::uniacid()->where('member_id', $uid)->first();
 
-                    event(new RegisterByAgent($agent_data));
+                        if (!is_null($agents)) {
+                            $agents->parent_id = $parent_id;
+                            $agents->parent = $member->relation;
+
+                            $agents->save();
+                        }
+
+                        $agent_data = [
+                            'member_id' => $uid,
+                            'parent_id' => $parent_id,
+                            'parent' => $member->relation
+                        ];
+
+                        event(new RegisterByAgent($agent_data));
+                    }
+
+                    //更新2、3级会员上线和分销关系
+                    dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
+
+                    return ['status' => 1];
                 }
-
-                //更新2、3级会员上线和分销关系
-                dispatch(new ModifyRelationJob($uid, $member_relation, $plugin_commission));
-
-                return ['status' => 1];
-            } else {
-                return ['status' => 0];
             }
+
+            return ['status' => 0];
         }
     }
 

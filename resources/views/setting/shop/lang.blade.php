@@ -27,6 +27,7 @@
                     <div class="tab-pane" id="tab_full_return">@include('setting.shop.tpl.full-return')</div>
                     <div class="tab-pane" id="tab_team_dividend">@include('setting.shop.tpl.team-dividend')</div>
                     <div class="tab-pane" id="tab_area_dividend">@include('setting.shop.tpl.area-dividend')</div>
+                    <div class="tab-pane" id="tab_store_carry">@include('setting.shop.tpl.store_carry')</div>
                 </div>
 
                 <div class="form-group col-sm-12 mrleft40 border-t">

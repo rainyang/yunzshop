@@ -14,6 +14,7 @@ use app\backend\modules\member\models\MemberLevel;
 use app\common\components\BaseController;
 use app\backend\modules\finance\models\PointLog as PoinLogModel;
 use app\common\helpers\PaginationHelper;
+use app\Jobs\PointQueueJob;
 
 class PointLogController extends BaseController
 {
@@ -34,5 +35,12 @@ class PointLogController extends BaseController
             'memberLevel'   => MemberLevel::getMemberLevelList(),
             'search'        => $search
         ])->render();
+    }
+
+    public function test()
+    {
+        (new PointQueueJob(\YunShop::app()->uniacid))->handle();
+        dd('执行成功');
+        exit;
     }
 }

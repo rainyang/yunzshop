@@ -57,6 +57,12 @@ class PointService
     const POINT_MODE_STORE = 93; //收银台奖励
     const POINT_MODE_STORE_ATTACHED = '门店奖励';
 
+    const POINT_MODE_HOTEL_CASHIER = 28; //酒店收银台奖励
+    const POINT_MODE_HOTEL_CASHIER_ATTACHED = '酒店收银台奖励';
+
+    const POINT_MODE_HOTEL = 94; //酒店奖励
+    const POINT_MODE_HOTEL_ATTACHED = '酒店奖励';
+
     const POINT_MODE_RECHARGE = 11; //话费充值奖励
     const POINT_MODE_RECHARGE_ATTACHED = '话费充值奖励';
 
@@ -111,6 +117,12 @@ class PointService
 
     const POINT_MODE_RECEIVE_OVERDUE = 26;
     const POINT_MODE_RECEIVE_OVERDUE_ATTACHED = '领取失效';
+
+    const POINT_MODE_COMMISSION_TRANSFER = 27;
+    const POINT_MODE_COMMISSION_TRANSFER_ATTACHED = '分销佣金转入';
+
+    const POINT_MODE_EXCEL_RECHARGE = 29;
+    const POINT_MODE_EXCEL_RECHARGE_ATTACHED = 'EXCEL充值';
 
 
 
@@ -284,7 +296,7 @@ class PointService
                 $mode_attribute = self::POINT_MODE_TRANSFER_LOVE_ATTACHED;
                 break;
             case (19):
-                $mode_attribute = self::POINT_MODE_SIGN_REWARD_ATTACHED;
+                $mode_attribute = trans('Yunshop\Sign::sign.plugin_name') ? trans('Yunshop\Sign::sign.plugin_name').'奖励' : self::POINT_MODE_SIGN_REWARD_ATTACHED;
                 break;
             case (20):
                 $mode_attribute = self::POINT_MODE_COURIER_REWARD_ATTACHED;
@@ -304,11 +316,23 @@ class PointService
             case (26):
                 $mode_attribute = self::POINT_MODE_RECEIVE_OVERDUE_ATTACHED;
                 break;
+            case (27):
+                $mode_attribute = self::POINT_MODE_COMMISSION_TRANSFER_ATTACHED;
+                break;
+            case (28):
+                $mode_attribute = self::POINT_MODE_HOTEL_CASHIER_ATTACHED;
+                break;
+            case (29):
+                $mode_attribute = self::POINT_MODE_EXCEL_RECHARGE_ATTACHED;
+                break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;
                 break;
             case (93):
                 $mode_attribute = self::POINT_MODE_STORE_ATTACHED;
+                break;
+            case (94):
+                $mode_attribute = self::POINT_MODE_HOTEL_ATTACHED;
                 break;
 
         }

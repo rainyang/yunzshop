@@ -15,16 +15,26 @@ namespace app\frontend\modules\deduction\orderGoods\amount;
  */
 class GoodsPriceProportion extends OrderGoodsDeductionAmount
 {
+    /**
+     * @return float|mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getMaxAmount()
     {
-        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->price / 100;
+
+        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->getPriceBeforeWeight($this->getGoodsDeduction()->getCode()) / 100;
 
         return max($result,0);
     }
 
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function getMinAmount()
     {
-        $result = $this->getGoodsDeduction()->getMinPriceProportion() * $this->orderGoods->price / 100;
+
+        $result = $this->getGoodsDeduction()->getMinPriceProportion() * $this->orderGoods->getPriceBeforeWeight($this->getGoodsDeduction()->getCode().'MinDeduction') / 100;
 
         return max($result,0);
     }

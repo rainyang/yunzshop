@@ -20,7 +20,9 @@ class BaseSetController extends BaseController
 
     public function see()
     {
-        $coupon_set = array_pluck(\Setting::getAllByGroup('coupon')->toArray(), 'value', 'key');
+        //$coupon_set = array_pluck(\Setting::getAllByGroup('coupon')->toArray(), 'value', 'key');
+        $coupon_set = \Setting::getByGroup('coupon');
+
         $temp_list = MessageTemp::getList();
         return view('coupon.base_set', [
             'coupon' => $coupon_set,
