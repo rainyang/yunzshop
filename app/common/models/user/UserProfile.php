@@ -142,7 +142,7 @@ class UserProfile extends BaseModel
         $rules =  [
             'realname' => 'required|max:10',
 
-            'mobile' => ['required|regex:/^1\d{10}$/',Rule::unique($this->table)->ignore($this->id)]
+            'mobile' => ['required',Rule::unique($this->table)->ignore($this->id)]
         ];
 
         return $rules;
