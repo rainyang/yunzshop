@@ -16,6 +16,7 @@ use app\backend\modules\goods\models\Area;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use Setting;
+use app\common\models\goods\GoodsDispatch;
 
 class DispatchController extends BaseController
 {
@@ -158,8 +159,17 @@ class DispatchController extends BaseController
         if (!$dispatch) {
             return $this->message('无此配送模板或已经删除', '', 'error');
         }
-
         $model = Dispatch::find(\YunShop::request()->id);
+        if($model->is_default == 1){
+            return $this->message('默认模板不支持删除,如果需要删除请先设置其他的模板为默认模板', 'error');
+        }
+        $models= Dispatch::uniacid()->where('is_default',1)->first();
+
+        if(!$models){
+            return $this->message('删除失败,请先添加默认的模板,当删除这个模板后,所有这个配送模板商品会自动选择到默认的配送模板', 'error');
+        }
+        $res = GoodsDispatch::where('dispatch_id',$model->id)->update(['dispatch_id' => $models->id]);
+
         if ($model->delete()) {
             return $this->message('删除模板成功', '');
         } else {
