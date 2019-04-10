@@ -63,6 +63,7 @@ class ImageHelper
         } else {
             $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         }
+        $util_url = resource_get('static/resource/js/'.$util);
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -70,6 +71,11 @@ class ImageHelper
             $s = '
 		<script type="text/javascript">
 			function showImageDialog(elm, opts, options) {
+			    require.config({
+                    paths:{
+                        "'.$util.'":"'.$util_url.'"
+                    }
+                });
 				require(["'.$util.'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
