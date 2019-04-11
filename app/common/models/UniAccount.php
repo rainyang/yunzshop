@@ -9,6 +9,8 @@
 namespace app\common\models;
 
 
+use Illuminate\Support\Facades\DB;
+
 class UniAccount extends BaseModel
 {
     protected $guarded = [];
@@ -18,5 +20,8 @@ class UniAccount extends BaseModel
     public static function checkIsExistsAccount($uniacid)
     {
         return self::find($uniacid);
+    }
+    public static function getEnable(){
+        return DB::table('yz_order')->select('uniacid')->distinct()->get();
     }
 }
