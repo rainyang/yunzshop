@@ -18,7 +18,7 @@ class ShopBootstrap
 {
     use JsonTrait;
 
-    private $authRole = ['operator'];
+    private $authRole = ['operator', 'clerk'];
 
     public function handle($request, \Closure $next, $guard = null)
     {
