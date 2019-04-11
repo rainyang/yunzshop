@@ -323,7 +323,7 @@ class InstallController
         $user = unserialize(file_get_contents($this->user_txt));
 
         // 保存站点名称
-        $site_name = SystemSetting::settingSave($user['name'], 'copyright', 'system_copyright');
+        $site_name = SystemSetting::settingSave(['name' => $user['name']], 'copyright', 'system_copyright');
         if (!$site_name) {
             return $this->errorJson('失败', '');
         }
