@@ -78,7 +78,7 @@ class LoginController extends BaseController
      * @return [type]                   [description]
      */
     public function showLoginForm()
-    {//dd($_COOKIE, \config::get('app.global'));
+    {
         return view('admin.auth.login');
     }
     /**
@@ -179,5 +179,22 @@ class LoginController extends BaseController
     public function sendFailedLoginResponse(Request $request)
     {
         return $this->errorJson(Lang::get('auth.failed'), []);
+    }
+
+    /**
+     * 重写登录失败次数限制
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    protected function sendLockoutResponse(Request $request)
+    {
+        $seconds = $this->limiter()->availableIn(
+            $this->throttleKey($request)
+        );
+
+        $message = Lang::get('auth.throttle', ['seconds' => $seconds]);
+
+        return $this->errorJson($message);
     }
 }
