@@ -160,7 +160,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @endif
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
-    @section('js')
+    @section('utilJs')
         <script type="text/javascript">
             util = 'util';
             u_url = 'static/resource/js/app/';
