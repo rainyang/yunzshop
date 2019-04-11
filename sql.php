@@ -1482,6 +1482,21 @@ CREATE TABLE IF NOT EXISTS ims_yz_permission (
 
 
 
+# Dump of table ims_yz_users_permission
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_yz_users_permission (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned NOT NULL,
+  `uid` int(10) unsigned NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `permission` varchar(10000) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
 # Dump of table ims_yz_plugin_article
 # ------------------------------------------------------------
 
