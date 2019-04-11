@@ -162,9 +162,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @section('js')
         <script type="text/javascript">
-            let util = 'util';
-            let u_url = 'static/resource/js/app/';
-            let util_url = '';
+            util = 'util';
+            u_url = 'static/resource/js/app/';
+            util_url = '';
             @if (env('APP_Framework') == 'platform')
                 util = 'utils';
             util_url = '/'+u_url+util;

@@ -24,6 +24,11 @@ class GlobalParams
 
         \config::set('app.global', $base_config);
 
+        // 为了兼容 供应商登录
+        if (app('plugins')->isEnabled('supplier') && env('APP_Framework') == 'platform'){
+            include base_path().'/plugins/supplier/menu.php';
+        }
+
         return $next($request);
     }
 
