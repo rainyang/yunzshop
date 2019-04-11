@@ -160,24 +160,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     @endif
     <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
 
-    <script type="text/javascript">
-        let utils = 'util';
-        let u_url = 'static/resource/js/app/';
-        let util_url = '';
-        @if (env('APP_Framework') == 'platform')
-            utils = 'utils';
-            util_url = '/'+u_url+util;
-        @else
-            util_url = '/addons/yun_shop/'+u_url+utils;
-        @endif
-        require.config({
-            paths:{
-                utils:util_url
-            }
-        });
-    </script>
-
-
 </head>
 
 <body>
@@ -273,5 +255,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(".sidebar").toggle();
     });
 </script>
+
+@section('js')
+    <script type="text/javascript">
+        let utils = 'util';
+        let u_url = 'static/resource/js/app/';
+        let util_url = '';
+        @if (env('APP_Framework') == 'platform')
+            utils = 'utils';
+        util_url = '/'+u_url+util;
+        @else
+            util_url = '/addons/yun_shop/'+u_url+utils;
+        @endif
+        require.config({
+            paths:{
+                utils:util_url
+            }
+        });
+    </script>
+@show
 </body>
 </html>
