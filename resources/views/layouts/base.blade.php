@@ -150,24 +150,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{--<link href="https://cdn.bootcss.com/iview/2.14.0/styles/iview.css" rel="stylesheet">--}}
 {{--    <link href="{{ static_url('yunshop/iview/css/iview_2.14.0_styles_iview.css') }}" rel="stylesheet">--}}
 
-    <script type="text/javascript" src="{{static_url('resource/js/app/util.js?time=3232')}}"></script>
-    <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
-
-    @if (env('APP_Framework') == 'platform')
-    <script type="text/javascript" src="{{static_url('js/app/yz_config.js')}}"></script>
-    @else
-        <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
-    @endif
-    <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
-
     @section('utilJs')
         <script type="text/javascript">
             u_url = 'static/resource/js/app/';
             util_url = '';
             util_js = 'util';
+            @php $util_js = 'util'; @endphp
             @if (env('APP_Framework') == 'platform')
+                @php $util_js = 'utils'; @endphp
                 util_js = 'utils';
-                util_url = '/' + u_url + util_js;
+            util_url = '/' + u_url + util_js;
             @else
                 util_url = '/addons/yun_shop/' + u_url + util_js;
             @endif
@@ -178,6 +170,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         </script>
     @show
+
+    <script type="text/javascript" src="{{static_url('resource/js/app/'.$util_js.'.js?time=3232')}}"></script>
+    <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
+
+    @if (env('APP_Framework') == 'platform')
+    <script type="text/javascript" src="{{static_url('js/app/yz_config.js')}}"></script>
+    @else
+        <script type="text/javascript" src="{{static_url('js/app/config.js')}}"></script>
+    @endif
+    <script type="text/javascript" src="{{static_url('js/dist/tooltipbox.js')}}"></script>
+
 </head>
 
 <body>
