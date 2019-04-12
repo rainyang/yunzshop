@@ -5,6 +5,8 @@ use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
+use Yunshop\StoreCashier\common\models\weiqing\WeiQingUsers;
+use app\common\services\Utils;
 
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
@@ -2806,3 +2808,47 @@ if (!function_exists('_tpl_form_field_date')) {
         return $s;
     }
 }
+
+if (!function_exists('user_register')) {
+    /**
+     * 添加用户(为了兼容微擎使用此方法)
+     * @param $user
+     * @return mixed
+     */
+    function user_register ($user)
+    {
+        $data = [
+            'username' => $user['username'],
+            'password' => bcrypt($user['password']),
+            'salt' => randNum(8),
+            'lastvisit' => time(),
+            'lastip' => Utils::getClientIp(),
+            'joinip' => Utils::getClientIp(),
+            'status' => 2,
+            'remark' => '',
+            'owner_uid' => 0
+        ];
+        $users_model = new WeiQingUsers;
+        $users_model->fill($data);
+        $users_model->save();
+        $user_uid = $users_model['uid'];
+
+        return $user_uid;
+    }
+}
+
+if (!function_exists('user_hash')) {
+    /**
+     * 密码加密(为了兼容微擎使用此方法)
+     * @param $new_pwd
+     * @param $salt
+     * @return string
+     */
+    function user_hash($new_pwd, $salt)
+    {
+        $password = bcrypt($new_pwd);
+
+        return $password;
+    }
+}
+
