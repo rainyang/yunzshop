@@ -164,14 +164,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script type="text/javascript">
             u_url = 'static/resource/js/app/';
             util_url = '';
+            util_js = 'util';
             @if (env('APP_Framework') == 'platform')
-                util_url = '/' + u_url + 'utils';
+                util_js = 'utils';
+                util_url = '/' + u_url + util_js;
             @else
-                util_url = '/addons/yun_shop/' + u_url + 'util';
+                util_url = '/addons/yun_shop/' + u_url + util_js;
             @endif
             require.config({
                 paths:{
-                    util:util_url
+                    util_js:util_url
                 }
             });
         </script>
