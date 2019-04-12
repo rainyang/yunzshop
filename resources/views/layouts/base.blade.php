@@ -162,14 +162,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     @section('utilJs')
         <script type="text/javascript">
-            util = 'util';
             u_url = 'static/resource/js/app/';
             util_url = '';
             @if (env('APP_Framework') == 'platform')
-                util = 'utils';
-            util_url = '/'+u_url+util;
+                util_url = '/' + u_url + 'utils';
             @else
-                util_url = '/addons/yun_shop/'+u_url+util;
+                util_url = '/addons/yun_shop/' + u_url + 'util';
             @endif
             require.config({
                 paths:{
