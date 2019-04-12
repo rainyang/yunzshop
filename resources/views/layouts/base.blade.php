@@ -150,6 +150,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {{--<link href="https://cdn.bootcss.com/iview/2.14.0/styles/iview.css" rel="stylesheet">--}}
 {{--    <link href="{{ static_url('yunshop/iview/css/iview_2.14.0_styles_iview.css') }}" rel="stylesheet">--}}
 
+    @php $util_js = 'util'; @endphp
+    @if (env('APP_Framework') == 'platform')
+        @php $util_js = 'utils'; @endphp
+    @endif
+    <script type="text/javascript" src="{{static_url('resource/js/app/'.$util_js.'.js?time=3232')}}"></script>
     <script type="text/javascript" src="{{static_url('resource/js/require.js')}}"></script>
     @section('utilJs')
         <script type="text/javascript">
@@ -157,8 +162,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             util_url = '';
             util_js = 'util';
             @php $util_js = 'util'; @endphp
-            @if (env('APP_Framework') == 'platform')
-                @php $util_js = 'utils'; @endphp
+                    @if (env('APP_Framework') == 'platform')
                 util_js = 'utils';
             util_url = '/' + u_url + util_js;
             @else
@@ -171,8 +175,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             });
         </script>
     @show
-    <script type="text/javascript" src="{{static_url('resource/js/app/'.$util_js.'.js?time=3232')}}"></script>
-
     @if (env('APP_Framework') == 'platform')
     <script type="text/javascript" src="{{static_url('js/app/yz_config.js')}}"></script>
     @else
