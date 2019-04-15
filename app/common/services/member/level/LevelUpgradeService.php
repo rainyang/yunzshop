@@ -39,6 +39,7 @@ class LevelUpgradeService
             return;
         }
 
+        file_put_contents(storage_path('logs/wwe.txt'), print_r(date('Ymd His').'订单完成事件-会员:'.$this->orderModel->uid.PHP_EOL,1), FILE_APPEND);
         $result = $this->check(0);
         $this->setValidity($result); // 设置会员等级期限
         if ($result) {
@@ -69,6 +70,8 @@ class LevelUpgradeService
         if (is_null($this->memberModel)) {
             return;
         }
+
+        file_put_contents(storage_path('logs/wwe.txt'), print_r(date('Ymd His').'订单支付事件-会员:'.$this->orderModel->uid.PHP_EOL,1), FILE_APPEND);
 
         $result = $this->check(1);
         $this->setValidity($result); // 设置会员等级期限
@@ -106,6 +109,9 @@ class LevelUpgradeService
             $this->memberModel->save();
 
             if (!$isUpgrate) {
+
+                file_put_contents(storage_path('logs/wwe.txt'), print_r(date('Ymd His').'有效期-会员:'.$this->orderModel->uid.PHP_EOL,1), FILE_APPEND);
+
                 $levelId = intval($this->new_level->id);
                 event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
             }
@@ -237,6 +243,10 @@ class LevelUpgradeService
         if ($this->memberModel->save()) {
             //会员等级升级触发事件
             event(new MemberLevelUpgradeEvent($this->memberModel,false));
+
+
+            file_put_contents(storage_path('logs/wwe.txt'), print_r(date('Ymd His').'升级-会员:'.$this->orderModel->uid.PHP_EOL,1), FILE_APPEND);
+
 
             event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
 
