@@ -8,6 +8,7 @@
 
 namespace app\common\models;
 
+use app\common\models\member\MemberShopInfo;
 
 class UniAccount extends BaseModel
 {
@@ -25,5 +26,8 @@ class UniAccount extends BaseModel
     public static function checkIsExistsAccount($uniacid)
     {
         return self::find($uniacid);
+    }
+    public static function getEnable(){
+        return MemberShopInfo::select('uniacid')->distinct()->get();
     }
 }

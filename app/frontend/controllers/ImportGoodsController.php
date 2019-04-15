@@ -13,6 +13,7 @@ class ImportGoodsController extends BaseController
         $goods_id = \YunShop::request()->goods_id;
 
         $goodsData = ImportGoods::getGoodsByIdAll($goods_id)->first();
+        $goodsData['complete_thumb'] = yz_tomedia($goodsData['thumb']);
 
         if($goodsData){
             return $this->successJson('ok', $goodsData->toArray());
