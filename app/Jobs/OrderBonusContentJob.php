@@ -28,10 +28,16 @@ class OrderBonusContentJob implements  ShouldQueue
     protected $contentColumn;
     protected $orderModel;
     protected $condition;
+    public static $mc_members;
 
     public function __construct($orderModel)
     {
         $this->orderModel = $orderModel;
+        if (env('APP_Framework') == 'platform') {
+            self::$mc_members =  'yz_mc_members';
+        } else {
+            self::$mc_members = 'mc_members';
+        }
     }
 
     public function handle()
@@ -69,7 +75,7 @@ class OrderBonusContentJob implements  ShouldQueue
 
     public function buyName()
     {
-        $build = DB::table('mc_members')
+        $build = DB::table(self::$mc_members)
             ->select()
             ->where('uid', $this->orderModel->uid);
         $ids = $build->pluck('uid');
@@ -99,7 +105,7 @@ class OrderBonusContentJob implements  ShouldQueue
             ->where('member_id', 1);
         $parent_id = $referrerTable->first()['parent_id'];
         if ($parent_id) {
-            $build = DB::table('mc_members')
+            $build = DB::table(self::$mc_members)
                 ->select()
                 ->where('uid', $parent_id);
             $ids = $build->pluck('uid');

@@ -22,11 +22,16 @@ class OrderCountContentJob implements  ShouldQueue
 
     protected $orderModel;
     protected $countModel;
+    public static $mc_members;
 
     public function __construct($orderModel)
     {
         $this->orderModel = $orderModel;
-
+        if (env('APP_Framework') == 'platform') {
+            self::$mc_members =  'yz_mc_members';
+        } else {
+            self::$mc_members = 'mc_members';
+        }
     }
 
     public function handle()
@@ -78,7 +83,7 @@ class OrderCountContentJob implements  ShouldQueue
 
     public function buyName()
     {
-        $build = DB::table('mc_members')
+        $build = DB::table(self::$mc_members)
             ->select()
             ->where('uid', $this->orderModel->uid);
         $content = $build->first()['nickname'];
@@ -90,12 +95,12 @@ class OrderCountContentJob implements  ShouldQueue
 
     public function referrerName()
     {
-        $referrerTable = DB::table('yz_member')
+        $referrerTable = DB::table(self::$mc_members)
             ->select()
             ->where('member_id', $this->orderModel->uid);
         $parent_id = $referrerTable->first()['parent_id'];
         if ($parent_id) {
-            $build = DB::table('mc_members')
+            $build = DB::table(self::$mc_members)
                 ->select()
                 ->where('uid', $parent_id);
             $content['nickname'] = $build->first()['nickname'];
