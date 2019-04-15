@@ -87,12 +87,18 @@ class GlobalParams
     {
         if (app('plugins')->isEnabled('supplier')){
             include base_path().'/plugins/supplier/menu.php';
-        }elseif (app('plugins')->isEnabled('store-cashier')) {
+        }
+
+        if (app('plugins')->isEnabled('store-cashier')) {
             include base_path().'/plugins/store-cashier/storeMenu.php';
-        }  elseif (app('plugins')->isEnabled('subsidiary')) {
+        }
+
+        if (app('plugins')->isEnabled('subsidiary')) {
             $subsidiary =  include base_path().'/plugins/subsidiary/bootstrap.php';
             app()->call($subsidiary);
-        } elseif (app('plugins')->isEnabled('hotel')) {
+        }
+
+        if (app('plugins')->isEnabled('hotel')) {
             $hotel = include base_path().'/plugins/hotel/bootstrap.php';
             app()->call($hotel);
         }
