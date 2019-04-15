@@ -303,6 +303,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     } else {
         global $_W;
         $setting = \setting_load();
+        $upload_type = $setting['remote']['type'];
     }
 
     if (empty($src)) {
@@ -351,7 +352,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-    if (!$sign && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
+    if (!$sign && ($local_path || empty($upload_type) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
