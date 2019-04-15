@@ -149,7 +149,7 @@ class MessageService
      * @param string $url
      * @return bool
      */
-    public static function notice($templateId, $data, $uid, $uniacid = '', $url = '')
+    public static function notice($templateId, $data, $uid, $uniacid = '', $url = 'pages/index/index')
     {
         $noticeType = \YunShop::request()->type;
         $formId = \YunShop::request()->formId;
