@@ -11,6 +11,7 @@ use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use app\Jobs\MiniMessageNoticeJob;
 
 class MessageService
 {
@@ -150,34 +151,70 @@ class MessageService
      */
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '')
     {
-        if(\Setting::get('shop.notice.toggle') == false){
-            return false;
-        }
-        //监听消息通知
-        event(new SendMessageEvent([
-            'data' => $data,
-            'uid' => $uid,
-            'url' => $url
-        ]));
+        $noticeType = \YunShop::request()->type;
+        $formId = \YunShop::request()->formId;
+        if ($noticeType == 2){
+            if(\Setting::get('shop.miniNotice.toggle') == false){
+                return false;
+            }
+            //监听消息通知
+            event(new SendMessageEvent([
+                'data' => $data,
+                'uid' => $uid,
+                'url' => $url
+            ]));
 
-        $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-        $options = [
-            'app_id' => $res['key'],
-            'secret' => $res['secret'],
-        ];
-        $app = new Application($options);
-        $member = Member::whereUid($uid)->first();
-        if (!isset($member)) {
-            \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
-            return false;
-        }
 
-        if (!$member->isFollow()) {
-            return false;
+            $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+            $options = [
+                'app_id' => $res['key'],
+                'secret' => $res['secret'],
+            ];
+            $member = Member::whereUid($uid)->first();
+            if (!isset($member)) {
+                \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+                return false;
+            }
+
+            if (!$member->isFollow()) {
+                return false;
+            }
+            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$formId );
+        }else {
+
+            if (\Setting::get('shop.notice.toggle') == false) {
+                return false;
+            }
+            //监听消息通知
+            event(new SendMessageEvent([
+                'data' => $data,
+                'uid' => $uid,
+                'url' => $url
+            ]));
+
+            $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+            $options = [
+                'app_id' => $res['key'],
+                'secret' => $res['secret'],
+            ];
+            $app = new Application($options);
+            $member = Member::whereUid($uid)->first();
+            if (!isset($member)) {
+                \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+                return false;
+            }
+
+            if (!$member->isFollow()) {
+                return false;
+            }
+            (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid, $url);
         }
-        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid, $url);
 //        $notice = $app->notice;
 //        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
+    }
+
+    public function MiniNoticeQueue($options, $templateId, $data, $openId, $url,$formId){
+        $this->dispatch((new MiniMessageNoticeJob($options, $templateId, $data, $openId, $url,$formId)));
     }
 
     public function noticeQueue($notice, $templateId, $data, $openId, $url)
