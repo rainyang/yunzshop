@@ -130,10 +130,10 @@ CREATE TABLE IF NOT EXISTS ims_yz_brand (
 
 
 
-# Dump of table ims_yz_mc_members
+# Dump of table ims_mc_members
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS ims_yz_mc_members  (
+CREATE TABLE IF NOT EXISTS ims_mc_members  (
   `uid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uniacid` int(10) UNSIGNED NOT NULL,
   `mobile` varchar(18) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,

@@ -118,13 +118,6 @@ class Member extends BackendModel
 
     protected $hidden = ['password', 'salt'];
 
-    pubilc function __construct()
-    {
-        if (env('APP_Framework') == 'platform') {
-            $this->table = 'yz_mc_members';
-        }
-    }
-
     public function bankCard()
     {
         return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
