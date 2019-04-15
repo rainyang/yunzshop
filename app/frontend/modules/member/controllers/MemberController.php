@@ -1683,6 +1683,21 @@ class MemberController extends ApiController
             }
         }
 
+        //网约车插件开启关闭
+        if (app('plugins')->isEnabled('net-car')) {
+
+            $video_demand_setting = Setting::get('plugin.net_car');
+
+            if ($video_demand_setting && $video_demand_setting['net_car_open']) {
+                $data[] = [
+                    'name'  => 'net_car',
+                    'title' => '网约车',
+                    'class' => 'icon-member-net-car',
+                    'url'   => 'netCar',
+                ];
+            }
+        }
+
         
         return $this->successJson('ok', $arr);
 
