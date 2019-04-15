@@ -145,9 +145,9 @@ class AllUploadController extends BaseController
                 return '文件大小超出规定值';
             }
         }
-       	$file_type = $file_type == 'images' ? 'syst_images' : $file_type;
+        $file_type = $file_type == 'images' ? 'syst_images' : $file_type;
 
-        	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
+        \Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
        
         //执行本地上传
         $local_res = \Storage::disk($file_type)->put(substr($newFileName, 14), file_get_contents($realPath));
