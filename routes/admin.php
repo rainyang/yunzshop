@@ -26,6 +26,14 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::post('install/delete', 'InstallController@delete');     // 删除控制器
 });
 
+Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\system\controllers'], function (){
+    // 上传
+    Route::any('upload', 'UploadController@upload');     // 上传图片 or 视频 or 音频
+    Route::any('image', 'UploadController@image');       // 图片列表
+    Route::any('fetch', 'UploadController@fetch');       // 获取远程图片
+    Route::any('delete', 'UploadController@delete');     // 删除图片
+    Route::any('video', 'UploadController@video');       // 音频视频列表
+});
 
 Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
 
@@ -79,13 +87,6 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/startDownload', 'UpdateController@startDownload');
         //短信设置
         Route::any('sms', 'AttachmentController@sms');
-        // 上传
-        Route::any('upload/upload', 'UploadController@upload');     // 上传图片 or 视频 or 音频
-        Route::any('upload/image', 'UploadController@image');       // 图片列表
-        Route::any('upload/fetch', 'UploadController@fetch');       // 获取远程图片
-        Route::any('upload/delete', 'UploadController@delete');     // 删除图片
-        Route::any('upload/video', 'UploadController@video');       // 音频视频列表
-
     });
 
     // 用户管理
