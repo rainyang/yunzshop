@@ -15,6 +15,13 @@ class UniAccount extends BaseModel
     public $table = 'uni_account';
     public $primaryKey = 'uniacid';
 
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->uniTable = 'yz_uniacid_app';
+        }
+    }
+
     public static function checkIsExistsAccount($uniacid)
     {
         return self::find($uniacid);
