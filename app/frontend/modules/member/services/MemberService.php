@@ -880,7 +880,9 @@ class MemberService
             $mc_member = Member::getMemberById($main_member_id);
 
             if (!is_null($mc_member)) {
-                Member::getMemberById($abandon_member_id)->delete();
+                if ($del_mc_member = Member::getMemberById($abandon_member_id)) {
+                    $del_mc_member->delete();
+                }
             } else {
                 Member::where('uid', $abandon_member_id)->update(['uid' => $main_member_id]);
             }
@@ -891,9 +893,11 @@ class MemberService
             $sub_member = MemberShopInfo::getMemberShopInfo($main_member_id);
 
             if (!is_null($sub_member)) {
-                MemberShopInfo::getMemberShopInfo($abandon_member_id)->delete();
+                if ($del_shop_member = MemberShopInfo::getMemberShopInfo($abandon_member_id)) {
+                    $del_shop_member->delete();
+                }
             } else {
-                MemberShopInfo::where('member_id', $abandon_member_id)->update(['membmer_id', $main_member_id]);
+                MemberShopInfo::where('member_id', $abandon_member_id)->update(['member_id', $main_member_id]);
             }
 
             //商城unionid
