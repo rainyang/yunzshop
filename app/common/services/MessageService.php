@@ -153,6 +153,11 @@ class MessageService
     {
         $noticeType = \YunShop::request()->type;
         $formId = \YunShop::request()->formId;
+        \log::debug('----------formId-----------------');
+        \log::debug($formId);
+        if (!$formId){
+            return false;
+        }
         if ($noticeType == 2){
             if(\Setting::get('shop.miniNotice.toggle') == false){
                 return false;
