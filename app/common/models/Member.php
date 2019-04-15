@@ -118,7 +118,7 @@ class Member extends BackendModel
 
     protected $hidden = ['password', 'salt'];
 
-    pubilc function __construct()
+    public function __construct()
     {
         if (env('APP_Framework') == 'platform') {
             $this->table = 'yz_mc_members';
