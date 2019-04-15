@@ -105,7 +105,7 @@ class AllUploadController extends BaseController
         } elseif (in_array($ext, $defaultAudioType)) {
             $file_type = 'audios';
         } elseif (in_array($ext, $defaultVideoType)) {
-            $file_type = 'videos';
+            $file_type = 'videos'; 
         }
 
         $newFileName = $this->getNewFileName($originalName, $ext, $file_type); 
