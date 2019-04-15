@@ -156,9 +156,10 @@ class OperationController extends BaseController
                     return $this->errorJson();
                 }
             }
-            $order->invoice = request()->input('invoice');
-            $order->save();
+
         }
+        $order->invoice = request()->input('invoice');
+        $order->save();
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
         echo json_encode(["data" => '', "result" => 1]);
     }
