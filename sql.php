@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS ims_mc_members  (
 # Dump of table ims_mc_mapping_fans
 # ------------------------------------------------------------
 
-CREATE TABLE ims_mc_mapping_fans  (
+CREATE TABLE IF NOT EXISTS ims_mc_mapping_fans  (
   `fanid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `acid` int(10) UNSIGNED NOT NULL,
   `uniacid` int(10) UNSIGNED NOT NULL,
@@ -224,6 +224,21 @@ CREATE TABLE ims_mc_mapping_fans  (
   INDEX `uid`(`uid`) USING BTREE,
   INDEX `openid`(`openid`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 163335 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+
+# Dump of table ims_yz_mc_groups
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_yz_mc_groups  (
+  `groupid` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `title` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `credit` int(10) UNSIGNED NOT NULL,
+  `isdefault` tinyint(4) NOT NULL,
+  PRIMARY KEY (`groupid`) USING BTREE,
+  INDEX `uniacid`(`uniacid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 
 
