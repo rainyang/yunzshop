@@ -89,7 +89,7 @@ class OrderCountContentJob implements  ShouldQueue
 
     public function referrerName()
     {
-        $referrerTable = DB::table('mc_members')
+        $referrerTable = DB::table('yz_members')
             ->select()
             ->where('member_id', $this->orderModel->uid);
         $parent_id = $referrerTable->first()['parent_id'];
