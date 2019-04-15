@@ -24,11 +24,12 @@ class GlobalParams
 
         \config::set('app.global', $base_config);
 
-        // 为了兼容 供应商、门店登录
+        // 为了兼容 供应商、门店、分公司、酒店登录
         if (app('plugins')->isEnabled('supplier') && env('APP_Framework') == 'platform'){
             include base_path().'/plugins/supplier/menu.php';
             include base_path().'/plugins/store-cashier/storeMenu.php';
             include base_path().'/plugins/subsidiary/bootstrap.php';
+            include base_path().'/plugins/hotel/bootstrap.php';
         }
 
         return $next($request);
