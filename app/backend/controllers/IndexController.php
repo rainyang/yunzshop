@@ -13,6 +13,17 @@ use Illuminate\Support\Facades\DB;
 
 class IndexController extends BaseController
 {
+    public static $mc_members;
+
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            self::$mc_members =  'yz_mc_members';
+        } else {
+            self::$mc_members = 'mc_members';
+        }
+    }
+
     public function index()
     {
         return view('index',[])->render();
@@ -20,7 +31,7 @@ class IndexController extends BaseController
 
     public function changeField()
     {
-        $sql = 'ALTER TABLE `' . DB::getTablePrefix() . 'mc_members` MODIFY `pay_password` varchar(30) NOT NULL DEFAULT 0';
+        $sql = 'ALTER TABLE `' . DB::getTablePrefix() . self::$mc_members.'` MODIFY `pay_password` varchar(30) NOT NULL DEFAULT 0';
 
         try {
             DB::select($sql);
@@ -32,7 +43,7 @@ class IndexController extends BaseController
 
     public function changeAgeField()
     {
-        $sql = 'ALTER TABLE `' . DB::getTablePrefix() . 'mc_members` MODIFY `age` tinyint(3) NOT NULL DEFAULT 0';
+        $sql = 'ALTER TABLE `' . DB::getTablePrefix() . self::$mc_members.'` MODIFY `age` tinyint(3) NOT NULL DEFAULT 0';
 
         try {
             DB::select($sql);
