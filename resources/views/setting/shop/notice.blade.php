@@ -44,6 +44,28 @@
                         }
                     </style>
                     <div class='panel-heading'>
+                        操作类型
+                    </div>
+                    <div class='panel-body'>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">操作类型</label>
+                            <div    class="col-sm-9 col-xs-12">
+                                <a href=" {!! yzWebUrl('setting.shop.notice',['noticeType' => 2]) !!}">
+                                    <input type="text"   name="yz_notice[noticeType]" id="type_id" style= "display:none"   class="form-control" @if (isset($noticeType)) value="{{$noticeType}}" @else value="1" @endif />
+                                    <button type='button' class="btn mylink-nav" onclick="noticeType(2)" name='yz_notice[noticeType]' value='2' @if ($noticeType == 2) style="background-color: #0ab2dc" @endif @if ($noticeType == 2) checked @endif>
+                                       小程序
+                                    </button>
+                                </a>
+                                <a href=" {!! yzWebUrl('setting.shop.notice',['noticeType' => 1]) !!}">
+                                    <button type='button' onclick="noticeType(1)" class="btn  mylink-nav"  name='yz_notice[noticeType]' value='1' @if ($noticeType == 1) style="background-color: #0ab2dc" @endif  @if ($noticeType == 1 ) checked @endif >
+                                        微信公众号
+                                    </button>
+                                </a>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class='panel-heading'>
                         商城消息提醒
                     </div>
                     <div class='panel-body'>
@@ -817,6 +839,9 @@
                             }, function (dat) {
                                 $('#module-menus').html(dat);
                             });
+                        }
+                        function noticeType(tpye) {
+                            $("#type_id").val(tpye);
                         }
                         function select_member(o) {
                             if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {

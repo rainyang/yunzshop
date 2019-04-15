@@ -34,22 +34,6 @@ class SmallProgramController extends BaseController
 
     public function add()
     {
-//        $rawPost = [
-//            'touser' => 11 ,
-//            'template_id' => 'yASr1SdzgV7_gRzKgqYI3t7um-3pIGXrpCcHUHVIJz4',
-//            'page'=>11,
-//            'form_id' => 11,
-//        ];
-//
-//        $min_small = new MinAppTemplateMessage;
-//        $temp_date = $min_small::getTemp(14);//获取数据表中的数据
-//        $arr=explode(',',$temp_date->keyword_id);
-//        $i=1;
-//        foreach ($arr as $value){
-//            $keyword =  'keyword'.$i;
-//            $rawPost['data'][$keyword]['value'] = explode(":",$value)[1];
-//            $i++;
-//        }
         if (isset(request()->page)){
             if (request()->objective == 'next'){
                 $page = request()->page + 20;
@@ -61,21 +45,6 @@ class SmallProgramController extends BaseController
         }
         $small = new SmallProgramNotice();
         $list = $small->getAllTemplateList($page);
-//        for ($i=135;$i<=150;$i++){
-//            $list = $small->getAllTemplateList($i*20);
-//            echo $i;
-//            foreach ($list['list'] as $value){
-//                if ((strstr($value['title'],"积分")|| strstr($value['title'],"余额")||strstr($value['title'],"订单")
-// ||strstr($value['title'],"退款") || strstr($value['title'],"会员") ) && $value['title'] != '订单未填地址通知'
-//                    && $value['title'] != '订单撤单提醒'&& $value['title'] != '订单发布通知'&& $value['title'] != '订单补差价通知'&& $value['title'] != '订单使用超时通知'
-//                    && $value['title'] != '订单待支付提醒'
-//                ){
-//                    echo '<br>';
-//                    var_dump($value);
-//                };
-//            }
-//
-//        }
         if ($list['errcode'] != 0 || !isset($list['errcode'])){
             return $this->message('添加模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
         }

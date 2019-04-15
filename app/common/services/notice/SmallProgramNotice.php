@@ -133,10 +133,8 @@ class SmallProgramNotice
             $wxResult = json_decode($listRes,true);
 //            dd($wxResult);
             if($wxResult['errcode']){
-                dd($method.' - Failed!:'.$wxResult);
                 return ($method.' - Failed!:'.$wxResult);
             }else{
-                //var_dump($wxResult);
                 return $wxResult;
             }
         }

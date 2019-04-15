@@ -228,8 +228,41 @@ class ShopController extends BaseController
      */
     public function notice()
     {
+        $noticeType = request()->noticeType?:1;
+        if ($noticeType == 1){
+            $shopNotice='shop.notice';
+        }else if ($noticeType == 2){
+            $shopNotice='shop.miniNotice';
+        }else{
+            return '参数错误';
+        }
         $noticeConfig = \Config::get('notice.not-send');
-        $notice = Setting::get('shop.notice');
+        $notice = Setting::get($shopNotice);
+//        $salers = []; //订单通知的商家列表,数据如何取待定?
+        //$new_type = []; //通知方式的数组,数据如何来的待定?
+        $requestModel = \YunShop::request()->yz_notice;
+        $noticeType = request()->noticeType?:1;
+        $temp_list = MessageTemp::getList();
+        if (!empty($requestModel)) {
+            if (Setting::set($shopNotice, $requestModel)) {
+                return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
+            } else {
+                $this->error('消息提醒设置失败');
+            }
+        }
+        return view('setting.shop.notice', [
+            'set' => $notice,
+            'temp_list' => $temp_list,
+            'noticeType'=>$noticeType
+        ])->render();
+    }
+    /**
+     * 小程序消息提醒设置
+     * @return mixed
+     */
+    public function miniNotice()
+    {
+        $notice = Setting::get('shop.miniNotice');
 //        $salers = []; //订单通知的商家列表,数据如何取待定?
         //$new_type = []; //通知方式的数组,数据如何来的待定?
         $requestModel = \YunShop::request()->yz_notice;
@@ -237,13 +270,14 @@ class ShopController extends BaseController
         $temp_list = MessageTemp::getList();
 
         if (!empty($requestModel)) {
-            if (Setting::set('shop.notice', $requestModel)) {
+            if (Setting::set('shop.miniNotice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
             } else {
                 $this->error('消息提醒设置失败');
             }
         }
-        return view('setting.shop.notice', [
+
+        return view('setting.shop.mini-notice', [
             'set' => $notice,
             'temp_list' => $temp_list
         ])->render();
