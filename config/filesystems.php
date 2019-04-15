@@ -54,21 +54,21 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
-        'syst_image' => [
+        'syst_images' => [
             'driver' => 'local',
             'root' => base_path('static/upload/images/'.date('Y').'/'.date('m')),
             'url' => env('APP_URL').'/static/upload/images/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
-        'video' => [
+        'videos' => [
             'driver' => 'local',
             'root' => base_path('static/upload/videos/'.date('Y').'/'.date('m')),
             'url' => env('APP_URL').'/static/upload/videos/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
-        'audio' => [
+        'audios' => [
             'driver' => 'local',
             'root' => base_path('static/upload/audios/'.date('Y').'/'.date('m')),
             'url' => env('APP_URL').'/static/upload/audios/'.date('Y').'/'.date('m'),
