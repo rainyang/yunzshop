@@ -18,7 +18,7 @@ class UniAccount extends BaseModel
     public function __construct()
     {
         if (env('APP_Framework') == 'platform') {
-            $this->uniTable = 'yz_uniacid_app';
+            $this->table = 'yz_uniacid_app';
         }
     }
 
