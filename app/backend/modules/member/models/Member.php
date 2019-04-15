@@ -335,8 +335,13 @@ class Member extends \app\common\models\Member
                 ->groupBy('uid');
         }]);
 
-        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
+        if (env('APP_Framework') == 'platform') {
+            $mc_members = 'yz_mc_members';
+        } else {
+            $mc_members = 'mc_members';
+        }
 
+        $result->leftJoin('yz_member_del_log', $mc_members.'.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
 
         return $result;
     }
