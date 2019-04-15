@@ -28,6 +28,7 @@ class GlobalParams
         if (app('plugins')->isEnabled('supplier') && env('APP_Framework') == 'platform'){
             include base_path().'/plugins/supplier/menu.php';
             include base_path().'/plugins/store-cashier/storeMenu.php';
+            include base_path().'/plugins/subsidiary/bootstrap.php';
         }
 
         return $next($request);
