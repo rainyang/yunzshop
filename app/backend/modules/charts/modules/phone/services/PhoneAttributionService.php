@@ -23,12 +23,7 @@ class PhoneAttributionService
             \Setting::$uniqueAccountId = $u->uniacid;
 
             $uniacid = \YunShop::app()->uniacid;
-            if (env('APP_Framework') == 'platform') {
-                $mc_members =  'yz_mc_members';
-            } else {
-                $mc_members = 'mc_members';
-            }
-            $member_phone = DB::table($mc_members)->select('uid', 'mobile', 'uniacid')->where('uniacid', $uniacid)->where('mobile', '<>', '')->get()->toArray();
+            $member_phone = DB::table('mc_members')->select('uid', 'mobile', 'uniacid')->where('uniacid', $uniacid)->where('mobile', '<>', '')->get()->toArray();
             foreach ($member_phone as $k => $item) {
                     $data[$k] = $this->getPhoneApi($item['mobile']);
                     $phone[$k]['uid'] = $item['uid'];

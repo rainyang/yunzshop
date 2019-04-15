@@ -47,13 +47,6 @@ class TestMember extends  BaseModel
 
     public $goodsForm = [];
 
-    public function __construct()
-    {
-        if (env('APP_Framework') == 'platform') {
-            $this->table = 'yz_mc_members';
-        }
-    }
-
     /**
      * 自定义字段名
      * 可使用
