@@ -29,7 +29,7 @@ class CreateTableYzUniacidApp extends Migration
                 $table->integer('creator')->nullable()->comment('平台创建者');
 
                 $table->string('url')->nullable();
-                $table->varchar('subscribes')->nullable();
+                $table->string('subscribes')->nullable();
                 $table->integer('welcome_support')->nullable();
 
                 $table->string('key')->nullable();
