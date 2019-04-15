@@ -14,6 +14,13 @@ class McGroupsModel extends BackendModel
 {
     public $table = 'mc_groups';
 
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_mc_groups';
+        }
+    }
+
     public static function getDefaultGroupId()
     {
         return self::select('groupid')

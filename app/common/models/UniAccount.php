@@ -19,7 +19,6 @@ class UniAccount extends BaseModel
     {
         if (env('APP_Framework') == 'platform') {
             $this->table = 'yz_uniacid_app';
-            $this->timestamps = true;
         }
     }
 

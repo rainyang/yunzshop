@@ -130,10 +130,10 @@ CREATE TABLE IF NOT EXISTS ims_yz_brand (
 
 
 
-# Dump of table ims_yz_mc_members
+# Dump of table ims_mc_members
 # ------------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS ims_yz_mc_members  (
+CREATE TABLE IF NOT EXISTS ims_mc_members  (
   `uid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uniacid` int(10) UNSIGNED NOT NULL,
   `mobile` varchar(18) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
@@ -193,6 +193,52 @@ CREATE TABLE IF NOT EXISTS ims_yz_mc_members  (
   INDEX `email`(`email`) USING BTREE,
   INDEX `mobile`(`mobile`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 163777 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+
+
+# Dump of table ims_mc_mapping_fans
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_mc_mapping_fans  (
+  `fanid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `acid` int(10) UNSIGNED NOT NULL,
+  `uniacid` int(10) UNSIGNED NOT NULL,
+  `uid` int(10) UNSIGNED NOT NULL,
+  `openid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `nickname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `groupid` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `salt` char(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `follow` tinyint(1) UNSIGNED NOT NULL,
+  `followtime` int(10) UNSIGNED NOT NULL,
+  `unfollowtime` int(10) UNSIGNED NOT NULL,
+  `tag` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `updatetime` int(10) UNSIGNED NULL DEFAULT NULL,
+  `unionid` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  PRIMARY KEY (`fanid`) USING BTREE,
+  UNIQUE INDEX `openid_2`(`openid`) USING BTREE,
+  INDEX `acid`(`acid`) USING BTREE,
+  INDEX `uniacid`(`uniacid`) USING BTREE,
+  INDEX `nickname`(`nickname`) USING BTREE,
+  INDEX `updatetime`(`updatetime`) USING BTREE,
+  INDEX `uid`(`uid`) USING BTREE,
+  INDEX `openid`(`openid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 163335 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+
+# Dump of table ims_yz_mc_groups
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_yz_mc_groups  (
+  `groupid` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `title` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `credit` int(10) UNSIGNED NOT NULL,
+  `isdefault` tinyint(4) NOT NULL,
+  PRIMARY KEY (`groupid`) USING BTREE,
+  INDEX `uniacid`(`uniacid`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 
 
