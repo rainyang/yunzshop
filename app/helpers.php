@@ -341,7 +341,6 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         }
     }
 
-
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
