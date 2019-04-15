@@ -441,7 +441,7 @@ class MemberService
         if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
             $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model, $userinfo);
 
-            if ($UnionidInfo->member_id != $member_id) {
+            if ($member_id > 0 && $UnionidInfo->member_id != $member_id) {
                 $UnionidInfo->member_id = $member_id;
             }
         }
