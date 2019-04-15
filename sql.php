@@ -130,6 +130,72 @@ CREATE TABLE IF NOT EXISTS ims_yz_brand (
 
 
 
+# Dump of table ims_yz_mc_members
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_yz_mc_members  (
+  `uid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) UNSIGNED NOT NULL,
+  `mobile` varchar(18) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `password` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `salt` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `groupid` int(11) NOT NULL,
+  `credit1` decimal(10, 2) UNSIGNED NOT NULL,
+  `credit2` decimal(10, 2) UNSIGNED NOT NULL,
+  `credit3` decimal(10, 2) UNSIGNED NOT NULL,
+  `credit4` decimal(10, 2) UNSIGNED NOT NULL,
+  `credit5` decimal(10, 2) UNSIGNED NOT NULL,
+  `credit6` decimal(10, 2) NOT NULL,
+  `createtime` int(10) UNSIGNED NOT NULL,
+  `realname` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `nickname` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `qq` varchar(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `vip` tinyint(3) UNSIGNED NOT NULL,
+  `gender` tinyint(1) NOT NULL,
+  `birthyear` smallint(6) UNSIGNED NOT NULL,
+  `birthmonth` tinyint(3) UNSIGNED NOT NULL,
+  `birthday` tinyint(3) UNSIGNED NOT NULL,
+  `constellation` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `zodiac` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `telephone` varchar(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `idcard` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `studentid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `grade` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `zipcode` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `nationality` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `resideprovince` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `residecity` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `residedist` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `graduateschool` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `company` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `education` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `occupation` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `position` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `revenue` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `affectivestatus` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `lookingfor` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `bloodtype` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `height` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `weight` varchar(5) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `alipay` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `msn` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `taobao` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `site` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `bio` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `interest` text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `pay_password` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uid`) USING BTREE,
+  INDEX `groupid`(`groupid`) USING BTREE,
+  INDEX `uniacid`(`uniacid`) USING BTREE,
+  INDEX `email`(`email`) USING BTREE,
+  INDEX `mobile`(`mobile`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 163777 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+
+
 # Dump of table ims_yz_category
 # ------------------------------------------------------------
 

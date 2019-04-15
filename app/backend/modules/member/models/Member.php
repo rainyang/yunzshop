@@ -18,6 +18,16 @@ class Member extends \app\common\models\Member
     use MemberTreeTrait;
 
     static protected $needLog = true;
+    public static $mc_members;
+
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            self::$mc_members =  'yz_mc_members';
+        } else {
+            self::$mc_members = 'mc_members';
+        }
+    }
 
     /**
      * 删除会员信息
@@ -335,8 +345,7 @@ class Member extends \app\common\models\Member
                 ->groupBy('uid');
         }]);
 
-        $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
-
+        $result->leftJoin('yz_member_del_log', self::$mc_members.'.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
 
         return $result;
     }
@@ -452,13 +461,13 @@ class Member extends \app\common\models\Member
 
     public static function getQueueAllMembersInfo($uniacid, $limit = 0, $offset = 0)
     {
-        $result = self::select(['mc_members.uid', 'mc_mapping_fans.openid', 'mc_members.uniacid'])
-                   ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
-                   ->join('mc_mapping_fans', 'mc_members.uid', '=', 'mc_mapping_fans.uid')
-                   ->where('mc_members.uniacid', $uniacid);
+        $result = self::select([self::$mc_members.'.uid', 'mc_mapping_fans.openid', self::$mc_members.'.uniacid'])
+                   ->join('yz_member', self::$mc_members.'.uid', '=', 'yz_member.member_id')
+                   ->join('mc_mapping_fans', self::$mc_members.'.uid', '=', 'mc_mapping_fans.uid')
+                   ->where(self::$mc_members.'.uniacid', $uniacid);
 
         if ($limit > 0) {
-            $result = $result->offset($offset)->limit($limit)->orderBy('mc_members.uid', 'desc');
+            $result = $result->offset($offset)->limit($limit)->orderBy(self::$mc_members.'.uid', 'desc');
         }
 
         return $result;
@@ -467,8 +476,8 @@ class Member extends \app\common\models\Member
     public static function getAllMembersInfosByQueue($uniacid, $limit = 0, $offset = 0)
     {
         $result = self::select(['yz_member.member_id', 'yz_member.parent_id'])
-            ->join('yz_member', 'mc_members.uid', '=', 'yz_member.member_id')
-            ->where('mc_members.uniacid', $uniacid)
+            ->join('yz_member', self::$mc_members.'.uid', '=', 'yz_member.member_id')
+            ->where(self::$mc_members.'.uniacid', $uniacid)
             ->whereNull('yz_member.deleted_at');
 
         if ($limit > 0) {
@@ -505,7 +514,7 @@ class Member extends \app\common\models\Member
                 $join->on('uid', '=', 'member_id')
                      ->whereNull('deleted_at');
             })
-            ->where('mc_members.uniacid', $uniacid)
+            ->where(self::$mc_members.'.uniacid', $uniacid)
             ->distinct()
             ->get();
     }
