@@ -145,7 +145,7 @@ class AllUploadController extends BaseController
                 return '文件大小超出规定值';
             }
         }
-       	$file_type = $file_type == 'image' ? 'syst_images' : $file_type;
+       	$file_type = $file_type == 'images' ? 'syst_images' : $file_type;
 
         	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
        
