@@ -435,7 +435,7 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public static function chkAgent($member_id, $mid, $mark='', $mark_id='')
+    public static function chkAgent($member_id, $mid, $mark = '', $mark_id = '')
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
