@@ -2256,7 +2256,7 @@ if (!function_exists('tpl_form_field_image')) {
         }
 
         $param = uploadParam();
-        $options['fileSizeLimit'] = $param['$param'];
+        $options['fileSizeLimit'] = $param['fileSizeLimit'];
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -2745,17 +2745,17 @@ if (!function_exists('tpl_ueditor')) {
         $s = '';
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
-        $global = SystemSetting::settingLoad('global', 'system_global');
+        $param = uploadParam();
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
 	<script type=\"text/javascript\">
-		require(['util'], function(util){
+		require(['".$param['util']."'], function(util){
 			util.editor('" . ($id ? $id : "") . "', {
 			height : {$options['height']}, 
 			dest_dir : '" . ($options['dest_dir'] ? $options['dest_dir'] : "") . "',
-			image_limit : " . (intval($global['image_limit']) * 1024) . ",
+			image_limit : " . (intval($param['global']['image_limit']) * 1024) . ",
 			allow_upload_video : " . ($options['allow_upload_video'] ? 'true' : 'false') . ",
-			audio_limit : " . (intval($global['audio_limit']) * 1024) . ",
+			audio_limit : " . (intval($param['global']['audio_limit']) * 1024) . ",
 			callback : ''
 			});
 		});
@@ -2914,16 +2914,19 @@ if (!function_exists('uploadParam')) {
         $util = 'util';
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
-            $options['fileSizeLimit'] = intval(SystemSetting::settingLoad('global', 'system_global')['image_limit']) * 1024;
+            $global = SystemSetting::settingLoad('global', 'system_global');
+            $fileSizeLimit = intval($global['image_limit']) * 1024;
             $util = 'utils';
             $util_url = '/' . $u_url . $util;
         } else {
             $util_url = '/addons/yun_shop/' . $u_url . $util;
-            $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+            $global = \YunShop::app()->setting['upload'];
+            $fileSizeLimit = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
         }
 
         $result['util'] = $util;
-        $result['fileSizeLimit'] = $options['fileSizeLimit'];
+        $result['global'] = $global;
+        $result['fileSizeLimit'] = $fileSizeLimit;
         $result['util_url'] = $util_url;
 
         return $result;

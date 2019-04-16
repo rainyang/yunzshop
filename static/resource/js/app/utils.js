@@ -258,7 +258,7 @@
                     },
                     shim: {
                         ueditor: {
-                            deps: ["./resource/components/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js", "./resource/components/ueditor/ueditor.config.js"],
+                            deps: ["/static/resource/components/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js", "/static/resource/components/ueditor/ueditor.config.js"],
                             exports: "UE",
                             init: function(e) {
                                 window.ZeroClipboard = e
