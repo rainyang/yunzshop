@@ -304,15 +304,15 @@ class InstallController
 //            $e->getMessage();
 //        }
 
-        $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-        $update     = new \app\common\services\AutoUpdate(null, null, 300);
-        $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-        if (!empty($plugins_dir)) {
-            try{
+        try {
+            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+            $update     = new \app\common\services\AutoUpdate(null, null, 300);
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
                 \Artisan::call('update:version', ['version' => $plugins_dir]);
-            }catch (\Exception $e) {
-                return $this->errorJson($e->getMessage());
             }
+        }catch (\Exception $e) {
+            return $this->errorJson($e->getMessage());
         }
 
         $user_model = new AdminUser;

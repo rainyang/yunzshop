@@ -101,11 +101,11 @@ class AllUploadController extends BaseController
         $realPath = $file->getRealPath();
 
         if (in_array($ext, $defaultImgType)) {
-            $file_type = 'image';
+            $file_type = 'images';
         } elseif (in_array($ext, $defaultAudioType)) {
-            $file_type = 'audio';
+            $file_type = 'audios';
         } elseif (in_array($ext, $defaultVideoType)) {
-            $file_type = 'video';
+            $file_type = 'videos'; 
         }
 
         $newFileName = $this->getNewFileName($originalName, $ext, $file_type); 
@@ -145,9 +145,9 @@ class AllUploadController extends BaseController
                 return '文件大小超出规定值';
             }
         }
-       	$file_type = $file_type == 'image' ? 'syst_image' : $file_type;
+        $file_type = $file_type == 'images' ? 'syst_images' : $file_type;
 
-        	\Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
+        \Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
        
         //执行本地上传
         $local_res = \Storage::disk($file_type)->put(substr($newFileName, 14), file_get_contents($realPath));
@@ -318,12 +318,12 @@ class AllUploadController extends BaseController
     {
         //存储至数据表中
         $core = new CoreAttach;
-
+        \Log::info('get_data_file_type', $file_type);
         switch ($file_type) {
-        	case 'image':
+        	case 'syst_images':
         		$type = 1;
         		break;
-        	case 'audio':
+        	case 'audios':
         		$type = 2;
         		break;
         	default:

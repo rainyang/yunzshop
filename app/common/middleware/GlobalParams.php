@@ -24,10 +24,7 @@ class GlobalParams
 
         \config::set('app.global', $base_config);
 
-        // 为了兼容 供应商登录
-        if (app('plugins')->isEnabled('supplier') && env('APP_Framework') == 'platform'){
-            include base_path().'/plugins/supplier/menu.php';
-        }
+        $this->checkClear();
 
         return $next($request);
     }
@@ -81,5 +78,33 @@ class GlobalParams
         }
 
         return $data;
+    }
+
+    /**
+     * 为了兼容 供应商、门店、分公司、酒店、区域代理 独立后台登录
+     */
+    public function checkClear()
+    {
+        if (app('plugins')->isEnabled('supplier')) {
+            include base_path() . '/plugins/supplier/menu.php';
+        }
+
+        if (app('plugins')->isEnabled('store-cashier')) {
+            include base_path() . '/plugins/store-cashier/storeMenu.php';
+        }
+
+        if (app('plugins')->isEnabled('subsidiary')) {
+            $subsidiary = include base_path() . '/plugins/subsidiary/bootstrap.php';
+            app()->call($subsidiary);
+        }
+
+        if (app('plugins')->isEnabled('hotel')) {
+            $hotel = include base_path() . '/plugins/hotel/bootstrap.php';
+            app()->call($hotel);
+        }
+
+        if (app('plugins')->isEnabled('hotel')) {
+            include base_path() . '/plugins/area-dividend/area_admin.php';
+        }
     }
 }

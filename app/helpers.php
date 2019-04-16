@@ -7,6 +7,8 @@ use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
 use Yunshop\StoreCashier\common\models\weiqing\WeiQingUsers;
 use app\common\services\Utils;
+use \app\platform\modules\system\models\SystemSetting;
+use \app\common\helpers\Client;
 
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
@@ -18,24 +20,15 @@ if (!function_exists("yz_tpl_ueditor")) {
         }
 
         $s = '';
-        $fileUploader = $file_dir.'/static/js/fileUploader.min.js';
+        $fileUploader = resource_get('static/js/fileUploader.min.js');
         if (!defined('TPL_INIT_UEDITOR')) {
             if (env('APP_Framework') == 'platform') {
-                $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor2.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
-                $upload_url = '/admin/system/upload/upload?upload_type=';
-                $image_url = '/admin/system/upload/image?local=local&groupid=-999';
-                $fetch_url = '/admin/system/upload/fetch';
-                $delet_url = '/admin/system/upload/delete';
-                $video_url = '/admin/system/upload/video?local=local&type=video&pagesize=5';
+                $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
             } else {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
-                $upload_url = './index.php?c=utility&a=file&do=upload&upload_type=';
-                $image_url = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
-                $fetch_url = './index.php?c=utility&a=file&do=fetch';
-                $delet_url = './index.php?c=utility&a=file&do=delete';
-                $video_url = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
             }
         }
+        $url = uploadUrl();
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
@@ -71,10 +64,10 @@ if (!function_exists("yz_tpl_ueditor")) {
 				editor.registerCommand(uiName, {
 					execCommand:function(){
 						require(['fileUploader'], function(uploader){
-						    uploader.upload_url('".$upload_url."');
-                            uploader.image_url('".$image_url."');
-                            uploader.fetch_url('".$fetch_url."');
-                            uploader.delet_url('".$delet_url."');
+						    uploader.upload_url('".$url['upload_url']."');
+                            uploader.image_url('".$url['image_url']."');
+                            uploader.fetch_url('".$url['fetch_url']."');
+                            uploader.delet_url('".$url['delet_url']."');
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
@@ -138,11 +131,11 @@ if (!function_exists("yz_tpl_ueditor")) {
                             }, videoType);
                         }
                     }, {type:'video'});
-                    uploader.upload_url('".$upload_url."');
-                    uploader.image_url('".$image_url."');
-                    uploader.fetch_url('".$fetch_url."');
-                    uploader.delet_url('".$delet_url."');
-                    uploader.video_url('".$video_url."');
+                    uploader.upload_url('".$url['upload_url']."');
+                    uploader.image_url('".$url['image_url']."');
+                    uploader.fetch_url('".$url['fetch_url']."');
+                    uploader.delet_url('".$url['delet_url']."');
+                    uploader.video_url('".$url['video_url']."');
                 }
             );
         }
@@ -237,9 +230,19 @@ if (!function_exists("tomedia")) {
         if (empty($src)) {
             return '';
         }
+
+        $local = strtolower($src);
         if (env('APP_Framework') == 'platform') {
             if (strexists($src, 'storage/')) {
                 return request()->getSchemeAndHttpHost() . '/' . substr($src, strpos($src, 'storage/'));
+            }
+            //判断是否是本地带域名图片地址
+            if (strexists($src, '/static/')) {
+                if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+                    return $src;
+                } else {
+                    return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
+                }
             }
         } elseif (env('APP_Framework') != 'platform' && strexists($src, 'addons/')) {
             return request()->getSchemeAndHttpHost() . '/' . substr($src, strpos($src, 'addons/'));
@@ -256,7 +259,7 @@ if (!function_exists("tomedia")) {
         }
 
         if (env('APP_Framework') == 'platform') {
-            $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
+            $remote = SystemSetting::settingLoad('remote', 'system_remote');
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
             if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
@@ -288,11 +291,15 @@ if (!function_exists("tomedia")) {
  */
 function yz_tomedia($src, $local_path = false, $upload_type = null)
 {
+    if (empty($src)) {
+        return '';
+    }
+
     $setting = [];
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = new \app\platform\modules\system\models\SystemSetting();
+        $systemSetting = new SystemSetting();
         if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
@@ -300,49 +307,52 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         if (!$upload_type) {
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
         }
+
+        $addons = '/storage/';
+        $attachment = '/static/';
     } else {
         global $_W;
         $setting = \setting_load();
+        $upload_type = $setting['remote']['type'];
+
+        $addons = '/addons/';
+        $attachment = '/attachment/';
     }
 
-    if (empty($src)) {
-        return '';
-    }
-    $os = \app\common\helpers\Client::osType();
-
-    if (strexists($src, 'addons/')) {
-        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+    $os = Client::osType();
+    if (strexists($src, $addons)) {
+        if ($os == Client::OS_TYPE_IOS) {
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
-        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
     }
+
     //判断是否是本地带域名图片地址
     $local = strtolower($src);
-    if (strexists($src, '/attachment/')) {
-        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+    if (strexists($src, $attachment)) {
+        if ($os == Client::OS_TYPE_IOS) {
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
         if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
             return $src;
         } else {
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
         }
     }
-
 
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
-        $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+        $src = $t = substr($urls['path'], strpos($urls['path'], 'image'));
     }
     $t = strtolower($src);
     if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-    if (!$sign && ($local_path || empty($setting['remote']['type']) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
+    if (!$sign && ($local_path || empty($upload_type) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
@@ -351,17 +361,18 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
+        $attach_url_remote = '';
         if ($upload_type == 1) {
-            $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
+            $attach_url_remote = $setting['remote']['ftp']['url'] . '/';
         } elseif ($upload_type == 2) {
-            $attachurl_remote = $setting['remote']['alioss']['url'] . '/';
+            $attach_url_remote = $setting['remote']['alioss']['url'] . '/';
         } elseif ($upload_type == 3) {
-            $attachurl_remote = $setting['remote']['qiniu']['url'] . '/';
+            $attach_url_remote = $setting['remote']['qiniu']['url'] . '/';
         } elseif ($upload_type == 4) {
-            $attachurl_remote = $setting['remote']['cos']['url'] . '/';
+            $attach_url_remote = $setting['remote']['cos']['url'] . '/';
         }
 
-        $src = $attachurl_remote . $src;
+        $src = $attach_url_remote . $src;
     }
 
     if (!config('app.debug')) {
@@ -958,7 +969,7 @@ if (!function_exists('tdd')) {
 if (!function_exists('createNo')) {
     function createNo($prefix, $length = 6, $numeric = FALSE)
     {
-        return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
+        return $prefix . date('YmdHis') . Client::random($length, $numeric);
     }
 }
 if (!function_exists('yz_array_set')) {
@@ -2243,13 +2254,16 @@ if (!function_exists('tpl_form_field_image')) {
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
             $s = '
 		<script type="text/javascript">
 			function showImageDialog(elm, opts, options) {
-				require(["util"], function(util){
+				require(["'.$param['util'].'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
 					var val = ipt.val();
@@ -2719,21 +2733,29 @@ if (!function_exists('tpl_form_field_daterange')) {
 }
 
 if (!function_exists('tpl_ueditor')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $id
+     * @param string $value
+     * @param array $options
+     * @return string
+     */
     function tpl_ueditor($id, $value = '', $options = array())
     {
         $s = '';
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
+        $param = uploadParam();
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
 	<script type=\"text/javascript\">
-		require(['util'], function(util){
+		require(['".$param['util']."'], function(util){
 			util.editor('" . ($id ? $id : "") . "', {
 			height : {$options['height']}, 
 			dest_dir : '" . ($options['dest_dir'] ? $options['dest_dir'] : "") . "',
-			image_limit : " . (intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024) . ",
+			image_limit : " . (intval($param['global']['image_limit']) * 1024) . ",
 			allow_upload_video : " . ($options['allow_upload_video'] ? 'true' : 'false') . ",
-			audio_limit : " . (intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024) . ",
+			audio_limit : " . (intval($param['global']['audio_limit']) * 1024) . ",
 			callback : ''
 			});
 		});
@@ -2857,3 +2879,56 @@ if (!function_exists('user_hash')) {
     }
 }
 
+if (!function_exists('uploadUrl')) {
+    /**
+     * 上传 相关组件 使用的url
+     * @return mixed
+     */
+    function uploadUrl()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $url['upload_url'] = '/admin/system/upload/upload?upload_type=';
+            $url['image_url'] = '/admin/system/upload/image?local=local&groupid=-999';
+            $url['fetch_url'] = '/admin/system/upload/fetch';
+            $url['delet_url'] = '/admin/system/upload/delete';
+            $url['video_url'] = '/admin/system/upload/video?local=local&type=video&pagesize=5';
+        } else {
+            $url['upload_url'] = './index.php?c=utility&a=file&do=upload&upload_type=';
+            $url['image_url'] = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
+            $url['fetch_url'] = './index.php?c=utility&a=file&do=fetch';
+            $url['delet_url'] = './index.php?c=utility&a=file&do=delete';
+            $url['video_url'] = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
+        }
+
+        return $url;
+    }
+}
+
+if (!function_exists('uploadParam')) {
+    /**
+     * ImageHelper 上传需要的变量
+     * @return mixed
+     */
+    function uploadParam()
+    {
+        $util = 'util';
+        $u_url = 'static/resource/js/app/';
+        if (env('APP_Framework') == 'platform') {
+            $global = SystemSetting::settingLoad('global', 'system_global');
+            $fileSizeLimit = intval($global['image_limit']) * 1024;
+            $util = 'utils';
+            $util_url = '/' . $u_url . $util;
+        } else {
+            $util_url = '/addons/yun_shop/' . $u_url . $util;
+            $global = \YunShop::app()->setting['upload'];
+            $fileSizeLimit = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+        }
+
+        $result['util'] = $util;
+        $result['global'] = $global;
+        $result['fileSizeLimit'] = $fileSizeLimit;
+        $result['util_url'] = $util_url;
+
+        return $result;
+    }
+}

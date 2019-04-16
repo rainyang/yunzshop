@@ -109,50 +109,169 @@
 			}, opts);
 		});
 	}
-	
-	util.editor = function(elm, callback){
-		var id = elm.id;
-		if(!id) {
-			id = 'editor-' + Math.random();
-			elm.id = id;
-		}
-		if(!elm.editor) {
-			require(['editor'], function(){
-				var editor = tinyMCE.createEditor(id, {
-					plugins: [
-						"advlist autolink lists link image multiimage charmap print preview hr anchor pagebreak",
-						"searchreplace wordcount visualblocks visualchars code fullscreen",
-						"insertdatetime media nonbreaking save table contextmenu directionality",
-						"emoticons template paste textcolor"
-					],
-					toolbar1: "undo redo | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | preview fullscreen",
-					toolbar2: "code print | styleselect fontsizeselect link image multiimage media emoticons ",
-					language: 'zh_CN',
-					paste_webkit_styles: 'all',
-					paste_preprocess: function(plugin, args) {
-						args.content = args.content.replace(/!important/g, '');
-					},
-					fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt",
-					menubar: false
-				});
-				elm.editor = editor;
-				editor.render();
-				if($.isFunction(callback)) {
-					callback(elm, editor);
-				}
-			});
-		}
-		return {
-			getContent : function(){
-				if(elm.editor) {
-					return elm.editor.getContent();
-				} else {
-					return '';
-				}
-			}
-		};
-	};
-	
+
+	util.editor = function(e, t, o) {
+            if (!e && "" != e) return "";
+            var n = "string" == typeof e ? e: e.id;
+            n || (n = "editor-" + Math.random(), e.id = n);
+            var a = {
+                height: "200",
+                dest_dir: "",
+                image_limit: "1024",
+                allow_upload_video: 1,
+                audio_limit: "1024",
+                callback: null
+            };
+            $.isFunction(t) && (t = {
+                callback: t
+            }),
+                t = $.extend({},
+                    a, t),
+                window.UEDITOR_HOME_URL = window.sysinfo.siteroot + "web/resource/components/ueditor/";
+            var r = function(a, r) {
+                var l = {
+                    autoClearinitialContent: !1,
+                    toolbars: [["fullscreen", "source", "preview", "|", "bold", "italic", "underline", "strikethrough", "forecolor", "backcolor", "|", "justifyleft", "justifycenter", "justifyright", "|", "insertorderedlist", "insertunorderedlist", "blockquote", "emotion", "link", "removeformat", "|", "rowspacingtop", "rowspacingbottom", "lineheight", "indent", "paragraph", "fontfamily", "fontsize", "|", "inserttable", "deletetable", "insertparagraphbeforetable", "insertrow", "deleterow", "insertcol", "deletecol", "mergecells", "mergeright", "mergedown", "splittocells", "splittorows", "splittocols", "|", "anchor", "map", "print", "drafts"]],
+                    elementPathEnabled: !1,
+                    catchRemoteImageEnable: !1,
+                    initialFrameHeight: t.height,
+                    focus: !1,
+                    maximumWords: 9999999999999
+                };
+                o && (l.toolbars = [["fullscreen", "source", "preview", "|", "bold", "italic", "underline", "strikethrough", "forecolor", "backcolor", "|", "justifyleft", "justifycenter", "justifyright", "|", "insertorderedlist", "insertunorderedlist", "blockquote", "emotion", "link", "removeformat", "|", "rowspacingtop", "rowspacingbottom", "lineheight", "indent", "paragraph", "fontfamily", "fontsize", "|", "inserttable", "deletetable", "insertparagraphbeforetable", "insertrow", "deleterow", "insertcol", "deletecol", "mergecells", "mergeright", "mergedown", "splittocells", "splittorows", "splittocols", "|", "anchor", "print", "drafts"]]);
+                var s = {
+                    type: "image",
+                    direct: !1,
+                    multiple: !0,
+                    tabs: {
+                        upload: "active",
+                        browser: "",
+                        crawler: ""
+                    },
+                    path: "",
+                    dest_dir: t.dest_dir,
+                    global: !1,
+                    thumb: !1,
+                    width: 0,
+                    fileSizeLimit: 1024 * t.image_limit
+                };
+                if (a.registerUI("myinsertimage",
+                    function(e, t) {
+                        e.registerCommand(t, {
+                            execCommand: function() {
+                                r.upload_url('./index.php?c=utility&a=file&do=upload&upload_type=');
+                                r.image_url('./index.php?c=utility&a=file&do=image&local=local&groupid=-999');
+                                r.fetch_url('./index.php?c=utility&a=file&do=fetch');
+                                r.delet_url('./index.php?c=utility&a=file&do=delete');
+                                r.video_url('./index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5');
+                                r.show(function(t) {
+                                        if (0 != t.length) if (1 == t.length) e.execCommand("insertimage", {
+                                            src: t[0].url,
+                                            _src: t[0].attachment,
+                                            width: "100%",
+                                            alt: t[0].filename
+                                        });
+                                        else {
+                                            var o = [];
+                                            for (i in t) o.push({
+                                                src: t[i].url,
+                                                _src: t[i].attachment,
+                                                width: "100%",
+                                                alt: t[i].filename
+                                            });
+                                            e.execCommand("insertimage", o)
+                                        }
+                                    },
+                                    s)
+                            }
+                        });
+                        var o = new a.ui.Button({
+                            name: "插入图片",
+                            title: "插入图片",
+                            cssRules: "background-position: -726px -77px",
+                            onclick: function() {
+                                e.execCommand(t)
+                            }
+                        });
+                        return e.addListener("selectionchange",
+                            function() {
+                                var i = e.queryCommandState(t); - 1 == i ? (o.setDisabled(!0), o.setChecked(!1)) : (o.setDisabled(!1), o.setChecked(i))
+                            }),
+                            o
+                    },
+                    19), a.registerUI("myinsertvideo",
+                    function(e, i) {
+                        e.registerCommand(i, {
+                            execCommand: function() {
+                                r.show(function(t) {
+                                        if (t) {
+                                            var i = t.isRemote ? "iframe": "video";
+                                            e.execCommand("insertvideo", {
+                                                    url: t.url,
+                                                    width: 300,
+                                                    height: 200
+                                                },
+                                                i)
+                                        }
+                                    },
+                                    {
+                                        fileSizeLimit: 1024 * t.audio_limit,
+                                        type: "video",
+                                        allowUploadVideo: t.allow_upload_video,
+                                        netWorkVideo: !0
+                                    })
+                            }
+                        });
+                        var o = new a.ui.Button({
+                            name: "插入视频",
+                            title: "插入视频",
+                            cssRules: "background-position: -320px -20px",
+                            onclick: function() {
+                                e.execCommand(i)
+                            }
+                        });
+                        return e.addListener("selectionchange",
+                            function() {
+                                var t = e.queryCommandState(i); - 1 == t ? (o.setDisabled(!0), o.setChecked(!1)) : (o.setDisabled(!1), o.setChecked(t))
+                            }),
+                            o
+                    },
+                    20), n) {
+                    var d = a.getEditor(n, l);
+                    $("#" + n).removeClass("form-control"),
+                        $("#" + n).data("editor", d),
+                        $("#" + n).parents("form").submit(function() {
+                            d.queryCommandState("source") && d.execCommand("source")
+                        }),
+                    $.isFunction(t.callback) && t.callback(e, d)
+                }
+            };
+            require(["ueditor", "fileUploader"],
+                function(e, t) {
+                    r(e, t)
+                },
+                function(e) {
+                    var t = e.requireModules && e.requireModules[0];
+                    "ueditor" === t && (requirejs.undef(t), requirejs.config({
+                        paths: {
+                            ueditor: "../../components/ueditor/ueditor.all.min"
+                        },
+                        shim: {
+                            ueditor: {
+                                deps: ["./resource/components/ueditor/third-party/zeroclipboard/ZeroClipboard.min.js", "./resource/components/ueditor/ueditor.config.js"],
+                                exports: "UE",
+                                init: function(e) {
+                                    window.ZeroClipboard = e
+                                }
+                            }
+                        }
+                    }), require(["ueditor", "fileUploader"],
+                        function(e, t) {
+                            r(e, t)
+                        }))
+                })
+        },
+
 	// target dom 对象
 	util.emotion = function(elm, target, callback) {
 		require(['jquery.caret', 'bootstrap', 'css!../../components/emotions/emotions.css'],function($){
