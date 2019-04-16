@@ -153,8 +153,8 @@ class MessageService
     {
         $noticeType = \YunShop::request()->type;
         $formId = \YunShop::request()->formId;
-        \log::debug('----------formId-----------------');
-        \log::debug($formId);
+        \Log::debug('----------formId-----------------');
+        \Log::debug($formId);
         if (!$formId){
             return false;
         }
