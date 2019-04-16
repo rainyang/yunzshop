@@ -2254,13 +2254,16 @@ if (!function_exists('tpl_form_field_image')) {
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024;
+
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['$param'];
+
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
             $s = '
 		<script type="text/javascript">
 			function showImageDialog(elm, opts, options) {
-				require(["util"], function(util){
+				require(["'.$param['util'].'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
 					var val = ipt.val();
