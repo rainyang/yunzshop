@@ -73,7 +73,7 @@ class ApiController extends BaseController
             }
 
             //发展下线
-            Member::chkAgent(\YunShop::app()->getMemberId(), $mid, $mark_id);
+            Member::chkAgent(\YunShop::app()->getMemberId(), $mid, $mark ,$mark_id);
         }
     }
     public static function is_alipay()
