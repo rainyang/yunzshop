@@ -73,6 +73,7 @@ class ApiController extends BaseController
             }
 
             //发展下线
+            \Log::info('名片1'.$mark,$mark_id);
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid, $mark ,$mark_id);
         }
     }
