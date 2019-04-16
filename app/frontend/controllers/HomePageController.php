@@ -718,18 +718,6 @@ class HomePageController extends ApiController
                 "iconcolor"   => "#666666"
             ),
             Array(
-                "id"          => "menu_1489731310493",
-                "title"       => "分类",
-                "icon"        => "fa fa-th-large",
-                "url"         => "/addons/yun_shop/?#/category?i=" . $i . "&mid=" . $mid . "&type=" . $type,
-                "name"        => "category",
-                "subMenus"    => [],
-                "textcolor"   => "#70c10b",
-                "bgcolor"     => "#24d7e6",
-                "iconcolor"   => "#666666",
-                "bordercolor" => "#bfbfbf"
-            ),
-            Array(
                 "id"          => "menu_1489735163419",
                 "title"       => "购物车",
                 "icon"        => "fa fa-cart-plus",
