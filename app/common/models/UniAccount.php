@@ -8,7 +8,7 @@
 
 namespace app\common\models;
 
-use app\common\models\member\MemberShopInfo;
+use app\common\models\member\MemberShopInfo as YzMember;
 
 class UniAccount extends BaseModel
 {
@@ -28,6 +28,6 @@ class UniAccount extends BaseModel
         return self::find($uniacid);
     }
     public static function getEnable(){
-        return MemberShopInfo::select('uniacid')->distinct()->get();
+        return YzMember::select('uniacid')->distinct()->get();
     }
 }
