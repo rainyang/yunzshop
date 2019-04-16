@@ -237,9 +237,19 @@ if (!function_exists("tomedia")) {
         if (empty($src)) {
             return '';
         }
+
+        $local = strtolower($src);
         if (env('APP_Framework') == 'platform') {
             if (strexists($src, 'storage/')) {
                 return request()->getSchemeAndHttpHost() . '/' . substr($src, strpos($src, 'storage/'));
+            }
+            //判断是否是本地带域名图片地址
+            if (strexists($src, '/static/')) {
+                if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+                    return $src;
+                } else {
+                    return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
+                }
             }
         } elseif (env('APP_Framework') != 'platform' && strexists($src, 'addons/')) {
             return request()->getSchemeAndHttpHost() . '/' . substr($src, strpos($src, 'addons/'));
@@ -288,8 +298,14 @@ if (!function_exists("tomedia")) {
  */
 function yz_tomedia($src, $local_path = false, $upload_type = null)
 {
+    if (empty($src)) {
+        return '';
+    }
+
     $setting = [];
     $sign = false;
+    $os = \app\common\helpers\Client::osType();
+    $local = strtolower($src);
 
     if (env('APP_Framework') == 'platform') {
         $systemSetting = new \app\platform\modules\system\models\SystemSetting();
@@ -300,18 +316,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         if (!$upload_type) {
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
         }
-    } else {
-        global $_W;
-        $setting = \setting_load();
-        $upload_type = $setting['remote']['type'];
-    }
 
-    if (empty($src)) {
-        return '';
-    }
-    $os = \app\common\helpers\Client::osType();
-
-    if (env('APP_Framework') == 'platform') {
         if (strexists($src, 'storage/')) {
             if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
                 $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/storage/'));
@@ -319,32 +324,49 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             }
             return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/storage/'));
         }
-    } elseif (env('APP_Framework') != 'platform' && strexists($src, 'addons/')) {
-        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
-            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        //判断是否是本地带域名图片地址
+        if (strexists($src, '/static/')) {
+            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
+                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+            }
+            if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+                return $src;
+            } else {
+                return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
+            }
         }
-        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
-    }
+    } else {
+        global $_W;
+        $setting = \setting_load();
+        $upload_type = $setting['remote']['type'];
 
-    //判断是否是本地带域名图片地址
-    $local = strtolower($src);
-    if (strexists($src, '/attachment/')) {
-        if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
-            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        if (strexists($src, 'addons/')) {
+            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
+                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+            }
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
         }
-        if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
-            return $src;
-        } else {
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+
+        //判断是否是本地带域名图片地址
+        if (strexists($src, '/attachment/')) {
+            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
+                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+            }
+            if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+                return $src;
+            } else {
+                return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
+            }
         }
     }
 
     //如果远程地址中包含本地host也检测是否远程图片
     if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
-        $src = $t = substr($urls['path'], strpos($urls['path'], 'images'));
+        $src = $t = substr($urls['path'], strpos($urls['path'], 'image'));
     }
     $t = strtolower($src);
     if (strexists($t, 'http://') || strexists($t, 'https://') || substr($t, 0, 2) == '//') {
