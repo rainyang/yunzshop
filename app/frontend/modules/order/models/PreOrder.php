@@ -100,7 +100,7 @@ class PreOrder extends Order
         });
         // 订单剩余抵扣节点
         $deductionRestNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
-            $a = new OrderRestDeductionPriceNode($this, $orderDeduction, 9100);
+            $a  = new OrderRestDeductionPriceNode($this, $orderDeduction, 9100);
             //dump($a->getKey());
             return $a;
         });
@@ -295,11 +295,11 @@ class PreOrder extends Order
             'note' => $this->getParams('note'),//订单备注
             'shop_name' => $this->getShopName(),//是否是虚拟商品订单
             'need_address' => $this->isNeedAddress(),//订单不需要填写地址
-            'invoice_type' => $this->getRequest()->input('invoice_type'),//发票类型
-            'rise_type' => $this->getRequest()->input('rise_type'),//收件人或单位
-            // 'call'=>$this->getRequest()->input('call'),//抬头或单位名称
-            'collect_name' => $this->getRequest()->input('call'),//抬头或单位名称
-            'company_number' => $this->getRequest()->input('company_number'),//单位识别号
+            'invoice_type'=>$this->getRequest()->input('invoice_type'),//发票类型
+            'rise_type'=>$this->getRequest()->input('rise_type'),//收件人或单位
+           // 'call'=>$this->getRequest()->input('call'),//抬头或单位名称
+            'collect_name'=>$this->getRequest()->input('call'),//抬头或单位名称
+            'company_number'=>$this->getRequest()->input('company_number'),//单位识别号
         );
 
 
@@ -363,22 +363,13 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-//        if (!array_key_exists('price', $this->attributes)) {
-//            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
-        return max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
-//        }
-//
-//        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
-//        return $this->price;
-    }
+        if (!array_key_exists('price', $this->attributes)) {
+            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
+            $this->price = max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
+        }
 
-    /**
-     * @return float|mixed
-     * @throws \app\common\exceptions\AppException
-     */
-    public function getPriceAttribute()
-    {
-        return $this->getPrice();
+        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
+        return $this->price;
     }
 
     /**
@@ -483,7 +474,7 @@ class PreOrder extends Order
              * @var BaseModel $model
              */
             foreach (array_filter($models) as $model) {
-                if (!isset($model->order_id) && in_array('order_id', \Illuminate\Support\Facades\Schema::getColumnListing($model->getTable()))) {
+                if (!isset($model->order_id) && in_array('order_id',\Illuminate\Support\Facades\Schema::getColumnListing($model->getTable()))) {
                     $model->order_id = $this->id;
                 }
 
