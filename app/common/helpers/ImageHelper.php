@@ -11,6 +11,12 @@ namespace app\common\helpers;
 
 class ImageHelper
 {
+    private static $global;
+
+    public function __construct()
+    {
+        self::$global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
+    }
 
     /**
      * 【表单控件】: 图片上传与选择控件
@@ -58,8 +64,7 @@ class ImageHelper
         $util = 'util';
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
-            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
-            $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
+            $options['fileSizeLimit'] = intval(self::$global['image_limit']) * 1024;
             $util = 'utils';
             $util_url = '/'.$u_url.$util;
         } else {
@@ -139,8 +144,7 @@ class ImageHelper
         $util = 'util';
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
-            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
-            $options['fileSizeLimit'] = intval($global['image_limit']) * 1024;
+            $options['fileSizeLimit'] = intval(self::$global['image_limit']) * 1024;
             $util = 'utils';
             $util_url = '/'.$u_url.$util;
         } else {
@@ -229,8 +233,7 @@ EOF;
         $util = 'util';
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
-            $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
-            $options['fileSizeLimit'] = intval($global['audio_limit']) * 1024;
+            $options['fileSizeLimit'] = intval(self::$global['audio_limit']) * 1024;
             $util = 'utils';
             $util_url = '/'.$u_url.$util;
         } else {

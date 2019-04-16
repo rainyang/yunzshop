@@ -2733,6 +2733,7 @@ if (!function_exists('tpl_ueditor')) {
         $s = '';
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
+        $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
 	<script type=\"text/javascript\">
@@ -2740,9 +2741,9 @@ if (!function_exists('tpl_ueditor')) {
 			util.editor('" . ($id ? $id : "") . "', {
 			height : {$options['height']}, 
 			dest_dir : '" . ($options['dest_dir'] ? $options['dest_dir'] : "") . "',
-			image_limit : " . (intval($GLOBALS['_W']['setting']['upload']['image']['limit']) * 1024) . ",
+			image_limit : " . (intval($global['image_limit']) * 1024) . ",
 			allow_upload_video : " . ($options['allow_upload_video'] ? 'true' : 'false') . ",
-			audio_limit : " . (intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024) . ",
+			audio_limit : " . (intval($global['audio_limit']) * 1024) . ",
 			callback : ''
 			});
 		});
