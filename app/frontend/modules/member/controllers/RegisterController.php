@@ -192,9 +192,9 @@ class RegisterController extends ApiController
         }
         $code = rand(1000, 9999);
 
-        Session::set(codetime, time());
-        Session::set(code, $code);
-        Session::set(code_mobile, $mobile);
+        Session::set('codetime', time());
+        Session::set('code', $code);
+        Session::set('code_mobile', $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
@@ -233,9 +233,9 @@ class RegisterController extends ApiController
         }
         $code = rand(1000, 9999);
 
-        Session::set(codetime, time());
-        Session::set(code, $code);
-        Session::set(code_mobile, $mobile);
+        Session::set('codetime', time());
+        Session::set('code', $code);
+        Session::set('code_mobile', $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 
@@ -256,9 +256,9 @@ class RegisterController extends ApiController
         }
         $code = rand(1000, 9999);
 
-        Session::set(codetime, time());
-        Session::set(code, $code);
-        Session::set(code_mobile, $mobile);
+        Session::set('codetime', time());
+        Session::set('code', $code);
+        Session::set('code_mobile', $mobile);
 
         //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
 

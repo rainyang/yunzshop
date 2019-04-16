@@ -27,7 +27,7 @@ class CouponSend
     {
         \Log::info('发放优惠券处理');
         set_time_limit(0);
-        $uniAccount = UniAccount::get();
+        $uniAccount = UniAccount::getEnable();
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
             Setting::$uniqueAccountId = $u->uniacid;

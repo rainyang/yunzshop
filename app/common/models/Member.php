@@ -117,6 +117,8 @@ class Member extends BackendModel
     protected $primaryKey = 'uid';
     protected $appends = ['avatar_image','username'];
 
+    protected $hidden = ['password', 'salt'];
+
     public function bankCard()
     {
         return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
