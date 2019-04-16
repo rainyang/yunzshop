@@ -127,7 +127,7 @@
         }),
             t = $.extend({},
                 a, t),
-            window.UEDITOR_HOME_URL = window.sysinfo.siteroot + "web/resource/components/ueditor/";
+            window.UEDITOR_HOME_URL = window.sysinfo.siteroot + "/static/resource/components/ueditor/";
         var r = function(a, r) {
             var l = {
                 autoClearinitialContent: !1,
