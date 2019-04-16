@@ -438,13 +438,12 @@ class Member extends BackendModel
     public static function chkAgent($member_id, $mid, $mark = '', $mark_id = '')
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
-        \Log::info('名片2'.$mark,$mark_id);
+
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
 
         if($mark_id && $mark)
         {
-            \Log::info('名片3'.$mark,$mark_id);
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
         }
     }
