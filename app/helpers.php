@@ -2912,3 +2912,28 @@ if (!function_exists('uploadUrl')) {
     }
 }
 
+if (!function_exists('uploadParam')) {
+    /**
+     * ImageHelper 上传需要的变量
+     * @return mixed
+     */
+    function uploadParam()
+    {
+        $util = 'util';
+        $u_url = 'static/resource/js/app/';
+        if (env('APP_Framework') == 'platform') {
+            $options['fileSizeLimit'] = intval(\app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global')['image_limit']) * 1024;
+            $util = 'utils';
+            $util_url = '/' . $u_url . $util;
+        } else {
+            $util_url = '/addons/yun_shop/' . $u_url . $util;
+            $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+        }
+
+        $result['util'] = $util;
+        $result['fileSizeLimit'] = $options['fileSizeLimit'];
+        $result['util_url'] = $util_url;
+
+        return $result;
+    }
+}

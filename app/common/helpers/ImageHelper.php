@@ -11,13 +11,6 @@ namespace app\common\helpers;
 
 class ImageHelper
 {
-    private static $global;
-
-    public function __construct()
-    {
-        self::$global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
-    }
-
     /**
      * 【表单控件】: 图片上传与选择控件
      * @param string $name 表单input名称
@@ -35,7 +28,8 @@ class ImageHelper
      * </pre>
      * @return string
      */
-    public static function tplFormFieldImage($name, $value = '', $default = '', $options = array()) {
+    public static function tplFormFieldImage($name, $value = '', $default = '', $options = array())
+    {
         if (empty($default)) {
             $default = static_url('resource/images/nopic.jpg');
         }
@@ -61,16 +55,9 @@ class ImageHelper
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
-        $util = 'util';
-        $u_url = 'static/resource/js/app/';
-        if (env('APP_Framework') == 'platform') {
-            $options['fileSizeLimit'] = intval(self::$global['image_limit']) * 1024;
-            $util = 'utils';
-            $util_url = '/'.$u_url.$util;
-        } else {
-            $util_url = '/addons/yun_shop/'.$u_url.$util;
-            $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
-        }
+
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['$param'];
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -80,10 +67,10 @@ class ImageHelper
 			function showImageDialog(elm, opts, options) {
 			    require.config({
                     paths:{
-                        "'.$util.'":"'.$util_url.'"
+                        "'.$param['util'].'":"'.$param['util_url'].'"
                     }
                 });
-				require(["'.$util.'"], function(util){
+				require(["'.$param['util'].'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
 					var val = ipt.val();
@@ -138,19 +125,13 @@ class ImageHelper
      * @param array $options  自定义图片上传路径
      * @return string
      */
-    public static function tplFormFieldMultiImage($name, $value = array(), $options = array()) {
+    public static function tplFormFieldMultiImage($name, $value = array(), $options = array())
+    {
         $options['multiple'] = true;
         $options['direct'] = false;
-        $util = 'util';
-        $u_url = 'static/resource/js/app/';
-        if (env('APP_Framework') == 'platform') {
-            $options['fileSizeLimit'] = intval(self::$global['image_limit']) * 1024;
-            $util = 'utils';
-            $util_url = '/'.$u_url.$util;
-        } else {
-            $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
-            $util_url = '/addons/yun_shop'.$u_url.$util;
-        }
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['$param'];
+
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
                 exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
@@ -165,10 +146,10 @@ class ImageHelper
                 var name = $(elm).next().val();
                 require.config({
                     paths:{
-                        "'.$util.'":"'.$util_url.'"
+                        "'.$param['util'].'":"'.$param['util_url'].'"
                     }
                 });
-				require(["'.$util.'"], function(util){
+				require(["'.$param['util'].'"], function(util){
 					util.image("", function(urls){
 						$.each(urls, function(idx, url){
                             $(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
@@ -220,7 +201,8 @@ EOF;
      * @param array $options
      * @return string
      */
-    public function tplFormFieldVideo($name, $value = '', $options = array()) {
+    public function tplFormFieldVideo($name, $value = '', $options = array())
+    {
         if(!is_array($options)){
             $options = array();
         }
@@ -230,16 +212,9 @@ EOF;
         $options['direct'] = true;
         $options['multi'] = false;
         $options['type'] = 'video';
-        $util = 'util';
-        $u_url = 'static/resource/js/app/';
-        if (env('APP_Framework') == 'platform') {
-            $options['fileSizeLimit'] = intval(self::$global['audio_limit']) * 1024;
-            $util = 'utils';
-            $util_url = '/'.$u_url.$util;
-        } else {
-            $util_url = '/addons/yun_shop/'.$u_url.$util;
-            $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
-        }
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['$param'];
+
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
@@ -247,10 +222,10 @@ EOF;
 	function showVideoDialog(elm, options) {
 	    require.config({
             paths:{
-                "'.$util.'":"'.$util_url.'"
+                "'.$param['util'].'":"'.$param['util_url'].'"
             }
         });
-		require(["'.$util.'"], function(util){
+		require(["'.$param['util'].'"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
 			var val = ipt.val();
