@@ -206,6 +206,12 @@ abstract class Credit
         return $this->addition($data);
     }
 
+    public function excelRecharge(array $data)
+    {
+        $this->source = ConstService::SOURCE_EXCEL_RECHARGE;
+        return $this->addition($data);
+    }
+
 
     protected function result()
     {

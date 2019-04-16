@@ -29,6 +29,7 @@ class PopularizePageShowController extends BaseController
                 throw new ShopException('保存失败');
             }
         }
+
         return view('member.popularize.index',[
             'info' => $info,
             'plugin_page' => $this->getData(),
@@ -134,6 +135,7 @@ class PopularizePageShowController extends BaseController
         $lang_set = $this->getLangSet();
 
         $config = $this->getIncomePageConfig();
+        \Log::info('income_config', $config);
 
         $plugins = $this->getPlugins();
 
@@ -141,7 +143,7 @@ class PopularizePageShowController extends BaseController
 
             $incomeFactory = new PopularizePageShowFactory(new $item['class'], $lang_set);
 
-
+\Log::info('income_factory', $plugins[$incomeFactory->getMark()]);
             if ($plugins[$incomeFactory->getMark()]) {
                 $array[] = [
                     'url' => $plugins[$incomeFactory->getMark()],
@@ -157,10 +159,8 @@ class PopularizePageShowController extends BaseController
                     'status' => 0,
                 ];
             }
-
-
+            \Log::info('income_factory_array', $array);
         }
-
         return $array;
     }
 
@@ -168,6 +168,9 @@ class PopularizePageShowController extends BaseController
     {
         return [
             'area_dividend' => ['regionalAgencyCenter','applyRegionalAgency'],
+            'store_cashier' => ['cashier','storeApply'],
+            'store_withdraw' => ['storeManage','storeApply'],
+            'hotel_withdraw' => ['hotelManage', 'hotelApply'],
         ];
     }
 

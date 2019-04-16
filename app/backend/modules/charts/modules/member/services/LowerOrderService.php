@@ -17,7 +17,7 @@ class LowerOrderService
 {
     public function memberOrder()
     {
-        $uniAccount = UniAccount::get();
+        $uniAccount = UniAccount::getEnable();
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;

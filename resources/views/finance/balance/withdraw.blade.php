@@ -172,11 +172,15 @@
                 @endif
 
 
-                    <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;'/>
+                    <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回" style='margin-left:10px;'/>
 
             </div>
         </form>
 
     </div>
-
+    <script language='javascript'>
+        function goBack() {
+            window.location.href = "{!! yzWebUrl('finance.withdraw-records') !!}";
+        }
+    </script>
 @endsection
