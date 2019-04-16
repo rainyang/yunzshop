@@ -1520,7 +1520,7 @@ return [
 
                     'relation_base_save' => [
                         'name'       => '查看修改',
-                        'url'        => 'member.member-relation.base',
+                        'url'        => 'member.member.member_record',
                         'url_params' => '',
                         'permit'     => 1,
                         'menu'       => 0,
