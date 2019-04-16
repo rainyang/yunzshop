@@ -38,7 +38,7 @@ class MemberHistoryController extends ApiController
             return $this->errorJson('未获取到商品ID，添加失败！');
         }
 
-        if(\YunShop::request()->mark)
+        if(\YunShop::request()->mark && \YunShop::request()->mark_id)
         {
             event(new MemberGoodsHistoryEvent($goodsId,\YunShop::request()->mark,\YunShop::request()->mark_id));
         }
