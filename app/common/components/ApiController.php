@@ -43,7 +43,7 @@ class ApiController extends BaseController
         $mid = Member::getMid();
         $mark = \YunShop::request()->mark;
         $mark_id = \YunShop::request()->mark_id;
-        \Log::info('名片jilu'.$mark,print_r(\YunShop::request(),true));
+        \Log::info('名片jilu'.$mark,print_r(request(),true));
         if (self::is_alipay() && $type != 8) {
             $type = 8;
         }
