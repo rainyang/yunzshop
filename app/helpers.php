@@ -7,6 +7,8 @@ use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
 use Yunshop\StoreCashier\common\models\weiqing\WeiQingUsers;
 use app\common\services\Utils;
+use \app\platform\modules\system\models\SystemSetting;
+use \app\common\helpers\Client;
 
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
@@ -18,10 +20,10 @@ if (!function_exists("yz_tpl_ueditor")) {
         }
 
         $s = '';
-        $fileUploader = $file_dir.'/static/js/fileUploader.min.js';
+        $fileUploader = resource_get('static/js/fileUploader.min.js');
         if (!defined('TPL_INIT_UEDITOR')) {
             if (env('APP_Framework') == 'platform') {
-                $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor2.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
+                $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
             } else {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
             }
@@ -257,7 +259,7 @@ if (!function_exists("tomedia")) {
         }
 
         if (env('APP_Framework') == 'platform') {
-            $remote = \app\platform\modules\system\models\SystemSetting::settingLoad('remote', 'system_remote');
+            $remote = SystemSetting::settingLoad('remote', 'system_remote');
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
             if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
@@ -295,11 +297,9 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
 
     $setting = [];
     $sign = false;
-    $os = \app\common\helpers\Client::osType();
-    $local = strtolower($src);
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = new \app\platform\modules\system\models\SystemSetting();
+        $systemSetting = new SystemSetting();
         if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
@@ -308,49 +308,37 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
         }
 
-        if (strexists($src, 'storage/')) {
-            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/storage/'));
-                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
-            }
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/storage/'));
-        }
-        //判断是否是本地带域名图片地址
-        if (strexists($src, '/static/')) {
-            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
-                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
-            }
-            if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
-                return $src;
-            } else {
-                return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/static/'));
-            }
-        }
+        $addons = '/storage/';
+        $attachment = '/static/';
     } else {
         global $_W;
         $setting = \setting_load();
         $upload_type = $setting['remote']['type'];
 
-        if (strexists($src, 'addons/')) {
-            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
-                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
-            }
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/addons/'));
-        }
+        $addons = '/addons/';
+        $attachment = '/attachment/';
+    }
 
-        //判断是否是本地带域名图片地址
-        if (strexists($src, '/attachment/')) {
-            if ($os == \app\common\helpers\Client::OS_TYPE_IOS) {
-                $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
-                return 'https:' . substr($url_dz, strpos($url_dz, '//'));
-            }
-            if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
-                return $src;
-            } else {
-                return request()->getSchemeAndHttpHost() . substr($src, strpos($src, '/attachment/'));
-            }
+    $os = Client::osType();
+    if (strexists($src, $addons)) {
+        if ($os == Client::OS_TYPE_IOS) {
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
+        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+    }
+
+    //判断是否是本地带域名图片地址
+    $local = strtolower($src);
+    if (strexists($src, $attachment)) {
+        if ($os == Client::OS_TYPE_IOS) {
+            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
+            return 'https:' . substr($url_dz, strpos($url_dz, '//'));
+        }
+        if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
+            return $src;
+        } else {
+            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
         }
     }
 
@@ -373,17 +361,18 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
+        $attach_url_remote = '';
         if ($upload_type == 1) {
-            $attachurl_remote = $setting['remote']['ftp']['url'] . '/';
+            $attach_url_remote = $setting['remote']['ftp']['url'] . '/';
         } elseif ($upload_type == 2) {
-            $attachurl_remote = $setting['remote']['alioss']['url'] . '/';
+            $attach_url_remote = $setting['remote']['alioss']['url'] . '/';
         } elseif ($upload_type == 3) {
-            $attachurl_remote = $setting['remote']['qiniu']['url'] . '/';
+            $attach_url_remote = $setting['remote']['qiniu']['url'] . '/';
         } elseif ($upload_type == 4) {
-            $attachurl_remote = $setting['remote']['cos']['url'] . '/';
+            $attach_url_remote = $setting['remote']['cos']['url'] . '/';
         }
 
-        $src = $attachurl_remote . $src;
+        $src = $attach_url_remote . $src;
     }
 
     if (!config('app.debug')) {
@@ -980,7 +969,7 @@ if (!function_exists('tdd')) {
 if (!function_exists('createNo')) {
     function createNo($prefix, $length = 6, $numeric = FALSE)
     {
-        return $prefix . date('YmdHis') . \app\common\helpers\Client::random($length, $numeric);
+        return $prefix . date('YmdHis') . Client::random($length, $numeric);
     }
 }
 if (!function_exists('yz_array_set')) {
@@ -2753,7 +2742,7 @@ if (!function_exists('tpl_ueditor')) {
         $s = '';
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $options['allow_upload_video'] = isset($options['allow_upload_video']) ? $options['allow_upload_video'] : true;
-        $global = \app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global');
+        $global = SystemSetting::settingLoad('global', 'system_global');
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
 	<script type=\"text/javascript\">
@@ -2922,7 +2911,7 @@ if (!function_exists('uploadParam')) {
         $util = 'util';
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
-            $options['fileSizeLimit'] = intval(\app\platform\modules\system\models\SystemSetting::settingLoad('global', 'system_global')['image_limit']) * 1024;
+            $options['fileSizeLimit'] = intval(SystemSetting::settingLoad('global', 'system_global')['image_limit']) * 1024;
             $util = 'utils';
             $util_url = '/' . $u_url . $util;
         } else {
