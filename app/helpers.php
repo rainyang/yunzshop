@@ -22,20 +22,11 @@ if (!function_exists("yz_tpl_ueditor")) {
         if (!defined('TPL_INIT_UEDITOR')) {
             if (env('APP_Framework') == 'platform') {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor2.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
-                $upload_url = '/admin/system/upload/upload?upload_type=';
-                $image_url = '/admin/system/upload/image?local=local&groupid=-999';
-                $fetch_url = '/admin/system/upload/fetch';
-                $delet_url = '/admin/system/upload/delete';
-                $video_url = '/admin/system/upload/video?local=local&type=video&pagesize=5';
             } else {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/web/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/web/resource/components/webuploader/style.css" rel="stylesheet">';
-                $upload_url = './index.php?c=utility&a=file&do=upload&upload_type=';
-                $image_url = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
-                $fetch_url = './index.php?c=utility&a=file&do=fetch';
-                $delet_url = './index.php?c=utility&a=file&do=delete';
-                $video_url = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
             }
         }
+        $url = uploadUrl();
         $options['height'] = empty($options['height']) ? 200 : $options['height'];
         $s .= !empty($id) ? "<textarea id=\"{$id}\" name=\"{$id}\" type=\"text/plain\" style=\"height:{$options['height']}px;\">{$value}</textarea>" : '';
         $s .= "
@@ -71,10 +62,10 @@ if (!function_exists("yz_tpl_ueditor")) {
 				editor.registerCommand(uiName, {
 					execCommand:function(){
 						require(['fileUploader'], function(uploader){
-						    uploader.upload_url('".$upload_url."');
-                            uploader.image_url('".$image_url."');
-                            uploader.fetch_url('".$fetch_url."');
-                            uploader.delet_url('".$delet_url."');
+						    uploader.upload_url('".$url['upload_url']."');
+                            uploader.image_url('".$url['image_url']."');
+                            uploader.fetch_url('".$url['fetch_url']."');
+                            uploader.delet_url('".$url['delet_url']."');
 							uploader.show(function(imgs){
 								if (imgs.length == 0) {
 									return;
@@ -138,11 +129,11 @@ if (!function_exists("yz_tpl_ueditor")) {
                             }, videoType);
                         }
                     }, {type:'video'});
-                    uploader.upload_url('".$upload_url."');
-                    uploader.image_url('".$image_url."');
-                    uploader.fetch_url('".$fetch_url."');
-                    uploader.delet_url('".$delet_url."');
-                    uploader.video_url('".$video_url."');
+                    uploader.upload_url('".$url['upload_url']."');
+                    uploader.image_url('".$url['image_url']."');
+                    uploader.fetch_url('".$url['fetch_url']."');
+                    uploader.delet_url('".$url['delet_url']."');
+                    uploader.video_url('".$url['video_url']."');
                 }
             );
         }
@@ -2750,6 +2741,13 @@ if (!function_exists('tpl_form_field_daterange')) {
 }
 
 if (!function_exists('tpl_ueditor')) {
+    /**
+     * 为了兼容微擎使用此方法
+     * @param $id
+     * @param string $value
+     * @param array $options
+     * @return string
+     */
     function tpl_ueditor($id, $value = '', $options = array())
     {
         $s = '';
@@ -2886,6 +2884,31 @@ if (!function_exists('user_hash')) {
         $password = bcrypt($new_pwd);
 
         return $password;
+    }
+}
+
+if (!function_exists('uploadUrl')) {
+    /**
+     * 上传 相关组件 使用的url
+     * @return mixed
+     */
+    function uploadUrl()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $url['upload_url'] = '/admin/system/upload/upload?upload_type=';
+            $url['image_url'] = '/admin/system/upload/image?local=local&groupid=-999';
+            $url['fetch_url'] = '/admin/system/upload/fetch';
+            $url['delet_url'] = '/admin/system/upload/delete';
+            $url['video_url'] = '/admin/system/upload/video?local=local&type=video&pagesize=5';
+        } else {
+            $url['upload_url'] = './index.php?c=utility&a=file&do=upload&upload_type=';
+            $url['image_url'] = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
+            $url['fetch_url'] = './index.php?c=utility&a=file&do=fetch';
+            $url['delet_url'] = './index.php?c=utility&a=file&do=delete';
+            $url['video_url'] = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
+        }
+
+        return $url;
     }
 }
 
