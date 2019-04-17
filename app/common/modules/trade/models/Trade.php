@@ -12,6 +12,7 @@ use app\common\models\BaseModel;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
 use app\frontend\modules\order\models\PreOrder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -33,23 +34,43 @@ class Trade extends BaseModel
         $this->setRelation('orders', $this->getOrderCollection($memberCartCollection));
         $this->setRelation('discount', $this->getDiscount());
         $this->setRelation('dispatch', $this->getDispatch());
-        $this->initAttribute();
+        $this->amountItems = $this->getAmountItems();
 
     }
 
-    private function initAttribute()
+    private function getAmountItems()
     {
-        $attributes = [
-            'total_price' => $this->orders->sum('price'),
-            'total_goods_price' => $this->orders->sum('order_goods_price'),
-            'total_dispatch_price' => $this->orders->sum('dispatch_price'),
-            'total_discount_price' => $this->orders->sum('discount_price'),
-            'total_deduction_price' => $this->orders->sum('deduction_price'),
+        $items = [
+            [
+                'code' => 'total_price',
+                'name' => '订单总金额',
+                'amount' => $this->orders->sum('price'),
+            ],[
+                'code' => 'total_dispatch_price',
+                'name' => '总运费',
+                'amount' => $this->orders->sum('dispatch_price'),
+            ],[
+                'code' => 'total_deduction_price',
+                'name' => '总抵扣',
+                'amount' => $this->orders->sum('deduction_price'),
+            ],
+
+            'discount_amount_items' => $this->getDiscountAmountItems(),
         ];
 
-        $attributes = array_merge($this->getAttributes(), $attributes);
-        $this->setRawAttributes($attributes);
-        return $this;
+
+        return $items;
+    }
+
+    private function getDiscountAmountItems()
+    {
+        $orderDiscountsItems = $this->orders->reduce(function (Collection $orderDiscountsItems, PreOrder $order) {
+
+
+            return $orderDiscountsItems->merge($order->orderDiscounts);
+        }, collect());
+        dd($orderDiscountsItems->groupBy('discount_code'));
+        return $orderDiscountsItems;
     }
 
     /**
