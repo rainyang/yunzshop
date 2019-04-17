@@ -16,13 +16,17 @@ class ChangeDefaultEdMoneyToImsYzGoodsSaleTable extends Migration
             \Illuminate\Support\Facades\Schema::table('yz_goods_sale',
                 function (Blueprint $table) {
                     if (\Illuminate\Support\Facades\Schema::hasColumn('yz_goods_sale', 'ed_money')) {
-                        $table->string('ed_money',10)->nullable()->change();
-                        $table->string('ed_num',10)->nullable()->change();
-                        $table->string('max_once_point',10)->nullable()->change();
+                        $table->string('ed_money', 10)->nullable()->change();
+                        $table->string('ed_num', 10)->nullable()->change();
+                        $table->string('max_once_point', 10)->nullable()->change();
+                    }
+                    if (!\Illuminate\Support\Facades\Schema::hasColumn('yz_goods_sale', 'created_at')) {
+
+                        $table->integer('created_at')->nullable();
+                        $table->integer('updated_at')->nullable();
                     }
                 });
-            \app\frontend\models\goods\Sale::where('ed_money',0)->update(['ed_money'=>'']);
-            \app\frontend\models\goods\Sale::where('ed_num',0)->update(['ed_money'=>'']);
+
         }
 
     }
