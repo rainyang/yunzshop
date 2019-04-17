@@ -48,6 +48,7 @@ use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
+use app\frontend\models\MembershipInformationLog;
 
 class MemberController extends ApiController
 {
@@ -500,6 +501,7 @@ class MemberController extends ApiController
     {
         $birthday = [];
         $data     = \YunShop::request()->data;
+        $uid = \YunShop::app()->getMemberId();
 
         if (isset($data['birthday'])) {
             $birthday = explode('-', $data['birthday']);
@@ -535,11 +537,29 @@ class MemberController extends ApiController
             'wechat'        => isset($data['wx']) ? $data['wx'] : '',
         ];
 
+
         if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
-            $member_model->setRawAttributes($member_data);
-
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+            $old_data = [
+                'uid'           => $member_shop_info_model->uid,
+                'alipay'        => $member_shop_info_model->alipay,
+                'alipayname'    => $member_shop_info_model->alipayname,
+                'wechat'        => $member_shop_info_model->wechat,
+                'mobile'        => $member_model->mobile,
+                'name'          => $member_model->realname
+            ];
+            $membership_infomation = [
+                'uniacid'        =>\YunShop::app()->uniacid,
+                'uid'            =>\YunShop::app()->getMemberId(),
+                'old_data'       => serialize($old_data),
+                'session_id'     =>session_id()
+            ];
+            $membership_infomation_log_model = MembershipInformationLog::save ($membership_infomation);
+            
+
+            $member_model->setRawAttributes($member_data);
             $member_shop_info_model->setRawAttributes($member_shop_info_data);
 
             $member_validator           = $member_model->validator($member_model->getAttributes());
@@ -586,6 +606,8 @@ class MemberController extends ApiController
 
                 $phoneModel = new PhoneAttribution();
                 $phoneModel->updateOrCreate(['uid' => \YunShop::app()->getMemberId()], $phone);
+
+
 
                 return $this->successJson('用户资料修改成功');
             } else {
