@@ -197,4 +197,17 @@ class LoginController extends BaseController
 
         return $this->errorJson($message);
     }
+
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+        return $this->guard()->attempt(
+            $this->credentials($request), 1
+        );
+    }
 }
