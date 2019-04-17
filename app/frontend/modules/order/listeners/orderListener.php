@@ -86,7 +86,7 @@ class orderListener
                 });
                 // todo 使用队列执行
             });
-            $uniAccount = UniAccount::get();
+            $uniAccount = UniAccount::getEnable();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
                 \Setting::$uniqueAccountId = $uniacid = $u->uniacid;
