@@ -8,6 +8,7 @@ class MembershipInformationLog extends BaseModel
     public $timestamps = true;
 
     public $table = 'yz_membership_infomattion_log';
+
     protected $guarded = [];
 
 

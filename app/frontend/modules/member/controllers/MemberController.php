@@ -543,7 +543,6 @@ class MemberController extends ApiController
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
             $old_data = [
-                'uid'           => $member_shop_info_model->uid,
                 'alipay'        => $member_shop_info_model->alipay,
                 'alipayname'    => $member_shop_info_model->alipayname,
                 'wechat'        => $member_shop_info_model->wechat,
@@ -556,8 +555,9 @@ class MemberController extends ApiController
                 'old_data'       => serialize($old_data),
                 'session_id'     =>session_id()
             ];
-            $membership_infomation_log_model = MembershipInformationLog::save ($membership_infomation);
-            
+
+            $membership_infomation_log_model = MembershipInformationLog::create($membership_infomation);
+
 
             $member_model->setRawAttributes($member_data);
             $member_shop_info_model->setRawAttributes($member_shop_info_data);
