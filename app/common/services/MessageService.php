@@ -149,16 +149,11 @@ class MessageService
      * @param string $url
      * @return bool
      */
-    public static function notice($templateId, $data, $uid, $uniacid = '', $url = 'pages/index/index')
+    public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
     {
-        $noticeType = \YunShop::request()->type;
-        $formId = \YunShop::request()->formId;
-        \Log::debug('----------formId-----------------');
-        \Log::debug($formId);
-        if (!$formId){
-            return false;
-        }
-        if ($noticeType == 2){
+        \Log::debug('==============miniApp===================');
+        \Log::debug($miniApp);
+        if ($miniApp['type'] == 2){
             if(\Setting::get('shop.miniNotice.toggle') == false){
                 return false;
             }
@@ -184,7 +179,7 @@ class MessageService
             if (!$member->isFollow()) {
                 return false;
             }
-            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$formId );
+            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$miniApp['formId'] );
         }else {
 
             if (\Setting::get('shop.notice.toggle') == false) {

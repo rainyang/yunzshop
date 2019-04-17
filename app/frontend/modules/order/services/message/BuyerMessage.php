@@ -37,7 +37,7 @@ class BuyerMessage extends Message
         if (empty($this->templateId)) {
             return;
         }
-        $this->notice($this->templateId, $this->msg, $uid);
+        $this->notice($this->templateId, $this->msg, $uid,'','',['type'=>$this->noticeType,'formId'=>$this->formId]);
     }
 
     private function transfer($temp_id, $params)
@@ -47,6 +47,8 @@ class BuyerMessage extends Message
             return;
         }
         $this->templateId = MessageTemp::$template_id;
+        $this->noticeType =  \Setting::get('shop.notice.seller_order_pay.type');
+        $this->formId =  \Setting::get('shop.notice.seller_order_pay.formId');
         $this->sendToBuyer();
     }
 

@@ -21,6 +21,8 @@ class Message extends MessageService
     protected $msg;
     protected $templateId;
     protected $notice;
+    protected $noticeType;
+    protected $formId;
     function __construct($order)
     {
         $this->order = $order;

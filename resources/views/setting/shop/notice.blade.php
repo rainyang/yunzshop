@@ -113,6 +113,7 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207509450</div>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="point_change" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['point_change']))
@@ -120,6 +121,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -146,6 +148,7 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM401833445</div>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="balance_change" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['balance_change']))
@@ -153,6 +156,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
                     </div>
 
@@ -179,6 +183,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="buy_goods_msg" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['buy_goods_msg']))
@@ -186,6 +191,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                             @endif
                         </div>
 
                         <div class="form-group">
@@ -206,6 +212,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="seller_order_create" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_create']))
@@ -213,6 +220,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
 
                         <div class="form-group">
@@ -234,6 +242,7 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM207525131</div>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="seller_order_pay" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_pay']))
@@ -241,6 +250,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
 
                         <div class="form-group">
@@ -262,6 +272,7 @@
                                 </select>
                                 <div class="help-block">通知公众平台模板消息编号: OPENTM413711838</div>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="seller_order_finish" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['seller_order_finish']))
@@ -269,6 +280,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
 
                         <div class="form-group">
@@ -390,6 +402,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @if($noticeType != 2)
                             <div class="col-sm-2 col-xs-6">
                                 <input class="mui-switch mui-switch-animbg" id="other_toggle_temp" type="checkbox"
                                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['other_toggle_temp']))
@@ -397,6 +410,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+                            @endif
                         </div>
                     </div>
                     <div class='panel-heading'>
@@ -423,6 +437,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM200746866</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_submit_success" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_submit_success']))
@@ -430,6 +445,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_cancel'))
@@ -452,6 +468,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM412815063</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_cancel" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_cancel']))
@@ -459,6 +476,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_pay_success'))
@@ -481,6 +499,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM204987032</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_pay_success" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_pay_success']))
@@ -488,6 +507,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_send'))
@@ -510,6 +530,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM413713493</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_send" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_send']))
@@ -517,6 +538,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_finish'))
@@ -539,6 +561,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM411450578</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_finish" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_finish']))
@@ -546,6 +569,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_apply'))
@@ -568,6 +592,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00431</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_refund_apply" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply']))
@@ -575,6 +600,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_success'))
@@ -597,6 +623,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00430</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_refund_success" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_success']))
@@ -604,6 +631,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('order_refund_reject'))
@@ -626,6 +654,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00432</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="order_refund_reject" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_reject']))
@@ -633,6 +662,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('customer_upgrade'))
@@ -655,6 +685,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: OPENTM400341556</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="customer_upgrade" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['customer_upgrade']))
@@ -662,6 +693,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_submit'))
@@ -684,6 +716,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00979</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="withdraw_submit" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_submit']))
@@ -691,6 +724,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_success'))
@@ -713,6 +747,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00980</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="withdraw_success" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_success']))
@@ -720,6 +755,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                               @endif
                             </div>
                         @endif
                         @if(YunShop::notice()->getNotSend('withdraw_fail'))
@@ -742,6 +778,7 @@
                                     </select>
                                     <div class="help-block">通知公众平台模板消息编号: TM00981</div>
                                 </div>
+                                @if($noticeType != 2)
                                 <div class="col-sm-2 col-xs-6">
                                     <input class="mui-switch mui-switch-animbg" id="withdraw_fail" type="checkbox"
                                            @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail']))
@@ -749,6 +786,7 @@
                                            @endif
                                            onclick="message_default(this.id)"/>
                                 </div>
+                                @endif
                             </div>
                         @endif
 

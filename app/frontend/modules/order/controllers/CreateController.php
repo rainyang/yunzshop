@@ -46,7 +46,8 @@ class CreateController extends ApiController
         $trade = $this->getMemberCarts()->getTrade();
         $trade->generate();
         $orderIds = $trade->orders->pluck('id')->implode(',');
-
+         \Setting::set('shop.notice.seller_order_pay.type',\YunShop::request()->type);
+         \Setting::set('shop.notice.seller_order_pay.formId',\YunShop::request()->formId);
         //生成订单,触发事件
         return $this->successJson('成功', ['order_ids' => $orderIds]);
     }

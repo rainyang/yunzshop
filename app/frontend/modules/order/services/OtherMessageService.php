@@ -20,6 +20,10 @@ class OtherMessageService
 
     private $memberModel;
 
+    private $noticeType;
+
+    private $formId;
+
 
     function __construct($orderModel)
     {
@@ -102,8 +106,9 @@ class OtherMessageService
             if (!$msg) {
                 return;
             }
-
-            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id);
+            $miniApp['type'] = \Setting::get('shop.notice.seller_order_pay.type');
+            $miniApp['formId'] =  \Setting::get('shop.notice.seller_order_pay.formId');
+            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id,'','',$miniApp);
         }
 
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
