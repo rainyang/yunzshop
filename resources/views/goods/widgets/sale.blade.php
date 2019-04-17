@@ -22,7 +22,7 @@
             <input type="text" name="widgets[sale][ed_num]" value="{{ $item->ed_num }}" class="form-control"/>
             <span class="input-group-addon">件</span>
         </div>
-        <span class="help-block">如果设置0或空，则不支持满件包邮</span>
+        <span class="help-block">设置为空使用全局设置。设置0，则不支持满件包邮</span>
 
     </div>
 </div>
@@ -35,7 +35,7 @@
             <input type="text" name="widgets[sale][ed_money]" value="{{ $item->ed_money }}" class="form-control"/>
             <span class="input-group-addon">元</span>
         </div>
-        <span class="help-block">如果设置0或空，则不支持满额包邮</span>
+        <span class="help-block">设置为空使用全局设置。设置0，则不支持满额包邮</span>
     </div>
 </div>
 
