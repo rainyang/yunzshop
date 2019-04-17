@@ -1634,14 +1634,14 @@ class MemberController extends ApiController
                 if ($hotel) {
                     $data[] = [
                         'name'  => 'hotel',
-                        'title' => '酒店管理',
+                        'title' => HOTEL_NAME.'管理',
                         'class' => 'icon-member_hotel',
                         'url'   => 'HotelManage'
                     ];
                 } else {
                     $data[] = [
                         'name'  => 'hotel',
-                        'title' => '酒店申请',
+                        'title' => HOTEL_NAME.'申请',
                         'class' => 'icon-member-hotel-apply',
                         'url'   => 'hotelApply'
                     ];
