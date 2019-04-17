@@ -16,11 +16,14 @@ class MessageService extends \app\common\services\MessageService
 {
     private $buyerMessage;
     private $shopMessage;
-
-    function __construct($order)
+    protected $formId;
+    protected $noticeType;
+    function __construct($order,$formId = '',$type = 1)
     {
-        $this->buyerMessage = new BuyerMessage($order);
-        $this->shopMessage = new ShopMessage($order);
+        $this->buyerMessage = new BuyerMessage($order,$formId,$type);
+        $this->shopMessage = new ShopMessage($order,$formId,$type);
+        $this->formId = $formId;
+        $this->noticeType = $type;
     }
 
     public function canceled()

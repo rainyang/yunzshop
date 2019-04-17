@@ -14,10 +14,9 @@ use app\common\models\notice\MessageTemp;
 class ShopMessage extends Message
 {
     protected $goods_title;
-
-    public function __construct($order)
+    public function __construct($order,$formId = '',$type = 1)
     {
-        parent::__construct($order);
+        parent::__construct($order,$formId = '',$type = 1);
         $this->goods_title = $this->order->hasManyOrderGoods()->first()->title;
         $this->goods_title .= $this->order->hasManyOrderGoods()->first()->goods_option_title ? '['.$this->order->hasManyOrderGoods()->first()->goods_option_title.']': '';
     }
@@ -32,7 +31,15 @@ class ShopMessage extends Message
         }
         //客服发送消息通知
         foreach (\Setting::get('shop.notice.salers') as $saler) {
-            $this->notice($this->templateId, $this->msg, $saler['uid']);
+            if ($this->noticeType == 2){
+                $miniApp=[
+                    'type'=>$this->noticeType,
+                    'formId'=>$this->formId,
+                ];
+                $this->notice($this->templateId, $this->msg, $saler['uid'],'','',$miniApp);
+            }else{
+                $this->notice($this->templateId, $this->msg, $saler['uid']);
+            }
         }
     }
 

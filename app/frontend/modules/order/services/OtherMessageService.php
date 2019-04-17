@@ -20,15 +20,17 @@ class OtherMessageService
 
     private $memberModel;
 
-    private $noticeType;
+    protected $formId;
 
-    private $formId;
+    protected $noticeType;
 
 
-    function __construct($orderModel)
+    function __construct($orderModel,$formId = '',$type = 1)
     {
         $this->orderModel = $orderModel;
         $this->memberModel = $this->getMemberModel();
+        $this->formId = $formId;
+        $this->noticeType = $type;
     }
 
     public function created()
