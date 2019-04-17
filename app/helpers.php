@@ -2932,3 +2932,14 @@ if (!function_exists('uploadParam')) {
         return $result;
     }
 }
+
+if (!function_exists('resource_absolute')) {
+    function resource_absolute($file)
+    {
+        if (env('APP_Framework') == 'platform') {
+            return '/' . $file;
+        }
+
+        return  '/addons/yun_shop/' . $file;
+    }
+}
