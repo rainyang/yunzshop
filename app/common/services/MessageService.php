@@ -155,7 +155,7 @@ class MessageService
         \Log::debug($miniApp);
         if ($miniApp['type'] == 2){
             if(\Setting::get('shop.miniNotice.toggle') == false){
-                return false;
+                //return false;
             }
             \Log::debug('=================++++++++++++================');
             //监听消息通知
