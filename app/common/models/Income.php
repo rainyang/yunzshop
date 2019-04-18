@@ -298,8 +298,14 @@ class Income extends BaseModel
 
     public static function getIncomesList($search)
     {
+        if($search['select']){
+            $selects = ['id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at','detail'];
+        }else{
+            $selects = ['id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at'];
+        }
+
         $model = self::uniacid();
-        $model->select('id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at');
+        $model->select($selects);
         if ($search['type']) {
             $model->where('incometable_type', $search['type']);
         }
@@ -307,6 +313,11 @@ class Income extends BaseModel
         $model->orderBy('id', 'desc');
 
         return $model;
+    }
+
+    public function hasOneY($class)
+    {
+        return  $this->hasOne($class, 'id', 'coupon_id');
     }
 
     /**
@@ -317,7 +328,6 @@ class Income extends BaseModel
         if (!isset($this->withdraw)) {
             $this->withdraw = Withdraw::where('type_id', 'like', "%{$this->id}%")->where('type', $this->incometable_type)->first();
         }
-
         return $this->withdraw;
     }
 }

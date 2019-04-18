@@ -16,6 +16,7 @@ use app\common\models\Income;
 use app\common\services\finance\IncomeService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use app\common\models\Order;
 
 class IncomeController extends ApiController
 {
@@ -111,9 +112,39 @@ class IncomeController extends ApiController
                 break;
             }
         }
-
+        $swich = \app\common\models\MemberRelation::uniacid()->select('share_page_deail')->first();
+        $search['select'] = $swich->share_page_deail;
 //        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId())->get();
         $incomeModel = Income::getIncomesList($search)->where('member_id', \YunShop::app()->getMemberId())->paginate($this->pageSize);
+
+
+        if($swich->share_page_deail){
+            if($incomeModel){
+                $incomeModel = $incomeModel->toArray();
+            }
+            $detail = array_column($incomeModel['data'], 'detail');
+            foreach($detail as $key => $value){
+                if($value){
+                    $arr = json_decode($value);
+                    $set[$key] = $arr->order->data[0]->value;
+                    $incomeModel['data'][$key]['order_sn'] = $arr->order->data[0]->value;
+                }
+                unset($incomeModel['data'][$key]['detail']);
+            }
+            $order = Order::whereIn('order_sn', $set)->get();
+
+            $incomeModel['data'] = collect($incomeModel['data'])->map(function ($item) use ($order) {
+                if($item['order_sn']){
+                    foreach($order as $key => $value){
+                        if($value->order_sn == $item['order_sn']){
+                            $item['uid'] = $value->uid;
+                            $item['nickname'] = $value->belongsToMember->nickname;
+                        }
+                    }
+                }
+                return $item;
+            });
+        }
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
