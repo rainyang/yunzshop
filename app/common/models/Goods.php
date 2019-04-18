@@ -264,6 +264,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsVideo', 'goods_id', 'id');
     }
 
+    public function scopePluginIdShow($query, $pluginId = [0,53])
+    {
+        return $query->whereIn('plugin_id', $pluginId);
+    }
+
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
