@@ -66,7 +66,7 @@
                     <el-radio v-model.bool="form.freeFreight.open" :label=true>开启</el-radio>
                     <el-radio v-model.bool="form.freeFreight.open" :label=false>关闭</el-radio>
                     <div>开启满包邮,订单总金额超过多少可以包邮<br />
-                        商品编辑—营销：满额包邮和满件包邮都为空是走全局设置
+                        商品编辑—营销：满额包邮和满件包邮都为空时走全局设置。
                         如果一件商品设置为0，一件商品设置为空，订单金额满足全局设置的条件也走全局设置</div>
                     <el-form-item prop="freeFreight.enough">
                         <el-input placeholder="金额"
