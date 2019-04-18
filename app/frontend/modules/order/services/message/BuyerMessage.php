@@ -18,7 +18,7 @@ class BuyerMessage extends Message
 
     public function __construct($order,$formId = '',$type = 1)
     {
-        parent::__construct($order);
+        parent::__construct($order,$formId,$type);
         $this->goods_title = $this->order->hasManyOrderGoods()->first()->title;
         $this->goods_title .= $this->order->hasManyOrderGoods()->first()->goods_option_title ?: '';
     }
