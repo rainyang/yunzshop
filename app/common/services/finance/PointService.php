@@ -121,6 +121,9 @@ class PointService
     const POINT_MODE_COMMISSION_TRANSFER = 27;
     const POINT_MODE_COMMISSION_TRANSFER_ATTACHED = '分销佣金转入';
 
+    const POINT_MODE_EXCEL_RECHARGE = 29;
+    const POINT_MODE_EXCEL_RECHARGE_ATTACHED = 'EXCEL充值';
+
 
 
     const POINT = 0;
@@ -318,6 +321,9 @@ class PointService
                 break;
             case (28):
                 $mode_attribute = self::POINT_MODE_HOTEL_CASHIER_ATTACHED;
+                break;
+            case (29):
+                $mode_attribute = self::POINT_MODE_EXCEL_RECHARGE_ATTACHED;
                 break;
             case (92):
                 $mode_attribute = self::POINT_MODE_RECHARGE_CODE_ATTACHED;

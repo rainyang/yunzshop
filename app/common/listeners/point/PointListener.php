@@ -12,9 +12,11 @@ namespace app\common\listeners\point;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
+use app\common\models\finance\PointQueue;
 use app\common\models\Order;
 use app\common\models\UniAccount;
 use app\common\services\finance\CalculationPointService;
+use app\common\services\finance\PointQueueService;
 use app\common\services\finance\PointRollbackService;
 use app\common\services\finance\PointService;
 use app\frontend\modules\finance\services\AfterOrderDeductiblePointService;
@@ -33,7 +35,9 @@ class PointListener
     {
         $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->pointSet = $this->orderModel->getSetting('point.set');
+        // 订单商品赠送积分[ps:商品单独设置]
         $this->byGoodsGivePoint();
+        // 订单金额赠送积分[ps:积分基础设置]
         $this->orderGivePoint();
 
         // 订单插件分红记录
@@ -74,9 +78,19 @@ class PointListener
 
     private function byGoodsGivePoint()
     {
-        foreach ($this->orderModel->hasManyOrderGoods as $aOrderGoods) {
-            $point_data = $this->getPointDataByGoods($aOrderGoods);
-            $this->addPointLog($point_data);
+        // 验证订单商品是立即赠送还是每月赠送
+        foreach ($this->orderModel->hasManyOrderGoods as $orderGoods) {
+            // 商品营销数据
+            $goodsSale = $orderGoods->hasOneGoods->hasOneSale;
+            // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
+            $point_data = $this->getPointDataByGoods($orderGoods);
+            // 每月赠送
+            if ($goodsSale->point_type && $goodsSale->max_once_point > 0) {
+                PointQueue::handle($this->orderModel, $goodsSale, $point_data['point']);
+            } else {
+                // 订单完成立即赠送[ps:原业务逻辑]
+                $this->addPointLog($point_data);
+            }
         }
     }
 
@@ -100,11 +114,19 @@ class PointListener
             PointRollbackService::class . '@orderCancel'
         );
 
+        // 积分每月赠送
+        $events->listen('cron.collectJobs', function () {
+            \Cron::add('PointQueue', '*/30 * * * * *', function() {
+                $pointQueueService = new PointQueueService();
+                $pointQueueService->handle();
+            });
+        });
+
         //积分自动转入爱心值
         $events->listen('cron.collectJobs', function() {
 
             \Log::info("--积分自动转入爱心值检测--");
-            $uniAccount = UniAccount::get();
+            $uniAccount = UniAccount::getEnable();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
                 \Setting::$uniqueAccountId = $uniacid = $u->uniacid;

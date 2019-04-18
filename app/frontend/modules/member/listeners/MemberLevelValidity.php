@@ -33,7 +33,7 @@ class MemberLevelValidity
     {
         \Log::info('会员等级到期');
         set_time_limit(0);
-        $uniAccount = UniAccount::get();
+        $uniAccount = UniAccount::getEnable();
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
             Setting::$uniqueAccountId = $u->uniacid;
