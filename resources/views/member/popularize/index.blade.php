@@ -23,7 +23,7 @@
                         @foreach($plugin_page as $item )
                             @if ($item['status'] == 1)
                                 <label class="checkbox-inline" style="margin-left: 15px;margin-bottom: 10px">
-                                    <input type="checkbox"  name="{{$item['mark']}}" onclick="cli(this)" @if (in_array($item['url'][0], $info['vue_route'])) checked @endif >{{$item['title']}}</input>
+                                    <input type="checkbox"  name="{{$item['mark']}}" onclick="cli(this)" @if (array_intersect($item['url'], $info['vue_route'])) checked @endif >{{$item['title']}}</input>
                                     @foreach($item['url'] as $value)
                                         <input type="checkbox"  name="set[vue_route][]" style="display: none" value="{{$value}}" @if (in_array($value, $info['vue_route'])) checked @endif >
                                     @endforeach

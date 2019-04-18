@@ -440,6 +440,10 @@ class MemberService
         //检查member_id是否一致
         if (!is_null($UnionidInfo) && !is_null($mc_mapping_fans_model)) {
             $member_id = $this->checkMember($UnionidInfo, $mc_mapping_fans_model, $userinfo);
+
+            if ($member_id > 0 && $UnionidInfo->member_id != $member_id) {
+                $UnionidInfo->member_id = $member_id;
+            }
         }
 
         if (empty($member_id) && !empty($mc_mapping_fans_model)) {
@@ -850,43 +854,56 @@ class MemberService
         \Log::debug('----fans----', $fansInfo->uid);
 
         if ($UnionidInfo->member_id != $fansInfo->uid) {
-            /*
+            if ($UnionidInfo->member_id < $fansInfo->uid) {
+                $main_member_id    = $UnionidInfo->member_id;
+                $abandon_member_id = $fansInfo->uid;
+            } else {
+                $main_member_id    = $fansInfo->uid;
+                $abandon_member_id = $UnionidInfo->member_id;
+            }
+
             //小程序
-            $minApp = MemberMiniAppModel::where('member_id', $UnionidInfo->member_id)->first();
+            $minApp = MemberMiniAppModel::where('member_id', $abandon_member_id)->first();
 
             if (!is_null($minApp)) {
-                MemberMiniAppModel::updateData($minApp->member_id, ['member_id'=>$fansInfo->uid]);
+                MemberMiniAppModel::updateData($minApp->member_id, ['member_id'=>$main_member_id]);
             }
 
             //wechat app
-            $wechatApp = MemberWechatModel::where('member_id', $UnionidInfo->member_id)->first();
+            $wechatApp = MemberWechatModel::where('member_id', $abandon_member_id)->first();
 
             if (!is_null($wechatApp)) {
-                MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$fansInfo->uid]);
+                MemberWechatModel::updateData($wechatApp->member_id, ['member_id'=>$main_member_id]);
             }
-            */
 
             //删除重复微擎会员
-
-            $mc_member = Member::getMemberById($fansInfo->uid);
+            $mc_member = Member::getMemberById($main_member_id);
 
             if (!is_null($mc_member)) {
-                $mc_member->delete();
+                if ($del_mc_member = Member::getMemberById($abandon_member_id)) {
+                    $del_mc_member->delete();
+                }
+            } else {
+                Member::where('uid', $abandon_member_id)->update(['uid' => $main_member_id]);
             }
 
-            $this->updateFansMember($fansInfo->fanid, $UnionidInfo->member_id, $userInfo);
+            $this->updateFansMember($fansInfo->fanid, $main_member_id, $userInfo);
 
             //删除重复商城会员
-            /*
-            $sub_member = MemberShopInfo::getMemberShopInfo($UnionidInfo->member_id);
+            $sub_member = MemberShopInfo::getMemberShopInfo($main_member_id);
 
             if (!is_null($sub_member)) {
-                $sub_member->delete();
+                if ($del_shop_member = MemberShopInfo::getMemberShopInfo($abandon_member_id)) {
+                    $del_shop_member->delete();
+                }
+            } else {
+                MemberShopInfo::where('member_id', $abandon_member_id)->update(['member_id', $main_member_id]);
             }
-            */
 
             //商城unionid
-            //MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$fansInfo->uid]);
+            MemberUniqueModel::where('unique_id', $UnionidInfo->unique_id)->update(['member_id'=>$main_member_id]);
+
+            return $main_member_id;
         }
 
         return $UnionidInfo->member_id;
