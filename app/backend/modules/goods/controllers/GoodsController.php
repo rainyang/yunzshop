@@ -123,7 +123,7 @@ class GoodsController extends BaseController
             ]
         );
 
-        $list = Goods::Search($requestSearch)->PluginIdShow()->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20);
+        $list = Goods::Search($requestSearch)->pluginIdShow()->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')->paginate(20);
 
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
 
