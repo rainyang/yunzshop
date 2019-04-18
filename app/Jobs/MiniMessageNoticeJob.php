@@ -129,7 +129,7 @@ class MiniMessageNoticeJob implements  ShouldQueue
         curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
 
         //不做证书校验，部署在linux环境下请改位true
-        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+        curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,true);
         curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,10);
         $file_contents = curl_exec($ch);
         $httpCode = curl_getinfo($ch,CURLINFO_HTTP_CODE);

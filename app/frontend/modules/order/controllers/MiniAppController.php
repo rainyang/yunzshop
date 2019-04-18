@@ -22,7 +22,7 @@ class MiniAppController extends ApiController
         $order = Order::find(\Yunshop::request()->orderId);
         $formId = \Yunshop::request()->formID;
         (new MessageService($order,$formId,2))->received();
-//        (new OtherMessageService($order,$formId,2))->received();
+
         return $this->successJson('成功');
     }
 }
