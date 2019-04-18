@@ -157,14 +157,13 @@ class MessageService
             if(\Setting::get('shop.miniNotice.toggle') == false){
                 return false;
             }
+            \Log::debug('=================++++++++++++================');
             //监听消息通知
             event(new SendMessageEvent([
                 'data' => $data,
                 'uid' => $uid,
                 'url' => $url
             ]));
-
-
             $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
             $options = [
                 'app_id' => $res['key'],

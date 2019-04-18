@@ -48,7 +48,7 @@ class MiniMessageNoticeJob implements  ShouldQueue
         $this->templateId = $templateId;
         $this->noticeData = $noticeData;
         $this->openId = $openId;
-        $this->url = $url;
+        $this->url = $url?:'pages/index/index';
         $this->formId = $formId;
         $this->get_token_url = 'https://api.weixin.qq.com/cgi-bin/token?'
             .'grant_type=client_credential&appid=%s&secret=%s';
@@ -79,6 +79,7 @@ class MiniMessageNoticeJob implements  ShouldQueue
                     'form_id' => $this->formId,
                     'data' =>$this->noticeData
                 ];
+        \Log::debug('=================++++++++++++================',$rawPost);
         $this->opTemplateData($opUrl,$rawPost,$method_msg);
     }
     /**
@@ -89,11 +90,13 @@ class MiniMessageNoticeJob implements  ShouldQueue
      */
     public function opTemplateData($opUrl = '',$rawPost = [],$method = ''){
         $access_token = self::opGetAccessToken();
+        \Log::debug('=================++++++++++++================',$access_token);
         if(!$access_token){
             $this->return_err('获取 access_token 时异常，微信内部错误');
         }else{
             $templateUrl = sprintf($opUrl,$access_token);
             $listRes = self::curl_post($templateUrl,$rawPost);
+            \Log::debug('=================++++++++++++================',$listRes);
             $wxResult = json_decode($listRes,true);
             if($wxResult['errcode']){
                 return ($method.' - Failed!:'.$wxResult);
