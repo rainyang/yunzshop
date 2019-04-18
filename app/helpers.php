@@ -119,6 +119,11 @@ if (!function_exists("yz_tpl_ueditor")) {
         execCommand:function(){
             require(['".$fileUploader."'],
                 function(uploader){
+                    uploader.upload_url('".$url['upload_url']."');
+                    uploader.image_url('".$url['image_url']."');
+                    uploader.fetch_url('".$url['fetch_url']."');
+                    uploader.delet_url('".$url['delet_url']."');
+                    uploader.video_url('".$url['video_url']."');
                     uploader.show(function(video){
                         if (!video) {
                             return;
@@ -131,11 +136,6 @@ if (!function_exists("yz_tpl_ueditor")) {
                             }, videoType);
                         }
                     }, {type:'video'});
-                    uploader.upload_url('".$url['upload_url']."');
-                    uploader.image_url('".$url['image_url']."');
-                    uploader.fetch_url('".$url['fetch_url']."');
-                    uploader.delet_url('".$url['delet_url']."');
-                    uploader.video_url('".$url['video_url']."');
                 }
             );
         }
