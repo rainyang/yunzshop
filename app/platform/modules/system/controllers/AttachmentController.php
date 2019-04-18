@@ -286,7 +286,7 @@ class AttachmentController extends BaseController
         }
         $image = getimagesizefromstring($response);
         if ($image && strexists($image['mime'], 'image')) {
-            return $this->successJson('配置成功');
+            return $this->successJson('配置成功', request()->alioss);
         } else {
             return $this->errorJson('配置失败，阿里云访问url错误');
         }
@@ -349,7 +349,7 @@ class AttachmentController extends BaseController
         }
         $image = getimagesizefromstring($response);
         if ($image && strexists($image['mime'], 'image')) {
-            return $this->successJson('配置成功');
+            return $this->successJson('配置成功', request()->cos);
         } else {
             return $this->errorJson('配置失败，腾讯cos访问url错误');
         }
