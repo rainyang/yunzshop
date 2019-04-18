@@ -1014,5 +1014,13 @@ class MemberController extends BaseController
         return view('member.export-relation', [])->render();
     }
 
-   
+    public function exportRelation2()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        $job = (new \app\Jobs\MemberMaxRelatoinJob($uniacid));
+        dispatch($job);
+
+        return view('member.export-relation', [])->render();
+    }
 }

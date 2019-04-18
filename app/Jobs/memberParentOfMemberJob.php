@@ -47,6 +47,8 @@ class memberParentOfMemberJob implements ShouldQueue
      */
     public function synRun($uniacid)
     {
+        ini_set("memory_limit","-1");
+
         $parentMemberModle      = new ParentOfMember();
         $childMemberModel       = new ChildrenOfMember();
         $memberModel            = new Member();
