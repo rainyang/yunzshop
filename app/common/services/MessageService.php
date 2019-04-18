@@ -149,6 +149,34 @@ class MessageService
      * @param string $url
      * @return bool
      */
+    public static function MiniNotice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = []){
+        \Log::debug('==============miniApp===================');
+        \Log::debug($miniApp);
+            if(\Setting::get('shop.miniNotice.toggle') == false){
+                //return false;
+            }
+            //监听消息通知
+            event(new SendMessageEvent([
+                'data' => $data,
+                'uid' => $uid,
+                'url' => $url
+            ]));
+            $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+            $options = [
+                'app_id' => $res['key'],
+                'secret' => $res['secret'],
+            ];
+            $member = Member::whereUid($uid)->first();
+            if (!isset($member)) {
+                \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+                return false;
+            }
+
+            if (!$member->isFollow()) {
+              //  return false;
+            }
+            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$miniApp['formId'] );
+    }
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
     {
         \Log::debug('==============miniApp===================');
@@ -157,7 +185,6 @@ class MessageService
             if(\Setting::get('shop.miniNotice.toggle') == false){
                 //return false;
             }
-            \Log::debug('=================++++++++++++================');
             //监听消息通知
             event(new SendMessageEvent([
                 'data' => $data,

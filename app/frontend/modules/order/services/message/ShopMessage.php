@@ -31,11 +31,14 @@ class ShopMessage extends Message
         }
         //客服发送消息通知
         foreach (\Setting::get('shop.notice.salers') as $saler) {
+
             if ($this->noticeType == 2){
+                \Log::debug('1');
                 $miniApp=[
                     'type'=>$this->noticeType,
                     'formId'=>$this->formId,
                 ];
+                \Log::debug('++++++++++++++++++++++++++++++++++++++',$miniApp);
                 $this->notice($this->templateId, $this->msg, $saler['uid'],'','',$miniApp);
             }else{
                 $this->notice($this->templateId, $this->msg, $saler['uid']);

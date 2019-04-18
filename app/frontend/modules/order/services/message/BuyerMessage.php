@@ -42,7 +42,8 @@ class BuyerMessage extends Message
                 'type'=>$this->noticeType,
                 'formId'=>$this->formId,
             ];
-            $this->notice($this->templateId, $this->msg, $uid,'','',$miniApp);
+            \Log::debug('===============',$miniApp);
+            $this->MiniNotice($this->templateId, $this->msg, $uid,'','',$miniApp);
         }else{
             $this->notice($this->templateId, $this->msg, $uid);
         }
