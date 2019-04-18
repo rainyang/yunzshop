@@ -34,16 +34,19 @@ class MemberRelation
      * 批量统计会员父级
      *
      */
-    public function createParentOfMember()
+    public function createParentOfMember($uniacid = null)
     {
-        \Log::debug('------queue parent start-----', \YunShop::app()->uniacid);
-        /*$job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid));
-        dispatch($job);*/
+        ini_set("memory_limit","-1");
 
-        $pageSize = 100;
-        $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid)->distinct()->get();
+        \Log::debug('------queue parent start-----');
 
-        $total       = count($member_info);
+        if (is_null($uniacid)) {
+            $uniacid = \YunShop::app()->uniacid;
+        }
+
+        $pageSize = 2000;
+        $total = Member::getAllMembersInfosByQueue($uniacid)->distinct()->count();
+
         $total_page  = ceil($total/$pageSize);
 
         \Log::debug('------total-----', $total);
@@ -53,7 +56,7 @@ class MemberRelation
             \Log::debug('------curr_page-----', $curr_page);
             $offset      = ($curr_page - 1) * $pageSize;
 
-            $job = (new \app\Jobs\memberParentOfMemberJob(\YunShop::app()->uniacid, $pageSize, $offset));
+            $job = (new \app\Jobs\memberParentOfMemberJob($uniacid, $pageSize, $offset));
             dispatch($job);
         }
     }

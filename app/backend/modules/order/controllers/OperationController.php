@@ -140,9 +140,7 @@ class OperationController extends BaseController
             $order->save();
         }
         if(request()->has('remark')){
-           
             $remark = $order->hasOneOrderRemark;
-            
             if (!$remark) {
                 $remark = new Remark([
                     'order_id' => request()->input('order_id'),
