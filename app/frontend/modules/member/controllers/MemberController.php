@@ -881,7 +881,7 @@ class MemberController extends ApiController
                     $designer['desc'] = $designerSet[0]->params->desc?:'';
                 }
 
-                return $this->successJson('获取数据成功!', $designerSet);
+                return $this->successJson('获取数据成功!', $designer);
             }
         }
         return $this->successJson('参数有误!', []);
