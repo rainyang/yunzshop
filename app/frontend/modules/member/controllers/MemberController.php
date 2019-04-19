@@ -56,14 +56,16 @@ class MemberController extends ApiController
         'wxJsSdkConfig',
         'memberFromHXQModule',
         'dsAlipayUserModule',
-        'isValidatePage'
+        'isValidatePage',
+        'designer'
     ];
     protected $ignoreAction = [
         'guideFollow',
         'wxJsSdkConfig',
         'memberFromHXQModule',
         'dsAlipayUserModule',
-        'isValidatePage'
+        'isValidatePage',
+        'designer'
     ];
 
     /**
@@ -854,6 +856,17 @@ class MemberController extends ApiController
             'share'  => $share   //分享设置
         ];
         return $this->successJson('', $data);
+    }
+    public function designer()
+    {
+       $TemId =  \Yunshop::request()->id;
+        if ($TemId){
+            $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->id);
+            if ($designerModel){
+                return $this->successJson('获取数据成功!', json_decode(htmlspecialchars_decode($designerModel->toArray()['page_info'])));
+            }
+        }
+        return $this->successJson('参数有误!', []);
     }
 
     /**
