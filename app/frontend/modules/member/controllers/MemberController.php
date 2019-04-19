@@ -1850,7 +1850,7 @@ class MemberController extends ApiController
                     $invitation_log = 1;
                 } else {
                     $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid',$member_id)->first();
                 }
             }
 
