@@ -863,7 +863,30 @@ class MemberController extends ApiController
         if ($TemId){
             $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->id);
             if ($designerModel){
-                return $this->successJson('获取数据成功!', json_decode(htmlspecialchars_decode($designerModel->toArray()['page_info'])));
+//                $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
+//                foreach ($designerSet->toArray as &$set){
+//                    if (isset($set['temp']) && $set['temp'] == 'topbar'){
+//                        if (!empty($set['params']['title'])){
+//                            $shop = Setting::get('shop.shop');
+//                            $set['params']['title'] = $shop['name'];
+//                            $set['params']['img'] = $shop['logo'];
+//                        }
+//                    }
+//                }
+                $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
+                $i = 0;
+                foreach ($designerSet->toArray as &$set){
+                    if ($set->temp == 'topbar'){
+                        if (empty($set->params->title)){
+                            $shop = Setting::get('shop.shop');
+                            $designerSet[$i]->params->title = $shop['name'];
+                            $designerSet[$i]->params->img = $shop['logo'];
+                        }
+                    }
+                    $i++;
+                }
+
+                return $this->successJson('获取数据成功!', $designerSet);
             }
         }
         return $this->successJson('参数有误!', []);
