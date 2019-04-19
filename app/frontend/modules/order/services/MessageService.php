@@ -61,7 +61,12 @@ class MessageService extends \app\common\services\MessageService
     public function received()
     {
         $this->shopMessage->goodsBuy(3);
-        if (\Setting::get('shop.notice.notice_enable.received')) {
+        if ($this->noticeType == 2){
+            $noticeUrl = 'shop.miniNotice.notice_enable.received';
+        }else{
+            $noticeUrl = 'shop.notice.notice_enable.received';
+        }
+        if (\Setting::get($noticeUrl)) {
             $this->shopMessage->received();
         }
         $this->buyerMessage->received();

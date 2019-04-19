@@ -161,7 +161,8 @@ class MessageService
                 'uid' => $uid,
                 'url' => $url
             ]));
-            $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+           // $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+            $res = \Setting::get('plugin.min_app');
             $options = [
                 'app_id' => $res['key'],
                 'secret' => $res['secret'],
