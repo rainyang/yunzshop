@@ -1408,7 +1408,6 @@ class MemberController extends ApiController
             if (app('plugins')->isEnabled('business-card')) {
                 $is_open = Setting::get('business-card.is_open');
                 if($is_open == 1){
-                    dd(123);
                     $data[] = [
                         'name'  => 'business_card',
                         'title' => '名片',
@@ -1417,7 +1416,7 @@ class MemberController extends ApiController
                     ];
                 }
             }
-
+dd($data);
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
