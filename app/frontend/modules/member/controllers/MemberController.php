@@ -76,10 +76,8 @@ class MemberController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
 
-        $this->chkAccount();
-
         if (!empty($member_id)) {
-
+            $this->chkAccount($member_id);
 
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -503,8 +501,6 @@ class MemberController extends ApiController
         $data     = \YunShop::request()->data;
         $uid = \YunShop::app()->getMemberId();
 
-        $this->chkAccount();
-
         if (isset($data['birthday'])) {
             $birthday = explode('-', $data['birthday']);
         }
@@ -541,6 +537,8 @@ class MemberController extends ApiController
 
 
         if (\YunShop::app()->getMemberId()) {
+            $this->chkAccount(\YunShop::app()->getMemberId());
+
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
@@ -1972,21 +1970,20 @@ class MemberController extends ApiController
         return $is_bind_mobile;
     }
 
-    public function chkAccount()
+    public function chkAccount($member_id)
     {
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
 
-        if (!Cache::has('chekAccount')) {
-            Cache::put('chekAccount', 1, 60);
+        if (1 == $type && !Cache::has($member_id . ':chekAccount')) {
+            \Log::debug('------chk account----', $member_id);
+            Cache::put($member_id. ':chekAccount', 1, 30);
+            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
-            $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
-
-            if (5 == $type || 7 == $type) {
-                throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
-            }
-
-            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
         }
+
+
+
     }
 }
