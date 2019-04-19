@@ -897,10 +897,10 @@ class MemberController extends ApiController
 //                }
                 $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
                 if($designerSet[0]->temp == 'topbar'){
-                    $shop = Setting::get('shop.shop');
-                    $designer['title'] = $designerSet[0]->params->title?:$shop['name'];
-                    $designer['img'] = $designerSet[0]->params->img?:$shop['logo'];
-                    $designer['desc'] = $designerSet[0]->params->desc?:'';
+                    $share = Setting::get('shop.share');
+                    $designer['title'] = $designerSet[0]->params->title?:$share['title'];
+                    $designer['img'] = $designerSet[0]->params->img?:$share['icon'];
+                    $designer['desc'] = $designerSet[0]->params->desc?:$share['desc'];
                 }
 
                 return $this->successJson('获取数据成功!', $designer);
