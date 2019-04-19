@@ -1977,11 +1977,16 @@ class MemberController extends ApiController
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
 
-        if (1 == $type && !Cache::has('chekAccount')) {
+        if (!Cache::has('chekAccount')) {
             Cache::put('chekAccount', 1, 60);
-            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
-            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
+            $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+            if (5 == $type || 7 == $type) {
+                throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
+            }
+
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         }
     }
 }
