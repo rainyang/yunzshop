@@ -314,12 +314,7 @@ class Income extends BaseModel
 
         return $model;
     }
-
-    public function hasOneY($class)
-    {
-        return  $this->hasOne($class, 'id', 'coupon_id');
-    }
-
+    
     /**
      * @return Withdraw
      */
