@@ -874,16 +874,11 @@ class MemberController extends ApiController
 //                    }
 //                }
                 $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
-                $i = 0;
-                foreach ($designerSet->toArray as &$set){
-                    if ($set->temp == 'topbar'){
-                        if (empty($set->params->title)){
-                            $shop = Setting::get('shop.shop');
-                            $designerSet[$i]->params->title = $shop['name'];
-                            $designerSet[$i]->params->img = $shop['logo'];
-                        }
-                    }
-                    $i++;
+                if($designerSet[0]->temp == 'topbar'){
+                    $shop = Setting::get('shop.shop');
+                    $designer['title'] = $designerSet[0]->params->title?:$shop['name'];
+                    $designer['img'] = $designerSet[0]->params->img?:$shop['logo'];
+                    $designer['desc'] = $designerSet[0]->params->desc?:'';
                 }
 
                 return $this->successJson('获取数据成功!', $designerSet);
