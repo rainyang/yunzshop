@@ -13,6 +13,7 @@ use app\common\services\Utils;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
+use app\platform\modules\user\models\AdminUser;
 
 class LoginController extends BaseController
 {
@@ -118,7 +119,7 @@ class LoginController extends BaseController
     }
 
     /**
-     * 重新登录接口
+     * 重写登录接口
      * @param Request $request
      *
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
@@ -164,6 +165,11 @@ class LoginController extends BaseController
         $request->session()->regenerate();
 
         $this->clearLoginAttempts($request);
+
+        AdminUser::where('uid', $this->guard()->user()->id)->update([
+            'lastvisit' =>  time(),
+            'lastip' => Utils::getClientIp(),
+        ]);
 
         return $this->successJson('成功', ['user' => $this->guard()->user()]);
 

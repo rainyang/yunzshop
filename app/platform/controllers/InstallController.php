@@ -12,6 +12,7 @@ namespace app\platform\controllers;
 use \Illuminate\Support\Facades\DB;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\user\models\AdminUser;
+use app\common\services\Utils;
 
 class InstallController
 {
@@ -335,6 +336,11 @@ class InstallController
             return $this->errorJson('两次密码不一致');
         }
         $user['password'] = bcrypt($user['password']);
+        $user['status'] = 0;
+        $user['type'] = 0;
+        $user['lastvisit'] = time();
+        $user['lastip'] = Utils::getClientIp();
+        $user['joinip'] = Utils::getClientIp();
         unset($user['name']);
         unset($user['repassword']);
         $user_model->fill($user);
