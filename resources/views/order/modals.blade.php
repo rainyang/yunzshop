@@ -23,7 +23,7 @@
     </form>
 </div>
 <!-- 确认发货 -->
-<div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" style="width:600px;margin:0px auto;">
+<div id="modal-confirmsend" class="modal fade" role="dialog" style="width:600px;margin:0px auto;">
     <form class="form-horizontal form" action="" method="get"
           enctype="multipart/form-data">
         <input type='hidden' name='c' value='site'/>
@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">快递公司</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-                            <select class="form-control" name="express_code" id="express_company">
+                            <select class="form-control express_company" name="express_code" id="express_company" style=" z-index: 16000 !important;padding:0;margin:0;">
                                 <option value="" data-name="">其他快递</option>
 
                                 @include('express.companies')
@@ -300,3 +300,7 @@
         })
     }
 </script>
+<script>
+    $(".express_company").select2();
+</script>
+
