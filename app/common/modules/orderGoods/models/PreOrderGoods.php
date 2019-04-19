@@ -122,6 +122,8 @@ class PreOrderGoods extends OrderGoods
         $this->goods_market_price = (float)$this->goods_market_price;
         $this->coupon_price = (float)$this->coupon_price;
         $this->need_address = (float)$this->need_address;
+        $this->payment_amount = (float)$this->getPaymentAmount();
+
         if ($this->isOption()) {
             $this->goods_option_id = (int)$this->goods_option_id;
             $this->goods_option_title = (string)$this->goods_option_title;
@@ -215,7 +217,6 @@ class PreOrderGoods extends OrderGoods
     {
         $this->touchPreAttributes();
         $this->deduction_amount = (float)$this->getDeductionAmount();
-        $this->payment_amount = (float)$this->getPaymentAmount();
     }
 
     /**
@@ -278,7 +279,9 @@ class PreOrderGoods extends OrderGoods
 
     }
 
-
+    public function getPaymentAmountAttribute(){
+        return $this->getPaymentAmount();
+    }
     /**
      * 均摊的支付金额
      * @return float
