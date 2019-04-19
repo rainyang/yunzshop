@@ -1406,6 +1406,7 @@ class MemberController extends ApiController
             }
 
             if (app('plugins')->isEnabled('business_card')) {
+                dd(1);
                 $is_open = Setting::get('business-card.is_open');
                 /*if($is_open == 1){*/
                     $data[] = [
