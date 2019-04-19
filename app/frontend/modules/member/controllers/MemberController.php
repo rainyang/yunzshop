@@ -503,6 +503,8 @@ class MemberController extends ApiController
         $data     = \YunShop::request()->data;
         $uid = \YunShop::app()->getMemberId();
 
+        $this->chkAccount();
+
         if (isset($data['birthday'])) {
             $birthday = explode('-', $data['birthday']);
         }
@@ -538,7 +540,7 @@ class MemberController extends ApiController
         ];
 
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
+        if (\YunShop::app()->getMemberId()) {
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
 
@@ -547,8 +549,10 @@ class MemberController extends ApiController
                 'alipayname'    => $member_shop_info_model->alipayname,
                 'wechat'        => $member_shop_info_model->wechat,
                 'mobile'        => $member_model->mobile,
-                'name'          => $member_model->realname
+                'name'          => $member_model->realname,
+                'type'          => \YunShop::request()->type
             ];
+
             $membership_infomation = [
                 'uniacid'        =>\YunShop::app()->uniacid,
                 'uid'            =>\YunShop::app()->getMemberId(),
@@ -556,7 +560,7 @@ class MemberController extends ApiController
                 'session_id'     =>session_id()
             ];
 
-            $membership_infomation_log_model = MembershipInformationLog::create($membership_infomation);
+            MembershipInformationLog::create($membership_infomation);
 
 
             $member_model->setRawAttributes($member_data);
@@ -1974,7 +1978,7 @@ class MemberController extends ApiController
         $mid = Member::getMid();
 
         if (1 == $type && !Cache::has('chekAccount')) {
-            Cache::put('chekAccount', 1, 360);
+            Cache::put('chekAccount', 1, 60);
             $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
