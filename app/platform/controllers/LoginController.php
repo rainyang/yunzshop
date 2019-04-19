@@ -166,7 +166,7 @@ class LoginController extends BaseController
 
         $this->clearLoginAttempts($request);
 
-        AdminUser::where('uid', $this->guard()->user()->id)->update([
+        AdminUser::where('uid', $this->guard()->user()->uid)->update([
             'lastvisit' =>  time(),
             'lastip' => Utils::getClientIp(),
         ]);
