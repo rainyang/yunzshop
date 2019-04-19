@@ -1404,8 +1404,8 @@ class MemberController extends ApiController
                     'url'   => 'TransHome'
                 ];
             }
-dd(app('plugins'));
-            if (app('plugins')->isEnabled('business_card')) {
+
+            if (app('plugins')->isEnabled('business-card')) {
                 $is_open = Setting::get('business-card.is_open');
                 if($is_open == 1){
                     $data[] = [
