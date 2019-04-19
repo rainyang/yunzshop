@@ -1416,7 +1416,7 @@ class MemberController extends ApiController
                     ];
                 }
             }
-dd($data);
+
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
