@@ -7,6 +7,7 @@ use app\common\events\member\BecomeAgent;
 
 use app\common\events\member\PluginCreateRelationEvent;
 use app\common\models\member\MemberChildren;
+use app\common\models\member\MemberParent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\common\modules\memberCart\MemberCartCollection;
@@ -439,10 +440,16 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
+        $beforeRelation = false;//这一步主要检查是不是通过本次生成的关系链
+        $shopRelation = MemberParent::where(['parent_id' => $mid, 'level' => 1, 'member_id' => $member_id])->first();
+        if (!$shopRelation) {
+            $beforeRelation = true;
+        }
+
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
 
-        if($mark_id && $mark)
+        if($mark_id && $mark && $beforeRelation)
         {
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
         }
