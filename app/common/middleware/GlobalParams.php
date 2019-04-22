@@ -44,6 +44,7 @@ class GlobalParams
             'acid'             => $cfg['uniacid'],
             'openid'           => '',
             'uid'              => \Auth::guard('admin')->user()->uid,
+            'username'         => \Auth::guard('admin')->user()->username,
             'siteroot'         => request()->getSchemeAndHttpHost() . '/',
             'siteurl'          => request()->getUri(),
             'attachurl'        => $att['attachurl'],
