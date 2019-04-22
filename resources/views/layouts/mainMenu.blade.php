@@ -63,6 +63,8 @@
                                     @endif
                                     <li> <a href="?c=account&a=display&"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
                                     <li> <a target="_blank" href="?c=utility&a=emulator&"><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
+                                    @else
+                                        <li> <a href="/#/manage/index"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
                                     @endif
                                     @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
                                         <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a></li>

@@ -98,7 +98,7 @@ class GlobalParams
         }
 
         if (app('plugins')->isEnabled('hotel')) {
-            include base_path() . '/plugins/hotel/bootstrap.php';
+            include base_path() . '/plugins/hotel/hotelMenu.php';
 //            $hotel = include base_path() . '/plugins/hotel/bootstrap.php';
 //            app()->call($hotel);
         }
