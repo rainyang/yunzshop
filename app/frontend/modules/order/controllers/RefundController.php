@@ -24,8 +24,6 @@ class RefundController extends ApiController
         $store_id = \YunShop::request()->store_id ? \YunShop::request()->store_id : 0;
         $supplier_id = \YunShop::request()->supplier_id ? \YunShop::request()->supplier_id : 0;
         $address = ReturnAddress::getOneByPluginsId($plugins_id, $store_id, $supplier_id);
-        dd($address);
-        exit;
 
         if (app('plugins')->isEnabled('area-dividend') && request()->refund_id) {
             $orderRefund = RefundApply::select()
