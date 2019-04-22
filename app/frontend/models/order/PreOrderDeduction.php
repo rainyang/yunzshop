@@ -199,7 +199,6 @@ class PreOrderDeduction extends OrderDeduction
                 $this->order->getPriceBefore($this->getCode() . 'RestDeduction') - $this->getMaxDispatchPriceDeduction()->getMoney(),
                 $this->getMaxDeduction()->getMoney() - $this->getMinDeduction()->getMoney()
             );
-//dump($deductionAmount);
             trace_log()->deduction("订单抵扣", "{$this->name} 订单可抵扣{$deductionAmount}元");
             trace_log()->deduction("订单抵扣", "{$this->name} 用户{$this->usablePoint->getName()}可抵扣{$this->getMemberCoin()->getMaxUsableCoin()->getMoney()}元");
             // 用户可用虚拟币-最低抵扣 与订单抵扣虚拟币的最小值  todo 如果以后需要一种抵扣币抵扣两次时,会产生bug
@@ -296,16 +295,16 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
-        \Log::debug("监听抵扣", $this->getDeduction()->isEnableDeductDispatchPrice());
+        trace_log()->freight("监听抵扣", $this->getDeduction()->getName() .'运费抵扣开启状态'.$this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
-        if (!$this->getDeduction()->isEnableDeductDispatchPrice()) {
+        if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
 
             //订单运费
             $amount = $this->order->getDispatchAmount();
 
             $result->setMoney($amount);
+            trace_log()->freight("监听抵扣运费", $this->getDeduction()->getName() .'运费可抵扣金额');
         }
-        \Log::debug("监听抵扣运费", $result);
         return $result;
     }
 
