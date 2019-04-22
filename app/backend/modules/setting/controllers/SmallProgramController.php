@@ -34,25 +34,27 @@ class SmallProgramController extends BaseController
 
     public function add()
     {
-        if (isset(request()->page)){
-            if (request()->objective == 'next'){
-                $page = request()->page + 20;
-            }else{
-                $page = request()->page<=0 ? 0 : request()->page - 20;
-            }
-        }else{
-            $page = 0;
-        }
         $small = new SmallProgramNotice();
-        $list = $small->getAllTemplateList($page);
+        $list = $small->getExistTemplateList();
         if ($list['errcode'] != 0 || !isset($list['errcode'])){
-            return $this->message('添加模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
+            return $this->message('获取模板失败'.$list, Url::absoluteWeb('setting.small-program.index'), 'error');
         }
         return view('setting.small-program.detail', [
                 'list'=>$list['list'],
-                'page'=>$page,
                 'url'=>'setting.small-program.save'
             ])->render();
+    }
+    public function addTmp()
+    {
+        if (!request()->templateidshort) {
+            return $this->errorJson('请填写模板编码');
+        }
+        $ret = $this->WechatApiModel->getTmpByTemplateIdShort(request()->templateidshort);
+        if ($ret['status'] == 0) {
+            return $this->errorJson($ret['msg']);
+        } else {
+            return $this->successJson($ret['msg'], []);
+        }
     }
     public function getTemplateKey(){
         if (isset(request()->key_val)){
