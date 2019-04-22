@@ -94,16 +94,16 @@ class GlobalParams
         }
 
         if (app('plugins')->isEnabled('subsidiary')) {
-            $subsidiary = include base_path() . '/plugins/subsidiary/bootstrap.php';
-            app()->call($subsidiary);
+            include base_path() . '/plugins/subsidiary/subsidiaryMenu.php';
         }
 
         if (app('plugins')->isEnabled('hotel')) {
-            $hotel = include base_path() . '/plugins/hotel/bootstrap.php';
-            app()->call($hotel);
+            include base_path() . '/plugins/hotel/bootstrap.php';
+//            $hotel = include base_path() . '/plugins/hotel/bootstrap.php';
+//            app()->call($hotel);
         }
 
-        if (app('plugins')->isEnabled('hotel')) {
+        if (app('plugins')->isEnabled('area-dividend')) {
             include base_path() . '/plugins/area-dividend/area_admin.php';
         }
     }
