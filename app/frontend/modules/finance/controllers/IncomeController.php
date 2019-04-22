@@ -137,8 +137,9 @@ class IncomeController extends ApiController
                 if($item['order_sn']){
                     foreach($order as $key => $value){
                         if($value->order_sn == $item['order_sn']){
-                            $item['uid'] = $value->uid;
-                            $item['nickname'] = $value->belongsToMember->nickname;
+                            $item['type_name'] ='会员ID'.$value->uid.'【'.$value->belongsToMember->nickname.'】'.$item['type_name'].$item['amount'].'元';
+//                            $item['uid'] = $value->uid;
+//                            $item['nickname'] = $value->belongsToMember->nickname;
                         }
                     }
                 }
