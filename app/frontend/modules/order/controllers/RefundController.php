@@ -29,10 +29,10 @@ class RefundController extends ApiController
             $orderRefund = RefundApply::select()
                 ->where('id', request()->refund_id)
                 ->first();
-            if ($orderRefund) {
-                $agentOrder = AgentOrder::select()
-                    ->where('order_id', $orderRefund->order_id)
-                    ->first();
+            $agentOrder = AgentOrder::select()
+                ->where('order_id', $orderRefund->order_id)
+                ->first();
+            if ($orderRefund && $agentOrder) {
                 $address = \app\common\models\goods\ReturnAddress::uniacid()
                     ->where('plugins_id', \Config::get('plugins.area-dividend.id'))
                     ->where('store_id', $agentOrder->agent_id)
