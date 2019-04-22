@@ -18,9 +18,11 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use app\common\helpers\PaginationHelper;
 use Yunshop\Diyform\admin\DiyformDataController;
+use Yunshop\Love\Common\Models\GoodsLove;
 use app\common\models\MemberShopInfo;
 use app\common\models\member\MemberInvitationCodeLog;
-
+use Yunshop\Designer\services\DesignerService;
+use Yunshop\Love\Common\Services\SetService;
 class HomePageController extends ApiController
 {
     protected $publicAction = [
@@ -138,6 +140,11 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
+            $is_love = app('plugins')->isEnabled('love');
+           if ($is_love){
+               $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
+               $result['designer']['love_name'] = $love_basics_set['name'];
+           }
             //系统信息
             // TODO
             if (!Cache::has('designer_system')) {
@@ -154,6 +161,8 @@ class HomePageController extends ApiController
             } else {
                 $page = (new IndexPageService())->getIndexPage();
             }
+
+//           dd($page->toArray());
 
             //装修数据, 原来接口在 plugin.designer.home.index.page
             /*if(empty($pageId)){ //如果是请求首页的数据
@@ -172,6 +181,23 @@ class HomePageController extends ApiController
                     $designer = Cache::get($member_id . '_designer_default_0');
                 } else {
                     $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+                }
+                if ($is_love){
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                            }
+                        }
+                    }
+                }else{
+                    foreach ($designer['data'] as &$data){
+                        if ($data['temp']=='goods'){
+                            foreach ($data['data'] as &$goode_award){
+                                $goode_award['award'] = 0;
+                            }
+                        }
+                    }
                 }
 
                 if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
@@ -311,16 +337,16 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-        $title = $result['item']['pageinfo']['params']['title'];
-
-        if (!empty($title)){
-            $result['system']['share']['desc']= $result['item']['pageinfo']['params']['desc'];
-            $result['system']['share']['url']= $result['item']['pageinfo']['params']['img'];
-             $result['system']['share']['title']= $title;
-        }
         return $this->successJson('ok', $result);
     }
 
+    public function getLoveGoods($goods_id)
+    {
+        $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
+        $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
+        return $goods;
+
+    }
     /*
      * 获取分页数据
      */
@@ -404,9 +430,9 @@ class HomePageController extends ApiController
             if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
                 foreach ($Menu as $key=>$value){
-                   // $Menu[$key]['name']=$Menu[$key]['id'];
-                     $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
-                      $Menu[$key]['url']= $url?:'';
+                    // $Menu[$key]['name']=$Menu[$key]['id'];
+                    $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                    $Menu[$key]['url']= $url?:'';
 
                     //$Menu[$key]['url'] ="/addons/yun_shop/".'?#'.substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"#/")+1)."&mid=" . $mid . "&type=" . $type;
                 }
@@ -506,6 +532,7 @@ class HomePageController extends ApiController
         //if($relation->status == 1){
 
         return $Menu;
+
 
     }
 

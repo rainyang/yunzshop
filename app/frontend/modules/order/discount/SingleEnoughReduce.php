@@ -44,7 +44,7 @@ class SingleEnoughReduce extends BaseDiscount
     {
         // 求和所属订单中指定goods_id的订单商品支付金额
         $amount = $this->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function (PreOrderGoods $preOrderGoods) {
-            return $preOrderGoods->getPriceAfter($this->getCode());
+            return $preOrderGoods->getPriceBefore($this->getCode());
         });
         if (is_null($orderGoods->goods->hasOneSale)) {
             return 0;

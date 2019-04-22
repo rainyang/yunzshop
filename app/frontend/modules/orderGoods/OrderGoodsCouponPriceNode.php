@@ -26,6 +26,9 @@ class OrderGoodsCouponPriceNode extends BaseOrderGoodsPriceNode
      */
     function getPrice()
     {
+        // todo 订单优惠券计算需要参照抵扣的结构重构, 这里先调用一次订单的抵扣金额,来保证先绑定订单商品优惠券的模型,后通过模型获取订单商品优惠券总金额
+        $this->orderGoodsPrice->orderGoods->order->getPriceAfter('coupon');
+
         return $this->orderGoodsPrice->getPriceBefore($this->getKey()) - $this->orderGoodsPrice->getCouponAmount();
     }
 

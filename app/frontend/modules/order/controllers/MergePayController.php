@@ -140,14 +140,19 @@ class MergePayController extends ApiController
     {
         // 获取可用的支付方式
         $result = $orderPay->getPaymentTypes()->map(function (BasePayment $paymentType) {
-            //格式化数据结构
-            return [
-                'name' => $paymentType->getName(),
-                'value' => $paymentType->getId(),
-                'need_password' => $paymentType->needPassword(),
-            ];
-        });
 
+            //余额
+            if($paymentType->getCode()  == 'balance'){
+                if($paymentType->getName() !== \Setting::get('shop.shop.credit')){
+                      $names = \Setting::get('shop.shop.credit');
+                }
+            }
+                return [
+                    'name' => $names ?: $paymentType->getName(),
+                    'value' => $paymentType->getId(),
+                    'need_password' => $paymentType->needPassword(),
+                ];
+        });
         return $result;
     }
 

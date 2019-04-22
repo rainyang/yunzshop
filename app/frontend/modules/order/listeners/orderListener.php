@@ -14,6 +14,7 @@ use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\OtherMessageService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Created by PhpStorm.
@@ -85,7 +86,7 @@ class orderListener
                 });
                 // todo 使用队列执行
             });
-            $uniAccount = UniAccount::get();
+            $uniAccount = UniAccount::getEnable();
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
                 \Setting::$uniqueAccountId = $uniacid = $u->uniacid;

@@ -21,6 +21,7 @@ class GoodsCoupon extends BaseModel
 
     protected $casts = [
         'coupon' => 'json',
+        'share_coupon' => 'json',
     ];
 
 

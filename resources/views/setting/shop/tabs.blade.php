@@ -2,6 +2,7 @@
     <ul class="add-shopnav">
         <li @if(\YunShop::request()->route == 'setting.shop.index') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.index')}}">商城设置</a></li>
         <li @if(\YunShop::request()->route == 'setting.shop.member') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.member')}}">会员设置</a></li>
+        <li @if(\YunShop::request()->route == 'setting.shop.order') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.order')}}">订单设置</a></li>
         {{--<li @if(\YunShop::request()->route == 'setting.shop.temp') class="active" @endif ><a href="{{ yzWebUrl('setting.shop.temp')}}">模板设置</a></li>--}}
         <li @if(\YunShop::request()->route == 'setting.shop.category') class="active" @endif><a href="{{ yzWebUrl('setting.shop.category')}}">分类层级</a></li>
         <li @if(\YunShop::request()->route == 'setting.shop.contact') class="active" @endif><a href="{{ yzWebUrl('setting.shop.contact')}}">联系方式</a></li>
