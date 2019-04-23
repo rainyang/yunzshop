@@ -17,6 +17,9 @@ class ReturnGoods extends RefundType
         $this->validate([RefundApply::WAIT_CHECK],'通过');
 
         $this->refundApply->status = RefundApply::WAIT_RETURN_GOODS;
+
+        $this->refundApply->remark = request()->message;
+ 
         return $this->refundApply->save();
     }
 
