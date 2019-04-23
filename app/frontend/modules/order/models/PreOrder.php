@@ -419,6 +419,11 @@ class PreOrder extends Order
         return $this->getOrderDispatch()->getFreight();
     }
 
+    public function getDispatchAmountAttribute()
+    {
+        return $this->getDispatchAmount();
+    }
+
     /**
      * 公众号
      * @return int
