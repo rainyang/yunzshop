@@ -460,7 +460,7 @@ class GoodsController extends ApiController
                 $point = $goodsModel->hasOneSale->point;
             }
             if (!empty($point)) {
-                $data['value'][] = '购买赠送'.$point.'元';
+                $data['value'][] = '购买赠送'.$point.$data['name'];
             }
 
         }
