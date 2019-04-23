@@ -11,6 +11,7 @@ namespace app\common\modules\trade\models;
 use app\common\models\BaseModel;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
+use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,8 @@ class Trade extends BaseModel
         $this->setRelation('orders', $this->getOrderCollection($memberCartCollection));
         $this->setRelation('discount', $this->getDiscount());
         $this->setRelation('dispatch', $this->getDispatch());
-        $this->amountItems = $this->getAmountItems();
+        $this->amount_items = $this->getAmountItems();
+        $this->discount_amount_items = $this->getDiscountAmountItems();
 
     }
 
@@ -45,31 +47,52 @@ class Trade extends BaseModel
                 'code' => 'total_price',
                 'name' => '订单总金额',
                 'amount' => $this->orders->sum('price'),
-            ],[
+            ], [
                 'code' => 'total_dispatch_price',
                 'name' => '总运费',
                 'amount' => $this->orders->sum('dispatch_price'),
-            ],[
+            ], [
                 'code' => 'total_deduction_price',
                 'name' => '总抵扣',
                 'amount' => $this->orders->sum('deduction_price'),
             ],
-
-            'discount_amount_items' => $this->getDiscountAmountItems(),
         ];
 
 
         return $items;
     }
 
+    /**
+     * @return mixed
+     */
     private function getDiscountAmountItems()
     {
-        $orderDiscountsItems = $this->orders->reduce(function (Collection $orderDiscountsItems, PreOrder $order) {
 
+        $orderDiscountsItems = $this->orders->reduce(function (Collection $result, PreOrder $order) {
+            foreach ($order->orderDiscounts as $orderDiscount) {
+                /**
+                 * @var PreOrderDiscount $orderDiscount
+                 */
+                $item = $result->where('code', $orderDiscount->discount_code)->first();
+                if(!$orderDiscount->amount){
+                    //continue;
+                }
+                if (isset($item)) {
 
-            return $orderDiscountsItems->merge($order->orderDiscounts);
-        }, collect());
-        dd($orderDiscountsItems->groupBy('discount_code'));
+                    $item['amount'] += $orderDiscount->amount;
+                } else {
+                    $result[] = [
+                        'code' => $orderDiscount->discount_code,
+                        'name' => $orderDiscount->name,
+                        'amount' => $orderDiscount->amount,
+                    ];
+                }
+            }
+            return $result;
+        }, collect())->map(function ($item) {
+            $item['amount'] = sprintf('%.2f', $item['amount']);
+            return $item;
+        })->toArray();
         return $orderDiscountsItems;
     }
 
