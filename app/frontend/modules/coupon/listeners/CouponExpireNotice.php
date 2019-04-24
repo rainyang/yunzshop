@@ -70,7 +70,7 @@ class CouponExpireNotice
 
     public function sendNotice($ouponData, $member)
     {
-        if ($this->set['template_id'] && ($member['follow'] == 1)) {
+        if ($member['follow'] == 1) {
 //            $message = $this->set['expire'];
 //            $message = str_replace('[优惠券名称]', $ouponData['name'], $message);
 //            $message = str_replace('[优惠券使用范围]', $ouponData['api_limit'], $message);
