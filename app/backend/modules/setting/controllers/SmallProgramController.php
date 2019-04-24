@@ -19,23 +19,34 @@ use app\common\services\notice\SmallProgramNotice;
 class SmallProgramController extends BaseController
 {
     private $temp_model;
+    protected $SmallProgramNotice;
+    public function __construct(){
+        $this->SmallProgramNotice = new SmallProgramNotice();
+    }
+//    public function index()
+//    {
+//        $kwd = request()->keyword;
+//        $list = MinAppTemplateMessage::getList();
+//        return view('setting.small-program.list', [
+//            'list' => $list->toArray(),
+//            'kwd' => $kwd,
+//            'url'=>'setting.small-program.save'
+//        ])->render();
+//    }
 
     public function index()
     {
-        $kwd = request()->keyword;
-        $list = MinAppTemplateMessage::getList();
-        return view('setting.small-program.list', [
-            'list' => $list->toArray(),
-//            'pager' => $pager,
-            'kwd' => $kwd,
-            'url'=>'setting.small-program.save'
-        ])->render();
-    }
-
-    public function add()
-    {
-        $small = new SmallProgramNotice();
-        $list = $small->getExistTemplateList();
+//        $list = $this->SmallProgramNotice->getTemplateKey('AT0036');
+//        $tem='';
+//        foreach ($list['keyword_list'] as $key){
+//            $tem .=$key['name'].'=>'.$key['keyword_id'].'/n/t';
+//        }
+//        dd($tem);
+        $mini = new MinAppTemplateMessage();
+        if (empty($mini->getList()->toArray())) {
+            $this->initialTemplate();
+        }
+        $list = $this->SmallProgramNotice->getExistTemplateList();
         if ($list['errcode'] != 0 || !isset($list['errcode'])){
             return $this->message('获取模板失败'.$list, Url::absoluteWeb('setting.small-program.index'), 'error');
         }
@@ -43,6 +54,36 @@ class SmallProgramController extends BaseController
                 'list'=>$list['list'],
                 'url'=>'setting.small-program.save'
             ])->render();
+    }
+    public function initialTemplate(){
+        $title_list = [
+            'AT0009' => ['52','5','3','7','10','12','6'],
+            'AT0036' => ['36','3','5','4','14'],
+            'AT0007' => ['51','7','77','104','96','3','2','23'],
+            'AT0024' => ['41','7','2','4','75','6','16'],
+            'AT0002' => ['71','72','73','90'],
+            'AT1168' => ['2','3','6','4','1'],
+            'AT0257' => ['15','14','17','18'],
+            'AT0210' => ['5','1','10','12','3'],
+            'AT0241' => ['7','5','2','12','10','8'],
+            'AT0637' => ['7','20','35','24','4','25'],
+            'AT0787' => ['82','26','15','28','17','78'],
+            'AT1983' => ['9','2','13','7','16','4'],
+            ];
+        foreach ($title_list as $key=>$keyword){
+            $Result = $this->SmallProgramNotice->getAddTemplate($key,$keyword);
+        }
+        $tempList = $this->SmallProgramNotice->getExistTemplateList();
+         foreach ($tempList['list'] as $temp){
+             if ($tempList['errcode'] == 0) {
+                 $ret = MinAppTemplateMessage::create([
+                     'uniacid' => \YunShop::app()->uniacid,
+                     'title' => $temp['title'],
+                     'template_id' => $temp['template_id'],
+                     'data' => $temp['content'],
+                 ]);
+             }
+         }
     }
     public function addTmp()
     {
@@ -56,6 +97,7 @@ class SmallProgramController extends BaseController
             return $this->successJson($ret['msg'], []);
         }
     }
+
     public function getTemplateKey(){
         if (isset(request()->key_val)){
             $ret = $this->save(request()->all());
@@ -66,8 +108,7 @@ class SmallProgramController extends BaseController
         }
         $page = request()->page;
         if (isset(request()->id)){
-            $small = new SmallProgramNotice();
-            $key_list = $small->getTemplateKey(request()->id);
+            $key_list = $this->SmallProgramNotice->getTemplateKey(request()->id);
             if ($key_list['errcode'] != 0 || !isset($key_list['errcode'])){
                 return $this->message('获取模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
             }
@@ -75,7 +116,7 @@ class SmallProgramController extends BaseController
         }
         return view('setting.small-program.detail', [
             'keyWord'=>$keyWord,
-            'list'=>$small->getAllTemplateList($page)['list'],
+            'list'=>$this->SmallProgramNotice->getAllTemplateList($page)['list'],
             'page'=>$page,
             'title'=>request()->title,
             'url'=>'setting.small-program.save'
@@ -87,8 +128,7 @@ class SmallProgramController extends BaseController
         foreach ($list['key_val'] as $value){
             $key_list[] = explode(":",$value)[0];
         }
-        $small = new SmallProgramNotice();
-        $template_date = $small->getAddTemplate($list['id'],$key_list);
+        $template_date = $this->SmallProgramNotice->getAddTemplate($list['id'],$key_list);
        if ($template_date['errcode'] != 0 || !isset($template_date['errcode'])){
            return $this->message('添加模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
        }
@@ -105,45 +145,44 @@ class SmallProgramController extends BaseController
         }
    }
 
-    public function edit()
-    {
-        if (request()->id) {
-            $min_small = new MinAppTemplateMessage;
-            $temp_date = $min_small::getTemp(request()->id);//获取数据表中的数据
-            $small = new SmallProgramNotice();
-            $key_list = $small->getTemplateKey($temp_date->title_id);
-        }
-        if (request()->key_val) {
-            foreach (request()->key_val as $value){
-                $keyWord_list[] = explode(":",$value)[0];
-            }
-            $template_date = $small->getAddTemplate($temp_date->title_id, $keyWord_list);
-            if ($template_date['errcode'] != 0 || !isset($template_date['errcode'])){
-                return $this->message('修改模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
-            }
-            $del_temp = $small->deleteTemplate($temp_date->template_id);//删除原来的模板
-            $temp_date->keyword_id = implode(",", request()->key_val);
-            $temp_date->template_id =$template_date['template_id'];
-            $ret = $temp_date->save();
-            if (!$ret) {
-                return $this->message('修改模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
-            }
-            return $this->message('修改模板成功', Url::absoluteWeb('setting.small-program.index'));
-        }
-
-        if ($key_list['errcode']==0){
-            $keyWord = $key_list['keyword_list'];
-        }
-        return view('setting.small-program.detail', [
-            'keyWord'=>$keyWord,
-            'is_edit'=>0,
-            'title'=>$temp_date->title,
-            'id'=>$temp_date->title_id,
-            'list'=>$small->getAllTemplateList($temp_date->offset)['list'],
-            'page'=>$temp_date->offset,
-            'url'=>'setting.small-program.save'
-        ])->render();
-        }
+//    public function edit()
+//    {
+//        if (request()->id) {
+//            $min_small = new MinAppTemplateMessage;
+//            $temp_date = $min_small::getTemp(request()->id);//获取数据表中的数据
+//            $key_list = $this->SmallProgramNotice->getTemplateKey($temp_date->title_id);
+//        }
+//        if (request()->key_val) {
+//            foreach (request()->key_val as $value){
+//                $keyWord_list[] = explode(":",$value)[0];
+//            }
+//            $template_date = $this->SmallProgramNotice->getAddTemplate($temp_date->title_id, $keyWord_list);
+//            if ($template_date['errcode'] != 0 || !isset($template_date['errcode'])){
+//                return $this->message('修改模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
+//            }
+//            $del_temp = $this->SmallProgramNotice->deleteTemplate($temp_date->template_id);//删除原来的模板
+//            $temp_date->keyword_id = implode(",", request()->key_val);
+//            $temp_date->template_id =$template_date['template_id'];
+//            $ret = $temp_date->save();
+//            if (!$ret) {
+//                return $this->message('修改模板失败', Url::absoluteWeb('setting.small-program.index'), 'error');
+//            }
+//            return $this->message('修改模板成功', Url::absoluteWeb('setting.small-program.index'));
+//        }
+//
+//        if ($key_list['errcode']==0){
+//            $keyWord = $key_list['keyword_list'];
+//        }
+//        return view('setting.small-program.detail', [
+//            'keyWord'=>$keyWord,
+//            'is_edit'=>0,
+//            'title'=>$temp_date->title,
+//            'id'=>$temp_date->title_id,
+//            'list'=>$this->SmallProgramNotice->getAllTemplateList($temp_date->offset)['list'],
+//            'page'=>$temp_date->offset,
+//            'url'=>'setting.small-program.save'
+//        ])->render();
+//        }
 
     public function notice()
     {
@@ -163,28 +202,43 @@ class SmallProgramController extends BaseController
         ])->render();
     }
 
-        function del()
-        {
-            if (request()->id) {
+    public function see()
+    {
+        $list = $this->SmallProgramNotice->getExistTemplateList();
+        $tmp = '';
+        foreach ($list['list'] as $temp) {
+            while ($temp['template_id'] == request()->tmp_id)
+            {
+                $tmp = $temp;
+                break;
+            }
+        }
+        return view('setting.wechat-notice.see', [
+            'template' => $tmp,
+            'notice_type'=>2
+        ])->render();
+    }
+
+     public function del()
+     {
+            if (request()->template_id) {
                 $min_small = new MinAppTemplateMessage;
-                $small = new SmallProgramNotice();
-                $temp = $min_small::getTemp(request()->id);
+                $temp = $min_small::getTemp(request()->template_id);
                 if (empty($temp)) {
                     return $this->message('找不到该模板', Url::absoluteWeb('setting.small-program.index'), 'error');
                 }
-//                dd($temp->template_id);
-                $ret = $small->deleteTemplate($temp->template_id);
+                $ret = $list = $this->SmallProgramNotice->deleteTemplate(request()->template_id);
                 if ($ret['errcode'] == 0) {
-                    $min_small->delTempDataByTempId(request()->id);
-                    $kwd = request()->keyword;
+                    $min_small->delTempDataByTempId($temp->id);
+//                    $kwd = request()->keyword;
                     $list = MinAppTemplateMessage::getList();
                     return view('setting.small-program.list', [
                         'list' => $list->toArray(),
-                        'kwd' => $kwd,
+//                        'kwd' => $kwd,
                         'url' => 'setting.small-program.save'
                     ])->render();
                 }
             }
-        }
+     }
 
     }
