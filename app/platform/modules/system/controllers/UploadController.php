@@ -71,17 +71,17 @@ class UploadController extends BaseController
         $ext = strtolower($ext);
         switch ($type) {
             case 'image':
-                $allowExt = array('gif', 'jpg', 'jpeg', 'bmp', 'png', 'ico');
+                $allowExt = $this->global['image_extentions'];
                 $limit = $this->global['image_limit'];
                 break;
             case 'thumb':
             case 'voice':
             case 'audio':
-                $allowExt = array('mp3', 'wma', 'wav', 'amr');
+                $allowExt = $this->global['audio_extentions'];
                 $limit = $this->global['audio_limit'];
                 break;
             case 'video':
-                $allowExt = array('rm', 'rmvb', 'wmv', 'avi', 'mpg', 'mpeg', 'mp4');
+                $allowExt = $this->global['audio_extentions'];
                 $limit = $this->global['audio_limit'];
                 break;
         }
