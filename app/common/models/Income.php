@@ -299,7 +299,7 @@ class Income extends BaseModel
     public static function getIncomesList($search)
     {
         if($search['select']){
-            $selects = ['id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at','detail'];
+            $selects = ['id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at','detail','incometable_id'];
         }else{
             $selects = ['id', 'create_month', 'incometable_type', 'type_name', 'amount', 'created_at'];
         }
