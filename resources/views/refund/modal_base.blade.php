@@ -24,7 +24,7 @@
 
 
                             @if($order['has_one_refund_apply']['status'] < 4)
-                                <label class='radio-inline'>
+                                <label class='radio-inline' style="float: left;margin-left: 0px;margin-right: 10px;">
                                     <input type='radio' class="refund-action"
                                            data-action="{{yzWebUrl('refund.operation.reject')}}" value="-1"
                                            name='refund_status'>驳回申请
@@ -109,6 +109,33 @@
 
         return true;
     });
+
+    $.each($(":radio[name=refund_status]"),function() {
+        var refund_status_radio = $(this).val();
+        var flag = $(this)[0].checked;
+        if (refund_status_radio == -1 && flag) {//显示驳回
+            $(".refuse-group").show();
+            $(".refund-group").hide();
+            $(".express-group").hide();
+            $(".help-group").hide();
+        } else if (refund_status_radio == 1 && flag) {//显示帮助
+            $(".refuse-group").hide();
+            $(".refund-group").hide();
+            $(".express-group").hide();
+            $(".help-group").show();
+        } else if (refund_status_radio == 3 && flag) {//显示退款
+            $(".refuse-group").hide();
+            $(".refund-group").show();
+            $(".express-group").hide();
+            $(".help-group").hide();
+        } else if (refund_status_radio == 5 && flag) {//显示快递
+            $(".refuse-group").hide();
+            $(".refund-group").hide();
+            $(".express-group").show();
+            $(".help-group").hide();
+        }
+    });
+
     $(function () {
         $(":radio[name=refund_status]").change(function () {
             var refund_status = $(this).val();
