@@ -1453,7 +1453,7 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('my-friend')) {
             $data[] = [
                 'name'  => 'my-friend',
-                'title' => '我的朋友页面',
+                'title' => MY_FRIEND_NAME,
                 'class' => 'icon-member_my-friend',
                 'url'   => 'MyFriendApply'
             ];
