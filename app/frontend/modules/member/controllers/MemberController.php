@@ -159,6 +159,13 @@ class MemberController extends ApiController
 
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
+                //网约车
+                $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
+
+                if ($data['is_open_net_car']) {
+                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+                }
+
                 return $this->successJson('', $data);
             } else {
                 return $this->errorJson('[' . $member_id . ']用户不存在');
