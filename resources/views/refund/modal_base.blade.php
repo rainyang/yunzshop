@@ -27,7 +27,7 @@
                                 <label class='radio-inline' style="float: left;margin-left: 0px;margin-right: 10px;">
                                     <input type='radio' class="refund-action"
                                            data-action="{{yzWebUrl('refund.operation.reject')}}" value="-1"
-                                           name='refund_status'>驳回申请
+                                           name='refund_status' checked>驳回申请
                                 </label>
                             @endif
                             @section('operation_pass')@show
