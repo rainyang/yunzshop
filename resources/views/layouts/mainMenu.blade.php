@@ -97,6 +97,9 @@
                             @endif
 
                             @if (env('APP_Framework') == 'platform')
+                                    @if(YunShop::app()->role == 'founder')
+                                        <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
+                                    @endif
                                 <li class="drop_out"> <a href="javascript:void(0)" id="sys_logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
                             @else
                                 <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>

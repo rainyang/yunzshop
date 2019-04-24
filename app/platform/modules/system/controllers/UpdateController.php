@@ -29,10 +29,8 @@ class UpdateController extends BaseController
         //执行迁移文件
         $this->runMigrate();
 
-//        $key = Setting::get('shop.key')['key'];
-//        $secret = Setting::get('shop.key')['secret'];
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -403,10 +401,6 @@ class UpdateController extends BaseController
         }
 
         if ($update->newVersionAvailable()) {
-            /*$update->onEachUpdateFinish(function($version){
-                \Log::debug('----CLI----');
-                \Artisan::call('update:version' ,['version'=>$version]);
-            });*/
 
             $result = $update->update();
 
@@ -570,19 +564,5 @@ class UpdateController extends BaseController
         }
 
         \Artisan::call('migrate',['--force' => true]);
-    }
-
-    /**
-     * 获取 key 和 secret
-     * @return mixed
-     */
-    private function setting()
-    {
-        $setting = Setting::where('group', 'shop')->where('key', 'key')->pluck('value')['0'];
-        if ($setting) {
-            $setting = unserialize($setting);
-        }
-
-        return $setting;
     }
 }
