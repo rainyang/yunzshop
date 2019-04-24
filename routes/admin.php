@@ -24,6 +24,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
     Route::post('install/create_data', 'InstallController@createData');     // 创建数据
     Route::post('install/delete', 'InstallController@delete');     // 删除控制器
+    Route::get('login/site', 'LoginController@site');               // 登录页面返回数据
 });
 
 Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\system\controllers'], function (){

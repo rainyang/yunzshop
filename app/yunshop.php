@@ -594,7 +594,7 @@ class YunApp extends YunComponent
             return 0;
         }
     }
-    
+
 }
 
 class YunPlugin

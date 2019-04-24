@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use app\platform\modules\user\models\AdminUser;
+use app\platform\modules\system\models\SystemSetting;
 
 class LoginController extends BaseController
 {
@@ -215,5 +216,16 @@ class LoginController extends BaseController
         return $this->guard()->attempt(
             $this->credentials($request), 1
         );
+    }
+
+    public function site()
+    {
+        $copyright = SystemSetting::settingLoad('copyright', 'system_copyright');
+
+        if ($copyright) {
+            return $this->successJson('成功', $copyright);
+        } else {
+            return $this->errorJson('没有检测到数据', '');
+        }
     }
 }
