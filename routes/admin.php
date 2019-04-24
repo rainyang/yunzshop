@@ -119,6 +119,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('application/getApp', 'ApplicationController@getApp');
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
+        //添加应用权限检测
+        Route::any('application/checkAddRole/', 'ApplicationController@checkAddRole');
 		//删除 加入回收站
 		Route::get('application/delete/{id}', 'ApplicationController@delete');
 		//回收站
