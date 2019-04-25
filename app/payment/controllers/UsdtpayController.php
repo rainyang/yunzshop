@@ -46,7 +46,7 @@ class UsdtpayController extends PaymentController
                         'trade_no'     => $parameter['transactionId'],
                         'unit'         => 'yuan',
                         'pay_type'     => 'USDT支付',
-                        'pay_type_id'     => 24
+                        'pay_type_id'     => 27
 
                     ];
                   
