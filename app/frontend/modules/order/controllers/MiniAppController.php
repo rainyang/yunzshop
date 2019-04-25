@@ -15,6 +15,7 @@ use app\common\models\Order;
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OtherMessageService;
 use app\common\models\MemberMiniAppModel;
+use app\frontend\modules\order\services\MiniMessageService;
 
 class MiniAppController extends ApiController
 {
@@ -22,7 +23,7 @@ class MiniAppController extends ApiController
     {
         $order = Order::find(\Yunshop::request()->orderId);
         $formId = \Yunshop::request()->formID;
-        (new MessageService($order,$formId,2,'订单提交成功通知'))->received();
+        (new MiniMessageService($order,$formId,2,'订单支付成功通知'))->received();
         return $this->successJson('成功');
     }
 
