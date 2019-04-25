@@ -20,7 +20,7 @@
                     @if(isset($valueOne['child']))
                         <div class='panel-body perm-group'>
                             @foreach($valueOne['child'] as $keyTwo=>$valueTwo)
-                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1 && $keyTwo != 'plugins' && $keyTwo != 'shop_upgrade')
+                                @if(isset($valueTwo['permit']) && $valueTwo['permit'] === 1 && !in_array($keyTwo, \app\common\services\PermissionService::founderPermission()))
                                     <span>
                                        <label class='checkbox-inline' >
                                            <input type='checkbox'
