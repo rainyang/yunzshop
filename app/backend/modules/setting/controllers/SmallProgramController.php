@@ -38,13 +38,6 @@ class SmallProgramController extends BaseController
 
     public function index()
     {
-
-        $list = $this->SmallProgramNotice->getTemplateKey('AT0686');
-        $tem='';
-        foreach ($list['keyword_list'] as $key){
-            $tem .=$key['name'].'=>'.$key['keyword_id'].'/n/t';
-        }
-        dd($tem);
         $mini = new MinAppTemplateMessage();
         if (empty($mini->getList()->toArray())) {
             $this->initialTemplate();
@@ -208,7 +201,6 @@ class SmallProgramController extends BaseController
         $notice = \Setting::get('mini_app.notice');
         $requestModel = \YunShop::request()->yz_notice;
         $temp_list = MinAppTemplateMessage::getList();
-        dd($temp_list->toArray());
         if (!empty($requestModel)) {
             if (\Setting::set('mini_app.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.small-program.notice'));
