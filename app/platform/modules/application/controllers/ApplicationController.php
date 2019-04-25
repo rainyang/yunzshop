@@ -226,6 +226,11 @@ class ApplicationController extends BaseController
 
         return $this->successJson('操作成功');
     }
+    //强制删除平台
+    public function forceDel(){
+
+
+    }
 
     //启用禁用或恢复应用
     public function switchStatus()
