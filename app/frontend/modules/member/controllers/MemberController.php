@@ -162,9 +162,9 @@ class MemberController extends ApiController
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
 
-                if ($data['is_open_net_car']) {
-                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-                }
+//                if ($data['is_open_net_car']) {
+//                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//                }
 
                 return $this->successJson('', $data);
             } else {
