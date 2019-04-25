@@ -151,7 +151,7 @@ class MessageService
      */
     public static function MiniNotice($templateId, $data, $uid, $uniacid = '', $url = '',$scene = '')
     {
-        \Log::debug('==============miniApp===================');
+        \Log::debug('==============miniApp===================',$scene);
             //监听消息通知
             event(new SendMessageEvent([
                 'data' => $data,

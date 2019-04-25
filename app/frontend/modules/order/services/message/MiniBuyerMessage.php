@@ -37,7 +37,7 @@ class MiniBuyerMessage extends Message
         if (empty($this->templateId)) {
             return;
         }
-        \Log::debug('===============',$uid);
+        \Log::debug('===============',[$uid,$this->formId]);
         $this->MiniNotice($this->templateId, $this->msg, $uid,'','',$this->formId);
 
     }
@@ -164,7 +164,7 @@ class MiniBuyerMessage extends Message
             'keyword6'=>['value'=> $this->order->pay_type_name],//支付方式
             'keyword7'=>['value'=>  $this->order['pay_time']->toDateTimeString()],//支付时间
         ];
-       $this->templateId = $is_open->templateId;
+       $this->templateId = $is_open->template_id;
        $this->sendToBuyer();
     }
 }

@@ -21,8 +21,10 @@ class MiniAppController extends ApiController
 {
     public function index()
     {
+
         $order = Order::find(\Yunshop::request()->orderId);
         $formId = \Yunshop::request()->formID;
+        \Log::debug('===========发送模板消息',$formId);
         (new MiniMessageService($order,$formId,2,'订单支付成功通知'))->received();
         return $this->successJson('成功');
     }
