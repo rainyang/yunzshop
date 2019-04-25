@@ -22,10 +22,6 @@ class MemberLowerOrder extends BaseModel
     public function belongsToMember(){
         return $this->belongsTo(\app\common\models\Member::class, 'uid', 'uid');
     }
-    public function hasOneMemberLowerCount()
-    {
-        return $this->belongsTo(MemberLowerCount::class,'uid','uid');
-    }
 
     public static function getMember($search)
     {

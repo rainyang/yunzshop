@@ -74,7 +74,7 @@
                                     {{ $item->belongsToMember->nickname }}
                                 @endif
                             </td>
-                            <td>{{ $item->hasOneMemberLowerCount->team_total }}</td>
+                            <td>{{ $item->team_count }}</td>
                             <td>{{ $item->pay_count }}</td>
                             <td>{{ $item->team_order_quantity }}</td>
                             <td>{{ $item->team_order_amount }}</td>

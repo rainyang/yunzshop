@@ -19,10 +19,11 @@ class OfflineTeamOrderController extends OfflineCountController
 {
     public function index()
     {
-//        dd((new LowerOrderService())->memberOrder());
+      //  dd((new LowerCountService())->memberCount());
         $pageSize = 10;
         $search = \YunShop::request()->search;
-        $list = MemberLowerOrder::getMember($search)->with('hasOneMemberLowerCount')->orderBy('team_order_amount', 'desc')->paginate($pageSize);
+        $list = MemberLowerOrder::getMember($search)->orderBy('team_order_amount', 'desc')->select('id','uniacid','uid','team_count','pay_count','team_order_quantity','team_order_amount')->paginate($pageSize);
+
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.member.offline_team_order', [
             'page' => $page,
