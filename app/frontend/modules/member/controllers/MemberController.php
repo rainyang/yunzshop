@@ -825,7 +825,15 @@ class MemberController extends ApiController
             'showOptionMenu',
             'scanQRCode',
             'updateAppMessageShareData',
-            'updateTimelineShareData'
+            'updateTimelineShareData',
+            'startRecord',
+            'stopRecord',
+            'playVoice',
+            'pauseVoice',
+            'stopVoice',
+            'uploadVoice',
+            'downloadVoice',
+            'downloadVoice'
         ));
         $config = json_decode($config, 1);
 
