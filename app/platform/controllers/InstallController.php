@@ -13,6 +13,7 @@ use \Illuminate\Support\Facades\DB;
 use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\user\models\AdminUser;
 use app\common\services\Utils;
+use app\platform\modules\user\models\YzUserProfile;
 
 class InstallController
 {
@@ -341,11 +342,19 @@ class InstallController
         $user['lastvisit'] = time();
         $user['lastip'] = Utils::getClientIp();
         $user['joinip'] = Utils::getClientIp();
+        $mobile = $user['mobile'];
         unset($user['name']);
         unset($user['repassword']);
+        unset($user['mobile']);
         $user_model->fill($user);
 
         if (!$user_model->save()) {
+            $this->errorJson('创建数据失败');
+        }
+
+        // 保存用户信息关联表信息
+        $user_profile = YzUserProfile::create(['uid' => $user_model['id'], 'mobile' => $mobile]);
+        if (!$user_profile) {
             $this->errorJson('创建数据失败');
         }
 
