@@ -25,13 +25,19 @@ class MiniAppController extends ApiController
         $order = Order::find(\Yunshop::request()->orderId);
         $formId = \Yunshop::request()->formID;
         \Log::debug('===========发送模板消息',$formId);
-        (new MiniMessageService($order,$formId,2,'订单支付成功通知'))->received();
+        (new MiniMessageService($order,'',2,'订单支付成功通知'))->refund();
+      //  (new MiniMessageService($order,$formId,2,'订单支付成功通知'))->received();refund
         return $this->successJson('成功');
     }
 
     public function formId(){
         $formId = \Yunshop::request()->formID;
         $memberId = \Yunshop::request()->memberId;
+        $ingress = \Yunshop::request()->ingress;
+        $type = \Yunshop::request()->type;
+        if ($ingress != 'weChatApplet' && $type !=2){
+            return ;
+        }
         $time = strtotime (date("Y-m-d H:i:s"));
         MemberMiniAppModel::where('member_id',$memberId)
             ->uniacid()

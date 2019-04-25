@@ -167,4 +167,23 @@ class MiniBuyerMessage extends Message
        $this->templateId = $is_open->template_id;
        $this->sendToBuyer();
     }
+
+    public function delivery($title){
+        $is_open = MinAppTemplateMessage::getTitle($title);
+        if (!$is_open->is_open){
+            return;
+        }
+        $this->msg = [
+            'keyword1'=>['value'=> $this->order->belongsToMember->nickname],// 用户
+            'keyword2'=>['value'=> $this->order->order_sn],//订单号
+            'keyword3'=>['value'=>  $this->order['create_time']->toDateTimeString()],//下单时间
+            'keyword4'=>['value'=> $this->order['price']],// 订单金额
+            'keyword5'=>['value'=>  $this->goods_title],//商品信息
+            'keyword6'=>['value'=>   $this->order['send_time']->toDateTimeString()],//发货时间
+            'keyword7'=>['value'=>  $this->order['express']['express_company_name'] ?: "暂无信息"],//快递公司
+            'keyword8'=>['value'=> $this->order['express']['express_sn'] ?: "暂无信息"],//快递单号
+        ];
+        $this->templateId = $is_open->template_id;
+        $this->sendToBuyer();
+    }
 }

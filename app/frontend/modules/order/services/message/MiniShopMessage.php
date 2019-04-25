@@ -101,6 +101,7 @@ class MiniShopMessage extends Message
         ];
         $this->transfer($temp_id, $params);
     }
+
     public function paymentRemind($title){
         $is_open = MinAppTemplateMessage::getTitle($title);
         if (!$is_open->is_open){
@@ -116,9 +117,10 @@ class MiniShopMessage extends Message
             'keyword6'=>['value'=> $address['realname']],//收貨人
             'keyword7'=>['value'=>   $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],//收貨地址
         ];
-        $this->templateId = $is_open->templateId;
+        $this->templateId = $is_open->template_id;
         $this->sendToShops();
     }
+
 
     /**
      * @name 购买商品发送通知
