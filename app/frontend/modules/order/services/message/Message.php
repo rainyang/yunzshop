@@ -23,11 +23,13 @@ class Message extends MessageService
     protected $notice;
     protected $noticeType;
     protected $formId;
-    function __construct($order,$formId = '',$type = 1)
+    protected $title;
+    function __construct($order,$formId = '',$type = 1,$title)
     {
         $this->order = $order;
         $this->formId = $formId;
         $this->noticeType = $type;
+        $this->title = $title;
     }
 
 }

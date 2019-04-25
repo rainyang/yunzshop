@@ -51,28 +51,25 @@
                         <br>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
-                            <div class="col-sm-8 col-xs-12">
+                            <div class="col-sm-6 col-xs-12">
                                 @foreach ($temp_list as $item)
-                                    @if($set['seller_order_create'] == $item['id'])
-                                        {{--<input type="text" value="{{$item['title']}}">--}}
-                                        <input type="text" value="{{$item['id']}}">
+                                    @if('订单生成通知'== $item['title'])
+                                        <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+
                                     @endif
-                                {{$item['title']}}
                                 @endforeach
-                                <select name='yz_notice[seller_order_create]' class='form-control diy-notice'>
-                                    <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['seller_order_create'])) value="{{$set['seller_order_create']}}"
-                                            selected @else value=""
-                                            @endif
-                                    >
-                                        默认消息模板
-                                    </option>
-                                    @foreach ($temp_list as $item)
-                                        <option value="{{$item['id']}}"
-                                                @if($set['seller_order_create'] == $item['id'])
-                                                selected
-                                                @endif>{{$item['title']}}</option>
-                                    @endforeach
-                                </select>
+                            </div>
+                            <div class="col-sm-4 col-xs-2">
+                                @foreach ($temp_list as $item)
+                                    @if('订单生成通知'== $item['title'])
+                                       <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                           @if($item['is_open'] == '1')
+                                               checked
+                                           @endif
+                                               onclick="message_default({{$item['id']}})"/>
+                                    @endif
+                                @endforeach
                             </div>
                             {{--<div class="col-sm-2 col-xs-6">--}}
                                 {{--<input class="mui-switch mui-switch-animbg" id="seller_order_create" type="checkbox"--}}
@@ -84,22 +81,25 @@
                         </div>
                         <br>
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付通知[卖家]</label>
-                            <div class="col-sm-8 col-xs-12">
-                                <select name='yz_notice[seller_order_pay]' class='form-control diy-notice'>
-                                    <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['seller_order_pay'])) value="{{$set['seller_order_pay']}}"
-                                            selected @else value=""
-                                            @endif
-                                    >
-                                        默认消息模板
-                                    </option>
-                                    @foreach ($temp_list as $item)
-                                        <option value="{{$item['id']}}"
-                                                @if($set['seller_order_pay'] == $item['id'])
-                                                selected
-                                                @endif>{{$item['title']}}</option>
-                                    @endforeach
-                                </select>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付提醒[卖家]</label>
+                            <div class="col-sm-6 col-xs-12">
+                                @foreach ($temp_list as $item)
+                                    @if('订单支付提醒' == $item['title'])
+                                        <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                        <input name='yz_notice[seller_order_pay]' type="text" value="{{$item['id']}}"  style= "display:none">
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-sm-4 col-xs-2">
+                                @foreach ($temp_list as $item)
+                                    @if('订单支付提醒'== $item['title'])
+                                        <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                               @if($item['is_open'] == '1')
+                                               checked
+                                               @endif
+                                               onclick="message_default({{$item['id']}})"/>
+                                    @endif
+                                @endforeach
                             </div>
                             {{--<div class="col-sm-2 col-xs-6">--}}
                                 {{--<input class="mui-switch mui-switch-animbg" id="seller_order_pay" type="checkbox"--}}
@@ -112,21 +112,24 @@
                         <br>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成通知[卖家]</label>
-                            <div class="col-sm-8 col-xs-12">
-                                <select name='yz_notice[seller_order_finish]' class='form-control diy-notice'>
-                                    <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['seller_order_finish'])) value="{{$set['seller_order_finish']}}"
-                                            selected @else value=""
-                                            @endif
-                                    >
-                                        默认消息模板
-                                    </option>
-                                    @foreach ($temp_list as $item)
-                                        <option value="{{$item['id']}}"
-                                                @if($set['seller_order_finish'] == $item['id'])
-                                                selected
-                                                @endif>{{$item['title']}}</option>
-                                    @endforeach
-                                </select>
+                            <div class="col-sm-6 col-xs-12">
+                                @foreach ($temp_list as $item)
+                                    @if('订单完成通知' == $item['title'])
+                                        <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                        <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-sm-4 col-xs-2">
+                                @foreach ($temp_list as $item)
+                                    @if('订单完成通知'== $item['title'])
+                                        <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                               @if($item['is_open'] == '1')
+                                               checked
+                                               @endif
+                                               onclick="message_default({{$item['id']}})"/>
+                                    @endif
+                                @endforeach
                             </div>
                             {{--<div class="col-sm-2 col-xs-6">--}}
                                 {{--<input class="mui-switch mui-switch-animbg" id="seller_order_finish" type="checkbox"--}}
@@ -227,21 +230,24 @@
                         @if(YunShop::notice()->getNotSend('order_submit_success'))
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单提交成功通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_submit_success]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_submit_success'])) value="{{$set['order_submit_success']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_submit_success'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单提交成功通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单提交成功通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_submit_success" type="checkbox"--}}
@@ -257,21 +263,24 @@
                                 <br>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单取消通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_cancel]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_cancel'])) value="{{$set['order_cancel']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_cancel'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单取消通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单取消通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_cancel" type="checkbox"--}}
@@ -286,21 +295,24 @@
                                 <br>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付成功通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_pay_success]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_pay_success'])) value="{{$set['order_pay_success']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_pay_success'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单支付成功通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单支付成功通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_pay_success" type="checkbox"--}}
@@ -314,22 +326,25 @@
                         @if(YunShop::notice()->getNotSend('order_send'))
                                 <br>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_send]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_send'])) value="{{$set['order_send']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_send'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单发货提醒</label>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单发货提醒' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('订单发货提醒'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_send" type="checkbox"--}}
@@ -343,22 +358,25 @@
                         @if(YunShop::notice()->getNotSend('order_finish'))
                                 <br>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单确认收货通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_finish]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_finish'])) value="{{$set['order_finish']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_finish'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">确认收货通知</label>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('确认收货通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('确认收货通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_finish" type="checkbox"--}}
@@ -373,21 +391,24 @@
                                 <br>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_refund_apply]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_refund_apply'])) value="{{$set['order_refund_apply']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_refund_apply'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款申请通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[order_refund_apply]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款申请通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_refund_apply" type="checkbox"--}}
@@ -402,21 +423,24 @@
                                 <br>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款成功通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_refund_success]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_refund_success'])) value="{{$set['order_refund_success']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_refund_success'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款成功通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[order_refund_success]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款成功通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_refund_success" type="checkbox"--}}
@@ -430,22 +454,25 @@
                         @if(YunShop::notice()->getNotSend('order_refund_reject'))
                                 <br>
                             <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款申请驳回通知</label>
-                                <div class="col-sm-8 col-xs-12">
-                                    <select name='yz_notice[order_refund_reject]' class='form-control diy-notice'>
-                                        <option @if(\app\common\models\notice\MinAppTemplateMessage::getTemp($set['order_refund_reject'])) value="{{$set['order_refund_reject']}}"
-                                                selected @else value=""
-                                                @endif
-                                        >
-                                            默认消息模板
-                                        </option>
-                                        @foreach ($temp_list as $item)
-                                            <option value="{{$item['id']}}"
-                                                    @if($set['order_refund_reject'] == $item['id'])
-                                                    selected
-                                                    @endif>{{$item['title']}}</option>
-                                        @endforeach
-                                    </select>
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款拒绝通知</label>
+                                <div class="col-sm-6 col-xs-12">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款拒绝通知' == $item['title'])
+                                            <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                            <input name='yz_notice[order_refund_reject]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        @endif
+                                    @endforeach
+                                </div>
+                                <div class="col-sm-4 col-xs-2">
+                                    @foreach ($temp_list as $item)
+                                        @if('退款拒绝通知'== $item['title'])
+                                            <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                                   @if($item['is_open'] == '1')
+                                                   checked
+                                                   @endif
+                                                   onclick="message_default({{$item['id']}})"/>
+                                        @endif
+                                    @endforeach
                                 </div>
                                 {{--<div class="col-sm-2 col-xs-6">--}}
                                     {{--<input class="mui-switch mui-switch-animbg" id="order_refund_reject" type="checkbox"--}}
@@ -468,19 +495,15 @@
                     <script>
                         function message_default(name) {
                             var id = "#" + name;
-                            var setting_name = "shop.notice";
-                            var select_name = "select[name='yz_notice[" + name + "]']"
-                            var url_open = "{!! yzWebUrl('setting.default-notice.index') !!}"
-                            var url_close = "{!! yzWebUrl('setting.default-notice.cancel') !!}"
-                            var postdata = {
-                                notice_name: name,
-                                setting_name: setting_name
-                            };
+                            var url_open = "{!! yzWebUrl('setting.small-program.set-notice') !!}"
                             if ($(id).is(':checked')) {
+                                var postdata = {
+                                    id: name,
+                                    open: 1
+                                };
                                 //开
                                 $.post(url_open,postdata,function(data){
                                     if (data.result == 1) {
-                                        $(select_name).find("option:selected").val(data.id)
                                         showPopover($(id),"开启成功")
                                     } else {
                                         showPopover($(id),"开启失败，请检查微信模版")
@@ -488,9 +511,12 @@
                                     }
                                 }, "json");
                             } else {
+                                var postdata = {
+                                    id: name,
+                                    open: 0
+                                };
                                 //关
-                                $.post(url_close,postdata,function(data){
-                                    $(select_name).val('');
+                                $.post(url_open,postdata,function(data){
                                     showPopover($(id),"关闭成功")
                                 }, "json");
                             }

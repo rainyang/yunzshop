@@ -18,10 +18,10 @@ class MessageService extends \app\common\services\MessageService
     private $shopMessage;
     protected $formId;
     protected $noticeType;
-    function __construct($order,$formId = '',$type = 1)
+    function __construct($order,$formId = '',$type = 1,$title)
     {
-        $this->buyerMessage = new BuyerMessage($order,$formId,$type);
-        $this->shopMessage = new ShopMessage($order,$formId,$type);
+        $this->buyerMessage = new BuyerMessage($order,$formId,$type,$title);
+        $this->shopMessage = new ShopMessage($order,$formId,$type,$title);
         $this->formId = $formId;
         $this->noticeType = $type;
     }
@@ -62,7 +62,8 @@ class MessageService extends \app\common\services\MessageService
     {
         $this->shopMessage->goodsBuy(3);
         if ($this->noticeType == 2){
-            $noticeUrl = 'shop.miniNotice.notice_enable.received';
+
+            $this->shopMessage->received();
         }else{
             $noticeUrl = 'shop.notice.notice_enable.received';
         }

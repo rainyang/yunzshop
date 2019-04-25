@@ -18,15 +18,10 @@ class MinAppTemplateMessage extends Migration
                 $table->integer('id', true);
                 $table->integer('uniacid');
                 $table->string('title');
-                $table->string('title_id');
                 $table->string('template_id', 45);
-                $table->string('formId')->nullable();
-                $table->string('formId_create_time')->nullable();
-                $table->integer('offset')->nullable();
-                $table->string('keyword_id')->default('');
                 $table->text('data', 65535)->nullable();
                 $table->tinyInteger('is_default')->nullable();
-                $table->tinyInteger('is_open')->default(0);
+                $table->integer('is_open')->default(0);
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
             });

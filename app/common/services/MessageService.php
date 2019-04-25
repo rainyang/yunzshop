@@ -149,12 +149,9 @@ class MessageService
      * @param string $url
      * @return bool
      */
-    public static function MiniNotice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = []){
+    public static function MiniNotice($templateId, $data, $uid, $uniacid = '', $url = '',$scene = '')
+    {
         \Log::debug('==============miniApp===================');
-        \Log::debug($miniApp);
-            if(\Setting::get('shop.miniNotice.toggle') == false){
-                //return false;
-            }
             //监听消息通知
             event(new SendMessageEvent([
                 'data' => $data,
@@ -169,19 +166,23 @@ class MessageService
             ];
             $member = Member::whereUid($uid)->first();
             if (!isset($member)) {
-                \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
+                \Log::error("小程序消息推送失败,未找到uid:{$uid}的用户");
                 return false;
             }
-
-            if (!$member->isFollow()) {
-              //  return false;
+            if(empty($scene)){
+                $createTime = $member->hasOneMiniApp->formId_create_time;
+                $time=strtotime (date("Y-m-d H:i:s")); //当前时间
+                $minute=floor(($time-$createTime) % 86400/60);
+                if ($minute > 10080){
+                    \Log::error("小程序消息推送失败,formId失效");
+                    return false;
+                }
+                $scene = $member->hasOneMiniApp->formId;
             }
-            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$miniApp['formId'] );
+            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$scene );
     }
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
     {
-        \Log::debug('==============miniApp===================');
-        \Log::debug($miniApp);
 
         if (\Setting::get('shop.notice.toggle') == false) {
             return false;

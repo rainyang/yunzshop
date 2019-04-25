@@ -16,6 +16,8 @@ use app\backend\modules\setting\controllers\SmallProgramDataController;
 use app\backend\modules\setting\controllers\DiyTempController;
 use app\common\models\notice\MinAppTemplateMessage;
 use app\common\services\notice\SmallProgramNotice;
+use app\common\models\MemberMiniAppModel;
+
 class SmallProgramController extends BaseController
 {
     private $temp_model;
@@ -36,12 +38,13 @@ class SmallProgramController extends BaseController
 
     public function index()
     {
-//        $list = $this->SmallProgramNotice->getTemplateKey('AT0036');
-//        $tem='';
-//        foreach ($list['keyword_list'] as $key){
-//            $tem .=$key['name'].'=>'.$key['keyword_id'].'/n/t';
-//        }
-//        dd($tem);
+
+        $list = $this->SmallProgramNotice->getTemplateKey('AT0686');
+        $tem='';
+        foreach ($list['keyword_list'] as $key){
+            $tem .=$key['name'].'=>'.$key['keyword_id'].'/n/t';
+        }
+        dd($tem);
         $mini = new MinAppTemplateMessage();
         if (empty($mini->getList()->toArray())) {
             $this->initialTemplate();
@@ -61,7 +64,6 @@ class SmallProgramController extends BaseController
             'AT0036' => ['36','3','5','4','14'],
             'AT0007' => ['51','7','77','104','96','3','2','23'],
             'AT0024' => ['41','7','2','4','75','6','16'],
-            'AT0002' => ['71','72','73','90'],
             'AT1168' => ['2','3','6','4','1'],
             'AT0257' => ['15','14','17','18'],
             'AT0210' => ['5','1','10','12','3'],
@@ -69,6 +71,7 @@ class SmallProgramController extends BaseController
             'AT0637' => ['7','20','35','24','4','25'],
             'AT0787' => ['82','26','15','28','17','78'],
             'AT1983' => ['9','2','13','7','16','4'],
+            'AT0686' => ['15','2','7','20','21','11','12'],
             ];
         foreach ($title_list as $key=>$keyword){
             $Result = $this->SmallProgramNotice->getAddTemplate($key,$keyword);
@@ -84,6 +87,16 @@ class SmallProgramController extends BaseController
                  ]);
              }
          }
+    }
+
+    public function setNotice(){
+        $tempId = request()->id;
+        $tempOpen = request()->open;
+        $is = MinAppTemplateMessage::isOpen($tempId,$tempOpen);
+        $is_open = $is ? 1 : 0;
+        echo json_encode([
+            'result' => $is_open,
+        ]);
     }
     public function addTmp()
     {
@@ -186,11 +199,18 @@ class SmallProgramController extends BaseController
 
     public function notice()
     {
-        $notice = \Setting::get('min_app.notice');
+
+//        dd(MemberMiniAppModel::where('member_id',1)->where('uniacid',3)->update(['formId'=>date("Y-m-d H:i:s")]));
+//        $zero1=strtotime (date("Y-m-d H:i:s")); //当前时间  ,注意H 是24小时 h是12小时
+//        $zero2=strtotime ("2019-04-24 15:41:26");  //过年时间，不能写2014-1-21 24:00:00  这样不对
+//        $minute=floor(($zero1-$zero2) % 86400/60);
+//        dd($minute);
+        $notice = \Setting::get('mini_app.notice');
         $requestModel = \YunShop::request()->yz_notice;
         $temp_list = MinAppTemplateMessage::getList();
+        dd($temp_list->toArray());
         if (!empty($requestModel)) {
-            if (\Setting::set('min_app.notice', $requestModel)) {
+            if (\Setting::set('mini_app.notice', $requestModel)) {
                 return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.small-program.notice'));
             } else {
                 $this->error('消息提醒设置失败');

@@ -5,14 +5,14 @@ namespace app\frontend\modules\order\services\message;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\notice\MessageTemp;
-
+use app\common\models\notice\MinAppTemplateMessage;
 /**
  * Created by PhpStorm.
  * User: shenyang
  * Date: 2017/6/7
  * Time: 上午10:15
  */
-class BuyerMessage extends Message
+class MiniBuyerMessage extends Message
 {
     protected $goods_title;
 
@@ -37,16 +37,9 @@ class BuyerMessage extends Message
         if (empty($this->templateId)) {
             return;
         }
-        if ($this->noticeType == 2){
-            $miniApp=[
-                'type'=>$this->noticeType,
-                'formId'=>$this->formId,
-            ];
-            \Log::debug('===============',$miniApp);
-            $this->MiniNotice($this->templateId, $this->msg, $uid,'','',$miniApp);
-        }else{
-            $this->notice($this->templateId, $this->msg, $uid);
-        }
+        \Log::debug('===============',$uid);
+        $this->MiniNotice($this->templateId, $this->msg, $uid,'','',$this->formId);
+
     }
 
     private function transfer($temp_id, $params)
@@ -155,5 +148,23 @@ class BuyerMessage extends Message
             ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
         ];
         $this->transfer($temp_id, $params);
+    }
+
+    public function paymentSuccess($title){
+        $is_open = MinAppTemplateMessage::getTitle($title);
+        if (!$is_open->is_open){
+            return;
+        }
+        $this->msg = [
+            'keyword1'=>['value'=> $this->order->belongsToMember->nickname],//姓名
+            'keyword2'=>['value'=> $this->order->order_sn],//订单号码
+            'keyword3'=>['value'=>  $this->order['create_time']->toDateTimeString()],//下单时间
+            'keyword4'=>['value'=>  $this->order['price']],//订单金额
+            'keyword5'=>['value'=> $this->goods_title],// 商品名称
+            'keyword6'=>['value'=> $this->order->pay_type_name],//支付方式
+            'keyword7'=>['value'=>  $this->order['pay_time']->toDateTimeString()],//支付时间
+        ];
+       $this->templateId = $is_open->templateId;
+       $this->sendToBuyer();
     }
 }
