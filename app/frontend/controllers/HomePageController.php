@@ -424,7 +424,7 @@ class HomePageController extends ApiController
      */
     public static function defaultMenu($i, $mid, $type)
     {
-        $CustomizeMenu = DesignerMenu::getDefaultMenu();
+        app('plugins')->isEnabled('designer') ? $CustomizeMenu = DesignerMenu::getDefaultMenu() : null;
         if(!empty($CustomizeMenu)){
             $CustomizeMenu_list=$CustomizeMenu->toArray();
             if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
