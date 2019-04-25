@@ -93,7 +93,8 @@ class ApiController extends BaseController
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
-        $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if (5 == $type || 7 == $type) {
             throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);

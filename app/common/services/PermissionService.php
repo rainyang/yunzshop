@@ -36,11 +36,10 @@ class PermissionService
         }
         if (self::isFounder()) {
             return true;
-        //todo 临时增加创始人私有管理插件权限
-        } elseif (in_array($item,static::founderPermission())) {
+            //todo 临时增加创始人私有管理插件权限
+        } elseif (in_array($item, static::founderPermission())) {
             return false;
         }
-
         if (self::isOwner()) {
             return true;
         }
@@ -50,8 +49,6 @@ class PermissionService
         if (self::checkNoPermission($item) === true) {
             return true;
         }
-
-
         return in_array($item, User::getAllPermissions());
     }
 
@@ -76,7 +73,7 @@ class PermissionService
 
     public static function founderPermission()
     {
-        return ['founder_plugins','plugins_enable','plugins_disable','plugins_manage','plugins_delete','plugins_update','shop_upgrade'];
+        return ['founder_plugins', 'plugins_enable', 'plugins_disable', 'plugins_manage', 'plugins_delete', 'plugins_update', 'shop_upgrade', 'supervisor'];
     }
 
     /**

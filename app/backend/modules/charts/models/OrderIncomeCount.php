@@ -35,7 +35,7 @@ class OrderIncomeCount extends BaseModel
         }
         if ($search['recommend']) {
             $query->whereHas('hasOneRecommend', function ($q) use ($search) {
-                $q->searchLike($search['member']);
+                $q->searchLike($search['recommend']);
             });
         }
 
