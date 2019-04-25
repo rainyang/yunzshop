@@ -129,6 +129,11 @@ class PayFactory
      */
     const YOP = 26;
 
+    /**
+     *  Usdt支付
+     */
+    const PAY_Usdt = 27;
+
 
     public static function create($type = null)
     {
