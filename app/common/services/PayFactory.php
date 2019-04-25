@@ -249,7 +249,7 @@ class PayFactory
             case self::PAY_Usdt:
                 if (!app('plugins')->isEnabled('usdtpay')) {
 
-                    throw new AppException('易宝插件未开启');
+                    throw new AppException('Usdt插件未开启');
                 }
                 $className = new \Yunshop\Usdtpay\services\UsdtpayService();
                 break;
