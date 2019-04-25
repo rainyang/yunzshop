@@ -38,29 +38,31 @@ class UsdtpayController extends PaymentController
 
         if(!empty($parameter)){
             if($this->getSignResult()) {
-                if ($_POST['respCode'] == '0006') {
+                if ($_POST['status'] == 'success') {
                     \Log::debug('------验证成功-----');
                     $data = [
-                        'total_fee'    => floatval($parameter['transAmt']),
+                        'total_fee'    => floatval($parameter['orderAmount']),
                         'out_trade_no' => $this->attach[0],
                         'trade_no'     => $parameter['transactionId'],
-                        'unit'         => 'fen',
-                        'pay_type'     => intval($_POST['productId']) == 112 ? '微信-YZ' : '支付宝-YZ',
-                        'pay_type_id'     => intval($_POST['productId']) == 112 ? 12 : 15
+                        'unit'         => 'yuan',
+                        'pay_type'     => 'USDT支付',
+                        'pay_type_id'     => 24
 
                     ];
                   
                     $this->payResutl($data);
                     \Log::debug('----结束----');
-                    echo 'SUCCESS';
+                    echo 'success';
                 } else {
                     //其他错误
+                    echo 'fail';
                 }
             } else {
                 //签名验证失败
+                echo 'fail';
             }
         }else {
-            echo 'FAIL';
+            echo 'fail';
         }
     }
 
@@ -79,40 +81,6 @@ class UsdtpayController extends PaymentController
         }
     }
 
-    public function frontUrl()
-    {
-        $trade = \Setting::get('shop.trade');
-
-        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            return redirect($trade['redirect_url'])->send();
-        }
-
-        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
-            redirect(Url::absoluteApp('member', ['i' => $_GET['attach']]))->send();
-        } else {
-            redirect(Url::absoluteApp('home', ['i' => $_GET['attach']]))->send();
-        }
-    }
-
-    public function refundUrl()
-    {
-        $parameter = $_POST;
-
-        if (!empty($parameter)) {
-            if ($this->getSignResult()) {
-                if ($_POST['respCode'] == '0000') {
-                    //验证成功，业务逻辑
-                } else {
-                    //其他错误
-                }
-            } else {
-                //签名验证失败
-            }
-        } else {
-            echo 'FAIL';
-        }
-    }
-
     /**
      * 签名验证
      *
@@ -120,7 +88,7 @@ class UsdtpayController extends PaymentController
      */
     public function getSignResult()
     {
-        $pay = \Setting::get('plugin.yun_pay_set');
+        $pay = \Setting::get('plugin.usdtpay_set');
 
         $notify = new UsdtpayNotifyService();
         $notify->setKey($pay['key']);
@@ -139,6 +107,6 @@ class UsdtpayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($orderNo[0], '芸微信支付', json_encode($data));
+        Pay::payResponseDataLog($orderNo[0], 'Usdt支付', json_encode($data));
     }
 }
