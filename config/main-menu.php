@@ -1147,6 +1147,18 @@ return [
                         'parents'    => ['Member', 'member_all',],
                     ],
 
+                    'member_add' => [
+                        'name'       => '添加会员',
+                        'url'        => 'member.member.add-member',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'member_add',
+                        'parents'    => ['Member', 'member_all',],
+                    ],
+                    
                     'member_export' => [
                         'name'       => '会员导出',
                         'url'        => 'member.member.export',
