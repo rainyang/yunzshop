@@ -11,9 +11,9 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
-use Yunshop\YunPay\services\YunPayNotifyService;
+use Yunshop\Usdtpay\services\UsdtpayNotifyService;
 
-class YunpayController extends PaymentController
+class UsdtpayController extends PaymentController
 {
     private $attach = [];
 
@@ -122,7 +122,7 @@ class YunpayController extends PaymentController
     {
         $pay = \Setting::get('plugin.yun_pay_set');
 
-        $notify = new YunPayNotifyService();
+        $notify = new UsdtpayNotifyService();
         $notify->setKey($pay['key']);
 
         return $notify->verifySign();
