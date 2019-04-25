@@ -80,6 +80,21 @@ class ApplicationController extends BaseController
         }
         return $ids;
     }
+    
+    public function checkAddRole()
+    {
+        //判断用户是否有权限添加平台
+        $uid = \Auth::guard('admin')->user()->uid;
+
+        $num = UniacidApp::where('creator', $uid)->count();
+
+        $realnum = AdminUser::find($uid)->application_number;
+
+        if ($uid != 1 && $num >= $realnum) {
+            return $this->errorJson('您无权限添加平台');
+        }
+        return $this->successJson('可以添加平台');
+    }
 
     public function add()
     {
@@ -210,6 +225,11 @@ class ApplicationController extends BaseController
         }
 
         return $this->successJson('操作成功');
+    }
+    //强制删除平台
+    public function forceDel(){
+
+
     }
 
     //启用禁用或恢复应用

@@ -119,8 +119,12 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('application/getApp', 'ApplicationController@getApp');
 		//添加应用
 		Route::post('application/add/', 'ApplicationController@add');
+        //添加应用权限检测
+        Route::any('application/checkAddRole/', 'ApplicationController@checkAddRole');
 		//删除 加入回收站
 		Route::get('application/delete/{id}', 'ApplicationController@delete');
+        //强制删除 在回收站中
+        Route::get('application/forceDel/{id}', 'ApplicationController@forceDel');
 		//回收站
 		Route::any('application/recycle/', 'ApplicationController@recycle');
 		//图片上传

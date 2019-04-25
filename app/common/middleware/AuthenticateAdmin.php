@@ -62,6 +62,7 @@ class AuthenticateAdmin
         'admin/application/getApp',
         'admin/application/delete/{id}',
         'admin/application/add',
+        'admin/application/checkAddRole',
         'admin/application/update/{id}',
         'admin/application/switchStatus/{id}',
         'admin/all/list',
