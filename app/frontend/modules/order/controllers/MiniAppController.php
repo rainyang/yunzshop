@@ -49,10 +49,13 @@ class MiniAppController extends ApiController
                     'formId_create_time' =>$time,
                 ]);
         }else{
+            if (!empty($formIdTrem->formId)){
+                $formId = $formIdTrem->formId.'#'.$formId;
+            }
             MemberMiniAppModel::where('member_id',$memberId)
                 ->uniacid()
                 ->update([
-                    'formId'=>$formIdTrem->formId.'#'.$formId,
+                    'formId'=> $formId,
                 ]);
         }
         return $this->successJson('成功');
