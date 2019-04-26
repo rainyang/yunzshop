@@ -136,7 +136,7 @@ class OperationController extends BaseController
         if(request()->has('remark')){
            
             $remark = $order->hasOneOrderRemark;
-            
+
             if (!$remark) {
                 $remark = new Remark([
                     'order_id' => request()->input('order_id'),
@@ -147,9 +147,6 @@ class OperationController extends BaseController
                     return $this->errorJson();
                 }
            
-                $order->invoice = request()->input('invoice');
-                $order->save();
-           
             } else {
                 $reUp = Remark::where('order_id', request()->input('order_id') )
                     ->where('remark', $remark->remark)
@@ -159,7 +156,10 @@ class OperationController extends BaseController
                     return $this->errorJson();
                 }
             }
+
         }
+        $order->invoice = request()->input('invoice');
+        $order->save();
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
         echo json_encode(["data" => '', "result" => 1]);
     }

@@ -18,6 +18,7 @@ use app\common\models\notice\MessageTemp;
 use app\common\modules\refund\services\RefundService;
 use app\common\services\MyLink;
 use app\common\services\Utils;
+use Hamcrest\Core\Set;
 use Mews\Captcha\Captcha;
 use Yunshop\Diyform\models\DiyformTypeModel;
 use Gregwar\Captcha\CaptchaBuilder;
@@ -89,6 +90,33 @@ class ShopController extends BaseController
             'set' => $member,
             'is_diyform' => $is_diyform,
             'diyForm' => $diyForm,
+        ])->render();
+    }
+
+    /**
+     * 订单设置
+     * @return mixed|string
+     * @throws \Throwable
+     */
+    public function order()
+    {
+        $order = Setting::get('shop.order');
+        $requestModel = \YunShop::request()->order;
+
+        if ($requestModel) {
+            if(Cache::has('shop_order')){
+                Cache::forget('shop_order');
+            }
+
+            if (Setting::set('shop.order', $requestModel)) {
+                return $this->message('订单设置成功', Url::absoluteWeb('setting.shop.order'));
+            } else {
+                $this->error('订单设置失败');
+            }
+        }
+
+        return view('setting.shop.order', [
+            'set' => $order,
         ])->render();
     }
 

@@ -40,12 +40,10 @@ class LevelUpgradeService
         }
 
         $result = $this->check(0);
-
+        $this->setValidity($result); // 设置会员等级期限
         if ($result) {
-
             return $this->upgrade($result);
         }
-        $this->setValidity(); // 设置会员等级期限
         return '';
     }
 
@@ -73,15 +71,15 @@ class LevelUpgradeService
         }
 
         $result = $this->check(1);
-
+        $this->setValidity($result); // 设置会员等级期限
         if ($result) {
             return $this->upgrade($result);
         }
-        $this->setValidity(); // 设置会员等级期限
+
         return '';
     }
 
-    public function setValidity()
+    public function setValidity($isUpgrate = false)
     {
         $set = Setting::get('shop.member');
         if (!$set['term']) {
@@ -107,8 +105,11 @@ class LevelUpgradeService
             $this->memberModel->downgrade_at = 0;
             $this->memberModel->save();
 
-            $levelId = intval($this->new_level->id);
-            event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
+            if (!$isUpgrate) {
+                
+                $levelId = intval($this->new_level->id);
+                event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
+            }
         }
 
     }

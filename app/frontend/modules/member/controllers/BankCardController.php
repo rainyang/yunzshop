@@ -12,6 +12,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\frontend\modules\member\models\MemberBankCard;
+use app\frontend\models\MembershipInformationLog;
 
 class BankCardController extends ApiController
 {
@@ -47,6 +48,22 @@ class BankCardController extends ApiController
         $bank_province = \YunShop::request()->bank_province;
         $bank_city = \YunShop::request()->bank_city;
         $bank_branch = \YunShop::request()->bank_branch;
+
+        $bankdata = [
+            'member_name'       =>$bankCard->member_name,
+            'bank_card'         =>$bankCard->bank_card,
+            'bank_name'         =>$bankCard->bank_name,
+            'bank_province'     =>$bankCard->bank_province,
+            'bank_city'         =>$bankCard->bank_city,
+            'bank_branch'       =>$bankCard->bank_branch
+        ];
+        $membership_infomation = [
+            'uniacid'        => \YunShop::app()->uniacid,
+            'uid'            => \YunShop::app()->getMemberId(),
+            'old_data'       => serialize($bankdata),
+            'session_id'     => session_id()
+        ];
+        $membership_infomation_log_model = MembershipInformationLog::create($membership_infomation);
 
         if ($bank_name && $bank_card && $member_name && $bank_province && $bank_city && $bank_branch) {
             //$post = json_decode($post);

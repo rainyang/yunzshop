@@ -48,6 +48,7 @@ use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
+use app\frontend\models\MembershipInformationLog;
 
 class MemberController extends ApiController
 {
@@ -75,10 +76,8 @@ class MemberController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
 
-        $this->chkAccount();
-
         if (!empty($member_id)) {
-
+            $this->chkAccount($member_id);
 
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -500,6 +499,7 @@ class MemberController extends ApiController
     {
         $birthday = [];
         $data     = \YunShop::request()->data;
+        $uid = \YunShop::app()->getMemberId();
 
         if (isset($data['birthday'])) {
             $birthday = explode('-', $data['birthday']);
@@ -535,11 +535,33 @@ class MemberController extends ApiController
             'wechat'        => isset($data['wx']) ? $data['wx'] : '',
         ];
 
-        if (\YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0) {
-            $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
-            $member_model->setRawAttributes($member_data);
 
+        if (\YunShop::app()->getMemberId()) {
+            $this->chkAccount(\YunShop::app()->getMemberId());
+
+            $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
+
+            $old_data = [
+                'alipay'        => $member_shop_info_model->alipay,
+                'alipayname'    => $member_shop_info_model->alipayname,
+                'wechat'        => $member_shop_info_model->wechat,
+                'mobile'        => $member_model->mobile,
+                'name'          => $member_model->realname,
+                'type'          => \YunShop::request()->type
+            ];
+
+            $membership_infomation = [
+                'uniacid'        =>\YunShop::app()->uniacid,
+                'uid'            =>\YunShop::app()->getMemberId(),
+                'old_data'       => serialize($old_data),
+                'session_id'     =>session_id()
+            ];
+
+            MembershipInformationLog::create($membership_infomation);
+
+
+            $member_model->setRawAttributes($member_data);
             $member_shop_info_model->setRawAttributes($member_shop_info_data);
 
             $member_validator           = $member_model->validator($member_model->getAttributes());
@@ -586,6 +608,8 @@ class MemberController extends ApiController
 
                 $phoneModel = new PhoneAttribution();
                 $phoneModel->updateOrCreate(['uid' => \YunShop::app()->getMemberId()], $phone);
+
+
 
                 return $this->successJson('用户资料修改成功');
             } else {
@@ -1630,14 +1654,14 @@ class MemberController extends ApiController
                 if ($hotel) {
                     $data[] = [
                         'name'  => 'hotel',
-                        'title' => '酒店管理',
+                        'title' => HOTEL_NAME.'管理',
                         'class' => 'icon-member_hotel',
                         'url'   => 'HotelManage'
                     ];
                 } else {
                     $data[] = [
                         'name'  => 'hotel',
-                        'title' => '酒店申请',
+                        'title' => HOTEL_NAME.'申请',
                         'class' => 'icon-member-hotel-apply',
                         'url'   => 'hotelApply'
                     ];
@@ -1824,7 +1848,7 @@ class MemberController extends ApiController
                     $invitation_log = 1;
                 } else {
                     $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid',$member_id)->first();
                 }
             }
 
@@ -1942,16 +1966,19 @@ class MemberController extends ApiController
         return $is_bind_mobile;
     }
 
-    public function chkAccount()
+    public function chkAccount($member_id)
     {
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
 
-        if (1 == $type && !Cache::has('chekAccount')) {
-            Cache::put('chekAccount', 1, 360);
+        if (1 == $type && !Cache::has($member_id . ':chekAccount')) {
+            Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
             $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
         }
+
+
+
     }
 }

@@ -470,7 +470,7 @@ class GoodsController extends ApiController
                 $max_point_deduct = $goodsModel->hasOneSale->max_point_deduct;
             }
             if (!empty($max_point_deduct)) {
-                $data['value'][] = '最高抵扣'.$max_point_deduct.$data['name'];
+                $data['value'][] = '最高抵扣'.$max_point_deduct.'元';
             }
         }
         if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
@@ -479,7 +479,7 @@ class GoodsController extends ApiController
                 $min_point_deduct = $goodsModel->hasOneSale->min_point_deduct;
             }
             if (!empty($min_point_deduct)) {
-                $data['value'][] = '最少抵扣'.$min_point_deduct.$data['name'];
+                $data['value'][] = '最少抵扣'.$min_point_deduct.'元';
             }
         }
         if (!empty($data['value'])) {
