@@ -212,22 +212,22 @@ class SmallProgramController extends BaseController
         ])->render();
     }
 
-//    public function see()
-//    {
-//        $list = $this->SmallProgramNotice->getExistTemplateList();
-//        $tmp = '';
-//        foreach ($list['list'] as $temp) {
-//            while ($temp['template_id'] == request()->tmp_id)
-//            {
-//                $tmp = $temp;
-//                break;
-//            }
-//        }
-//        return view('setting.wechat-notice.see', [
-//            'template' => $tmp,
-//            'notice_type'=>2
-//        ])->render();
-//    }
+    public function see()
+    {
+        $list = $this->SmallProgramNotice->getExistTemplateList();
+        $tmp = '';
+        foreach ($list['list'] as $temp) {
+            while ($temp['template_id'] == request()->tmp_id)
+            {
+                $tmp = $temp;
+                break;
+            }
+        }
+        return view('setting.wechat-notice.see', [
+            'template' => $tmp,
+            'notice_type'=>2
+        ])->render();
+    }
 
 //     public function del()
 //     {
