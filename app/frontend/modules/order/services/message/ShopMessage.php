@@ -41,7 +41,7 @@ class ShopMessage extends Message
         }
         \Log::debug('===============',[$templateId]);
         foreach (\Setting::get('mini_app.notice.salers') as $saler) {
-            $this->MiniNotice($this->templateId, $msg, $saler['uid']);
+            $this->MiniNotice($templateId, $msg, $saler['uid']);
         }
     }
 
