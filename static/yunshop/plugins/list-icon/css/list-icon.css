@@ -191,6 +191,12 @@
 .wanmi_pay {
     background-image: url('../img/tool/wanmi_pay.png');
 }
+.wechat {
+    background-image: url('../img/tool/wechat.png');
+}
+.usdtpay {
+    background-image: url('../img/tool/usdtpay.png');
+}
 
 
 .air {
