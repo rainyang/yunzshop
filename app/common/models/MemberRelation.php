@@ -278,9 +278,7 @@ class MemberRelation extends BaseModel
                 $model->agent_time = time();
 
                 if ($model->inviter == 0) {
-                    \Log::debug(sprintf('会员id-%d无条件会员上线id-%d', $model->member_id, $mid));
                     $model->inviter = 1;
-                    $model->parent_id = 0;
                 }
             } else {
                 $model->status = 1;
@@ -490,7 +488,6 @@ class MemberRelation extends BaseModel
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
-                        $member->parent_id = 0;
                     }
                 } else {
                     $member->status = 1;
@@ -529,7 +526,6 @@ class MemberRelation extends BaseModel
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
-                        $member->parent_id = 0;
                     }
                 } else {
                     $member->status = 1;
@@ -558,7 +554,6 @@ class MemberRelation extends BaseModel
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
-                        $member->parent_id = 0;
                     }
                 } else {
                     $member->status = 1;
@@ -591,7 +586,6 @@ class MemberRelation extends BaseModel
 
                     if ($member->inviter == 0) {
                         $member->inviter = 1;
-                        $member->parent_id = 0;
                     }
                 } else {
                     $member->status = 1;
@@ -678,7 +672,6 @@ class MemberRelation extends BaseModel
 
             if ($member->inviter == 0) {
                 $member->inviter = 1;
-                $member->parent_id = 0;
             }
         } else {
             $member->status = 1;

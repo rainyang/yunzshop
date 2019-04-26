@@ -82,14 +82,14 @@ return [
     ],
     'supervisor'      => [
         'name'              => '队列管理',
-        'url'               => 'supervisord.supervisord',
+        'url'               => 'supervisord.supervisord.index',
         'url_params'        => '',
-        'permit'            => 0,
+        'permit'            => 1,
         'menu'              => 1,
         'icon'              => 'fa-history',
         'sort'              => '5',
         'item'              => 'supervisor',
-        'parents'           => ['system',],
+        'parents'           => ['system'],
     ],
 //    'log_viewer'      => [
 //        'name'              => '系统日志',

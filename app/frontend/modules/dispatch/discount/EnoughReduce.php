@@ -20,6 +20,10 @@ class EnoughReduce extends BaseFreightDiscount
     protected $name = '全场运费满额减';
     protected $code = 'freightEnoughReduce';
 
+    /**
+     * @return int|number
+     * @throws \app\common\exceptions\AppException
+     */
     protected function _getAmount()
     {
         if (!Setting::get('enoughReduce.freeFreight.open')) {
@@ -41,12 +45,14 @@ class EnoughReduce extends BaseFreightDiscount
             trace_log()->freight('全场运费满额减',"全额包邮");
             return $this->order->getDispatchAmount();
         }
+
+
         // 订单金额满足满减金额
-        if ($this->order->price >= Setting::get('enoughReduce.freeFreight.enough')) {
-            trace_log()->freight('全场运费满额减',"订单金额{$this->order->price}满足".Setting::get('enoughReduce.freeFreight.enough'));
+        if ($this->order->getPriceBefore('orderDispatchPrice') >= Setting::get('enoughReduce.freeFreight.enough')) {
+            trace_log()->freight('全场运费满额减',"订单金额{$this->order->getPriceBefore('orderDispatchPrice')}满足".Setting::get('enoughReduce.freeFreight.enough'));
             return $this->order->getDispatchAmount();
         }
-        trace_log()->freight('全场运费满额减',"订单金额{$this->order->price}不满足".Setting::get('enoughReduce.freeFreight.enough'));
+        trace_log()->freight('全场运费满额减',"订单金额{$this->order->getPriceBefore('orderDispatchPrice')}不满足".Setting::get('enoughReduce.freeFreight.enough'));
         return 0;
     }
 }
