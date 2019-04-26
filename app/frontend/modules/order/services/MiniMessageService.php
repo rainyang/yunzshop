@@ -57,9 +57,16 @@ class MiniMessageService extends \app\common\services\MessageService
 //        $this->buyerMessage->sent();
 //
 //    }
-    public function refund(){
+    public function refund()
+    {
         $this->buyerMessage->delivery('订单发货提醒');
     }
+
+    public function canceled()
+    {
+        $this->buyerMessage->canceled('订单取消通知');
+    }
+
     public function received()
     {
         if ($this->noticeType == 2) {

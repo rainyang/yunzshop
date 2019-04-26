@@ -15,7 +15,7 @@ use app\backend\modules\order\models\Order;
 use app\backend\modules\member\models\Member;
 use app\backend\modules\goods\models\Goods;
 use app\backend\modules\order\models\OrderGoods;
-
+use app\common\models\notice\MinAppTemplateMessage;
 class RefundMessageService extends MessageService
 {
     public static function applyRefundNotice($refundApply,$uniacid = '')
@@ -50,5 +50,21 @@ class RefundMessageService extends MessageService
             return false;
         }
         MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
+
+        $is_open = MinAppTemplateMessage::getTitle('退款通知');
+        if (!$is_open->is_open){
+            return;
+        }
+        $orderDate = Order::getOrderDetailById($refundApply->order_id);
+        $msg = [
+            'keyword1'=>['value'=>  $orderDate->pay_type_name],// 退款类型
+            'keyword2'=>['value'=> $refundApply->price],//退款金额
+            'keyword3'=>['value'=> $refundApply->create_time],// 退款时间
+            'keyword4'=>['value'=>  $refundApply->reason],// 退款原因
+            'keyword5'=>['value'=> $refundApply->refund_sn],// 订单编号
+        ];
+
+        MessageService::MiniNotice($is_open->template_id,$msg,$refundApply->uid);
     }
+
 }

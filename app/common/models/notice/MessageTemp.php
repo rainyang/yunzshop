@@ -94,22 +94,6 @@ class MessageTemp extends BaseModel
 
     public static function getSendMsg($temp_id, $params)
     {
-        $noticeType = \YunShop::request()->type;
-        if ($noticeType == 2){
-            if (!intval($temp_id)) {
-                return false;
-            }
-            $temp = self::withoutGlobalScopes('uniacid')->whereId($temp_id)->first();
-            if (!$temp) {
-                return false;
-            }
-            self::$template_id = $temp->template_id;
-            foreach ($temp->data as $row) {
-                $msg[$row['keywords']] = [
-                    'value' => self::replaceTemplate($row['value'], $params),
-                ];
-            }
-        }else {
             if (!intval($temp_id)) {
                 return false;
             }
@@ -134,7 +118,7 @@ class MessageTemp extends BaseModel
                     'color' => $row['color']
                 ];
             }
-        }
+
         return $msg;
     }
 

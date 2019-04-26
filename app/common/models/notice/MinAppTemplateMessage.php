@@ -36,7 +36,7 @@ class MinAppTemplateMessage extends BackendModel
     }
     public static function getTitle($title)
     {
-        return self::select('template_id','is_open')->where('title',$title)->first();
+        return self::select('template_id','is_open')->where('title',$title)->where('is_default',1)->first();
     }
     public static function getOpenTemp($id)
     {

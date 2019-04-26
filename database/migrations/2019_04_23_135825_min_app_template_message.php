@@ -20,7 +20,7 @@ class MinAppTemplateMessage extends Migration
                 $table->string('title');
                 $table->string('template_id', 45);
                 $table->text('data', 65535)->nullable();
-                $table->tinyInteger('is_default')->nullable();
+                $table->integer('is_default')->nullable();
                 $table->integer('is_open')->default(0);
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();

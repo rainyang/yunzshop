@@ -28,78 +28,15 @@ class MiniShopMessage extends Message
             return;
         }
         //客服发送消息通知
-        $this->MiniNotice($this->templateId, $this->msg, $this->order->uid);
+        $this->notice($this->templateId, $this->msg, $this->order->uid);
     }
 
-    private function transfer($temp_id, $params)
-    {
-        $this->msg = MessageTemp::getSendMsg($temp_id, $params);
-        if (!$this->msg) {
+    public function miniSendToShops($templateId,$msg){
+        if (empty($templateId)) {
             return;
         }
-        $this->templateId = MessageTemp::$template_id;
-        $this->sendToShops();
-    }
-
-    public function created()
-    {
-        $temp_id = \Setting::get('shop.notice')['seller_order_create'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function paid()
-    {
-        $temp_id = \Setting::get('shop.notice')['seller_order_pay'];
-        if (!$temp_id) {
-            return;
-        }
-        $address = $this->order['address'];
-        $params = [
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
-            ['name' => '支付方式', 'value' => $this->order->pay_type_name],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '收件人姓名', 'value' => $address['realname']],
-            ['name' => '收件人电话', 'value' => $address['mobile']],
-            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function received()
-    {
-        $temp_id = \Setting::get('shop.notice')['seller_order_finish'];
-        if (!$temp_id) {
-            return;
-        }
-        $address = $this->order['address'];
-        $params = [
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '收件人姓名', 'value' => $address['realname']],
-            ['name' => '收件人电话', 'value' => $address['mobile']],
-            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
-        ];
-        $this->transfer($temp_id, $params);
+        //客服发送消息通知
+        $this->MiniNotice($templateId, $msg, $this->order->uid);
     }
 
     public function paymentRemind($title){
@@ -119,60 +56,6 @@ class MiniShopMessage extends Message
         ];
         $this->templateId = $is_open->template_id;
         $this->sendToShops();
-    }
-
-
-    /**
-     * @name 购买商品发送通知
-     * @author
-     * @param $status
-     */
-    public function goodsBuy($status)
-    {
-        $order_goods = $this->order->hasManyOrderGoods()->get();
-        foreach ($order_goods as $goods) {
-            $goods_notice = Notice::select()->where('goods_id', $goods->goods_id)->whereType($status)->first();
-            if (!$goods_notice) {
-                continue;
-            }
-            $temp_id = \Setting::get('shop.notice')['buy_goods_msg'];
-            if (!$temp_id) {
-                continue;
-            }
-            $params = [
-                ['name' => '会员昵称', 'value' => $this->order->belongsToMember->nickname],
-                ['name' => '订单编号', 'value' => $this->order->order_sn],
-                ['name' => '商品名称（含规格）', 'value' => $this->getGoodsTitle($goods)],
-                ['name' => '商品金额', 'value' => $goods->price],
-                ['name' => '商品数量', 'value' => $goods->total],
-                ['name' => '订单状态', 'value' => $this->order->status_name],
-                ['name' => '时间', 'value' => $this->getOrderTime($status)],
-            ];
-            $msg = MessageTemp::getSendMsg($temp_id, $params);
-            if (!$msg) {
-                continue;
-            }
-            $template_id = MessageTemp::$template_id;
-            $this->notice($template_id, $msg, $goods_notice->uid);
-        }
-    }
-
-    /**
-     * @name 获取订单操作时间
-     * @author
-     * @param $status
-     * @return mixed
-     */
-    private function getOrderTime($status)
-    {
-        if ($status == 1) {
-            $order_time = $this->order['create_time']->toDateTimeString();
-        } else if ($status == 2) {
-            $order_time = $this->order['pay_time']->toDateTimeString();
-        } else if ($status == 3) {
-            $order_time = $this->order['finish_time']->toDateTimeString();
-        }
-        return $order_time;
     }
 
     /**

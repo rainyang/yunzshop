@@ -45,10 +45,67 @@
                     </style>
 
                     <div class='panel-heading'>
+                        余额变动通知
+                    </div>
+                    <div class='panel-body'>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额变动通知</label>
+                            <div class="col-sm-6 col-xs-12">
+                                @foreach ($temp_list as $item)
+                                    @if('账户余额提醒'== $item['title'])
+                                        <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-sm-4 col-xs-2">
+                                @foreach ($temp_list as $item)
+                                    @if('账户余额提醒'== $item['title'])
+                                        <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                               @if($item['is_open'] == '1')
+                                               checked
+                                               @endif
+                                               onclick="message_default({{$item['id']}})"/>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <div class='panel-heading'>
                         卖家通知
                     </div>
                     <div class='panel-body'>
                         <br>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买商品通知</label>
+                            <div class="col-sm-6 col-xs-12">
+                                @foreach ($temp_list as $item)
+                                    @if('购买成功通知'== $item['title'])
+                                        <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
+                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+
+                                    @endif
+                                @endforeach
+                            </div>
+                            <div class="col-sm-4 col-xs-2">
+                                @foreach ($temp_list as $item)
+                                    @if('购买成功通知'== $item['title'])
+                                        <input class="mui-switch mui-switch-animbg" id="{{$item['id']}}" type="checkbox"
+                                               @if($item['is_open'] == '1')
+                                               checked
+                                               @endif
+                                               onclick="message_default({{$item['id']}})"/>
+                                    @endif
+                                @endforeach
+                            </div>
+                            {{--<div class="col-sm-2 col-xs-6">--}}
+                            {{--<input class="mui-switch mui-switch-animbg" id="seller_order_create" type="checkbox"--}}
+                            {{--@if(\app\common\models\notice\MinAppTemplateMessage::getOpenTemp($set['seller_order_create']))--}}
+                            {{--checked--}}
+                            {{--@endif--}}
+                            {{--onclick="message_default(this.id)"/>--}}
+                            {{--</div>--}}
+                        </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单生成通知[卖家]</label>
                             <div class="col-sm-6 col-xs-12">

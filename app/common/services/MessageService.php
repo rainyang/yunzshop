@@ -173,11 +173,15 @@ class MessageService
                 $createTime = $member->hasOneMiniApp->formId_create_time;
                 $time=strtotime (date("Y-m-d H:i:s")); //当前时间
                 $minute=floor(($time-$createTime) % 86400/60);
-                if ($minute > 10080){
+                if ($minute > 10080 && empty($createTime)){
                     \Log::error("小程序消息推送失败,formId失效");
                     return false;
                 }
                 $scene = $member->hasOneMiniApp->formId;
+                $pieces = explode("#", $scene);
+                $scene = array_shift($pieces);//获取首个元素并删除
+                $str = implode("#", $pieces);
+                MemberMiniAppModel::where('member_id',$uid)->uniacid()->update(['formId'=>$str]);
             }
             (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$scene );
     }

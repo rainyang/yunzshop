@@ -52,104 +52,6 @@ class MiniBuyerMessage extends Message
         $this->sendToBuyer();
     }
 
-    public function created()
-    {
-        $temp_id = \Setting::get('shop.notice')['order_submit_success'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function paid()
-    {
-        $temp_id = \Setting::get('shop.notice')['order_pay_success'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '支付方式', 'value' => $this->order->pay_type_name],
-            ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function canceled()
-    {
-        $temp_id = \Setting::get('shop.notice')['order_cancel'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '支付方式', 'value' => $this->order->pay_type_name],
-            ['name' => '订单取消时间', 'value' => $this->order['cancel_time']->toDateTimeString()],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function sent()
-    {
-        $temp_id = \Setting::get('shop.notice')['order_send'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '发货时间', 'value' => $this->order['send_time']->toDateTimeString()],
-            ['name' => '快递公司', 'value' => $this->order['express']['express_company_name'] ?: "暂无信息"],
-            ['name' => '快递单号', 'value' => $this->order['express']['express_sn'] ?: "暂无信息"],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
-    public function received()
-    {
-        $temp_id = \Setting::get('shop.notice')['order_finish'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
-        ];
-        $this->transfer($temp_id, $params);
-    }
-
     public function paymentSuccess($title){
         $is_open = MinAppTemplateMessage::getTitle($title);
         if (!$is_open->is_open){
@@ -168,6 +70,7 @@ class MiniBuyerMessage extends Message
        $this->sendToBuyer();
     }
 
+    //订单发货提醒
     public function delivery($title){
         $is_open = MinAppTemplateMessage::getTitle($title);
         if (!$is_open->is_open){
@@ -182,6 +85,25 @@ class MiniBuyerMessage extends Message
             'keyword6'=>['value'=>   $this->order['send_time']->toDateTimeString()],//发货时间
             'keyword7'=>['value'=>  $this->order['express']['express_company_name'] ?: "暂无信息"],//快递公司
             'keyword8'=>['value'=> $this->order['express']['express_sn'] ?: "暂无信息"],//快递单号
+        ];
+        $this->templateId = $is_open->template_id;
+        $this->sendToBuyer();
+    }
+
+    public function canceled($title)
+    {
+        $is_open = MinAppTemplateMessage::getTitle($title);
+        if (!$is_open->is_open){
+            return;
+        }
+        $this->msg = [
+            'keyword1'=>['value'=> $this->order->belongsToMember->nickname],// 用户
+            'keyword2'=>['value'=> $this->order->order_sn],//订单号
+            'keyword3'=>['value'=>  $this->order['create_time']->toDateTimeString()],//下单时间
+            'keyword4'=>['value'=> $this->order['price']],// 订单金额
+            'keyword5'=>['value'=> $this->order['dispatch_price']],//运费
+            'keyword6'=>['value'=> $this->goods_title],//商品详情
+            'keyword7'=>['value'=> $this->order['cancel_time']->toDateTimeString()],//取消时间
         ];
         $this->templateId = $is_open->template_id;
         $this->sendToBuyer();

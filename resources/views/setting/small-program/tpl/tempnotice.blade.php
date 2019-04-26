@@ -33,9 +33,9 @@
                 <table class="table table-responsive table-hover" style="width:99%">
                     <thead>
                     <tr>
-                        <td style='width:6%;text-align: center;'>
-                            <input type="checkbox" ng-model="all">
-                        </td>
+                        {{--<td style='width:6%;text-align: center;'>--}}
+                            {{--<input type="checkbox" ng-model="all">--}}
+                        {{--</td>--}}
                         <th style='width:6%;text-align: center;'>序号</th>
                         <th style='width:50%;text-align: center;'>模板名称</th>
                         <th style="width:38%;">操作</th>
@@ -44,11 +44,11 @@
                     <tbody>
                     @foreach($list as $key => $row)
                         <tr>
-                            <td style='text-align: center;'>
-                                <input type="checkbox" ng-checked="all"
-                                       name="tmp_id[]"
-                                       value="{{$row['template_id']}}">
-                            </td>
+                            {{--<td style='text-align: center;'>--}}
+                                {{--<input type="checkbox" ng-checked="all"--}}
+                                       {{--name="tmp_id[]"--}}
+                                       {{--value="{{$row['template_id']}}">--}}
+                            {{--</td>--}}
                             <td style="text-align: center;">
                                 {!! $key + 1 !!}
                             </td>
@@ -56,9 +56,6 @@
                             <td style="text-align: center;">
                                 <a class="btn btn-info btn-sm disbut"
                                    href="{!! yzWebUrl('setting.small-program.see', array('tmp_id' => $row['template_id'])) !!}">查看</a>
-                                <a class="btn btn-danger btn-sm disbut"
-                                   href="{!! yzWebUrl('setting.small-program.del', array('template_id' => $row['template_id'])) !!}"
-                                   onclick="return confirm('此操作不可逆,确认要删除?');return false;">删除</a>
                             </td>
                         </tr>
                     @endforeach
@@ -85,10 +82,10 @@
                     </div>
                 </div>
             @endif
-            <div class='panel-footer'>
-                <input name="submit" type="submit" class="btn btn-danger"
-                       value="删除">
-            </div>
+            {{--<div class='panel-footer'>--}}
+                {{--<input name="submit" type="submit" class="btn btn-danger"--}}
+                       {{--value="删除">--}}
+            {{--</div>--}}
         </form>
         </body>
     </div>
