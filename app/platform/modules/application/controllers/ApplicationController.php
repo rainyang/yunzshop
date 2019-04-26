@@ -7,6 +7,20 @@ use app\platform\modules\application\models\UniacidApp;
 use app\common\helpers\Cache;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\application\models\AppUser;
+use Illuminate\Support\Facades\DB;
+use app\backend\modules\member\models\Member;
+use app\backend\modules\member\models\McMappingFans;
+use app\common\models\MemberMiniAppModel;
+use app\common\models\MemberWechatModel;
+use app\backend\modules\member\models\MemberShopInfo;
+use app\backend\modules\member\models\MemberUnique;
+use app\backend\modules\goods\models\Goods;
+use app\backend\modules\order\models\Order;
+use Yunshop\Wechat\common\model\Menu;
+use app\common\modules\wechat\models\Rule;
+use app\common\modules\wechat\models\RuleKeyword;
+
+
 
 class ApplicationController extends BaseController
 {
@@ -206,14 +220,9 @@ class ApplicationController extends BaseController
             return $this->errorJson('请选择要修改的应用');
         }
         if ($info->deleted_at) {
-
-            //强制删除
-            if (!$info->forceDelete()) {
-                return $this->errorJson('操作失败');
-            }
-
+            //强制删除相关会员信息
+            $this->forceDel($info);
             // Cache::forget($this->key . ':' . $id);
-
         } else {
 
             if (!$info->delete()) {
@@ -226,10 +235,44 @@ class ApplicationController extends BaseController
 
         return $this->successJson('操作成功');
     }
-    //强制删除平台
-    public function forceDel(){
-
-
+    //强制删除平台关联数据
+    public function forceDel($info){
+        $uniacid = $info->uniacid;
+        $delmember = DB::transaction(function () use ($uniacid) {
+            if (!empty($uniacid)) {
+                //删除yz_uniacid_app
+                UniacidApp::where('uniacid',$uniacid)->forceDelete();
+                //删除会员 mc_member
+                Member::where('uniacid',$uniacid)->forceDelete();
+                //小程序会员表  yz_member_mini_app
+                MemberMiniAppModel::where('uniacid',$uniacid)->forceDelete();
+                //app会员表 yz_member_wechat
+                MemberWechatModel::where('uniacid',$uniacid)->forceDelete();
+               //删除微擎mc_mapping_fans 表数据
+                McMappingFans::where('uniacid',$uniacid)->forceDelete();
+                //清空 yz_member 关联
+                MemberShopInfo::where('uniacid',$uniacid)->forceDelete();
+                //强制删除 yz_member_unique
+                MemberUnique::where('uniacid',$uniacid)->forceDelete();
+                //强制删除yz_goods
+                Goods::where('uniacid',$uniacid)->forceDelete();
+                //强制删除yz_order
+                Order::where('uniacid',$uniacid)->forceDelete();
+                //强制删除 yz_wechat_rule
+                Rule::where('uniacid',$uniacid)->forceDelete();
+                //强制删除 ims_yz_wechat_rule
+                RuleKeyword::where('uniacid',$uniacid)->forceDelete();
+                //删除yz_wechat_menu
+                if(app('plugins')->isEnabled('wechat')){
+                    Menu::where('uniacid',$uniacid)->forceDelete();
+                }
+            }
+        });
+        if($delmember){
+            \Log::info('------删除平台关联会员数据------',$uniacid);
+        }else{
+            return $this->errorJson('删除失败');
+        }
     }
 
     //启用禁用或恢复应用
