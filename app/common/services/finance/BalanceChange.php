@@ -170,11 +170,7 @@ class BalanceChange extends Credit
 
         event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=''));
 
-        //小程序消息通知会员昵称{{keyword1.DATA}}\n
-        //      变动时间{{keyword2.DATA}}\n
-        //      变动金额{{keyword3.DATA}}\n
-        //      当前余额{{keyword4.DATA}}\n
-        //      变动原因{{keyword5.DATA}}\n
+        //小程序消息通知
         $is_open = MinAppTemplateMessage::getTitle('账户余额提醒');
         if (!$is_open->is_open){
             return;
@@ -184,7 +180,7 @@ class BalanceChange extends Credit
             'keyword2'=>['value'=>  date('Y-m-d H:i', time())],//变动时间
             'keyword3'=>['value'=> $this->change_value],// 变动金额
             'keyword4'=>['value'=> $this->new_value],//  当前余额
-            'keyword1'=>['value'=> (new ConstService(''))->sourceComment()[$this->source]],// 变动类型
+            'keyword5'=>['value'=> (new ConstService(''))->sourceComment()[$this->source]],// 变动类型
         ];
         $this->miniSendToShops($is_open->template_id,$miniParams,$this->memberModel->uid);
     }

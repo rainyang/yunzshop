@@ -61,7 +61,7 @@ class RefundMessageService extends MessageService
         $msg = [
             'keyword1'=>['value'=>  $orderDate->pay_type_name],// 退款类型
             'keyword2'=>['value'=> $refundApply->price],//退款金额
-            'keyword3'=>['value'=> $refundApply->create_time],// 退款时间
+            'keyword3'=>['value'=> date("Y-m-d H:i:s")],// 退款时间
             'keyword4'=>['value'=>  $refundApply->reason],// 退款原因
             'keyword5'=>['value'=> $refundApply->refund_sn],// 订单编号
         ];

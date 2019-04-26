@@ -12,7 +12,7 @@ use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\Jobs\MiniMessageNoticeJob;
-
+use app\common\models\MemberMiniAppModel;
 class MessageService
 {
 
@@ -169,6 +169,7 @@ class MessageService
                 \Log::error("小程序消息推送失败,未找到uid:{$uid}的用户");
                 return false;
             }
+
             if(empty($scene)){
                 $createTime = $member->hasOneMiniApp->formId_create_time;
                 $time=strtotime (date("Y-m-d H:i:s")); //当前时间
