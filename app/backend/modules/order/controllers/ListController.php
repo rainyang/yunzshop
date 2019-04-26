@@ -300,7 +300,9 @@ class ListController extends BaseController
                         !empty(strtotime($item['finish_time'])) ? $item['finish_time'] : '',
                         $item['express']['express_company_name'],
                         '[' . $item['express']['express_sn'] . ']',
-                        $item['has_one_order_remark']['remark']
+                        $item['has_one_order_remark']['remark'],
+                        $item['note'],
+                        
                         );
                 }
                 $export_model->export($file_name, $export_data, 'order.list.index', 'direct_export');
