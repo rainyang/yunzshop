@@ -84,8 +84,7 @@ class ShopMessage extends Message
             'keyword3'=>['value'=>  $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],// 收货地址
             'keyword4'=>['value'=> $this->order['price']],// 订单金额
             'keyword5'=>['value'=> $this->order['create_time']->toDateTimeString()],// 生成时间
-            'keyword6'=>['value'=>$address['realname']],//收貨人
-            'keyword7'=>['value'=> $this->order->order_sn],//订单编号
+            'keyword6'=>['value'=>$this->order->order_sn],//订单号
         ];
         $this->miniSendToShops($is_open->template_id, $msg);
     }
