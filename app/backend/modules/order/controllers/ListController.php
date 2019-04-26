@@ -184,7 +184,7 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
-            $orders = $orders->with(['discounts']);
+            $orders = $orders->with(['discounts'])->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
             $export_model = new ExportService($orders, $export_page);
             if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
@@ -245,6 +245,7 @@ class ListController extends BaseController
                             $q->with(['hasOneLevel']);
                         }])
                         ->with('hasOneMember')
+                        ->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')
                         ->orderBy('level', 'asc');
                 },
             ]);
@@ -302,7 +303,7 @@ class ListController extends BaseController
                         '[' . $item['express']['express_sn'] . ']',
                         $item['has_one_order_remark']['remark'],
                         $item['note'],
-                        
+
                         );
                 }
                 $export_model->export($file_name, $export_data, 'order.list.index', 'direct_export');
