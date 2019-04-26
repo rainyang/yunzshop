@@ -68,9 +68,8 @@ class YunShop
             $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
-        if (PermissionService::isFounder()) {
+            //创始人私有菜单
             $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
-        }
             Config::set('menu', $menuList);
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
 //            dd($item);
