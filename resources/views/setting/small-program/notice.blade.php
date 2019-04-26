@@ -54,7 +54,7 @@
                                 @foreach ($temp_list as $item)
                                     @if('账户余额提醒'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        <input type="text" value="{{$item['id']}}" style= "display:none">
                                     @endif
                                 @endforeach
                             </div>
@@ -82,7 +82,7 @@
                                 @foreach ($temp_list as $item)
                                     @if('购买成功通知'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        <input type="text" value="{{$item['id']}}" style= "display:none">
 
                                     @endif
                                 @endforeach
@@ -112,7 +112,7 @@
                                 @foreach ($temp_list as $item)
                                     @if('订单生成通知'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                        <input name='yz_notice[seller_order_create]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        <input type="text" value="{{$item['id']}}" style= "display:none">
 
                                     @endif
                                 @endforeach
@@ -143,7 +143,7 @@
                                 @foreach ($temp_list as $item)
                                     @if('订单支付提醒' == $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                        <input name='yz_notice[seller_order_pay]' type="text" value="{{$item['id']}}"  style= "display:none">
+                                        <input type="text" value="{{$item['id']}}"  style= "display:none">
                                     @endif
                                 @endforeach
                             </div>
@@ -173,7 +173,7 @@
                                 @foreach ($temp_list as $item)
                                     @if('订单完成通知' == $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                        <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                        <input type="text" value="{{$item['id']}}" style= "display:none">
                                     @endif
                                 @endforeach
                             </div>
@@ -260,24 +260,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="1" name='yz_notice[notice_enable][created]'
-                                           @if ($set['notice_enable']['created']) checked @endif /> 下单通知
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="1" name='yz_notice[notice_enable][paid]'
-                                           @if ($set['notice_enable']['paid']) checked @endif /> 付款通知
-                                </label>
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" value="1" name='yz_notice[notice_enable][received]'
-                                           @if ($set['notice_enable']['received']) checked @endif /> 买家确认收货通知
-                                </label>
-                                <div class="help-block">通知商家方式</div>
-                            </div>
-                        </div>
+                        {{--<div class="form-group">--}}
+                            {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>--}}
+                            {{--<div class="col-sm-9 col-xs-12">--}}
+                                {{--<label class="checkbox-inline">--}}
+                                    {{--<input type="checkbox" value="1" name='yz_notice[notice_enable][created]'--}}
+                                           {{--@if ($set['notice_enable']['created']) checked @endif /> 下单通知--}}
+                                {{--</label>--}}
+                                {{--<label class="checkbox-inline">--}}
+                                    {{--<input type="checkbox" value="1" name='yz_notice[notice_enable][paid]'--}}
+                                           {{--@if ($set['notice_enable']['paid']) checked @endif /> 付款通知--}}
+                                {{--</label>--}}
+                                {{--<label class="checkbox-inline">--}}
+                                    {{--<input type="checkbox" value="1" name='yz_notice[notice_enable][received]'--}}
+                                           {{--@if ($set['notice_enable']['received']) checked @endif /> 买家确认收货通知--}}
+                                {{--</label>--}}
+                                {{--<div class="help-block">通知商家方式</div>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
 
                     </div>
                     <div class='panel-heading'>
@@ -291,7 +291,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('订单提交成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -324,7 +324,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('订单取消通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -356,7 +356,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('订单支付成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -388,7 +388,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('订单发货提醒' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[seller_order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -420,7 +420,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('确认收货通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[order_finish]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -452,7 +452,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('退款申请通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[order_refund_apply]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -484,7 +484,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('退款成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[order_refund_success]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input  type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>
@@ -516,7 +516,7 @@
                                     @foreach ($temp_list as $item)
                                         @if('退款拒绝通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
-                                            <input name='yz_notice[order_refund_reject]' type="text" value="{{$item['id']}}" style= "display:none">
+                                            <input type="text" value="{{$item['id']}}" style= "display:none">
                                         @endif
                                     @endforeach
                                 </div>

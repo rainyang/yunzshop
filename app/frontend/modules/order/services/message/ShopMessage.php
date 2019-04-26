@@ -40,7 +40,7 @@ class ShopMessage extends Message
             return;
         }
         \Log::debug('===============',[$templateId]);
-        foreach (\Setting::get('shop.miniNotice.salers') as $saler) {
+        foreach (\Setting::get('mini_app.notice.salers') as $saler) {
             $this->MiniNotice($this->templateId, $msg, $saler['uid']);
         }
     }
