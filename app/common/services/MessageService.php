@@ -184,6 +184,10 @@ class MessageService
                 $str = implode("#", $pieces);
                 MemberMiniAppModel::where('member_id',$uid)->uniacid()->update(['formId'=>$str]);
             }
+            if(empty($scene)){
+                \Log::error("小程序消息推送失败,formId失效");
+                return false;
+            }
             (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$scene );
     }
     public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
