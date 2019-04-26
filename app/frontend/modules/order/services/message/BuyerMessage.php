@@ -74,9 +74,11 @@ class BuyerMessage extends Message
             ['name' => '运费', 'value' => $this->order['dispatch_price']],
             ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
         ];
+        \Log::debug('++++++++++++微信订单提交成功通知+++++++++++++++++');
         $this->transfer($temp_id, $params);
 
         //小程序消息
+        \Log::debug('++++++++++++微信订单提交成功通知+++++++++++++++++');
         $is_open = MinAppTemplateMessage::getTitle('订单提交成功通知');
         if (!$is_open->is_open){
             return;

@@ -30,6 +30,7 @@ class RefundMessageService extends MessageService
         $orderDate = Order::getOrderDetailById($refundApply->order_id);
 //        $goods = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('goods_option_title');//商品详情
 //        $goods_title = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('title').$goods;
+        \Log::debug('++++++++++++微信退款通知+++++++++++++++++');
         $params = [
             ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
             ['name' => '粉丝昵称', 'value' => $memberDate['nickname']],
@@ -50,11 +51,12 @@ class RefundMessageService extends MessageService
             return false;
         }
         MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
-
+        \Log::debug('++++++++++++小程序退款通知+++++++++++++++++');
         $is_open = MinAppTemplateMessage::getTitle('退款通知');
         if (!$is_open->is_open){
             return;
         }
+        \Log::debug('----------------小程序退款通知+++++++++++++++++');
         $orderDate = Order::getOrderDetailById($refundApply->order_id);
         $msg = [
             'keyword1'=>['value'=>  $orderDate->pay_type_name],// 退款类型

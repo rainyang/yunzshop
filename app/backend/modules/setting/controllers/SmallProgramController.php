@@ -86,15 +86,15 @@ class SmallProgramController extends BaseController
          }
     }
 
-//    public function setNotice(){
-//        $tempId = request()->id;
-//        $tempOpen = request()->open;
-//        $is = MinAppTemplateMessage::isOpen($tempId,$tempOpen);
-//        $is_open = $is ? 1 : 0;
-//        echo json_encode([
-//            'result' => $is_open,
-//        ]);
-//    }
+    public function setNotice(){
+        $tempId = request()->id;
+        $tempOpen = request()->open;
+        $is = MinAppTemplateMessage::isOpen($tempId,$tempOpen);
+        $is_open = $is ? 1 : 0;
+        echo json_encode([
+            'result' => $is_open,
+        ]);
+    }
 //    public function addTmp()
 //    {
 //        if (!request()->templateidshort) {
