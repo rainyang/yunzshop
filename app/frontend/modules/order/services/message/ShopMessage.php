@@ -209,8 +209,8 @@ class ShopMessage extends Message
                 'keyword2'=>['value'=>  $this->order->order_sn],//订单号
                 'keyword3'=>['value'=> $this->getGoodsTitle($goods)],// 物品名称
                 'keyword4'=>['value'=> $goods->total],//  数量
-                'keyword1'=>['value'=> $goods->price],// 购买金额
-                'keyword2'=>['value'=> $this->getOrderTime($status)],//购买时间
+                'keyword5'=>['value'=> $goods->price],// 购买金额
+                'keyword6'=>['value'=> $this->getOrderTime($status)],//购买时间
             ];
             $this->miniSendToShops($is_open->template_id,$miniParams);
         }
