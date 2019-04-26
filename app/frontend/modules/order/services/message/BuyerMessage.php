@@ -46,7 +46,7 @@ class BuyerMessage extends Message
             return;
         }
         \Log::debug('===============',[$templateId]);
-        $this->MiniNotice($this->templateId, $msg, $this->order->uid);
+        $this->MiniNotice($templateId, $msg, $this->order->uid);
     }
 
     private function transfer($temp_id, $params)
