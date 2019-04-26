@@ -37,14 +37,24 @@ class MiniAppController extends ApiController
         if ($ingress != 'weChatApplet' && $type !=2){
             return ;
         }
-        $formId = implode("#",\Yunshop::request()->formID);
-        $time = strtotime (date("Y-m-d H:i:s"));
-        MemberMiniAppModel::where('member_id',$memberId)
-            ->uniacid()
-            ->update([
-                'formId'=>$formId,
-                'formId_create_time' =>$time,
+        $formId = \Yunshop::request()->formID;
+        $formIdTrem = MemberMiniAppModel::select()->where('member_id',$memberId)->first();
+        $time = strtotime (date("Y-m-d H:i:s")); //当前时间
+        $minute = floor(($time - $formIdTrem->formId_create_time) % 86400/60);
+        if ($minute > 10080 ){
+            MemberMiniAppModel::where('member_id',$memberId)
+                ->uniacid()
+                ->update([
+                    'formId'=>$formId,
+                    'formId_create_time' =>$time,
                 ]);
+        }else{
+            MemberMiniAppModel::where('member_id',$memberId)
+                ->uniacid()
+                ->update([
+                    'formId'=>$formIdTrem->formId.'#'.$formId,
+                ]);
+        }
         return $this->successJson('成功');
     }
 }
