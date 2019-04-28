@@ -180,6 +180,8 @@ class LoginController extends BaseController
         $sys_app = UniacidApp::getApplicationByid($admin_user->first()->hasOneAppUser->uniacid);
         if (!is_null($sys_app->deleted_at)) {
             return $this->successJson('平台已停用', ['status' => -5]);
+        } elseif ($sys_app->validity_time !=0 && $sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
+            return $this->successJson('平台已过期', ['status' => -5]);
         }
 
         if ($this->guard()->user()->uid !== 1) {
