@@ -36,32 +36,29 @@ class UsdtpayController extends PaymentController
 
         $this->log($parameter);
 
-        if(!empty($parameter)){
-            if($this->getSignResult()) {
-                if ($_POST['status'] == 'success') {
-                    \Log::debug('------验证成功-----');
-                    $data = [
-                        'total_fee'    => floatval($parameter['orderAmount']),
-                        'out_trade_no' => $this->attach[0],
-                        'trade_no'     => $parameter['transactionId'],
-                        'unit'         => 'yuan',
-                        'pay_type'     => 'USDT支付',
-                        'pay_type_id'     => 27
+        if($this->getSignResult()) {
+            if ($_POST['status'] == 'success') {
+                \Log::debug('------验证成功-----');
+                $data = [
+                    'total_fee'    => floatval($parameter['orderAmount']),
+                    'out_trade_no' => $this->attach[0],
+                    'trade_no'     => $parameter['transactionId'],
+                    'unit'         => 'yuan',
+                    'pay_type'     => 'USDT支付',
+                    'pay_type_id'     => 27
 
-                    ];
-                  
-                    $this->payResutl($data);
-                    \Log::debug('----结束----');
-                    echo 'success';
-                } else {
-                    //其他错误
-                    echo 'fail';
-                }
+                ];
+
+                $this->payResutl($data);
+                \Log::debug('----结束----');
+                echo 'success';
             } else {
-                //签名验证失败
-                echo 'fail1';
+                //其他错误
+                echo 'fail';
             }
-        }else {
+        } else {
+            //签名验证失败
+            echo 'fail1';
         }
     }
 
