@@ -45,6 +45,10 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+        'admin'=>[
+            'driver' => 'session',
+            'provider' => 'yz_admin_users',
+        ],
     ],
 
     /*
@@ -69,7 +73,10 @@ return [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],
-
+        'yz_admin_users' => [
+            'driver' => 'eloquent',
+            'model' => \app\platform\modules\user\models\AdminUser::class,
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

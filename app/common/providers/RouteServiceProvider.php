@@ -35,11 +35,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map()
     {
-
-       // $this->mapApiRoutes();
-        $this->mapWebRoutes();
-
-        //
+        if (env('APP_Framework') == 'platform') {
+            $this->mapWebBootRoutes();
+            $this->mapPlatformRoutes();
+            $this->mapShopRoutes();
+            $this->mapApiRoutes();
+        } else {
+            $this->mapWebRoutes();
+        }
     }
 
     /**
@@ -55,16 +58,63 @@ class RouteServiceProvider extends ServiceProvider
             'middleware' => ['web'],
             'namespace' => $this->namespace,
         ], function ($router) {
-            //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
             require base_path('routes/web.php');
         });
     }
 
+    protected function mapWebBootRoutes()
+    {
+        Route::group([
+            'prefix' => 'api',
+            'middleware' => ['web'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/boot.php');
+        });
+    }
+
+    /**
+     * 前端路由
+     *
+     */
     protected function mapApiRoutes()
     {
-        Route::middleware('api')->prefix('api')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/api.php'));
+        Route::group([
+            'middleware' => ['web'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/api.php');
+        });
+    }
+
+    /**
+     * 框架路由
+     *
+     */
+    protected function mapPlatformRoutes()
+    {
+        Route::group([
+            'prefix' => 'admin',
+            'middleware' => ['admin'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/admin.php');
+        });
+    }
+
+    /**
+     * 商城路由
+     *
+     */
+    protected function mapShopRoutes()
+    {
+        Route::group([
+            'prefix' => 'admin',
+            'middleware' => ['admin'],
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/shop.php');
+        });
     }
 
 }

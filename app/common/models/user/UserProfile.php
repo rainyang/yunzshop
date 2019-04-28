@@ -11,10 +11,12 @@ namespace app\common\models\user;
 
 use app\common\models\BaseModel;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 
 class UserProfile extends BaseModel
 {
-    public $table = 'users_profile';
+
+    public $table =   'users_profile';
 
     public $timestamps = false;
 
@@ -68,14 +70,22 @@ class UserProfile extends BaseModel
     public function __construct()
     {
         parent::__construct();
-        if(Schema::hasColumn($this->table, 'edittime')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['edittime' =>time()]);
-        }
-        if(Schema::hasColumn($this->table, 'is_send_mobile_status')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['is_send_mobile_status' =>0]);
-        }
-        if(Schema::hasColumn($this->table, 'send_expire_status')){ //用于兼容新版微擎新增的字段
-            $this->attributes = array_merge($this->attributes, ['send_expire_status' =>0]);
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_users_profile';
+            $this->attributes = [
+                'avatar'        => '',
+            ];
+            $this->timestamps = true;
+        } else {
+            if(Schema::hasColumn($this->table, 'edittime')){ //用于兼容新版微擎新增的字段
+                $this->attributes = array_merge($this->attributes, ['edittime' =>time()]);
+            }
+            if(Schema::hasColumn($this->table, 'is_send_mobile_status')){ //用于兼容新版微擎新增的字段
+                $this->attributes = array_merge($this->attributes, ['is_send_mobile_status' =>0]);
+            }
+            if(Schema::hasColumn($this->table, 'send_expire_status')){ //用于兼容新版微擎新增的字段
+                $this->attributes = array_merge($this->attributes, ['send_expire_status' =>0]);
+            }
         }
     }
 
@@ -129,10 +139,12 @@ class UserProfile extends BaseModel
      * @return array */
     public  function rules()
     {
-        return [
+        $rules =  [
             'realname' => 'required|max:10',
-            'mobile' => 'required|regex:/^1\d{10}$/'
+            'mobile' => ['required', 'regex:/^1\d{10}$/',Rule::unique($this->table)->ignore(request()->id, 'uid')],
         ];
+
+        return $rules;
     }
 
 }

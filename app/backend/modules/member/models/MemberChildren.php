@@ -60,16 +60,16 @@ class MemberChildren extends \app\common\models\member\MemberChildren
                 $join->on('yz_member_children.member_id', '=', 'mc_members.uid');
             } );
         if(!empty($search['member_id'])){
-            $teamModel ->where('mc_members.uid',$search['member_id']);
+            $teamModel ->where('mc_members'.'.uid',$search['member_id']);
         };
         if(!empty($search['nickname'])){
-            $teamModel ->where('mc_members.nickname','like','%'.$search['nickname'].'%');
+            $teamModel ->where('mc_members'.'.nickname','like','%'.$search['nickname'].'%');
         };
         if(!empty($search['realname'])){
-            $teamModel ->where('mc_members.realname','like','%'.$search['realname'].'%');
+            $teamModel ->where('mc_members'.'.realname','like','%'.$search['realname'].'%');
         };
         if(!empty($search['mobile'])){
-            $teamModel   ->where('mc_members.mobile',$search['mobile']);
+            $teamModel   ->where('mc_members'.'.mobile',$search['mobile']);
         };
           $teamModel->leftJoin('yz_member_month_order',function ($join) use ($search){
                 $join->on('yz_member_children.child_id', '=', 'yz_member_month_order.member_id')

@@ -125,8 +125,8 @@
         {!! app\common\helpers\ImageHelper::tplFormFieldImage('goods[thumb]', $goods['thumb']) !!}
         <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
         @if (!empty($goods['thumb']))
-        <a href='{{tomedia($goods['thumb'])}}' target='_blank'>
-        <img src="{{tomedia($goods['thumb'])}}" style='width:100px;border:1px solid #ccc;padding:1px' />
+        <a href='{{yz_tomedia($goods['thumb'])}}' target='_blank'>
+        <img src="{{yz_tomedia($goods['thumb'])}}" style='width:100px;border:1px solid #ccc;padding:1px' />
          </a>
         @endif
     </div>
@@ -139,8 +139,8 @@
             <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
             @if (!empty($goods['piclist']))
                  @foreach ($goods['piclist'] as $p)
-                 <a href='{{tomedia($p)}}' target='_blank'>
-                   <img src="{{tomedia($p)}}" style='height:100px;border:1px solid #ccc;padding:1px;float:left;margin-right:5px;' />
+                 <a href='{{yz_tomedia($p)}}' target='_blank'>
+                   <img src="{{yz_tomedia($p)}}" style='height:100px;border:1px solid #ccc;padding:1px;float:left;margin-right:5px;' />
                  </a>
                  @endforeach
             @endif

@@ -32,7 +32,7 @@ class MemberQQService extends MemberService
         $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
         if (!empty($code)) {
-            $resp     = ihttp_get($tokenurl);
+            $resp     = \Curl::to($tokenurl)->get();
             $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && is_array($token) && $token['errmsg'] == 'invalid code') {
@@ -40,10 +40,10 @@ class MemberQQService extends MemberService
             }
 
             $openid_url = $this->_getOpenIdUrl($token['accesstoken'], $token['openid']);
-            @ihttp_get($openid_url);
+            @\Curl::to($openid_url)->get();
 
             $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
-            $userinfo = @ihttp_get($userinfo_url);
+            $userinfo = @\Curl::to($userinfo_url)->get();
 
             if (is_array($userinfo) && !empty($userinfo['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid']);

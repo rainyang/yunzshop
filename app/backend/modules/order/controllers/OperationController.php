@@ -13,6 +13,7 @@ use app\common\models\Order;
 use app\common\models\PayType;
 use app\frontend\modules\order\services\OrderService;
 use app\common\models\order\Remark;
+use app\common\exceptions\AppException;
 
 class OperationController extends BaseController
 {
@@ -133,10 +134,13 @@ class OperationController extends BaseController
         if(!$order){
             throw new AppException("未找到该订单".request()->input('order_id'));
         }
-        if(request()->has('remark')){
-           
-            $remark = $order->hasOneOrderRemark;
 
+        if (request()->has('invoice')) {
+            $order->invoice = request()->input('invoice');
+            $order->save();
+        }
+        if(request()->has('remark')){
+            $remark = $order->hasOneOrderRemark;
             if (!$remark) {
                 $remark = new Remark([
                     'order_id' => request()->input('order_id'),
@@ -146,7 +150,6 @@ class OperationController extends BaseController
                 if(!$remark->save()){
                     return $this->errorJson();
                 }
-           
             } else {
                 $reUp = Remark::where('order_id', request()->input('order_id') )
                     ->where('remark', $remark->remark)
@@ -156,10 +159,7 @@ class OperationController extends BaseController
                     return $this->errorJson();
                 }
             }
-
         }
-        $order->invoice = request()->input('invoice');
-        $order->save();
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
         echo json_encode(["data" => '', "result" => 1]);
     }

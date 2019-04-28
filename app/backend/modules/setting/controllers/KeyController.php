@@ -68,6 +68,7 @@ class KeyController extends BaseController
 
         $btn = empty($upgrade['key']) || empty($upgrade['secret']) ? 1 : 0;
         $message = $type == 'create' ? '添加' : '取消';
+
         if ($requestModel) {
             //检测数据是否存在
             $res = $this ->isExist($requestModel);

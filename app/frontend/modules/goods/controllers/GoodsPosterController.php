@@ -13,6 +13,7 @@ use app\common\components\ApiController;
 use app\common\models\Goods;
 use app\common\models\Store;
 use Setting;
+use app\common\services\Utils;
 /**
  * 商品海报
  */
@@ -93,7 +94,11 @@ class GoodsPosterController extends ApiController
 
         $imgPath = $this->get_lt();
 
-        $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
+        if (env('APP_Framework') == 'platform') {
+            $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'storage'));
+        } else {
+            $urlPath =  request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
+        }
             
         return $this->successJson('ok', $urlPath);
 
@@ -216,8 +221,7 @@ class GoodsPosterController extends ApiController
     //商城logo 与 商城名称处理
     protected function createShopImage($target)
     {
-
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         $font = "source_han_sans";
         //计算商城名称的宽度
         $testbox = imagettfbbox($this->shopText['size'], 0, $font, $this->shopSet['name']);
@@ -245,10 +249,8 @@ class GoodsPosterController extends ApiController
     {
         $path = storage_path('app/public/goods/'.\YunShop::app()->uniacid) . "/";
 
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+        Utils::mkdirs($path);
+
         $file_name = \YunShop::app()->uniacid.'-'.$this->goodsModel->id.'.png';
 
         return $path . $file_name;
@@ -317,7 +319,7 @@ class GoodsPosterController extends ApiController
      */
     private function mergeText($target, $params, $text)
     {
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         $font = "source_han_sans";
 
         // $font="c:/windows/fonts/simhei.ttf";
@@ -341,7 +343,7 @@ class GoodsPosterController extends ApiController
 
         $color  = imagecolorallocate($target, 107, 107, 107);
 
-        putenv('GDFONTPATH='.IA_ROOT.'/addons/yun_shop/static/fonts');
+        $this->writeEnv();
         
         $font = "source_han_sans";
 
@@ -387,10 +389,9 @@ class GoodsPosterController extends ApiController
         }
 
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+
+        Utils::mkdirs($path);
+
         $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
 
 //        if (!is_file($path.'/'.$file)) {
@@ -519,4 +520,9 @@ class GoodsPosterController extends ApiController
         curl_close($ch);
         return $data;
     }
+    private function writeEnv()
+    {
+        putenv('GDFONTPATH='.base_path('static/fonts'));
+    }
+
 }
