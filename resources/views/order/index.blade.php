@@ -184,9 +184,11 @@
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel
                                             </button>
+                                        @if(app('plugins')->isEnabled('team-dividend'))
                                             <button type="submit" name="direct_export" value="1" id="direct-export" class="btn btn-info">导出
-                                                直推 Excel
+                                                直推 Excel（经销商）
                                             </button>
+                                        @endif
                                         @show
                                         @if( $requestSearch['plugin'] != "fund")
                                             <a class="btn btn-warning"
@@ -261,13 +263,13 @@
                                         <td class="goods_info">
                                             <img src="{{tomedia($order_goods['thumb'])}}">
                                         </td>
-                                        <td class="top" valign='top' style="font-size: 6px;color: #AEB9C0">
+                                        <td class="top" valign='top' style="font-size: 16px;color: #AEB9C0">
                                             <a href="{{yzWebUrl('goods.goods.edit', array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                                             @if( !empty($order_goods['goods_option_title']))<br/>
-                                                <span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
+                                                <span style="font-size: 15px;color: #AEB9C0">{{$order_goods['goods_option_title']}}</span>
 
                                             @endif
-                                            <br/><span style="font-size: 6px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
+                                            <br/><span style="font-size: 15px;color: #AEB9C0">{{$order_goods['goods_sn']}}</span>
 
                                         </td>
                                         <td class="price">

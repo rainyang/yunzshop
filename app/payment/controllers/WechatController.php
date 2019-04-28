@@ -81,6 +81,13 @@ class WechatController extends PaymentController
                 redirect(Url::absoluteApp('home'))->send();
             }
 
+            //优惠卷分享页
+            $share_bool = \app\frontend\modules\coupon\services\ShareCouponService::showIndex($orderPay->order_ids, $orderPay->uid);
+            if ($share_bool) {
+                $ids = rtrim(implode('_', $orderPay->order_ids), '_');
+                redirect(Url::absoluteApp('coupon/share/'.$ids, ['i' => \YunShop::app()->uniacid, 'mid'=> $orderPay->uid]))->send();
+            }
+
             if ($orders->count() > 1) {
                 redirect(Url::absoluteApp('member/orderlist/', ['i' => \YunShop::app()->uniacid]))->send();
             } else {
@@ -171,10 +178,12 @@ class WechatController extends PaymentController
         $input = file_get_contents('php://input');
         if (!empty($input) && empty($_POST['out_trade_no'])) {
             //禁止引用外部xml实体
-            libxml_disable_entity_loader(true);
+            $disableEntities = libxml_disable_entity_loader(true);
 
-            $obj = simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA);
-            $data = json_decode(json_encode($obj), true);
+            $data = json_decode(json_encode(simplexml_load_string($input, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+
+            libxml_disable_entity_loader($disableEntities);
+
             if (empty($data)) {
                 exit('fail');
             }

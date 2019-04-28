@@ -56,6 +56,8 @@ class ConstService
 
     const SOURCE_REJECTED         = 12; //提现驳回
 
+    const SOURCE_EXCEL_RECHARGE    = 13; //EXCEL充值
+
 
     protected static $title = '余额';
 
@@ -86,7 +88,7 @@ class ConstService
             self::SOURCE_CANCEL_CONSUME        => '消费取消',
             self::SOURCE_RECHARGE_MINUS        => '后台扣除',
             self::SOURCE_RECHARGE_CODE         => '充值码充值',
-            self::SOURCE_RECHARGE_CODE         => '充值码充值',
+            self::SOURCE_EXCEL_RECHARGE         => 'EXCEL充值',
             self::SOURCE_REJECTED              => static::$title . '提现驳回'
         ];
     }

@@ -22,6 +22,10 @@ class OrderSend extends ChangeStatusOperation
     public $params = [];
     protected $past_tense_class_name = 'OrderSent';
 
+    protected function _fireEvent()
+    {
+        $this->fireSentEvent();
+    }
     /**
      * @return bool|void
      */

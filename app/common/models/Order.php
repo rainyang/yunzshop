@@ -11,8 +11,11 @@ namespace app\common\models;
 
 use app\backend\modules\order\observers\OrderObserver;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
+use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderReceivedImmediatelyEvent;
+use app\common\events\order\AfterOrderSentImmediatelyEvent;
 use app\common\exceptions\AppException;
 use app\common\models\order\Express;
 use app\common\models\order\OrderChangePriceLog;
@@ -35,6 +38,7 @@ use app\frontend\modules\orderPay\models\PreOrderPay;
 use app\Jobs\OrderCreatedEventQueueJob;
 use app\Jobs\OrderPaidEventQueueJob;
 use app\Jobs\OrderReceivedEventQueueJob;
+use app\Jobs\OrderSentEventQueueJob;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -69,7 +73,6 @@ use Illuminate\Support\Facades\DB;
  * @property float change_dispatch_price
  * @property int plugin_id
  * @property int is_plugin
-
  * @property Collection orderGoods
  * @property Collection allStatus
  * @property Member belongsToMember
@@ -82,6 +85,7 @@ use Illuminate\Support\Facades\DB;
  * @property OrderCreatedJob orderCreatedJob
  * @property OrderPaidJob orderPaidJob
  * @property OrderReceivedJob orderReceivedJob
+ * @property OrderSentJob orderSentJob
  * @property Address address
  * @property Address orderAddress
  * @method static self isPlugin()
@@ -150,12 +154,13 @@ class Order extends BaseModel
             ->where('uid', $uid)
             ->sum('price');
     }
+
     //获取发票信息
     public static function getInvoice($order)
     {
         //return self ::select('invoice_type','rise_type','call','company_number','invoice')
-        return self ::select('invoice_type','rise_type','collect_name','company_number','invoice')
-            ->where('id',$order)
+        return self::select('invoice_type', 'rise_type', 'collect_name', 'company_number', 'invoice')
+            ->where('id', $order)
             ->first();
     }
 
@@ -291,10 +296,12 @@ class Order extends BaseModel
     {
         return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
     }
+
     public function orderCoupons()
     {
         return $this->hasMany(app('OrderManager')->make('OrderCoupon'), 'order_id', 'id');
     }
+
     /**
      * 关联模型 1对多:改价记录
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -388,10 +395,12 @@ class Order extends BaseModel
     {
         return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
+
     public function orderAddress()
     {
         return $this->hasOne(OrderAddress::class, 'order_id', 'id');
     }
+
     /**
      * 关联模型 1对1:订单支付信息
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -575,18 +584,22 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
+
     public function orderDeductions()
     {
         return $this->hasMany(OrderDeduction::class, 'order_id', 'id');
     }
+
     public function orderCoupon()
     {
         return $this->hasMany(OrderCoupon::class, 'order_id', 'id');
     }
+
     public function orderDiscounts()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
+
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -831,8 +844,25 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        $this->dispatch(new OrderPaidEventQueueJob($this->id));
-        OrderPaidJob::create([
+        if (\Setting::get('shop.order.paid_process')) {
+            //同步
+            event(new AfterOrderPaidEvent($this));
+
+        } else {
+            //异步
+            $this->dispatch(new OrderPaidEventQueueJob($this->id));
+            OrderPaidJob::create([
+                'order_id' => $this->id,
+            ]);
+        }
+    }
+
+    public function fireSentEvent()
+    {
+        event(new AfterOrderSentImmediatelyEvent($this));
+        //异步
+        $this->dispatch(new OrderSentEventQueueJob($this->id));
+        OrderSentJob::create([
             'order_id' => $this->id,
         ]);
     }
@@ -841,10 +871,17 @@ class Order extends BaseModel
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        $this->dispatch(new OrderReceivedEventQueueJob($this->id));
-        OrderReceivedJob::create([
-            'order_id' => $this->id,
-        ]);
+        if (\Setting::get('shop.order.receive_process')) {
+            //同步
+            event(new AfterOrderReceivedEvent($this));
+
+        } else {
+            //异步
+            $this->dispatch(new OrderReceivedEventQueueJob($this->id));
+            OrderReceivedJob::create([
+                'order_id' => $this->id,
+            ]);
+        }
     }
 
     public function orderCreatedJob()
@@ -866,7 +903,7 @@ class Order extends BaseModel
     {
         $this->orderGoods->each(function (OrderGoods $orderGoods) {
             // 付款后扣库存
-            if($orderGoods->goods->reduce_stock_method == 1){
+            if ($orderGoods->goods->reduce_stock_method == 1) {
                 $orderGoods->stockEnough();
             }
         });
