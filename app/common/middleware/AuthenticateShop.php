@@ -42,7 +42,7 @@ class AuthenticateShop
             $msg = '平台已停用';
         }
 
-        if ($sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
+        if ($sys_app->validity_time !=0 && $sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
             $msg = '平台已过期';
         }
 
