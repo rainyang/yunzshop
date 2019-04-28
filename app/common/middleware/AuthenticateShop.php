@@ -43,7 +43,7 @@ class AuthenticateShop
         }
 
         if ($msg) {
-            \Cache::put('app.access', $msg, 1);
+            //\Cache::put('app.access', $msg, 1);
 
             return false;
         }
