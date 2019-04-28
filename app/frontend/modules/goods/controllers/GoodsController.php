@@ -274,7 +274,7 @@ class GoodsController extends ApiController
             })
             ->paginate(20)->toArray();
 
-        
+
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function($rows) {
                 return collect($rows)->map(function($item, $key) {
