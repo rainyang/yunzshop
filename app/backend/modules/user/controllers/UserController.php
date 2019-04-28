@@ -15,6 +15,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\user\User;
 use app\common\models\user\YzRole;
+use app\common\services\Utils;
 
 class UserController extends BaseController
 {
@@ -31,7 +32,11 @@ class UserController extends BaseController
             $records = $records->search($search);
         }
 
-        $userList = $records->orderBy('starttime','desc')->paginate(static::PageSize);
+        if (env('APP_Framework') == 'platform') {
+            $userList = $records->orderBy('created_at','desc')->paginate(static::PageSize);
+        } else {
+            $userList = $records->orderBy('starttime','desc')->paginate(static::PageSize);
+        }
         $pager = PaginationHelper::show($userList->total(), $userList->currentPage(), $userList->perPage());
 
         $roleList = YzRole::getRoleListToUser();
@@ -63,7 +68,11 @@ class UserController extends BaseController
             if ($validator->fails()) {
                 $this->error($validator->messages());
             } else {
-                $userModel->password = $this->password($userModel->password, $userModel->salt);
+                if (env('APP_Framework') == 'platform') {
+                    $userModel->password = bcrypt($userModel->password);
+                } else {
+                    $userModel->password = $this->password($userModel->password, $userModel->salt);
+                }
                 if ($userModel->save()) {
                     return $this->message('添加操作员成功.', Url::absoluteWeb('user.user.index'));
                 }
@@ -122,7 +131,6 @@ class UserController extends BaseController
             }
         }
 
-
         return view('user.user.form',[
             'user'          => $userModel,
             'roleList'      => $roleList,
@@ -159,10 +167,17 @@ class UserController extends BaseController
      */
     private function addedUserData(array $data = [])
     {
-        $data['joindate']    = $data['lastvisit'] = $data['starttime'] =time();
-        $data['lastip']      = CLIENT_IP;
-        $data['joinip']      = CLIENT_IP;
-        $data['salt']        = $this->randNum(8);
+        if (env('APP_Framework') == 'platform') {
+            $data['lastvisit'] = time();
+            $data['lastip'] = Utils::getClientIp();
+            $data['joinip'] = Utils::getClientIp();
+            $data['salt'] = randNum(8);
+        } else {
+            $data['joindate'] = $data['lastvisit'] = $data['starttime'] = time();
+            $data['lastip'] = CLIENT_IP;
+            $data['joinip'] = CLIENT_IP;
+            $data['salt'] = $this->randNum(8);
+        }
 
         return $data;
     }

@@ -9,16 +9,12 @@
 namespace app\backend\controllers;
 
 use app\common\components\BaseController;
-use app\common\services\Check;
 use Illuminate\Support\Facades\DB;
 
 class IndexController extends BaseController
 {
     public function index()
     {
-        strpos(request()->getBaseUrl(),'/web/index.php') === 0 && Check::setKey();
-        //redirect(Url::absoluteWeb('goods.goods.index'))->send();
-
         return view('index',[])->render();
     }
 

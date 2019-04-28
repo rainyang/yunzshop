@@ -23,6 +23,14 @@ class UniAccountUser extends BaseModel
         'rank'   => 0
     ];
 
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_app_user';
+            $this->timestamps = true;
+        }
+    }
+
     public function hasUser()
     {
         return $this->hasMany('app\common\models\user\User', 'uid', 'uid');
