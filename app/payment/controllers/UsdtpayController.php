@@ -59,10 +59,9 @@ class UsdtpayController extends PaymentController
                 }
             } else {
                 //签名验证失败
-                echo 'fail';
+                echo 'fail1';
             }
         }else {
-            echo 'fail';
         }
     }
 
