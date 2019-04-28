@@ -3,7 +3,7 @@
 @section('title','注册芸商城')
 
 @section('content')
-    <script src="../addons/yun_shop/static/yunshop/js/industry.js"></script>
+    <script src="{{resource_get('static/yunshop/js/industry.js', 1)}}"></script>
     <script type="text/javascript">
         function formcheck(event) {
 

@@ -7,6 +7,7 @@ use app\common\exceptions\ShopException;
 use app\common\helpers\WeSession;
 use app\common\models\Modules;
 use app\common\services\Check;
+use app\common\services\Session;
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
@@ -37,10 +38,6 @@ class BaseController extends Controller
     public function __construct()
     {
         $this->setCookie();
-
-        $modules = Modules::getModuleName('yun_shop');
-
-        \Config::set('module.name', $modules->title);
     }
 
     /**
@@ -51,7 +48,11 @@ class BaseController extends Controller
         //strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
 
         //是否为商城后台管理路径
-        strpos(request()->getBaseUrl(), '/web/index.php') === 0 && Check::setKey();
+        if (env('APP_Framework') == 'platform') {
+            strpos(request()->getRequestUri(),  config('app.isWeb')) === 0 && Check::setKey();
+        } else {
+            strpos(request()->getBaseUrl(),  '/web/index.php') === 0 && Check::setKey();
+        }
     }
 
     protected function formatValidationErrors(Validator $validator)
@@ -116,7 +117,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        WeSession::start(\YunShop::app()->uniacid, CLIENT_IP, self::COOKIE_EXPIRE);
+        Session::factory(\YunShop::app()->uniacid, self::COOKIE_EXPIRE);
     }
 
     /**

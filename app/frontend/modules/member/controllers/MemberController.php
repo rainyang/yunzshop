@@ -30,6 +30,7 @@ use app\common\services\alipay\OnekeyLogin;
 use app\common\services\plugin\huanxun\HuanxunSet;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
+use app\common\services\Utils;
 use app\frontend\models\Member;
 use app\frontend\models\OrderListModel;
 use app\frontend\modules\member\models\MemberModel;
@@ -981,7 +982,8 @@ class MemberController extends ApiController
                 if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
                     $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(),
                         $posterModel->id))->getMemberPosterPath();
-                    return request()->getSchemeAndHttpHost() . '/' . substr($file_path, strpos($file_path, 'addons'));
+                    return ImageHelper::getImageUrl($file_path);
+                    //return request()->getSchemeAndHttpHost() . '/' . config('app.webPath') . $file_path;
                 }
             }
         }
@@ -1014,10 +1016,9 @@ class MemberController extends ApiController
 
         $uniacid = \YunShop::app()->uniacid;
         $path    = storage_path('app/public/personalposter/' . $uniacid);
-        if (!file_exists($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
+
+        Utils::mkdirs($path);
+
         $md5    = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg']); //用于标识组成元素是否有变化
         $extend = '.png';
         $file   = $md5 . $extend;
@@ -1072,7 +1073,10 @@ class MemberController extends ApiController
             imagepng($targetImg, $imgPath);
         }
 
-        $imgUrl = request()->getSchemeAndHttpHost() . '/' . substr($path, strpos($path, 'addons')) . '/' . $file;
+        $file = $path . '/' . $file;
+
+        $imgUrl = ImageHelper::getImageUrl($file);
+
         return $imgUrl;
     }
 
@@ -1090,7 +1094,7 @@ class MemberController extends ApiController
     //合并字符串
     private static function mergeText($destinationImg, $text, $data)
     {
-        putenv('GDFONTPATH=' . IA_ROOT . '/addons/yun_shop/static/fonts');
+        putenv('GDFONTPATH=' . base_path('static/fonts'));
         $font = "source_han_sans";
 
         $black = imagecolorallocate($destinationImg, 0, 0, 0);

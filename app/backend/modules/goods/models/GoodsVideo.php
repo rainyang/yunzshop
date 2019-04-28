@@ -8,6 +8,8 @@
 
 namespace app\backend\modules\goods\models;
 
+use app\common\services\Utils;
+
 
 /**
  * Class GoodsVideo
@@ -66,10 +68,9 @@ class GoodsVideo extends \app\common\models\goods\GoodsVideo
 
         if ($data['goods_video']) {
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'public'.DIRECTORY_SEPARATOR.'goods'.DIRECTORY_SEPARATOR.'video-image'.DIRECTORY_SEPARATOR.\YunShop::app()->uniacid.DIRECTORY_SEPARATOR.date('Y', time()).DIRECTORY_SEPARATOR.date('m', time()));
-            if (!is_dir($path)) {
-                load()->func('file');
-                mkdirs($path);
-            }
+
+            Utils::mkdirs($path);
+
             $file_path = self::getFile($path);
 
             $command = 'ffmpeg -i '.$data['goods_video'].' -y -f image2 -t 0.003 -s 352x240 '.$file_path;

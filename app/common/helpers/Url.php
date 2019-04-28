@@ -16,7 +16,7 @@ class Url
         }
         //$domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        return '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+        return self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     public static function shopSchemeUrl($uri)
@@ -26,7 +26,8 @@ class Url
         }
         $domain = request()->getSchemeAndHttpHost();
         $module = request()->get('m','yun_shop');
-        return $domain . '/addons/' . $module . (strpos($uri,'/') === 0 ? '':'/') . $uri;
+
+        return $domain . self::getPath($module) . (strpos($uri,'/') === 0 ? '':'/') . $uri;
     }
 
     /**
@@ -44,7 +45,12 @@ class Url
         $defaultParams = ['c'=>'site','a'=>'entry','m'=>'yun_shop','do'=>rand(1000,9999),'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return  '/web/index.php?'. http_build_query($params);
+        if (env('APP_Framework') == 'platform') {
+            return  \config('app.isWeb'). '?'. http_build_query($params);
+        } else {
+            return  '/web/index.php?'. http_build_query($params);
+        }
+
     }
 
     /**
@@ -99,7 +105,7 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return   '/addons/yun_shop/api.php?'. http_build_query($params);
+        return  '/addons/yun_shop/api.php?'. http_build_query($params);
     }
 
     /**
@@ -117,7 +123,11 @@ class Url
         $defaultParams = ['i'=>\YunShop::app()->uniacid,'route'=>$route];
         $params = array_merge($defaultParams, $params);
 
-        return   '/web/plugin.php?'. http_build_query($params);
+        if (env('APP_Framework') == 'platform') {
+            return   config('app.isWeb') . '/plugig?'. http_build_query($params);
+        } else {
+            return   '/web/plugin.php?'. http_build_query($params);
+        }
     }
 
     /**
@@ -200,5 +210,14 @@ class Url
     public static function isHttp($url)
     {
         return (strpos($url,'http://') === 0 || strpos($url,'https://') === 0);
+    }
+
+    public static function getPath($module)
+    {
+        if (env('APP_Framework') == 'platform') {
+            return '';
+        }
+
+        return '/addons/' . $module;
     }
 }

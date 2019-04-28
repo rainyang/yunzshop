@@ -8,6 +8,13 @@ class YzpluginSeeder extends Seeder
     protected $table = 'yz_options';
     protected $uniTable = 'uni_account';
 
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->uniTable = 'yz_uniacid_app';
+        }
+    }
+
     public function run()
     {
 
