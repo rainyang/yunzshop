@@ -37,8 +37,7 @@
     "guzzlehttp/guzzle": "^6.3",
     "phpxmlrpc/phpxmlrpc": "4.0",
     "indigophp/supervisor": "^3.0",
-    "rap2hpoutre/laravel-log-viewer": "^0.22.1",
-        "barryvdh/laravel-ide-helper": "^2.4"
+    "rap2hpoutre/laravel-log-viewer": "^0.22.1"
 },
 "require-dev":
 {
@@ -46,6 +45,7 @@
     "fzaninotto/faker": "^1.6",
     "mockery/mockery": "0.9.*",
     "phpunit/phpunit": "~5.7",
+    "barryvdh/laravel-ide-helper": "^2.3",
     "orangehill/iseed": "dev-master",
     "xethron/migrations-generator": "^2.0"
 },
