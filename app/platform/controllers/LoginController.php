@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\system\models\SystemSetting;
+use app\platform\modules\application\models\UniacidApp;
 
 class LoginController extends BaseController
 {
@@ -167,13 +168,18 @@ class LoginController extends BaseController
 
         $this->clearLoginAttempts($request);
 
-        AdminUser::where('uid', $this->guard()->user()->uid)->update([
+        $admin_user = AdminUser::where('uid', $this->guard()->user()->uid);
+        $admin_user->update([
             'lastvisit' =>  time(),
             'lastip' => Utils::getClientIp(),
         ]);
 
-        return $this->successJson('成功', ['user' => $this->guard()->user()]);
+        $sys_app = UniacidApp::getApplicationByid($admin_user->first()->hasOneAppUser->uniacid);
+        if (!is_null($sys_app->deleted_at)) {
+            return $this->successJson('平台已停用', ['status' => -5]);
+        }
 
+        return $this->successJson('成功', ['user' => $this->guard()->user()]);
     }
 
     /**
