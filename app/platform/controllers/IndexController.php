@@ -14,6 +14,7 @@ class IndexController extends BaseController
     public function index()
     {
         $role = 0;
+
         $user = \Auth::guard('admin')->user();
 
         if (1 == $user->uid) {
