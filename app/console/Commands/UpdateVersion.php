@@ -38,7 +38,7 @@ class UpdateVersion extends Command
      */
     public function handle()
     {
-        $this->createPluginFile();
+        //$this->createPluginFile();
         $this->runMigrate();
     }
 

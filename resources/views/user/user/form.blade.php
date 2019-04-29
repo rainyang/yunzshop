@@ -6,7 +6,7 @@
 <form id="dataform" action="{{ yzWebUrl('user.user.update') }}" method="post" class="form-horizontal form" >
     <input type="hidden" name="id" value="{{ $user->uid }}" />
 @else
-<form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
+    <form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
 @endif
     <div class="right-titpos">
         <ul class="add-snav">

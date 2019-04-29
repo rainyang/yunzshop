@@ -16,12 +16,14 @@ use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\PayLog;
+use app\common\events\UserActionEvent;
 use app\common\events\WechatProcessor;
 use app\common\listeners\charts\OrderBonusListeners;
 use app\common\listeners\member\MemberChangeRelationEventListener;
 use app\common\listeners\member\MemberCreateRelationEventListener;
 use app\common\listeners\PayLogListener;
 use app\common\listeners\point\PointListener;
+use app\common\listeners\UserActionListener;
 use app\common\listeners\WechatProcessorListener;
 use app\common\listeners\withdraw\WithdrawAuditListener;
 use app\common\listeners\withdraw\WithdrawPayListener;
@@ -43,6 +45,8 @@ use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use app\common\events\WechatMessage;
+use app\common\listeners\WechatMessageListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -84,6 +88,10 @@ class EventServiceProvider extends ServiceProvider
             WechatProcessorListener::class//示例监听类
         ],
 
+        WechatMessage::class => [
+            WechatMessageListener::class//示例监听类
+        ],
+
         //发送消息触发事件
         SendMessageEvent::class => [
 
@@ -102,6 +110,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         AfterMemberReceivedCoupon::class=>[
             AfterMemberReceivedCouponListener::class
+        ],
+        UserActionEvent::class => [
+            UserActionListener::class,
         ],
         MemberChangeRelationEvent::class=>[
             MemberChangeRelationEventListener::class
