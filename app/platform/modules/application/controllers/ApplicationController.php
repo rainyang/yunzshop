@@ -135,7 +135,7 @@ class ApplicationController extends BaseController
 
         if ($id) {
             if ($uid != 1) {
-                // 新框架权限表插入数据
+                // 新框架角色表插入数据
                 AppUser::create([
                     'role' => 'manager',
                     'uid' => $uid,
