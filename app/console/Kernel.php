@@ -3,6 +3,7 @@
 namespace app\console;
 defined('IN_IA') or define('IN_IA',true);
 
+use app\console\Commands\WriteFrames;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
         'app\console\Commands\RepairWithdraw',
         'app\console\Commands\Test',
         'app\console\Commands\WechatOpen',
+        WriteFrames::class
     ];
 
     /**
