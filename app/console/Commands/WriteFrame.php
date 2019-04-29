@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class WriteFrames extends Command
+class WriteFrame extends Command
 {
     /**
      * The name and signature of the console command.
