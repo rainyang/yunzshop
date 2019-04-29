@@ -39,49 +39,68 @@ class WriteFrames extends Command
      */
     public function handle()
     {
-        $finder = Finder::create()->in($this->destPath());
+        $value = (string)$this->argument('file');
+
+        $finder = Finder::create()->in($this->destPath($value));
 
         $fileCount = $finder->count();
 
         $bar = $this->output->createProgressBar($fileCount);
-        $value = (string)$this->argument('file');
 
         if (strpos($value, '/') !== false) {
 
             $all = explode('/', $value);
             $name = $all[count($all) -1];
-
+        
         } else {
+
             $name = $value;
         }
-        file_put_contents(storage_path('logs/mytest.log'), $value, FILE_APPEND);
 
         foreach ($finder as $file) {
-            /**
-             * @var SplFileInfo $file
-             */
+           
             if ($file->isFile()) {
+
                 $fileContent = $file->getContents();
+
                 $this->writeWord($fileContent, $name);
             }
             $bar->advance();
         }
         $bar->finish();
+
         $this->comment('Importing Word Success');
     }
 
     private function writeWord($content, $name)
     {
-        $fileName = base_path($name) . '.wps';
+        $fileName = base_path($name) . '.docx';
 
-        file_put_contents($fileName, $content, FILE_APPEND | LOCK_EX);
+        if (file_exists($fileName)) {
+            
+            $ans = $this->ask('Do you wish to continue?');
+            
+            if (in_array($ans, ['yes', 'y'])) {
+            
+                file_put_contents($fileName, $content, FILE_APPEND);
+            } else {
+
+                exit();
+            }
+
+        } else {
+
+            file_put_contents($fileName, $content, FILE_APPEND);
+        }
     }
+    
     /**
      * @return string
      */
     private function destPath($name)
     {
-        $path = base_path($name. DIRECTORY_SEPARATOR );
+        $path = base_path($name);
+
         if (is_dir($path)) {
             return $path;
         }
