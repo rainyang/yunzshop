@@ -298,7 +298,7 @@ class User extends BaseModel
     public  function rules()
     {
         return [
-            'username' => ['required',Rule::unique($this->table)->ignore($this->id)],
+            'username' => Rule::unique($this->table)->ignore($this->id),
             'password' => 'required'
         ];
     }
