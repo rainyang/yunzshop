@@ -30,6 +30,8 @@ class ShopBootstrap
                 $cfg['uniacid'] = $account->uniacid;
                 Utils::addUniacid($account->uniacidb);
                 \config::set('app.global', $cfg);
+                global $_W;
+                $_W = $cfg;
 
                 return $this->successJson('成功', ['url' => Url::absoluteWeb('index.index', ['uniacid' => $account->uniacid])]);
             }

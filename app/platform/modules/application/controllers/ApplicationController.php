@@ -134,6 +134,14 @@ class ApplicationController extends BaseController
         $id = $app->insertGetId($data); 
 
         if ($id) {
+            if ($uid != 1) {
+                // 新框架角色表插入数据
+                AppUser::create([
+                    'role' => 'manager',
+                    'uid' => $uid,
+                    'uniacid' => $id
+                ]);
+            }
             
             $up = UniacidApp::where('id', $id)->update(['uniacid'=>$id]);  
             
