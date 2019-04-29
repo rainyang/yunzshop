@@ -15,6 +15,8 @@ class WriteFrame extends Command
      */
     protected $signature = 'write:frame {file}';
 
+    protected $fileCount;
+
     /**
      * The console command description.
      *
@@ -43,9 +45,9 @@ class WriteFrame extends Command
 
         $finder = Finder::create()->in($this->destPath($value));
 
-        $fileCount = $finder->count();
+        $this->fileCount = $finder->count();
 
-        $bar = $this->output->createProgressBar($fileCount);
+        $bar = $this->output->createProgressBar($this->fileCount);
 
         if (strpos($value, '/') !== false) {
 
@@ -76,7 +78,7 @@ class WriteFrame extends Command
     {
         $fileName = base_path($name) . '.docx';
 
-        if (file_exists($fileName)) {
+        if (file_exists($fileName) && $this->fileCount > 1) {
             
             $ans = $this->ask('Do you wish to continue?');
             
