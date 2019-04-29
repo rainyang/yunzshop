@@ -299,6 +299,9 @@ class GoodsController extends ApiController
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
         }
+        foreach ($list["data"] as $key=>$row){
+            $list['data'][$key]['goods_id']=$list['data'][$key]['has_many_goods_discount'][0]['goods_id'];
+        }
         return $this->successJson('成功', $list);
     }
 
