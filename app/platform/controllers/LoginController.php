@@ -15,6 +15,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Lang;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\system\models\SystemSetting;
+use app\platform\modules\application\models\UniacidApp;
+use app\platform\modules\application\models\AppUser;
+use app\common\helpers\Url;
 
 class LoginController extends BaseController
 {
@@ -38,6 +41,7 @@ class LoginController extends BaseController
      */
     protected $redirectTo = '/admin';
     protected $username;
+    private $authRole = ['operator', 'clerk'];
 
 
     /**
@@ -167,13 +171,33 @@ class LoginController extends BaseController
 
         $this->clearLoginAttempts($request);
 
-        AdminUser::where('uid', $this->guard()->user()->uid)->update([
+        $admin_user = AdminUser::where('uid', $this->guard()->user()->uid);
+        $admin_user->update([
             'lastvisit' =>  time(),
             'lastip' => Utils::getClientIp(),
         ]);
 
-        return $this->successJson('成功', ['user' => $this->guard()->user()]);
+        $sys_app = UniacidApp::getApplicationByid($admin_user->first()->hasOneAppUser->uniacid);
+        if (!is_null($sys_app->deleted_at)) {
+            return $this->successJson('平台已停用', ['status' => -5]);
+        } elseif ($sys_app->validity_time !=0 && $sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
+            return $this->successJson('平台已过期', ['status' => -5]);
+        }
 
+        if ($this->guard()->user()->uid !== 1) {
+            $cfg = \config::get('app.global');
+            $account = AppUser::getAccount($this->guard()->user()->uid);
+
+            if (!is_null($account) && in_array($account->role, $this->authRole)) {
+                $cfg['uniacid'] = $account->uniacid;
+                Utils::addUniacid($account->uniacidb);
+                \config::set('app.global', $cfg);
+
+                return $this->successJson('成功', ['url' => Url::absoluteWeb('index.index', ['uniacid' => $account->uniacid])]);
+            }
+        }
+
+        return $this->successJson('成功', ['user' => $this->guard()->user()]);
     }
 
     /**
