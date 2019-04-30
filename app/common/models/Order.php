@@ -88,6 +88,7 @@ use Illuminate\Support\Facades\DB;
  * @property OrderSentJob orderSentJob
  * @property Address address
  * @property Address orderAddress
+ * @property Express express
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  * @method static self cancelled()
