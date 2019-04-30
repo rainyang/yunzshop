@@ -2067,7 +2067,7 @@ class MemberController extends ApiController
         return show_json(1, '');
     }
 
-    public function memberData()
+    public function memberData($request)
     {
         $this->dataIntegrated($this->getUserInfo($request, true), 'member');
         $this->dataIntegrated($this->getEnablePlugins($request,true), 'plugins');
