@@ -219,13 +219,9 @@ class YunShop
      */
     public static function isRole()
     {
-        if (env('APP_Framework') == 'platform') {
-            $global_params = \config('app.global');
-        } else {
-            global $_W;
+        global $_W;
 
-            $global_params = $_W;
-        }
+        $global_params = $_W;
 
         if (app('plugins')->isEnabled('supplier')) {
             $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $global_params['uid'])->first();
@@ -507,13 +503,9 @@ class YunApp extends YunComponent
 
     public function __construct()
     {
-        if (env('APP_Framework') == 'platform') {
-            $global_params = \config('app.global');
-        } else {
-            global $_W;
+        global $_W;
 
-            $global_params = $_W;
-        }
+        $global_params = $_W;
 
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$global_params;
         $this->routeList = Config::get('menu');
