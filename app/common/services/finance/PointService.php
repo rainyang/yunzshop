@@ -13,10 +13,6 @@ use app\backend\modules\member\models\Member;
 use app\common\events\MessageEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
-use app\common\models\notice\MessageTemp;
-use app\common\services\MessageService;
-use EasyWeChat\Foundation\Application;
-use EasyWeChat\Message\News;
 
 class PointService
 {
