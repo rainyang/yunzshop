@@ -70,6 +70,10 @@ class MemberController extends ApiController
         'isValidatePage'
     ];
 
+    public $apiErrMsg = [];
+
+    public $apiData = [];
+
     /**
      * 获取用户信息
      *
