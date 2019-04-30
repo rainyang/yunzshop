@@ -6,6 +6,8 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
+use app\common\models\member\MemberInvitationCodeLog;
+use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
@@ -16,13 +18,9 @@ use Yunshop\Designer\Common\Services\PageTopMenuService;
 use Yunshop\Designer\models\Designer;
 use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
-use app\common\helpers\PaginationHelper;
-use Yunshop\Diyform\admin\DiyformDataController;
 use Yunshop\Love\Common\Models\GoodsLove;
-use app\common\models\MemberShopInfo;
-use app\common\models\member\MemberInvitationCodeLog;
-use Yunshop\Designer\services\DesignerService;
 use Yunshop\Love\Common\Services\SetService;
+
 class HomePageController extends ApiController
 {
     protected $publicAction = [
@@ -48,7 +46,7 @@ class HomePageController extends ApiController
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
-    public function index()
+    public function index($request, $integrated = null)
     {
         $i         = \YunShop::request()->i;
         $mid       = \YunShop::request()->mid;
@@ -137,7 +135,6 @@ class HomePageController extends ApiController
             }
         }
 
-
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
             $is_love = app('plugins')->isEnabled('love');
@@ -161,20 +158,6 @@ class HomePageController extends ApiController
             } else {
                 $page = (new IndexPageService())->getIndexPage();
             }
-
-//           dd($page->toArray());
-
-            //装修数据, 原来接口在 plugin.designer.home.index.page
-            /*if(empty($pageId)){ //如果是请求首页的数据
-                if(!Cache::has('designer_page_0')) {
-                    $page = Designer::getDefaultDesigner();
-                    Cache::put('designer_page_0', $page, 4200);
-                } else {
-                    $page = Cache::get('designer_page_0');
-                }
-            } else{
-                $page = Designer::getDesignerByPageID($pageId);
-            }*/
 
             if ($page) {
                 if (empty($pageId) && Cache::has($member_id . '_designer_default_0')) {
@@ -204,42 +187,6 @@ class HomePageController extends ApiController
                     Cache::put($member_id . '_designer_default_0', $designer, 180);
                 }
 
-                /*$store_goods = null;
-                if (app('plugins')->isEnabled('store-cashier')) {
-                    $store_goods = new \Yunshop\StoreCashier\common\models\StoreGoods();
-                }
-
-                //课程商品判断
-                $videoDemand = new VideoDemandCourseGoods();
-                $video_open  = $videoDemand->whetherEnabled();
-
-                foreach ($designer['data'] as &$value_one) {
-                    if ($value_one['temp'] == 'goods') {
-                        foreach ($value_one['data'] as &$info) {
-                            $info['is_course'] = 0;
-                            $info['img'] = replace_yunshop(yz_tomedia($info['img']));
-                            if ($video_open) {
-                                $info['is_course'] = $videoDemand->isCourse($info['goodid']);
-                            }
-
-                            $info['goods_type'] = 0;
-                            $info['store_id'] = 0;
-
-                            if (!is_null($store_goods)) {
-                                $store_id = $store_goods->where('goods_id', $info['goodid'])->value('store_id');
-
-                                if ($store_id) {
-                                    $info['goods_type'] = 1;
-                                    $info['store_id'] = $store_id;
-                                }
-                            }
-
-                            if ($info['is_course']) {
-                                $info['goods_type'] = 2;
-                            }
-                        }
-                    }
-                }*/
                 $result['item'] = $designer;
 
                 //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
@@ -252,7 +199,6 @@ class HomePageController extends ApiController
                         'isshow' => false
                     ];
                 }
-
 
                 $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
                 $footerMenuId   = $designer['footermenu'];
@@ -325,9 +271,6 @@ class HomePageController extends ApiController
             ];
         }
 
-        //增加小程序回去默认装修数据
-        //$result['applet'] = self::defaultDesign();
-
         //增加验证码功能
         $status = Setting::get('shop.sms.status');
         if (extension_loaded('fileinfo')) {
@@ -337,7 +280,12 @@ class HomePageController extends ApiController
                 $result['captcha']['status'] = $status;
             }
         }
-        return $this->successJson('ok', $result);
+
+        if (is_null($integrated)) {
+            return $this->successJson('ok', $result);
+        } else {
+            return show_json(1, $result);
+        }
     }
 
     public function getLoveGoods($goods_id)
@@ -728,6 +676,224 @@ class HomePageController extends ApiController
         }
 
         return $this->successJson('ok', ['code' => $code]);
+    }
+
+    public function isBindMobile($member_set, $member_id)
+    {
+        $is_bind_mobile = 0;
+
+        if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
+            if (Cache::has($member_id . '_member_info')) {
+                $member_model = Cache::get($member_id . '_member_info');
+            } else {
+                $member_model = Member::getMemberById($member_id);
+            }
+
+            if ($member_model && empty($member_model->mobile)) {
+                $is_bind_mobile = intval($member_set['is_bind_mobile']);
+            }
+        }
+        return $is_bind_mobile;
+    }
+
+    public function isValidatePage($request, $integrated = null)
+    {
+        $member_id = \YunShop::app()->getMemberId();
+
+        //强制绑定手机号
+        if (Cache::has('shop_member')) {
+            $member_set = Cache::get('shop_member');
+        } else {
+            $member_set = \Setting::get('shop.member');
+        }
+
+        if (!is_null($member_set)) {
+            $data = [
+                'is_bind_mobile' => $this->isBindMobile($member_set, $member_id),
+                'invite_page' => 0,
+                'is_invite' => 0,
+                'is_login' => 0,
+            ];
+
+            if ($data['is_bind_mobile']) {
+                if (is_null($integrated)) {
+                    return $this->successJson('强制绑定手机开启', $data);
+                } else {
+                    return show_json(1, $data);
+                }
+            }
+
+            $type = \YunShop::request()->type;
+            $invitation_log = [];
+            if ($member_id) {
+                $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+                if ($mobile->mobile) {
+                    $invitation_log = 1;
+                } else {
+                    $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid',$member_id)->first();
+                }
+            }
+
+            $invite_page = $member_set['invite_page'] ? 1 : 0;
+            $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+
+            $data['is_invite'] = $invitation_log ? 1 : 0;
+            $data['is_login'] = $member_id ? 1 : 0;
+
+            if (is_null($integrated)) {
+                return $this->successJson('邀请页面开关', $data);
+            } else {
+                return show_json(1, $data);
+            }
+        }
+    }
+
+    public function getBalance()
+    {
+        $shop = \Setting::get('shop.shop');
+        $credit=$shop['credit'] ?: '余额';
+
+        return show_json(1, ['balance'=>$credit]);
+    }
+
+    public function getLangSetting()
+    {
+        $lang = \Setting::get('shop.lang.lang');
+
+        $data = [
+            'test' => [],
+            'commission' => [
+                'title' => '',
+                'commission' => '',
+                'agent' => '',
+                'level_name' => '',
+                'commission_order' => '',
+                'commission_amount' => '',
+            ],
+            'single_return' => [
+                'title' => '',
+                'single_return' => '',
+                'return_name' => '',
+                'return_queue' => '',
+                'return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+            ],
+            'team_return' => [
+                'title' => '',
+                'team_return' => '',
+                'return_name' => '',
+                'team_level' => '',
+                'return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+                'return_rate' => '',
+                'team_name' => '',
+                'return_time' => '',
+            ],
+            'full_return' => [
+                'title' => '',
+                'full_return' => '',
+                'return_name' => '',
+                'full_return_log' => '',
+                'return_detail' => '',
+                'return_amount' => '',
+            ],
+            'team_dividend' => [
+                'title' => '',
+                'team_dividend' => '',
+                'team_agent_centre' => '',
+                'dividend' => '',
+                'flat_prize' => '',
+                'award_gratitude' => '',
+                'dividend_amount' => '',
+            ],
+            'area_dividend' => [
+                'area_dividend_center' => '',
+                'area_dividend' => '',
+                'dividend_amount' => '',
+            ]
+        ];
+
+        $langData = \Setting::get('shop.lang.' . $lang, $data);
+
+        if (is_null($langData)) {
+            $langData = $data;
+        }
+
+        return show_json(1, $langData);
+    }
+
+    public function pageShow()
+    {
+        try {
+            $all_set =  \Setting::getByGroup("popularize");
+            $data = [
+                'wechat' => [
+                    'vue_route' => !empty($all_set['wechat']['vue_route'])?$all_set['wechat']['vue_route']:[],
+                    'url' => !empty($all_set['wechat']['callback_url'])?$all_set['wechat']['callback_url']:'',
+                ],
+                'mini' => [
+                    'vue_route' => !empty($all_set['mini']['vue_route'])?$all_set['mini']['vue_route']:[],
+                    'url' => !empty($all_set['mini']['callback_url'])?$all_set['mini']['callback_url']:'',
+                ],
+                'wap' => [
+                    'vue_route' => !empty($all_set['wap']['vue_route'])?$all_set['wap']['vue_route']:[],
+                    'url' => !empty($all_set['wap']['callback_url'])?$all_set['wap']['callback_url']:'',
+                ],
+                'app' => [
+                    'vue_route' => !empty($all_set['app']['vue_route'])?$all_set['app']['vue_route']:[],
+                    'url' => !empty($all_set['app']['callback_url'])?$all_set['app']['callback_url']:'',
+                ],
+                'alipay' => [
+                    'vue_route' => !empty($all_set['alipay']['vue_route'])?$all_set['alipay']['vue_route']:[],
+                    'url' => !empty($all_set['alipay']['callback_url'])?$all_set['alipay']['callback_url']:'',
+                ],
+            ];
+            return show_json(1,$data);
+        } catch (\Exception $e) {
+            \Log::debug('--------pop出错了---------------:'.$e->getMessage());
+        }
+
+        return  show_json(1,$this->moRen());
+    }
+
+    protected function moRen()
+    {
+        return [
+            'wechat' => [
+                'vue_route' =>[],
+                'url' => '',
+            ],
+            'mini' => [
+                'vue_route' => [],
+                'url' => '',
+            ],
+            'wap' => [
+                'vue_route' => [],
+                'url' => '',
+            ],
+            'app' => [
+                'vue_route' => [],
+                'url' => '',
+            ],
+            'alipay' => [
+                'vue_route' => [],
+                'url' => '',
+            ],
+        ];
+    }
+
+    public function getParams($request)
+    {
+        $this->dataIntegrated($this->index($request, true), 'home');
+        $this->dataIntegrated($this->isValidatePage($request, true), 'page');
+        $this->dataIntegrated($this->getBalance(), 'balance');
+        $this->dataIntegrated($this->getLangSetting(), 'lang');
+        $this->dataIntegrated($this->pageShow(), 'pageShow');
+
+        return $this->successJson('', $this->apiData);
     }
 
 }
