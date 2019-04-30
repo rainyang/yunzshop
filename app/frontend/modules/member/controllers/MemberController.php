@@ -43,10 +43,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
 use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use Yunshop\Commission\models\Agents;
+use Yunshop\Designer\models\ViewSet;
 use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
+use Yunshop\StoreCashier\common\models\Store;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 use app\frontend\models\MembershipInformationLog;
@@ -72,7 +74,7 @@ class MemberController extends ApiController
      * 获取用户信息
      *
      */
-    public function getUserInfo()
+    public function getUserInfo($integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
@@ -158,15 +160,26 @@ class MemberController extends ApiController
 
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
-                return $this->successJson('', $data);
+                if (is_null($integrated)) {
+                    return $this->successJson('', $data);
+                } else {
+                    return show_json(1, $data);
+                }
             } else {
-                return $this->errorJson('[' . $member_id . ']用户不存在');
+                if (is_null($integrated)) {
+                    return $this->errorJson('[' . $member_id . ']用户不存在');
+                } else {
+                    return show_json(0, '[' . $member_id . ']用户不存在');
+                }
             }
 
         } else {
-            return $this->errorJson('缺少访问参数');
+            if (is_null($integrated)) {
+                return $this->errorJson('缺少访问参数');
+            } else {
+                return show_json(0, '缺少访问参数');
+            }
         }
-
     }
 
 
@@ -1192,7 +1205,7 @@ class MemberController extends ApiController
     }
 
 
-    public function getCustomField()
+    public function getCustomField($integrated = null)
     {
         // member.member.get-custom-field
         $member = Setting::get('shop.member');
@@ -1202,7 +1215,12 @@ class MemberController extends ApiController
             'is_validity'  => $member['level_type'] == 2 ? true : false,
             'term'         => $member['term'] ? $member['term'] : 0,
         ];
-        return $this->successJson('获取自定义字段成功！', $data);
+
+        if (is_null($integrated)) {
+            return $this->successJson('获取自定义字段成功！', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function saveCustomField()
@@ -1308,18 +1326,10 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-    public function isOpenRelation()
+    public function isOpenRelation($integrated = null)
     {
         $data = ['switch' => 0];
 
-//        $relation = MemberRelation::getSetInfo()->first();
-        /*
-                if (!is_null($relation) && 1 == $relation->status) {
-                    $data = [
-                        'switch' => 1
-                    ];
-                }
-        */
         $switch = Setting::get('shop_app.pay.switch');
         if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
             $switch = 0;
@@ -1334,7 +1344,11 @@ class MemberController extends ApiController
             'switch' => $switch
         ];
 
-        return $this->successJson('', $data);
+        if (is_null($integrated)) {
+            return $this->successJson('', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function anotherShare()
@@ -1373,7 +1387,7 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-   public function getEnablePlugins()
+   public function getEnablePlugins($integrated = null)
     {
         $filter = [
             'conference',
@@ -1711,9 +1725,11 @@ class MemberController extends ApiController
             }
         }
 
-        
-        return $this->successJson('ok', $arr);
-
+        if (is_null($integrated)) {
+            return $this->successJson('ok', $arr);
+        } else {
+            return show_json(1, $arr);
+        }
     }
 
 
@@ -1985,8 +2001,75 @@ class MemberController extends ApiController
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
         }
-
-
-
     }
+
+    public function isOpen()
+    {
+        $settinglevel = \Setting::get('shop.member');
+
+        $info['is_open'] = 0;
+
+        //判断是否显示等级页
+        if ($settinglevel['display_page'])
+        {
+            $info['is_open'] = 1;
+        }
+
+        $info['level_type'] = $settinglevel['level_type']?:'0';
+
+        return show_json(1, $info);
+    }
+
+    public function pluginDesigner()
+    {
+        if (app('plugins')->isEnabled('designer')) {
+            $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
+
+            if (!$sets) {
+                return show_json(0, '未获取到模板');
+            }
+
+            $member = ViewSet::uniacid()->where('type', 'member')->first();
+            $extension = ViewSet::uniacid()->where('type', 'extension')->first();
+
+            $data['member']['name'] =  $member->names;
+            $data['extension']['name'] = $extension->names;
+
+            return show_json(1, $data);
+        }
+
+        return show_json(1, '');
+    }
+
+    public function pluginStore()
+    {
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
+                return show_json(0, '不是门店');
+            }
+            if ($store->is_black == 1) {
+                return show_json(0, '您已进入黑名单');
+            }
+
+            return show_json(1, '是门店');
+        }
+
+        return show_json(1, '');
+    }
+
+    public function memberData()
+    {
+        $this->dataIntegrated($this->getUserInfo(true), 'member');
+        $this->dataIntegrated($this->getEnablePlugins(true), 'plugins');
+        $this->dataIntegrated($this->isOpenRelation(true), 'relation');
+        $this->dataIntegrated($this->getCustomField(true), 'custom');
+        $this->dataIntegrated($this->isOpen(), 'level');
+        $this->dataIntegrated($this->pluginDesigner(), 'templateSet');
+        $this->dataIntegrated($this->pluginStore(), 'isStore');
+
+        return $this->successJson('', $this->apiData);
+    }
+
+
 }

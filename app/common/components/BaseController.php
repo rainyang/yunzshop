@@ -35,6 +35,10 @@ class BaseController extends Controller
      */
     public $transactionActions = [];
 
+    public $apiErrMsg = [];
+
+    public $apiData   = [];
+
     public function __construct()
     {
         $this->setCookie();
@@ -133,5 +137,18 @@ class BaseController extends Controller
                 $this->transactionActions) || $this->transactionActions == '*';
     }
 
+    public function dataIntegrated($data, $flag)
+    {
+        if ($this->apiErrMsg) {
+            return $this->errorJson($this->apiErrMsg[0]);
+        }
 
+        if (0 == $data['status']) {
+            $this->apiErrMsg[] =  $data['json'];
+
+            return;
+        }
+
+        $this->apiData[$flag] = $data['json'];
+    }
 }
