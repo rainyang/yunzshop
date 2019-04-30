@@ -202,14 +202,6 @@ class GoodsPosterController extends ApiController
 
             $target = $this->mergePriceText($target);
 
-
-
-
-       
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
-
         imagepng($target, $this->getGoodsPosterPath());
 
         imagedestroy($target);
@@ -376,7 +368,7 @@ class GoodsPosterController extends ApiController
     {
         if($this->type == 2){
             //小程序海报生成
-            $url = "/pages/detail_v2/detail_v2?id=".$this->goodsModel->id;
+            $url = "pages/detail_v2/detail_v2";
             $img = $this->getWxacode($url);
             return $img;
         }
@@ -462,10 +454,8 @@ class GoodsPosterController extends ApiController
         $token = $this->getToken();
         $url .= "access_token=" . $token;
         $postdata = [
-            "scene"=>$this->goodsModel->id,
+            "scene"=> 'id=' . $this->goodsModel->id . ',mid=' . \YunShop::app()->getMemberId(),
             "page" => $goods_url,
-//            "page" => "pages/index/index",
-            "width"=>200
         ];
         $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
         if (!is_dir($path)) {
