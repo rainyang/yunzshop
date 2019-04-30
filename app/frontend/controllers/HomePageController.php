@@ -6,12 +6,14 @@ use app\backend\modules\member\models\MemberRelation;
 use app\common\components\ApiController;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
+use app\common\models\AccountWechats;
 use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\MemberShopInfo;
 use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\shop\controllers\IndexController;
+use EasyWeChat\Foundation\Application;
 use Yunshop\Designer\Common\Services\IndexPageService;
 use Yunshop\Designer\Common\Services\OtherPageService;
 use Yunshop\Designer\Common\Services\PageTopMenuService;
@@ -30,7 +32,8 @@ class HomePageController extends ApiController
         'defaultMenuStyle',
         'bindMobile',
         'wxapp',
-        'isCloseSite'
+        'isCloseSite',
+        'getParams'
     ];
     protected $ignoreAction = [
         'index',
@@ -39,7 +42,8 @@ class HomePageController extends ApiController
         'defaultMenuStyle',
         'bindMobile',
         'wxapp',
-        'isCloseSite'
+        'isCloseSite',
+        'getParams'
     ];
     private $pageSize = 16;
 
@@ -885,6 +889,88 @@ class HomePageController extends ApiController
         ];
     }
 
+    public function wxJsSdkConfig()
+    {
+        $url = \YunShop::request()->url;
+        $pay = \Setting::get('shop.pay');
+
+        if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
+            $app_id = $pay['weixin_appid'];
+            $secret = $pay['weixin_secret'];
+        } else {
+            $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
+            $app_id = $account->key;
+            $secret = $account->secret;
+        }
+
+        $options = [
+            'app_id' => $app_id,
+            'secret' => $secret
+        ];
+
+        $app = new Application($options);
+
+        $js = $app->js;
+        $js->setUrl($url);
+
+        $config = $js->config(array(
+            'onMenuShareTimeline',
+            'onMenuShareAppMessage',
+            'showOptionMenu',
+            'scanQRCode',
+            'updateAppMessageShareData',
+            'updateTimelineShareData'
+        ));
+        $config = json_decode($config, 1);
+
+        $info = [];
+
+        if (\YunShop::app()->getMemberId()) {
+            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+
+            if (!empty($info)) {
+                $info = $info->toArray();
+            }
+        }
+
+        $share = \Setting::get('shop.share');
+
+        if ($share) {
+            if ($share['icon']) {
+                $share['icon'] = replace_yunshop(yz_tomedia($share['icon']));
+            }
+        }
+
+        $shop = \Setting::get('shop');
+        $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
+
+        if (!is_null(\Config('customer_service'))) {
+            $class    = array_get(\Config('customer_service'), 'class');
+            $function = array_get(\Config('customer_service'), 'function');
+            $ret      = $class::$function(request()->goods_id);
+            if ($ret) {
+                $shop['cservice'] = $ret;
+            }
+        }
+        if (is_null($share) && is_null($shop)) {
+            $share = [
+                'title' => '商家分享',
+                'icon'  => '#',
+                'desc'  => '商家分享'
+            ];
+        }
+
+        $data = [
+            'config' => $config,
+            'info'   => $info,   //商城设置
+            'shop'   => $shop,
+            'share'  => $share   //分享设置
+        ];
+
+        return show_json(1, $data);
+    }
+
     public function getParams($request)
     {
         $this->dataIntegrated($this->index($request, true), 'home');
@@ -892,6 +978,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
         $this->dataIntegrated($this->pageShow(), 'pageShow');
+        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }
