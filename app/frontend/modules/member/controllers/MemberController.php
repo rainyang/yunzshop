@@ -74,7 +74,7 @@ class MemberController extends ApiController
      * 获取用户信息
      *
      */
-    public function getUserInfo($integrated = null)
+    public function getUserInfo($request, $integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
@@ -1205,7 +1205,7 @@ class MemberController extends ApiController
     }
 
 
-    public function getCustomField($integrated = null)
+    public function getCustomField($request, $integrated = null)
     {
         // member.member.get-custom-field
         $member = Setting::get('shop.member');
@@ -1326,7 +1326,7 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-    public function isOpenRelation($integrated = null)
+    public function isOpenRelation($request, $integrated = null)
     {
         $data = ['switch' => 0];
 
@@ -1387,7 +1387,7 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-   public function getEnablePlugins($integrated = null)
+   public function getEnablePlugins($request, $integrated = null)
     {
         $filter = [
             'conference',
@@ -2069,10 +2069,10 @@ class MemberController extends ApiController
 
     public function memberData()
     {
-        $this->dataIntegrated($this->getUserInfo(true), 'member');
-        $this->dataIntegrated($this->getEnablePlugins(true), 'plugins');
-        $this->dataIntegrated($this->isOpenRelation(true), 'relation');
-        $this->dataIntegrated($this->getCustomField(true), 'custom');
+        $this->dataIntegrated($this->getUserInfo($request, true), 'member');
+        $this->dataIntegrated($this->getEnablePlugins($request,true), 'plugins');
+        $this->dataIntegrated($this->isOpenRelation($request,true), 'relation');
+        $this->dataIntegrated($this->getCustomField($request,true), 'custom');
         $this->dataIntegrated($this->isOpen(), 'level');
         $this->dataIntegrated($this->pluginDesigner(), 'templateSet');
         $this->dataIntegrated($this->pluginStore(), 'isStore');
