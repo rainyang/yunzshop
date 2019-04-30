@@ -1972,21 +1972,6 @@ class MemberController extends ApiController
 
     public function isBindMobile($member_set, $member_id)
     {
-//        $is_bind_mobile = 0;
-//
-//        if (!is_null($member_set)) {
-//            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-//                if (Cache::has($member_id . '_member_info')) {
-//                    $member_model = Cache::get($member_id . '_member_info');
-//                } else {
-//                    $member_model = Member::getMemberById($member_id);
-//                }
-//
-//                if ($member_model && empty($member_model->mobile)) {
-//                    $is_bind_mobile = 1;
-//                }
-//            }
-//        }
         $is_bind_mobile = 0;
 
         if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
