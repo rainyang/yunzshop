@@ -12,7 +12,7 @@ class Send extends OrderOperation
 {
     public function getApi()
     {
-        return 'order.operation.send';
+        return 'order.send';
     }
 
     public function getName()

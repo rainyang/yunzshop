@@ -8,11 +8,11 @@
 
 namespace app\backend\modules\order\operations;
 
-class Close extends OrderOperation
+class FClose extends OrderOperation
 {
     public function getApi()
     {
-        return 'order.close';
+        return 'order.close.force';
     }
 
     public function getName()

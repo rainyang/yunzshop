@@ -12,7 +12,7 @@ class Receive extends OrderOperation
 {
     public function getApi()
     {
-        return 'order.operation.receive';
+        return 'order.receive';
     }
 
     public function getName()
