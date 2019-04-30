@@ -1385,7 +1385,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code','my-friend']
         ];
 
         $data   = [];
@@ -1455,6 +1455,15 @@ class MemberController extends ApiController
                     ];
                 }
             }
+
+        if (app('plugins')->isEnabled('my-friend')) {
+            $data[] = [
+                'name'  => 'my-friend',
+                'title' => MY_FRIEND_NAME,
+                'class' => 'icon-member_my-friend',
+                'url'   => 'MyFriendApply'
+            ];
+        }
 
             if (app('plugins')->isEnabled('article')) {
                 $article_setting = Setting::get('plugin.article');
