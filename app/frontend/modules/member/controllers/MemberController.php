@@ -2031,6 +2031,8 @@ class MemberController extends ApiController
 
             return show_json(1, ['status' => 1]);
         }
+
+        return show_json(1, ['status' => 0]);
     }
 
     public function memberData($request)
