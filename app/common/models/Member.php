@@ -443,14 +443,13 @@ class Member extends BackendModel
         $beforeRelation = false;//这一步主要检查是不是通过本次生成的关系链
         $shopRelation = MemberParent::where(['parent_id' => $mid, 'level' => 1, 'member_id' => $member_id])->first();
         if (!$shopRelation) {
-            \Log::info('========名片生成上下级33333:'.\YunShop::app()->uniacid.'========');
             $beforeRelation = true;
         }
 
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
 
-        if($mark_id && $mark && $beforeRelation)
+        if($mark_id && $mark /*&& $beforeRelation == true*/)
         {
             \Log::info('========名片生成上下级22222:'.\YunShop::app()->uniacid.'========');
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
