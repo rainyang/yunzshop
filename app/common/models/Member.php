@@ -448,8 +448,10 @@ class Member extends BackendModel
 
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
-
-        if($mark_id && $mark /*&& $beforeRelation == true*/)
+        \Log::info('1',print_r($mark_id,true));
+        \Log::info('2',print_r($mark,true));
+        \Log::info('3',print_r($beforeRelation,true));
+        if($mark_id && $mark && $beforeRelation)
         {
             \Log::info('========名片生成上下级22222:'.\YunShop::app()->uniacid.'========');
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
