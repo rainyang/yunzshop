@@ -55,7 +55,16 @@ class ApplicationController extends BaseController
                     $list['data'][$key]['validity_time'] = intval($value['validity_time']);
 
                 } else {
-                    
+        
+                    //到期前一周的时间  当前+1 直到 +7 小于等于 $value['validity_time']
+                    if (date('W', strtotime('+1 week')) == date('W', $value['validity_time'])) {
+                        //到期前一周
+                        $list['data'][$key]['is_expire'] = 1;
+
+                    } else {
+                        $list['data'][$key]['is_expire'] = 0;
+                    }
+
                     $list['data'][$key]['validity_time'] = date('Y-m-d', $value['validity_time'] );
                 }
             }
