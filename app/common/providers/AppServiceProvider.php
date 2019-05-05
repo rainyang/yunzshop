@@ -139,6 +139,8 @@ class AppServiceProvider extends ServiceProvider
             $cfg['account'] = $account ? $account->toArray() : '';
 
             \config::set('app.global', $cfg);
+            global $_W;
+            $_W = $cfg;
             \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
         }
     }
