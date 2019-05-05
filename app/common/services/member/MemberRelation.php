@@ -184,6 +184,10 @@ class MemberRelation
 
                 return ['status' => 1];
             }
+        } else {
+            if ($parent_relation[0]->parent_id != $parent_id) {
+                return $this->change($member_id, $parent_id);
+            }
         }
 
         return ['status' => 0];
