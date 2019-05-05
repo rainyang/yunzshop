@@ -34,6 +34,10 @@ class MemberAddressController extends ApiController
 //        dd(get_class($this->memberAddressRepository->makeModel()));
 //        exit;
         $addressList = $this->memberAddressRepository->getAddressList($memberId);
+//        dd($addressList);
+        foreach($addressList as $key => $value){
+            $addressList[$key]['isdefault'] = 1;
+        }
         //获取省市ID
         if ($addressList) {
             $address = Address::getAllAddress();
@@ -205,10 +209,12 @@ class MemberAddressController extends ApiController
 
             $memberId = \YunShop::app()->getMemberId();
             //验证默认收货地址状态并修改
-            $addressList = $this->memberAddressRepository->getAddressList($memberId);
-            if (empty($addressList)) {
-                $addressModel->isdefault = '1';
-            } elseif ($addressModel->isdefault) {
+            //$addressList = $this->memberAddressRepository->getAddressList($memberId);
+//           第一个地址不是默认地址
+//            if (empty($addressList)) {
+//                $addressModel->isdefault = '1';
+//            } else
+            if ($addressModel->isdefault) {
                 //修改默认收货地址
                 $this->memberAddressRepository->cancelDefaultAddress($memberId);
             }
