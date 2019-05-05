@@ -18,7 +18,6 @@ class CreateMembershipInfomattionLog extends Migration
             $table->integer('uniacid');
             $table->integer('uid');
             $table->string('old_data')->nullable()->comment('用户修改前信息');
-            $table->string('new_data')->nullable()->comment('用户修改后信息');
             $table->string('session_id')->nullable()->comment('session_id');
             $table->integer('created_at')->nullable();
             $table->integer('updated_at')->nullable();
