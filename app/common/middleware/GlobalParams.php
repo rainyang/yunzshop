@@ -23,6 +23,8 @@ class GlobalParams
         $base_config = $this->setConfigInfo();
 
         \config::set('app.global', $base_config);
+        global $_W;
+        $_W = $base_config;
 
         $this->checkClear();
 

@@ -104,10 +104,6 @@ class AuthenticateAdmin
         $check = $this->checkUserInfo();
         $uri   = \Route::getCurrentRoute()->getUri();
 
-        if (!in_array($uri, $this->except) && $msg = $this->errorMsg()) {
-            return $this->errorJson($msg, ['status' => self::UNIACID_STATUS]);
-        }
-
         if (!$check['result']) {
             return $this->errorJson($check['msg'], ['status' => self::USER_STATUS]);
         }
