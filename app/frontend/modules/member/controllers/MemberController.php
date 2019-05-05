@@ -2018,27 +2018,6 @@ class MemberController extends ApiController
         return show_json(1, $info);
     }
 
-    public function pluginDesigner()
-    {
-        if (app('plugins')->isEnabled('designer')) {
-            $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
-
-            if (!$sets) {
-                return show_json(0, '未获取到模板');
-            }
-
-            $member = ViewSet::uniacid()->where('type', 'member')->first();
-            $extension = ViewSet::uniacid()->where('type', 'extension')->first();
-
-            $data['member']['name'] =  $member->names;
-            $data['extension']['name'] = $extension->names;
-
-            return show_json(1, $data);
-        }
-
-        return show_json(1, '');
-    }
-
     public function pluginStore()
     {
         if (app('plugins')->isEnabled('store-cashier')) {
@@ -2061,7 +2040,6 @@ class MemberController extends ApiController
         $this->dataIntegrated($this->isOpenRelation($request,true), 'relation');
         $this->dataIntegrated($this->getCustomField($request,true), 'custom');
         $this->dataIntegrated($this->isOpen(), 'level');
-        $this->dataIntegrated($this->pluginDesigner(), 'templateSet');
         $this->dataIntegrated($this->pluginStore(), 'isStore');
 
         return $this->successJson('', $this->apiData);
