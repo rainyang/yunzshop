@@ -46,18 +46,20 @@ class Trade extends BaseModel
             [
                 'code' => 'total_price',
                 'name' => '订单总金额',
-                'amount' => $this->orders->sum('price'),
+                'amount' => $this->orders->sum('goods_price'),
             ], [
                 'code' => 'total_dispatch_price',
                 'name' => '总运费',
                 'amount' => $this->orders->sum('dispatch_price'),
-            ], [
+            ]
+        ];
+        if($this->orders->sum('deduction_price')){
+            $items[] = [
                 'code' => 'total_deduction_price',
                 'name' => '总抵扣',
                 'amount' => $this->orders->sum('deduction_price'),
-            ],
-        ];
-
+            ];
+        }
 
         return $items;
     }
