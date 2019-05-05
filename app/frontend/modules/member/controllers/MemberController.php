@@ -2044,16 +2044,14 @@ class MemberController extends ApiController
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
             if (!$store) {
-                return show_json(0, '不是门店');
+                return show_json(0, ['status' => 0]);
             }
             if ($store->is_black == 1) {
-                return show_json(0, '您已进入黑名单');
+                return show_json(0, ['status' => 0]);
             }
 
-            return show_json(1, '是门店');
+            return show_json(1, ['status' => 1]);
         }
-
-        return show_json(1, '');
     }
 
     public function memberData($request)
