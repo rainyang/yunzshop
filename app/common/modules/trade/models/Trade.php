@@ -37,14 +37,14 @@ class Trade extends BaseModel
         $this->setRelation('dispatch', $this->getDispatch());
         $this->amount_items = $this->getAmountItems();
         $this->discount_amount_items = $this->getDiscountAmountItems();
-
+        $this->total_price = $this->orders->sum('price');
     }
 
     private function getAmountItems()
     {
         $items = [
             [
-                'code' => 'total_price',
+                'code' => 'total_goods_price',
                 'name' => '订单总金额',
                 'amount' => $this->orders->sum('goods_price'),
             ], [
