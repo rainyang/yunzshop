@@ -16,6 +16,7 @@ use app\common\models\Income;
 use app\common\services\finance\IncomeService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use app\common\models\Order;
 
 class IncomeController extends ApiController
 {
@@ -111,13 +112,80 @@ class IncomeController extends ApiController
                 break;
             }
         }
+        $swich = \app\common\models\MemberRelation::uniacid()->select('share_page_deail')->first();
+        $search['select'] = $swich->share_page_deail;
 
-//        $incomeModel = Income::getIncomeInMonth($search)->where('member_id', \YunShop::app()->getMemberId())->get();
         $incomeModel = Income::getIncomesList($search)->where('member_id', \YunShop::app()->getMemberId())->paginate($this->pageSize);
+        if($swich->share_page_deail){
+           $incomeModel = $this->OrderUserDetails($incomeModel);
+        }
         if ($incomeModel) {
             return $this->successJson('获取数据成功!', $incomeModel);
         }
         return $this->errorJson('未检测到数据!');
+    }
+
+    public function OrderUserDetails($incomeModel)
+    {
+            if($incomeModel){
+                $income = $incomeModel->toArray();
+            }
+            foreach($income['data'] as $key => $value){
+                if($value['incometable_type'] == 'Yunshop\Mryt\common\models\OrderTeamAward'){ //团队管理奖
+                    $teamIds[] = $value['incometable_id'];
+                }
+                if($value['incometable_type'] == 'Yunshop\Micro\common\models\MicroShopBonusLog'){ //微店分红
+                    $microIds [] = $value['incometable_id'];
+                }
+            }
+            if($teamIds){
+                if(class_exists('Yunshop\Mryt\common\models\OrderTeamAward')){
+                    $teamModel =  \Yunshop\Mryt\common\models\OrderTeamAward::whereIn('id',$teamIds)->get();
+                    foreach($teamModel as $key => $value){
+                        foreach($income['data'] as $k => $v){
+                            if($value['incometable_id'] == $v->id and $v['incometable_type'] == 'Yunshop\Mryt\common\models\OrderTeamAward'){
+                                $income['data'][$k]['order_sn'] = $value->log_id;
+                            }
+                        }
+                        $set[] = $value->log_id;
+                    }
+                }
+            }
+            if($microIds){
+                if(class_exists('Yunshop\Micro\common\models\MicroShopBonusLog')){
+                    $microModel = \Yunshop\Micro\common\models\MicroShopBonusLog::whereIn('id',$microIds)->get();
+                    foreach( $microModel as $key => $value){
+                        foreach($income['data'] as $k => $v){
+                            if($value['incometable_id'] == $v->id and $v['incometable_type'] == 'Yunshop\Micro\common\models\MicroShopBonusLog'){
+                                $income['data'][$k]['order_sn'] = $value->order_sn;
+                            }
+                        }
+                        $set[] = $value->order_sn;
+                    }
+                }
+            }
+
+            $detail = array_column($income['data'], 'detail');
+            foreach($detail as $key => $value){
+                if($value){
+                    $arr = json_decode($value);
+                    $set[] = $arr->order->data[0]->value;
+                    $income['data'][$key]['order_sn'] = $arr->order->data[0]->value;
+                }
+                unset($income['data'][$key]['detail']);
+            }
+            $order = Order::whereIn('order_sn', $set)->get();
+            $income['data'] = collect($income['data'])->map(function ($item) use ($order) {
+                if($item['order_sn']){
+                    foreach($order as $key => $value){
+                        if($value->order_sn == $item['order_sn']){
+                            $item['type_name'] ='会员ID'.$value->uid.'【'.$value->belongsToMember->nickname.'】'.$item['type_name'];
+                        }
+                    }
+                }
+                return $item;
+            });
+          return $income;
     }
 
     /**

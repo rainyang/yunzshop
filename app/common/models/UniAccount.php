@@ -8,7 +8,7 @@
 
 namespace app\common\models;
 
-use app\common\models\member\MemberShopInfo;
+use app\common\models\member\MemberShopInfo as YzMember;
 
 class UniAccount extends BaseModel
 {
@@ -16,11 +16,18 @@ class UniAccount extends BaseModel
     public $table = 'uni_account';
     public $primaryKey = 'uniacid';
 
+    public function __construct()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_uniacid_app';
+        }
+    }
+
     public static function checkIsExistsAccount($uniacid)
     {
         return self::find($uniacid);
     }
     public static function getEnable(){
-        return MemberShopInfo::select('uniacid')->distinct()->get();
+        return YzMember::select('uniacid')->distinct()->get();
     }
 }

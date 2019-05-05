@@ -225,28 +225,8 @@
                 Tip.focus(':input[name="widgets[sale][ed_reduction]"]', '满额立减金额格式错误,最多两位小数.');
                 return false;
         }
-        if ($(':input[name="widgets[sale][ed_num]"]').val() == '') {
-            $('#myTab a[href="#tab_sale"]').tab('show');
-            Tip.focus(':input[name="widgets[sale][ed_num]"]', "请输入单品满件包邮!");
-            return false;
-        } else {
-            if (!numerictype.test($(':input[name="widgets[sale][ed_num]"]').val())) {
-                $('#myTab a[href="#tab_sale"]').tab('show');
-                Tip.focus(':input[name="widgets[sale][ed_num]"]', '单品满件包邮格式错误,只能为非负整数.');
-                return false;
-            }
-        }
-        if ($(':input[name="widgets[sale][ed_money]"]').val() == '') {
-            $('#myTab a[href="#tab_sale"]').tab('show');
-            Tip.focus(':input[name="widgets[sale][ed_money]"]', "请输入单品满额包邮!");
-            return false;
-        } else {
-            if (!reg.test($(':input[name="widgets[sale][ed_money]"]').val())) {
-                $('#myTab a[href="#tab_sale"]').tab('show');
-                Tip.focus(':input[name="widgets[sale][ed_money]"]', '单品满额包邮格式错误,最多两位小数.');
-                return false;
-            }
-        }
+
+
 /*
         if ($.trim($(':input[name="widgets[sale][max_point_deduct]"]').val()) != ''
                     && parseInt($(':input[name="widgets[sale][max_point_deduct]"]').val()) != 0

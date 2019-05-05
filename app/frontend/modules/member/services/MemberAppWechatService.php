@@ -32,7 +32,7 @@ class MemberAppWechatService extends MemberService
         }
 
         if (!empty($code)) {
-            $resp     = @ihttp_get($tokenurl);
+            $resp     = @\Curl::to($tokenurl)->get();
             $token    = @json_decode($resp['content'], true);
 
             if (!empty($token) && is_array($token) && $token['errmsg'] == 'invalid code') {
@@ -40,7 +40,7 @@ class MemberAppWechatService extends MemberService
             }
 
             $userinfo_url = $this->_getUserInfoUrl($token['accesstoken'], $token['openid']);
-            $user_info = @ihttp_get($userinfo_url);
+            $user_info = @\Curl::to($userinfo_url)->get();
 
             if (is_array($user_info) && !empty($user_info['unionid'])) {
                 $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $user_info['unionid']);

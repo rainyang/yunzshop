@@ -2,14 +2,14 @@
 
 namespace app\common\providers;
 
-use app\common\models\AccountWechats;
-use app\common\services\mews\captcha\src\Captcha;
-
-use Setting;
-use Illuminate\Support\ServiceProvider;
 use App;
-use Illuminate\Support\Facades\DB;
+use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
+use app\common\services\mews\captcha\src\Captcha;
+use app\common\services\Utils;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
+use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
             error_reporting(0);
             //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
         }
+
+        $this->globalParamsHandle();
 
         //设置uniacid
         Setting::$uniqueAccountId = \YunShop::app()->uniacid;
@@ -114,5 +116,30 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
+    }
+
+    private function globalParamsHandle()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $uniacid = 0;
+            $cfg = \config::get('app.global');
+
+            if (!empty(request('uniacid')) && request('uniacid') > 0) {
+                $uniacid = request('uniacid');
+                Utils::addUniacid();
+            }
+
+            if (empty($uniacid) && isset($_COOKIE['uniacid'])) {
+                $uniacid = $_COOKIE['uniacid'];
+            }
+
+            $account = AccountWechats::getAccountByUniacid($uniacid);
+
+            $cfg['uniacid'] = $uniacid;
+            $cfg['account'] = $account ? $account->toArray() : '';
+
+            \config::set('app.global', $cfg);
+            \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
+        }
     }
 }

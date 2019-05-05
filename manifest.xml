@@ -3,7 +3,7 @@
 	<application setting="true">
 		<name><![CDATA[芸商城]]></name>
 		<identifie><![CDATA[yun_shop]]></identifie>
-		<version><![CDATA[2.1.86]]></version>
+		<version><![CDATA[2.1.106]]></version>
 		<type><![CDATA[biz]]></type>
 		<ability><![CDATA[芸商城]]></ability>
 		<description><![CDATA[芸商城]]></description>
@@ -31,7 +31,6 @@
 		<entry title="会员管理" do="member" state="" direct="true" />
 		<entry title="订单管理" do="order" state="" direct="true" />
 		<entry title="财务管理" do="finance" state="" direct="true" />
-		<entry title="插件中心" do="plugins" state="" direct="true" />
 		<entry title="系统设置" do="system" state="" direct="true" />
 		</menu>
 	</bindings>

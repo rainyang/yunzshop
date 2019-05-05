@@ -11,7 +11,6 @@ namespace app\common\helpers;
 
 class ImageHelper
 {
-
     /**
      * 【表单控件】: 图片上传与选择控件
      * @param string $name 表单input名称
@@ -29,7 +28,8 @@ class ImageHelper
      * </pre>
      * @return string
      */
-    public static function tplFormFieldImage($name, $value = '', $default = '', $options = array()) {
+    public static function tplFormFieldImage($name, $value = '', $default = '', $options = array())
+    {
         if (empty($default)) {
             $default = static_url('resource/images/nopic.jpg');
         }
@@ -47,7 +47,7 @@ class ImageHelper
         }
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
-                exit('图片上传目录错误,只能指定最多两级目录,如: "we7_store","we7_store/d1"');
+                exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
             }
         }
         $options['direct'] = true;
@@ -55,13 +55,22 @@ class ImageHelper
         if (isset($options['thumb'])) {
             $options['thumb'] = !empty($options['thumb']);
         }
-        $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
+
             $s = '
 		<script type="text/javascript">
 			function showImageDialog(elm, opts, options) {
-				require(["util"], function(util){
+			    require.config({
+                    paths:{
+                        "'.$param['util'].'":"'.$param['util_url'].'"
+                    }
+                });
+				require(["'.$param['util'].'"], function(util){
 					var btn = $(elm);
 					var ipt = btn.parent().prev();
 					var val = ipt.val();
@@ -116,10 +125,13 @@ class ImageHelper
      * @param array $options  自定义图片上传路径
      * @return string
      */
-    public static function tplFormFieldMultiImage($name, $value = array(), $options = array()) {
+    public static function tplFormFieldMultiImage($name, $value = array(), $options = array())
+    {
         $options['multiple'] = true;
         $options['direct'] = false;
-        $options['fileSizeLimit'] = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
                 exit('图片上传目录错误,只能指定最多两级目录,如: "yz_store","yz_store/d1"');
@@ -127,24 +139,34 @@ class ImageHelper
         }
         $s = '';
         if (!defined('TPL_INIT_MULTI_IMAGE')) {
+
             $s = '
-<script type="text/javascript">
-	function uploadMultiImage(elm) {
-		var name = $(elm).next().val();
-		util.image( "", function(urls){
-			$.each(urls, function(idx, url){
-				$(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
-			});
-		}, ' . json_encode($options) . ');
-	}
-	function deleteMultiImage(elm){
-		require(["jquery"], function($){
-			$(elm).parent().remove();
-		});
-	}
-</script>';
+		<script type="text/javascript">
+			function uploadMultiImage(elm) {
+                var name = $(elm).next().val();
+                require.config({
+                    paths:{
+                        "'.$param['util'].'":"'.$param['util_url'].'"
+                    }
+                });
+				require(["'.$param['util'].'"], function(util){
+					util.image("", function(urls){
+						$.each(urls, function(idx, url){
+                            $(elm).parent().parent().next().append(\'<div class="multi-item"><img onerror="this.src=\\\''.static_url('./resource/images/nopic.jpg').'\\\'; this.title=\\\'图片未找到.\\\'" src="\'+url.url+\'" class="img-responsive img-thumbnail"><input type="hidden" name="\'+name+\'[]" value="\'+url.attachment+\'"><em class="close" title="删除这张图片" onclick="deleteMultiImage(this)">×</em></div>\');
+                        });
+					}, ' . json_encode($options) . ');
+				});
+			}
+			function deleteMultiImage(elm){
+                require(["jquery"], function($){
+                    $(elm).parent().remove();
+                });
+	        }
+		</script>';
             define('TPL_INIT_MULTI_IMAGE', true);
         }
+
+
 
         $s .= <<<EOF
 <div class="input-group">
@@ -179,7 +201,8 @@ EOF;
      * @param array $options
      * @return string
      */
-    public function tplFormFieldVideo($name, $value = '', $options = array()) {
+    public function tplFormFieldVideo($name, $value = '', $options = array())
+    {
         if(!is_array($options)){
             $options = array();
         }
@@ -189,13 +212,20 @@ EOF;
         $options['direct'] = true;
         $options['multi'] = false;
         $options['type'] = 'video';
-        $options['fileSizeLimit'] = intval($GLOBALS['_W']['setting']['upload']['audio']['limit']) * 1024;
+        $param = uploadParam();
+        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
             $s = '
 <script type="text/javascript">
 	function showVideoDialog(elm, options) {
-		require(["util"], function(util){
+	    require.config({
+            paths:{
+                "'.$param['util'].'":"'.$param['util_url'].'"
+            }
+        });
+		require(["'.$param['util'].'"], function(util){
 			var btn = $(elm);
 			var ipt = btn.parent().prev();
 			var val = ipt.val();
@@ -263,5 +293,14 @@ EOF;
             return preg_replace("/^http:/i","https:", $avatar);
         }
         return $avatar;
+    }
+
+    public static function getImageUrl($file)
+    {
+        if (env('APP_Framework') == 'platform') {
+            return request()->getSchemeAndHttpHost() . DIRECTORY_SEPARATOR . substr($file, strpos($file, 'storage'));
+        } else {
+            return request()->getSchemeAndHttpHost() . DIRECTORY_SEPARATOR . substr($file, strpos($file, 'addons'));
+        }
     }
 }

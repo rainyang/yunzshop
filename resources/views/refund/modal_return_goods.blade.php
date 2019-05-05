@@ -2,7 +2,7 @@
 
 @section('operation_pass')
     @if($order['has_one_refund_apply']['status'] == \app\common\models\refund\RefundApply::WAIT_CHECK)
-        <label class='radio-inline'>
+        <label class='radio-inline' style="float: left;margin-left: 0px;margin-right: 10px;">
             <input type='radio' value='3' class="refund-action" data-action="{{yzWebUrl('refund.operation.pass')}}"
                    name='refund_status' @if( $order['has_one_refund_apply']['status']=='3' ||
                                         $refund['status']=='4') checked @endif>通过申请(需客户寄回商品)
@@ -10,7 +10,7 @@
     @endif
 @endsection
 @section('operation_consensus')
-    <label class='radio-inline'>
+    <label class='radio-inline' style="float: left;margin-left: 0px;margin-right: 10px;">
         <input type='radio' value='1' class='refund-action' class="refund-action"
                data-action='{{yzWebUrl("refund.pay")}}' name='refund_status'>
         同意退款

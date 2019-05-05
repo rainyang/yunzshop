@@ -513,14 +513,19 @@ class HomePageController extends ApiController
      */
     public static function defaultMenu($i, $mid, $type)
     {
-        $CustomizeMenu = DesignerMenu::getDefaultMenu();
+        app('plugins')->isEnabled('designer') ? $CustomizeMenu = DesignerMenu::getDefaultMenu() : null;
         if(!empty($CustomizeMenu)){
             $CustomizeMenu_list=$CustomizeMenu->toArray();
             if(is_array($CustomizeMenu_list) && !empty($CustomizeMenu_list['menus'])){
                 $Menu = json_decode(htmlspecialchars_decode($CustomizeMenu['menus']), true);
                 foreach ($Menu as $key=>$value){
                     // $Menu[$key]['name']=$Menu[$key]['id'];
-                    $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+//                    $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                    if (strripos($Menu[$key]['url'],"addons") != false) {
+                        $url = substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"addons")-1);
+                    } else {
+                        $url = $Menu[$key]['url'];
+                    }
                     $Menu[$key]['url']= $url?:'';
 
                     //$Menu[$key]['url'] ="/addons/yun_shop/".'?#'.substr($Menu[$key]['url'],strripos($Menu[$key]['url'],"#/")+1)."&mid=" . $mid . "&type=" . $type;
