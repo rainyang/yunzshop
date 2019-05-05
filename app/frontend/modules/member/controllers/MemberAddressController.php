@@ -35,9 +35,6 @@ class MemberAddressController extends ApiController
 //        exit;
         $addressList = $this->memberAddressRepository->getAddressList($memberId);
 //        dd($addressList);
-        foreach($addressList as $key => $value){
-            $addressList[$key]['isdefault'] = 1;
-        }
         //获取省市ID
         if ($addressList) {
             $address = Address::getAllAddress();
