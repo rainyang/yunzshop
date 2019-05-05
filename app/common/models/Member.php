@@ -440,20 +440,11 @@ class Member extends BackendModel
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
-        $beforeRelation = false;//这一步主要检查是不是通过本次生成的关系链
-        $shopRelation = MemberParent::where(['parent_id' => $mid, 'level' => 1, 'member_id' => $member_id])->first();
-        if (!$shopRelation) {
-            $beforeRelation = true;
-        }
-
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
-        \Log::info('1',print_r($mark_id,true));
-        \Log::info('2',print_r($mark,true));
-        \Log::info('3',print_r($beforeRelation,true));
-        if($mark_id && $mark && $beforeRelation)
+
+        if($mark_id && $mark)
         {
-            \Log::info('========名片生成上下级22222:'.\YunShop::app()->uniacid.'========');
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
         }
     }
