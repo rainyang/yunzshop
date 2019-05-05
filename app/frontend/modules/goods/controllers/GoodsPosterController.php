@@ -12,8 +12,8 @@ namespace app\frontend\modules\goods\controllers;
 use app\common\components\ApiController;
 use app\common\models\Goods;
 use app\common\models\Store;
+use Setting;
 use app\common\services\Utils;
-
 /**
  * 商品海报
  */
@@ -78,6 +78,11 @@ class GoodsPosterController extends ApiController
                 $hotel = \Yunshop\Hotel\common\models\Hotel::find($this->hotel_id);
                 $this->shopSet['name'] = $hotel->hotel_name;
                 $this->shopSet['logo'] = $hotel->thumb;
+            }
+        }
+        if ($this->type == 2){
+            if (!app('plugins')->isEnabled('min-app')) {
+                return $this->errorJson('未开启小程序插件');
             }
         }
         //$this->goodsModel = Goods::uniacid()->with('hasOneShare')->where('plugin_id', 0)->where('status', 1)->find($id);
@@ -180,22 +185,18 @@ class GoodsPosterController extends ApiController
         
         //商品二维码
         $goodsQr =  $this->generateQr();
-        
-        if ($this->goodsModel->hasOneShare->share_title) {
-            $text = $this->goodsModel->hasOneShare->share_title;
-        } else {
-            $text = $this->goodsModel->title;
-        }
 
-        $target = $this->mergeQrImage($target, $goodsQr);
-        
-        $target = $this->mergeText($target, $this->goodsText, $text);
+            if ($this->goodsModel->hasOneShare->share_title) {
+                $text = $this->goodsModel->hasOneShare->share_title;
+            } else {
+                $text = $this->goodsModel->title;
+            }
 
-        $target = $this->mergePriceText($target);
-       
-        // header ( "Content-type: image/png" );
-        // imagePng ( $target );
-        // exit();
+            $target = $this->mergeQrImage($target, $goodsQr);
+
+            $target = $this->mergeText($target, $this->goodsText, $text);
+
+            $target = $this->mergePriceText($target);
 
         imagepng($target, $this->getGoodsPosterPath());
 
@@ -287,11 +288,16 @@ class GoodsPosterController extends ApiController
      * @param [type] $target [description]
      * @param [type] $img    [description]
      */
-    private function mergeQrImage($target, $img)
+    private function mergeQrImage($target, $img,$dst_x = 400,$dst_y = 750)
     {
         $width  = imagesx($img);
         $height = imagesy($img);
-        imagecopy($target, $img, 400, 750, 0, 0, $width, $height);
+        if ($this->type == 2){
+            imagecopyresized($target, $img, $dst_x, $dst_y, 0, 0, 200, 200, $width, $height);
+        }else{
+            imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
+        }
+       // imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
         imagedestroy($img);
 
         return $target;
@@ -358,14 +364,18 @@ class GoodsPosterController extends ApiController
      * 生成商品二维码
      * @return [type] [description]
      */
+
     private function generateQr()
     {
+        if($this->type == 2){
+            //小程序海报生成
+            $url = "pages/detail_v2/detail_v2";
+            $img = $this->getWxacode($url);
+            return $img;
+        }
         if (empty($this->storeid)) {
             //商城商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id, ['mid'=> $this->mid]);
-
-        } else if ($this->type == 2){
-//            $url  = ;?\
         }else {
             //门店商品二维码
             $url = yzAppFullUrl('/goods/'.$this->goodsModel->id.'/o2o/'.$this->storeid, ['mid'=> $this->mid]);
@@ -379,7 +389,7 @@ class GoodsPosterController extends ApiController
 
 //        if (!is_file($path.'/'.$file)) {
 
-            \QrCode::format('png')->size(200)->generate($url, $path.'/'.$file);
+        \QrCode::format('png')->size(200)->generate($url, $path.'/'.$file);
 //        }
         $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
         // unlink($path.'/'.$file);
@@ -439,7 +449,68 @@ class GoodsPosterController extends ApiController
         
         return $src;
     }
+   //生成小程序二维码
+    function getWxacode($goods_url){
+        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
+        $token = $this->getToken();
+        $url .= "access_token=" . $token;
+        $postdata = [
+            "scene"=> 'id=' . $this->goodsModel->id . ',mid=' . \YunShop::app()->getMemberId(),
+            "page" => $goods_url,
+        ];
+        $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
+        if (!is_dir($path)) {
+            load()->func('file');
+            mkdirs($path);
+        }
+        $res = $this->curl_post($url,json_encode($postdata),$options=array());
+        $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
+        file_put_contents($path.'/'.$file, $res);
+        $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
+        return $img;
+    }
 
+
+    //发送获取token请求,获取token(2小时)
+    public function getToken() {
+        $url = $this->getTokenUrlStr();
+        $res = $this->curl_post($url,$postdata='',$options=array());
+
+        $data = json_decode($res,JSON_FORCE_OBJECT);
+        return $data['access_token'];
+    }
+
+    //获取token的url参数拼接
+    public function getTokenUrlStr()
+    {
+            $set = Setting::get('plugin.min_app');
+            $getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?"; //获取token的url
+            $WXappid     =  $set['key']; //APPID
+            $WXsecret    = $set['secret']; //secret
+            $str  = $getTokenUrl;
+            $str .= "grant_type=client_credential&";
+            $str .= "appid=" . $WXappid . "&";
+            $str .= "secret=" . $WXsecret;
+            return $str;
+
+
+    }
+
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
+    }
     private function writeEnv()
     {
         putenv('GDFONTPATH='.base_path('static/fonts'));

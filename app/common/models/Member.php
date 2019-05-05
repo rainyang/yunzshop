@@ -160,6 +160,10 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'uid');
     }
+    public function hasOneMiniApp()
+    {
+        return $this->hasOne('app\common\models\MemberMiniAppModel', 'member_id', 'uid');
+    }
 
 
     /**
