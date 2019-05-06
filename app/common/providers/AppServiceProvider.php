@@ -121,6 +121,8 @@ class AppServiceProvider extends ServiceProvider
     private function globalParamsHandle()
     {
         if (env('APP_Framework') == 'platform') {
+            $this->install();
+
             $uniacid = 0;
             $cfg = \config::get('app.global');
 
@@ -142,6 +144,32 @@ class AppServiceProvider extends ServiceProvider
             global $_W;
             $_W = $cfg;
             \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
+        }
+    }
+
+    private function install()
+    {
+        $path = 'addons/yun_shop';
+        $file = $path .  '/api.php';
+
+        if (!file_exists($file)) {
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $f_data = file_get_contents('api.php');
+
+            file_put_contents($file, $f_data);
+        }
+
+        if (!file_exists(base_path().'/bootstrap/install.lock')) {
+            response()->json([
+                'result' => 0,
+                'msg' => '',
+                'data' => ['status' => -4]
+            ], 200, ['charset' => 'utf-8'])
+                ->send();
+            exit;
         }
     }
 }
