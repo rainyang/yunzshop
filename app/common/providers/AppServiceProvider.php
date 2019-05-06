@@ -162,7 +162,7 @@ class AppServiceProvider extends ServiceProvider
             file_put_contents($file, $f_data);
         }
 
-        $install = strpos( request()->path(), 'admin/install');
+        $install = strpos(request()->path(), 'install');
         if (!file_exists(base_path().'/bootstrap/install.lock') && !$install) {
             response()->json([
                 'result' => 0,
