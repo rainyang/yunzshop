@@ -860,7 +860,7 @@ class HomePageController extends ApiController
         $member = \Setting::get('shop.member');
 
         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-            return $this->successJson('', []);
+            return show_json(1, []);
         }
 
         $url = \YunShop::request()->url;
