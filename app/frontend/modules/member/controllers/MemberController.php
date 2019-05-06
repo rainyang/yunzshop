@@ -814,6 +814,12 @@ class MemberController extends ApiController
      */
     public function wxJsSdkConfig()
     {
+        $member = \Setting::get('shop.member');
+
+        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+            return $this->successJson('', []);
+        }
+
         $url = \YunShop::request()->url;
         $pay = \Setting::get('shop.pay');
 
