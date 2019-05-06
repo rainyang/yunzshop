@@ -1020,7 +1020,7 @@ class MemberController extends ApiController
 
         Utils::mkdirs($path);
 
-        $md5    = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg']); //用于标识组成元素是否有变化
+        $md5    = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg'].$this->type); //用于标识组成元素是否有变化
         $extend = '.png';
         $file   = $md5 . $extend;
         \Log::debug('+++++++++++++ 111 +++++++++++');
