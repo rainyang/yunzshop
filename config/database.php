@@ -1,10 +1,41 @@
 <?php
-include dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 
-$db_conn_name = env('DB_CONNECTION', 'mysql');
+$default_host     = '';
+$default_port     = '';
+$default_db       = '';
+$default_username = '';
+$default_password = '';
+$default_prefix   = '';
 
-if ($config['db']['slave_status']) {
-    $db_conn_name = 'mysql_slave';
+$default_slave_host     = '';
+$default_slave_username = '';
+$default_slave_password = '';
+$default_slave_port     = '';
+
+$db_conn_name     = env('DB_CONNECTION', 'mysql');
+
+if (env('APP_Framework') != 'platform') {
+    include dirname(dirname(dirname(__DIR__))) . '/data/config.php';
+
+    if ($config['db']['slave_status']) {
+        $db_conn_name = 'mysql_slave';
+
+        $default_slave_host     = $config['db']['slave'][1]['host'];
+        $default_slave_username = $config['db']['slave'][1]['username'];
+        $default_slave_password = $config['db']['slave'][1]['password'];
+        $default_slave_port     = $config['db']['slave'][1]['port'];
+    }
+
+    $default_host     = $config['db']['master']['host'];
+    $default_port     = $config['db']['master']['port'];
+    $default_db       = $config['db']['master']['database'];
+    $default_username = $config['db']['master']['username'];
+    $default_password = $config['db']['master']['password'];
+    $default_prefix   = $config['db']['master']['tablepre'];
+} else {
+    if (env('DB_SLAVE')) {
+        $db_conn_name = 'mysql_slave';
+    }
 }
 
 return [
@@ -53,14 +84,14 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_HOST', $config['db']['master']['host']),
-            'port' => env('DB_PORT', $config['db']['master']['port']),
-            'database' => env('DB_DATABASE', $config['db']['master']['database']),
-            'username' => env('DB_USERNAME', $config['db']['master']['username']),
-            'password' => env('DB_PASSWORD', $config['db']['master']['password']),
+            'host' => env('DB_HOST', $default_host),
+            'port' => env('DB_PORT', $default_port),
+            'database' => env('DB_DATABASE', $default_db),
+            'username' => env('DB_USERNAME', $default_username),
+            'password' => env('DB_PASSWORD', $default_password),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => env('DB_PREFIX',$config['db']['master']['tablepre']),
+            'prefix' => env('DB_PREFIX', $default_prefix),
             'strict' => false,
             'engine' => null,
             'loggingQueries'=>true,
@@ -83,23 +114,23 @@ return [
         'mysql_slave' => [
             'driver' => 'mysql',
             'write' => [
-                'host' =>env('DB_HOST', $config['db']['master']['host']),
+                'host' =>env('DB_HOST', $default_host),
             ],
             'read' => [
                 [
-                    'host'      => $config['db']['slave'][1]['host'],
-                    'username'  => $config['db']['slave'][1]['username'],
-                    'password'  => $config['db']['slave'][1]['password'],
-                    'port'      => $config['db']['slave'][1]['port'],
+                    'host'      => env('DB_SLAVE_HOST', $default_slave_host),
+                    'username'  => env('DB_SLAVE_USERNAME', $default_slave_username),
+                    'password'  => env('DB_SLAVE_PASSWORD', $default_slave_password),
+                    'port'      => env('DB_SLAVE_PORT', $default_slave_port),
                 ]
             ],
-            'port' => env('DB_PORT', $config['db']['master']['port']),
-            'database' => env('DB_DATABASE', $config['db']['master']['database']),
-            'username' => env('DB_USERNAME', $config['db']['master']['username']),
-            'password' => env('DB_PASSWORD', $config['db']['master']['password']),
+            'port' => env('DB_PORT', $default_port),
+            'database' => env('DB_DATABASE', $default_db),
+            'username' => env('DB_USERNAME', $default_username),
+            'password' => env('DB_PASSWORD', $default_password),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => env('DB_PREFIX',$config['db']['master']['tablepre']),
+            'prefix' => env('DB_PREFIX', $default_prefix),
             'strict' => true,
             'engine' => null,
             'loggingQueries'=>true,
