@@ -84,7 +84,8 @@ class MemberController extends ApiController
         $v         = request('v');
 
         if (!empty($member_id)) {
-            $this->chkAccount($member_id);
+            $memberService = app(MemberService::class);
+            $memberService->chkAccount($member_id);
 
             $member_info = MemberModel::getUserInfos($member_id)->first();
 
@@ -2003,19 +2004,6 @@ class MemberController extends ApiController
             }
         }
         return $is_bind_mobile;
-    }
-
-    public function chkAccount($member_id)
-    {
-        $type = \YunShop::request()->type;
-        $mid = Member::getMid();
-
-        if (1 == $type && !Cache::has($member_id . ':chekAccount')) {
-            Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
-            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
-
-            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
-        }
     }
 
     public function isOpen()
