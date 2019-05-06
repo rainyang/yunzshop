@@ -293,7 +293,7 @@ class GoodsPosterController extends ApiController
         $width  = imagesx($img);
         $height = imagesy($img);
         if ($this->type == 2){
-            imagecopyresized($target, $img, $dst_x, $dst_y, 0, 0, 200, 200, $width, $height);
+            imagecopyresized($target, $img, 370, $dst_y, 0, 0, 200, 200, $width, $height);
         }else{
             imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
         }
