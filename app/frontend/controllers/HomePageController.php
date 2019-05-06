@@ -858,21 +858,11 @@ class HomePageController extends ApiController
     public function wxJsSdkConfig()
     {
         $url = \YunShop::request()->url;
-        $pay = \Setting::get('shop.pay');
-
-        if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
-            $app_id = $pay['weixin_appid'];
-            $secret = $pay['weixin_secret'];
-        } else {
-            $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-            $app_id = $account->key;
-            $secret = $account->secret;
-        }
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
 
         $options = [
-            'app_id' => $app_id,
-            'secret' => $secret
+            'app_id' => $account->key,
+            'secret' => $account->secret
         ];
 
         $app = new Application($options);
