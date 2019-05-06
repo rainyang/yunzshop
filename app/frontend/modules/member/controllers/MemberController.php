@@ -994,6 +994,7 @@ class MemberController extends ApiController
     //合成推广海报
     private function createPoster()
     {
+
         $width  = 320;
         $height = 540;
 
@@ -1030,16 +1031,13 @@ class MemberController extends ApiController
 
             $imgSource      = imagecreatefromstring(\Curl::to($shopImg)->get());
             $logoSource     = imagecreatefromstring(\Curl::to($shopLogo)->get());
-            \Log::debug('+++++++++++++++++++小程序二维码+++++++++++++',$this->type);
             if (2 == $this->type){
-                $qrSource       = MemberModel::getWxacode();
-                \Log::debug('++++++++++++++++++++++++进入判断里面++++++++++++',$qrSource);
+                $qrcode       = MemberModel::getWxacode();
+                $qrSource     = imagecreatefromstring(\Curl::to($qrcode)->get());
             }else{
                 $qrcode         = MemberModel::getAgentQR();
                 $qrSource       = imagecreatefromstring(\Curl::to($qrcode)->get());
             }
-            \Log::debug($qrcode);
-            \Log::debug(\Curl::to($qrcode)->get());
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
             $mergeData      = [
                 'dst_left'   => $space,
@@ -1068,12 +1066,21 @@ class MemberController extends ApiController
                 'dst_height' => 160,
             ];
             self::mergeImage($targetImg, $fingerPrintImg, $mergeData); //合并指纹图片
-            $mergeData = [
-                'dst_left'   => 160,
-                'dst_top'    => 380,
-                'dst_width'  => 160,
-                'dst_height' => 160,
-            ];
+            if ($this->type == 2){
+                $mergeData = [
+                    'dst_left'   => 180,
+                    'dst_top'    => 390,
+                    'dst_width'  => 120,
+                    'dst_height' => 120,
+                ];
+            }else{
+                $mergeData = [
+                    'dst_left'   => 160,
+                    'dst_top'    => 380,
+                    'dst_width'  => 160,
+                    'dst_height' => 160,
+                ];
+            }
             self::mergeImage($targetImg, $qrSource, $mergeData); //合并二维码图片
 
             header("Content-Type: image/png");
@@ -1084,7 +1091,7 @@ class MemberController extends ApiController
         $file = $path . '/' . $file;
 
         $imgUrl = ImageHelper::getImageUrl($file);
-
+        \Log::debug('0000000000000000000000000000000000',$imgUrl);
         return $imgUrl;
     }
 
