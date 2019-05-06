@@ -526,10 +526,82 @@ class MemberModel extends Member
         $extend = 'png';
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
         $path = \Storage::url('app/public/qr/');
-
+                      //格式                        参数    保存路径
         QrCode::format($extend)->size(400)->generate($url,  base_path($path) . $filename);
 
         return request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $filename;
+    }
+    //生成小程序二维码
+    function getWxacode()
+    {
+        if (!empty($extra)) {
+            $extra = '_' . $extra;
+        }
+
+        $extend = 'png';
+        $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
+        $paths = \Storage::url('app/public/qr/');
+
+        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
+        $token = $this->getToken();
+        $url .= "access_token=" . $token;
+        $postdata = [
+            "scene"=> 'mid=' . \YunShop::app()->getMemberId(),
+            "page" => 'pages/member/index_v2/index_v2',
+            'width' => 200
+        ];
+        $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
+        if (!is_dir($path)) {
+            load()->func('file');
+            mkdirs($path);
+        }
+        $res = $this->curl_post($url,json_encode($postdata),$options=array());//请求生成二维码
+
+        file_put_contents(base_path($paths) . $filename, $res);//保存二维码
+
+        return request()->getSchemeAndHttpHost() . config('app.webPath') . $paths . $filename;
+    }
+
+
+    //发送获取token请求,获取token(2小时)
+    public function getToken() {
+        $url = $this->getTokenUrlStr();
+        $res = $this->curl_post($url,$postdata='',$options=array());
+
+        $data = json_decode($res,JSON_FORCE_OBJECT);
+        return $data['access_token'];
+    }
+
+    //获取token的url参数拼接
+    public function getTokenUrlStr()
+    {
+        $set = Setting::get('plugin.min_app');
+        $getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?"; //获取token的url
+        $WXappid     =  $set['key']; //APPID
+        $WXsecret    = $set['secret']; //secret
+        $str  = $getTokenUrl;
+        $str .= "grant_type=client_credential&";
+        $str .= "appid=" . $WXappid . "&";
+        $str .= "secret=" . $WXsecret;
+        return $str;
+
+
+    }
+
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 
     /**

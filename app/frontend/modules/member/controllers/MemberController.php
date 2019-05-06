@@ -1022,7 +1022,7 @@ class MemberController extends ApiController
         $md5    = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg']); //用于标识组成元素是否有变化
         $extend = '.png';
         $file   = $md5 . $extend;
-
+        \Log::debug('+++++++++++++ 111 +++++++++++');
         if (!file_exists($path . '/' . $file)) {
             $targetImg = imagecreatetruecolor($width, $height);
             $white     = imagecolorallocate($targetImg, 255, 255, 255);
@@ -1030,12 +1030,16 @@ class MemberController extends ApiController
 
             $imgSource      = imagecreatefromstring(\Curl::to($shopImg)->get());
             $logoSource     = imagecreatefromstring(\Curl::to($shopLogo)->get());
-            if ($this->sign == "weChatApplet" && 2 == $this->type){
-                $qrSource       = $this->getWxacode("pages/detail_v2/detail_v2");
+            \Log::debug('+++++++++++++++++++小程序二维码+++++++++++++',$this->type);
+            if (2 == $this->type){
+                $qrSource       = MemberModel::getWxacode();
+                \Log::debug('++++++++++++++++++++++++进入判断里面++++++++++++',$qrSource);
             }else{
                 $qrcode         = MemberModel::getAgentQR();
                 $qrSource       = imagecreatefromstring(\Curl::to($qrcode)->get());
             }
+            \Log::debug($qrcode);
+            \Log::debug(\Curl::to($qrcode)->get());
             $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
             $mergeData      = [
                 'dst_left'   => $space,
@@ -2003,66 +2007,4 @@ class MemberController extends ApiController
 
     }
 
-    //生成小程序二维码
-    function getWxacode($goods_url){
-        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
-        $token = $this->getToken();
-        $url .= "access_token=" . $token;
-        $postdata = [
-            "scene"=> 'id=' . $this->goodsModel->id . ',mid=' . \YunShop::app()->getMemberId(),
-            "page" => $goods_url,
-        ];
-        $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
-        if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
-        }
-        $res = $this->curl_post($url,json_encode($postdata),$options=array());
-        $file = 'mid-'.$this->mid.'-goods-'.$this->goodsModel->id.'.png';
-        file_put_contents($path.'/'.$file, $res);
-        $img = imagecreatefromstring(file_get_contents($path.'/'.$file));
-        return $img;
-    }
-
-
-    //发送获取token请求,获取token(2小时)
-    public function getToken() {
-        $url = $this->getTokenUrlStr();
-        $res = $this->curl_post($url,$postdata='',$options=array());
-
-        $data = json_decode($res,JSON_FORCE_OBJECT);
-        return $data['access_token'];
-    }
-
-    //获取token的url参数拼接
-    public function getTokenUrlStr()
-    {
-        $set = Setting::get('plugin.min_app');
-        $getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?"; //获取token的url
-        $WXappid     =  $set['key']; //APPID
-        $WXsecret    = $set['secret']; //secret
-        $str  = $getTokenUrl;
-        $str .= "grant_type=client_credential&";
-        $str .= "appid=" . $WXappid . "&";
-        $str .= "secret=" . $WXsecret;
-        return $str;
-
-
-    }
-
-    public function curl_post($url='',$postdata='',$options=array()){
-        $ch=curl_init($url);
-        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-        curl_setopt($ch,CURLOPT_POST,1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        if(!empty($options)){
-            curl_setopt_array($ch, $options);
-        }
-        $data=curl_exec($ch);
-        curl_close($ch);
-        return $data;
-    }
 }
