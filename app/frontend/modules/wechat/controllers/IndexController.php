@@ -24,6 +24,7 @@ class IndexController extends BaseController
 
         //设置uniacid
         \config::set('app.global', array_merge(\config::get('app.global'), ['uniacid' => $uniacid]));
+        \YunShop::app()->uniacid = $uniacid;
         \Setting::$uniqueAccountId = $uniacid;
         //设置公众号信息
         AccountWechats::setConfig(AccountWechats::getAccountByUniacid($uniacid));
