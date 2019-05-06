@@ -245,7 +245,7 @@ class ListController extends BaseController
                             $q->with(['hasOneLevel']);
                         }])
                         ->with('hasOneMember')
-                        ->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc')
+                        ->orderBy('id', 'desc')
                         ->orderBy('level', 'asc');
                 },
             ]);
