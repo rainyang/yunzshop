@@ -20,6 +20,10 @@ class SiteController extends BaseController
 
         if ($set_data) {
             $site = SystemSetting::settingSave($set_data, 'copyright', 'system_copyright');
+            if ($set_data['title_icon']) {
+                $title_icon = file_get_contents($set_data['title_icon']);
+                file_put_contents(base_path().'/favicon.ico', $title_icon);
+            }
             if ($site) {
                 return $this->successJson('成功', '');
             } else {
