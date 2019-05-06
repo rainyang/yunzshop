@@ -569,12 +569,23 @@ class MemberController extends ApiController
                 'type'          => \YunShop::request()->type
             ];
 
+            $new_data = [
+                'alipay'        => $data['alipay'],
+                'alipayname'    => $data['alipay_name'],
+                'wechat'        => isset($data['wx']) ? $data['wx'] : '',
+                'mobile'        => $data['mobile'],
+                'name'          => $data['realname'],
+                'type'          => \YunShop::request()->type
+            ];
+
             $membership_infomation = [
                 'uniacid'        =>\YunShop::app()->uniacid,
                 'uid'            =>\YunShop::app()->getMemberId(),
                 'old_data'       => serialize($old_data),
+                'new_data'       => serialize($new_data),
                 'session_id'     =>session_id()
             ];
+
 
             MembershipInformationLog::create($membership_infomation);
 
