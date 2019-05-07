@@ -751,6 +751,8 @@ class HomePageController extends ApiController
                 return show_json(1, $data);
             }
         }
+
+        return show_json(1, []);
     }
 
     public function getBalance()
