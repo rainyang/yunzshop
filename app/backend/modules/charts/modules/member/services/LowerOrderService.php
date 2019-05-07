@@ -12,6 +12,7 @@ namespace app\backend\modules\charts\modules\member\services;
 use app\backend\modules\charts\modules\member\models\MemberLowerOrder;
 use app\common\models\UniAccount;
 use Illuminate\Support\Facades\DB;
+use app\Jobs\TeamOrderJob;
 
 class LowerOrderService
 {
@@ -111,5 +112,6 @@ class LowerOrderService
                 $memberModel->updateOrCreate(['uid' => $item['uid']], $item);
             }
         }
+        dispatch(new TeamOrderJob());
     }
 }

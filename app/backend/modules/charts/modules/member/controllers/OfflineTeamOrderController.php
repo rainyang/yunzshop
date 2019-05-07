@@ -10,10 +10,10 @@
 namespace app\backend\modules\charts\modules\member\controllers;
 
 use app\backend\modules\charts\modules\member\models\MemberLowerOrder;
-use app\backend\modules\charts\modules\member\models\MemberLowerCount;
+use app\backend\modules\charts\modules\member\models\TeamOrder;
 use app\common\helpers\PaginationHelper;
 use app\backend\modules\charts\modules\member\services\LowerCountService;
-use app\backend\modules\charts\modules\member\services\LowerOrderService;
+use app\backend\modules\charts\modules\member\services\TeamOrderService;
 
 class OfflineTeamOrderController extends OfflineCountController
 {
@@ -22,8 +22,7 @@ class OfflineTeamOrderController extends OfflineCountController
       //  dd((new LowerCountService())->memberCount());
         $pageSize = 10;
         $search = \YunShop::request()->search;
-        $list = MemberLowerOrder::getMember($search)->orderBy('team_order_amount', 'desc')->select('id','uniacid','uid','team_count','pay_count','team_order_quantity','team_order_amount')->paginate($pageSize);
-
+        $list = TeamOrder::getMember($search)->orderBy('team_order_amount', 'desc')->paginate($pageSize);
         $page = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
         return view('charts.member.offline_team_order', [
             'page' => $page,
@@ -33,7 +32,7 @@ class OfflineTeamOrderController extends OfflineCountController
     }
     public function performedManually()
     {
-        (new LowerOrderService())->memberOrder();
+        (new TeamOrderService())->memberOrder();
         return $this->message('手动更新统计成功');
     }
 }
