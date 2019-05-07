@@ -28,6 +28,12 @@ class GlobalParams
      */
     private function setConfigInfo()
     {
+        global $_W;
+        
+        $_W['uid'] = \Auth::guard('admin')->user()->uid;
+        $_W['username'] = \Auth::guard('admin')->user()->username;
+        \config::set('app.global.uid', \Auth::guard('admin')->user()->uid);
+        \config::set('app.global.username', \Auth::guard('admin')->user()->username);
         \YunShop::app()->uid        = \Auth::guard('admin')->user()->uid;
         \YunShop::app()->username   = \Auth::guard('admin')->user()->username;
     }

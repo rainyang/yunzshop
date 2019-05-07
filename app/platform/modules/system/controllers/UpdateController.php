@@ -11,7 +11,7 @@ namespace app\platform\modules\system\controllers;
 
 use app\common\components\BaseController;
 use app\common\facades\Option;
-use app\common\models\Setting;
+use app\common\facades\Setting;
 use app\common\models\UniAccount;
 use app\common\services\AutoUpdate;
 use Illuminate\Filesystem\Filesystem;
@@ -28,8 +28,8 @@ class UpdateController extends BaseController
         //执行迁移文件
         $this->runMigrate();
 
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -71,8 +71,8 @@ class UpdateController extends BaseController
     public function check()
     {
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -127,8 +127,8 @@ class UpdateController extends BaseController
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'version' => ''];
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -272,8 +272,8 @@ class UpdateController extends BaseController
                 }
             }
 
-            $key = Setting::get('shop.key')['key'];
-            $secret = Setting::get('shop.key')['secret'];
+            $key = Setting::getNotUniacid('shop.key')['key'];
+            $secret = Setting::getNotUniacid('shop.key')['secret'];
             if(!$key || !$secret) {
                 return;
             }
@@ -379,8 +379,8 @@ class UpdateController extends BaseController
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
