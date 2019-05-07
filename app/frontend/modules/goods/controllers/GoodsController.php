@@ -261,17 +261,12 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->where(function($query) {
                 $query->whereIn('plugin_id',[0,40,92,53]);
-            })->groupBy('yz_goods.id')
-            ->orderBy($order_field, $order_by);
+            });
         
         $id_arr =  collect($list->get())->map(function($rows) {
             return $rows['id'];
         });
         $list = Goods::whereIn('id',$id_arr)->select("*")
-            ->where("status", 1)
-            ->where(function($query) {
-                $query->whereIn("plugin_id", [0,40,92,53]);
-            })
             ->paginate(20)->toArray();
 
 
