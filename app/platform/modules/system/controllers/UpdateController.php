@@ -326,6 +326,9 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
+            //TODO 检查并下载框架更新文件
+            $this->startDownloadFormwork();
+
             //覆盖
             foreach ($files as $f) {
                 $path = $f['path'];
@@ -367,7 +370,7 @@ class UpdateController extends BaseController
     }
 
     /**
-     * 开始下载并更新程序
+     * 开始下载并更新前端vue
      * @return \Illuminate\Http\RedirectResponse
      */
     public function startDownload()
@@ -390,6 +393,57 @@ class UpdateController extends BaseController
 
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         \app\common\facades\Setting::get('auth.key');
+        $update->setBasicAuth($key, $secret);
+
+        //Check for a new update
+        if ($update->checkUpdate() === false) {
+            $resultArr['msg'] = 'Could not check for updates! See log file for details.';
+            response()->json($resultArr)->send();
+            return;
+        }
+
+        if ($update->newVersionAvailable()) {
+
+            $result = $update->update();
+
+            if ($result === true) {
+                $list = $update->getUpdates();
+                if (!empty($list)) {
+                    $this->setSystemVersion($list);
+                }
+
+                $resultArr['status'] = 1;
+                $resultArr['msg'] = '更新成功';
+            } else {
+                $resultArr['msg'] = '更新失败: ' . $result;
+                if ($result = AutoUpdate::ERROR_SIMULATE) {
+                    $resultArr['data'] = $update->getSimulationResults();
+                }
+            }
+        } else {
+            $resultArr['msg'] = 'Current Version is up to date';
+        }
+        response()->json($resultArr)->send();
+        return;
+    }
+
+    /**
+     * 开始下载并更新框架vue
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function startDownloadFormwork()
+    {
+        \Cache::flush();
+        $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
+        set_time_limit(0);
+
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
+
+        $update = new AutoUpdate(null, null, 300);
+        $update->setUpdateFile('check_fromework.json');
+        $update->setCurrentVersion(config('version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         $update->setBasicAuth($key, $secret);
 
         //Check for a new update
