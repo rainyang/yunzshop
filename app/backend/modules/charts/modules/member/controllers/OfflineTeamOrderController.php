@@ -30,9 +30,4 @@ class OfflineTeamOrderController extends OfflineCountController
             'list' => $list,
         ])->render();
     }
-    public function performedManually()
-    {
-        (new TeamOrderService())->memberOrder();
-        return $this->message('手动更新统计成功');
-    }
 }

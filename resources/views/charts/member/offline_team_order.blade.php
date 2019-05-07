@@ -88,10 +88,6 @@
             </div>
         </div>
     </div>
-    <div>
-            <a href="{{ yzWebUrl('charts.member.offline-team-order.performed-manually') }}"> <button type="button" class="btn btn-primary" >手动更新统计</button></a>
-            <span style = "color:red">注:手动更新会占用大量的系统资源，请谨慎操作！</span>
-    </div>
 </div>
 
 @endsection
