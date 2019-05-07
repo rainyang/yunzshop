@@ -74,6 +74,7 @@ class PointTransferController extends ApiController
         if ($result !== true) {
             return '转让失败，记录出错';
         }
+
         DB::beginTransaction();
         (new PointService($this->getTransferRecordData()))->changePoint();
         (new PointService($this->getRecipientRecordData()))->changePoint();
@@ -101,6 +102,7 @@ class PointTransferController extends ApiController
         if ($validator->fails()) {
             return $validator->messages();
         }
+
         return $this->transferModel->save();
     }
 
@@ -165,8 +167,8 @@ class PointTransferController extends ApiController
     private function getPostTransferPoint()
     {
         if ($this->getRateSet() > 0) {
-            $point = trim(\YunShop::request()->transfer_point) - trim(\YunShop::request()->transfer_point) * $this->getRateSet();
-            $this->poundage = trim(\YunShop::request()->transfer_point) * $this->getRateSet();
+            $point = intval(trim(\YunShop::request()->transfer_point) - trim(\YunShop::request()->transfer_point) * $this->getRateSet());
+            $this->poundage = intval(trim(\YunShop::request()->transfer_point) * $this->getRateSet());
             return $point;
         }else{
             return trim(\YunShop::request()->transfer_point);
