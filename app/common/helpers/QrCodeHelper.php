@@ -37,7 +37,7 @@ class QrCodeHelper
 
     public function url()
     {
-        return request()->getSchemeAndHttpHost() . "/addons/yun_shop" . \Storage::url($this->patch . "/{$this->fileName}.png");
+        return request()->getSchemeAndHttpHost() . config('app.webPath') . \Storage::url($this->patch . "/{$this->fileName}.png");
     }
 
     /**

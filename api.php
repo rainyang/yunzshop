@@ -19,14 +19,15 @@ if (!function_exists("getExitInfo")) {
     }
 }
 
-//getExitInfo();
-//define('IN_IA', true);
+$extend = '';
+$boot_file = __DIR__ . '/../../framework/bootstrap.inc.php';
 
-require '../../framework/bootstrap.inc.php';
-//define('IA_ROOT', str_replace("\\", '/', dirname(dirname(dirname(__FILE__)))));
+if (file_exists($boot_file)) {
+    include_once $boot_file;
+} else {
+    $extend = '/../..';
+}
 
-//require IA_ROOT . '/framework/class/loader.class.php';
+include_once __DIR__ . $extend . '/app/laravel.php';
 
-include_once __DIR__ . '/app/laravel.php';
-
-include_once __DIR__ . '/app/yunshop.php';
+include_once __DIR__ . $extend . '/app/yunshop.php';

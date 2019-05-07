@@ -135,11 +135,11 @@ class MemberWechatService extends MemberService
         }
 
         $token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token?appid=' . $this->_app_id . '&secret=' . $this->_appSecret . '&code=' . $code . '&grant_type=authorization_code';
-        $resp     = @ihttp_get($token_url);
+        $resp     = @\Curl::to($token_url)->get();
         $token      = @json_decode($resp['content'], true);
 
         $userinfo_url = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token['access_token'] . '&openid=' . $token['openid'] . '&lang=zh_CN';
-        $resp     = @ihttp_get($userinfo_url);
+        $resp     = @\Curl::to($userinfo_url)->get();
         $arr      = @json_decode($resp['content'], true);
 
         return $arr;

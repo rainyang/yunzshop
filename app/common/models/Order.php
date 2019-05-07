@@ -183,7 +183,7 @@ class Order extends BaseModel
 
     public function scopeNormal($query)
     {
-        return $query->where('refund_id', '0');
+        return $query->where('refund_id', 0)->where('is_pending',0);
     }
 
     /**

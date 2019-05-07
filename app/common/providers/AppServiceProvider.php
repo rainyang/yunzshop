@@ -2,14 +2,14 @@
 
 namespace app\common\providers;
 
-use app\common\models\AccountWechats;
-use app\common\services\mews\captcha\src\Captcha;
-
-use Setting;
-use Illuminate\Support\ServiceProvider;
 use App;
-use Illuminate\Support\Facades\DB;
+use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
+use app\common\services\mews\captcha\src\Captcha;
+use app\common\services\Utils;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\ServiceProvider;
+use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -28,6 +28,8 @@ class AppServiceProvider extends ServiceProvider
             error_reporting(0);
             //strpos(request()->get('route'),'setting.key') !== 0 && Check::app();
         }
+
+        $this->globalParamsHandle();
 
         //设置uniacid
         Setting::$uniqueAccountId = \YunShop::app()->uniacid;
@@ -114,5 +116,60 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
+    }
+
+    private function globalParamsHandle()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $this->install();
+
+            $uniacid = 0;
+            $cfg = \config::get('app.global');
+
+            if (!empty(request('uniacid')) && request('uniacid') > 0) {
+                $uniacid = request('uniacid');
+                Utils::addUniacid();
+            }
+
+            if (empty($uniacid) && isset($_COOKIE['uniacid'])) {
+                $uniacid = $_COOKIE['uniacid'];
+            }
+
+            $account = AccountWechats::getAccountByUniacid($uniacid);
+
+            $cfg['uniacid'] = $uniacid;
+            $cfg['account'] = $account ? $account->toArray() : '';
+
+            \config::set('app.global', $cfg);
+            global $_W;
+            $_W = $cfg;
+            \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
+        }
+    }
+
+    private function install()
+    {
+        $path = 'addons/yun_shop';
+        $file = $path .  '/api.php';
+
+        if (!file_exists($file)) {
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $f_data = file_get_contents('api.php');
+
+            file_put_contents($file, $f_data);
+        }
+
+        if (!file_exists(base_path().'/bootstrap/install.lock')) {
+            response()->json([
+                'result' => 0,
+                'msg' => '',
+                'data' => ['status' => -4]
+            ], 200, ['charset' => 'utf-8'])
+                ->send();
+            exit;
+        }
     }
 }

@@ -244,12 +244,34 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
+
+//        $list = Goods::Search($requestSearch)->select( '*','yz_goods.id')
+//            ->where("status", 1)
+//            ->where(function($query) {
+//                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+//            })->groupBy('yz_goods.id')
+//            ->orderBy($order_field, $order_by)
+//            ->paginate(20)->toArray();
+
+
+//        $id_arr =  collect($list->get())->map(function($rows) {
+//            return $rows['id'];
+//        });
+        $list = Goods::Search($requestSearch)->select( 'yz_goods.id')
             ->where("status", 1)
             ->where(function($query) {
                 $query->whereIn('plugin_id',[0,40,92,53]);
             })->groupBy('yz_goods.id')
-            ->orderBy($order_field, $order_by)
+            ->orderBy($order_field, $order_by);
+        
+        $id_arr =  collect($list->get())->map(function($rows) {
+            return $rows['id'];
+        });
+        $list = Goods::whereIn('id',$id_arr)->select("*")
+            ->where("status", 1)
+            ->where(function($query) {
+                $query->whereIn("plugin_id", [0,40,92,53]);
+            })
             ->paginate(20)->toArray();
 
 

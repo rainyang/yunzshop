@@ -1,14 +1,15 @@
 {
-  "name": "yun_shop",
-  "description": "芸众商城",
-  "keywords": [
+"name": "yun_shop",
+"description": "芸众商城",
+"keywords": [
     "yun_shop yunshop 芸众 商城"
-  ],
-  "homepage": "http://www.yunzshop.com/",
-  "type": "project",
-  "license": "Copyrighted",
-  "minimum-stability": "stable",
-  "require": {
+],
+"homepage": "http://www.yunzshop.com/",
+"type": "project",
+"license": "Copyrighted",
+"minimum-stability": "stable",
+"require":
+{
     "php": ">=5.5.9",
     "laravel/framework": "5.3.*",
     "monolog/monolog": "^1.22",
@@ -37,8 +38,9 @@
     "phpxmlrpc/phpxmlrpc": "4.0",
     "indigophp/supervisor": "^3.0",
     "rap2hpoutre/laravel-log-viewer": "^0.22.1"
-  },
-  "require-dev": {
+},
+"require-dev":
+{
     "filp/whoops": "^2.1",
     "fzaninotto/faker": "^1.6",
     "mockery/mockery": "0.9.*",
@@ -46,51 +48,59 @@
     "barryvdh/laravel-ide-helper": "^2.3",
     "orangehill/iseed": "dev-master",
     "xethron/migrations-generator": "^2.0"
-  },
-  "autoload": {
+},
+"autoload":
+{
     "classmap": [
-      "database"
+        "database"
     ],
-    "psr-4": {
-      "app\\": "app/",
-      "App\\": "app/"
+    "psr-4":
+    {
+        "app\\": "app/",
+        "App\\": "app/"
     },
-    "files":[
-      "app/yunshop.php",
-      "app/helpers.php"
+    "files": [
+        "app/yunshop.php",
+        "app/helpers.php"
     ]
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests/"
+},
+"autoload-dev":
+{
+    "psr-4":
+    {
+        "Tests\\": "tests/"
     }
-  },
-  "scripts": {
+},
+"scripts":
+{
     "post-root-package-install": [
-      "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
     ],
     "post-create-project-cmd": [
-      "php artisan key:generate"
+        "php artisan key:generate"
     ],
     "post-install-cmd": [
-      "Illuminate\\Foundation\\ComposerScripts::postInstall",
-      "php artisan ide-helper:generate",
-      "php artisan ide-helper:meta",
-      "php artisan optimize"
+        "Illuminate\\Foundation\\ComposerScripts::postInstall",
+        "php artisan ide-helper:generate",
+        "php artisan ide-helper:meta",
+        "php artisan optimize"
     ],
     "post-update-cmd": [
-      "Illuminate\\Foundation\\ComposerScripts::postUpdate"
+        "Illuminate\\Foundation\\ComposerScripts::postUpdate"
     ]
-  },
-  "config": {
+},
+"config":
+{
     "process-timeout": 1800
-  },
-  "extra": {
-  },
-  "repositories": {
-    "packagist": {
-      "type": "composer",
-      "url": "https://packagist.phpcomposer.com"
+},
+"extra":
+{},
+"repositories":
+{
+    "packagist":
+    {
+        "type": "composer",
+        "url": "https://packagist.phpcomposer.com"
     }
-  }
+}
 }

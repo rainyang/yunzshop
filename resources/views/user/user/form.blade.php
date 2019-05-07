@@ -6,7 +6,7 @@
 <form id="dataform" action="{{ yzWebUrl('user.user.update') }}" method="post" class="form-horizontal form" >
     <input type="hidden" name="id" value="{{ $user->uid }}" />
 @else
-<form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
+    <form id="dataform" action="{{ yzWebUrl('user.user.store') }}" method="post" class="form-horizontal form" >
 @endif
     <div class="right-titpos">
         <ul class="add-snav">
@@ -53,6 +53,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>电话</label>
                 <div class="col-sm-9 col-xs-12">
                     <input type="text" name="widgets[profile][mobile]" class="form-control" value="{{ $user->userProfile->mobile or '' }}" />
+                    <span class='help-block'>此处可填可不填</span>
                 </div>
             </div>
             <div class="form-group">

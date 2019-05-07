@@ -22,3 +22,7 @@ vendor/
 /index.php
 /storage/framework/cache/data
 /xhprof/
+/static/upload/
+/addons/*
+/bootstrap/install.lock
+/app/platform/controllers/user.txt

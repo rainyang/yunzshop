@@ -15,7 +15,9 @@ class AddImsYzGoodsTable extends Migration
     {
         if (Schema::hasTable('yz_goods')) {
             Schema::table('yz_goods', function (Blueprint $table) {
-                $table->boolean('type2')->nullable()->default(1)->comment('商品类型2');
+                if (!Schema::hasColumn('yz_goods', 'type2')) {
+                    $table->boolean('type2')->nullable()->default(1)->comment('商品类型2');
+                }
             });
         }
     }
