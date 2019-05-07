@@ -24,6 +24,7 @@ class PointTransferController extends ApiController
 
     private $transferModel;
 
+    private $poundage;
     /**
      * 积分转让接口
      * @return \Illuminate\Http\JsonResponse
@@ -125,7 +126,8 @@ class PointTransferController extends ApiController
             'recipient'     => $this->getPostRecipient(),
             'value'         => $this->getPostTransferPoint(),
             'status'        => ConstService::STATUS_FAILURE,
-            'order_sn'      => PointTransfer::createOrderSn('PT')
+            'order_sn'      => PointTransfer::createOrderSn('PT'),
+            'poundage'      => $this->poundage,
         ];
     }
 
@@ -164,6 +166,7 @@ class PointTransferController extends ApiController
     {
         if ($this->getRateSet() > 0) {
             $point = trim(\YunShop::request()->transfer_point) - trim(\YunShop::request()->transfer_point) * $this->getRateSet();
+            $this->poundage = trim(\YunShop::request()->transfer_point) * $this->getRateSet();
             return $point;
         }else{
             return trim(\YunShop::request()->transfer_point);
