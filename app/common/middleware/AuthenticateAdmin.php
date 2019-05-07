@@ -109,6 +109,9 @@ class AuthenticateAdmin
         }
 
         if (\Auth::guard('admin')->user()->uid == 1) {
+            \YunShop::app()->role = 'founder';
+            \YunShop::app()->isfounder = true;
+
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
             if (!in_array($uri, $this->authApi)) {
@@ -151,8 +154,14 @@ class AuthenticateAdmin
     private function setRole()
     {
         if (\Auth::guard('admin')->user()->uid === 1) {
+            \YunShop::app()->role = 'founder';
+            \YunShop::app()->isfounder = true;
+
             $this->role = ['role' => 'founder', 'isfounder' => true];
         } else {
+            \YunShop::app()->role = $this->account->role;
+            \YunShop::app()->isfounder = false;
+
             $this->role = ['role' => $this->account->role, 'isfounder' => false];
         }
     }
