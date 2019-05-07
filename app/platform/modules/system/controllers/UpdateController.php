@@ -11,7 +11,7 @@ namespace app\platform\modules\system\controllers;
 
 use app\common\components\BaseController;
 use app\common\facades\Option;
-use app\common\models\Setting;
+use app\common\facades\Setting;
 use app\common\models\UniAccount;
 use app\common\services\AutoUpdate;
 use Illuminate\Filesystem\Filesystem;
