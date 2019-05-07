@@ -36,7 +36,7 @@
             @endif
             <div class="col-sm-9 col-xs-12">
                 <p class="form-control-static">
-                    {{$order['call']}}
+                    {{$order['collect_name']}}
                 </p>
             </div>
         </div>
