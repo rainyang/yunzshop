@@ -94,7 +94,14 @@
                                 </td>
                                 <td>{{ $row['shop_name'] }}</td>
                                 <td>{{ $row['undividend'] ?: '0.00' }}</td>
-                                <td>{{ sprintf("%01.2f",($row->price - $row->cost_price) > 0 ? $row->price - $row->cost_price : '0.00') }}</td>
+                                @if($row['plugin_id'] == 32)
+                                    <td>{{ \Yunshop\StoreCashier\common\models\StoreOrder::where('order_id',$row->order_id)->value('fee') ?: '0.00' }}</td>
+                                @elseif ($row['plugin_id'] == 31)
+                                    <td>{{ \Yunshop\StoreCashier\common\models\CashierOrder::where('order_id',$row->order_id)->value('fee') ?: '0.00' }}</td>
+                                @else
+                                    <td>{{ sprintf("%01.2f",($row->price - $row->cost_price) > 0 ? $row->price - $row->cost_price : '0.00') }}</td>
+                                @endif
+
                                 <td>{{ $row->supplier ?: '0.00' }}</td>
                                 <td>{{ $row->store ?: '0.00' }}</td>
                                 <td>{{ $row->cashier ?: '0.00' }}</td>
