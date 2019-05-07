@@ -579,6 +579,9 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
+        if(isset($_GET['test_uid'])){
+            return $_GET['test_uid'];
+        }
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {

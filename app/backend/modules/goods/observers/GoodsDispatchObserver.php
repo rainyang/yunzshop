@@ -10,6 +10,7 @@ namespace app\backend\modules\goods\observers;
 
 
 use app\common\observers\BaseObserver;
+use Illuminate\Database\Eloquent\Model;
 
 class GoodsDispatchObserver extends BaseObserver
 {
