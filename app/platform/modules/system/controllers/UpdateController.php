@@ -11,7 +11,6 @@ namespace app\platform\modules\system\controllers;
 
 use app\common\components\BaseController;
 use app\common\facades\Option;
-// use app\common\facades\Setting;
 use app\common\models\Setting;
 use app\common\models\UniAccount;
 use app\common\services\AutoUpdate;
@@ -72,8 +71,8 @@ class UpdateController extends BaseController
     public function check()
     {
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -128,8 +127,8 @@ class UpdateController extends BaseController
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'version' => ''];
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -273,8 +272,8 @@ class UpdateController extends BaseController
                 }
             }
 
-            $key = $this->setting()['key'];
-            $secret = $this->setting()['secret'];
+            $key = Setting::get('shop.key')['key'];
+            $secret = Setting::get('shop.key')['secret'];
             if(!$key || !$secret) {
                 return;
             }
@@ -377,8 +376,8 @@ class UpdateController extends BaseController
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::get('shop.key')['key'];
+        $secret = Setting::get('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
