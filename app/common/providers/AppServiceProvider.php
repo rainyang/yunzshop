@@ -195,7 +195,7 @@ class AppServiceProvider extends ServiceProvider
             'attachurl'        => $att['attachurl'],
             'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
             'attachurl_remote' => $att['attachurl_remote'],
-            'charset'          => ''
+            'charset'          => 'utf-8'
         ];
 
         return $cfg;
