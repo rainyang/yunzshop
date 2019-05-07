@@ -290,9 +290,9 @@ class Setting extends BaseModel
      */
     public function getNotUniacidValue($key, $default = null)
     {
-        if (app('NotUniacidSettingCache')->has($key)) {
+        if (app('SettingCache')->has($key)) {
             //\Log::debug('-----setting get cache------'.$cacheKey);
-            $value = app('NotUniacidSettingCache')->get($key);
+            $value = app('SettingCache')->get($key);
         } else {
             //\Log::debug('-----setting get db------'.$key);
             list($group, $groupKey) = $this->parseKey($key);
@@ -305,7 +305,7 @@ class Setting extends BaseModel
 
             }
             $value = array_get($settingGroupItems, $groupKey, $default);
-            app('NotUniacidSettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
+            app('SettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
         }
         return $value;
     }
