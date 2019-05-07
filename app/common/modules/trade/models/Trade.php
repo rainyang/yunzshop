@@ -77,7 +77,7 @@ class Trade extends BaseModel
                  */
                 $item = $result->where('code', $orderDiscount->discount_code)->first();
                 if(!$orderDiscount->amount){
-                    //continue;
+                    continue;
                 }
                 if (isset($item)) {
 
