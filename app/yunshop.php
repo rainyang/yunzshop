@@ -221,10 +221,8 @@ class YunShop
     {
         global $_W;
 
-        $global_params = $_W;
-
         if (app('plugins')->isEnabled('supplier')) {
-            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $global_params['uid'])->first();
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
             if (!$res) {
                 return false;
             }
@@ -494,8 +492,6 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
-
-        //$global_params = $_W;
 
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
