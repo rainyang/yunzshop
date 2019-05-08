@@ -431,14 +431,14 @@ class UpdateController extends BaseController
      * 开始下载并更新框架vue
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function startDownloadFormwork()
+    public function startDownloadFramework()
     {
         \Cache::flush();
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_fromework.json');
@@ -455,7 +455,7 @@ class UpdateController extends BaseController
 
         if ($update->newVersionAvailable()) {
 
-            $result = $update->update();
+            $result = $update->update(2);
 
             if ($result === true) {
                 $list = $update->getUpdates();
