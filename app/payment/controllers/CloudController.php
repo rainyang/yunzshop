@@ -18,9 +18,9 @@ class CloudController extends PaymentController
 {
     private $attach = [];
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_GET['attach']);

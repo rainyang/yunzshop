@@ -14,8 +14,14 @@ use app\frontend\modules\memberCart\MemberCartCollection;
 
 class CreateController extends ApiController
 {
-
+    /**
+     * @var MemberCartCollection
+     */
     private $memberCarts;
+
+    /**
+     * @return static
+     */
     protected function _getMemberCarts(){
         $goods_params = json_decode(request()->input('goods'), true);
 
@@ -24,24 +30,36 @@ class CreateController extends ApiController
         });
         return $memberCarts;
     }
+
+    /**
+     * @return MemberCartCollection
+     * @throws \app\common\exceptions\AppException
+     */
     protected function getMemberCarts()
     {
         if(!isset($this->memberCarts)){
 
             $memberCarts = new MemberCartCollection($this->_getMemberCarts());
             $memberCarts->loadRelations();
+            $memberCarts->validate();
             $this->memberCarts = $memberCarts;
         }
 
         return $this->memberCarts;
     }
+    protected function validateParam(){
+
+    }
 
     /**
      * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
      */
     public function index()
     {
         \Log::info('用户下单', request()->input());
+        $this->validateParam();
+
         //订单组
         $trade = $this->getMemberCarts()->getTrade();
         $trade->generate();

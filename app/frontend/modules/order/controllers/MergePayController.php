@@ -32,7 +32,7 @@ class MergePayController extends ApiController
     /**
      * @var OrderCollection
      */
-    private $orders;
+    protected $orders;
     protected $publicAction = ['alipay'];
     protected $ignoreAction = ['alipay'];
 
@@ -414,7 +414,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function huanxunQuick(\Request $request)
+    public function huanxunQuick(\Illuminate\Http\Request $request)
     {
         if (\Setting::get('plugin.huanxun_set') == false) {
             throw new AppException('商城未开启快捷支付');
@@ -431,7 +431,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function wftWechat(\Request $request)
+    public function wftWechat(\Illuminate\Http\Request $request)
     {
 
         if (\Setting::get('plugin.wft_pay') == false) {
@@ -448,7 +448,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function wftAlipay(\Request $request)
+    public function wftAlipay(\Illuminate\Http\Request $request)
     {
 
         if (\Setting::get('plugin.wft_alipay') == false) {
@@ -467,7 +467,7 @@ class MergePayController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function huanxunWx(\Request $request)
+    public function huanxunWx(\Illuminate\Http\Request $request)
     {
         if (\Setting::get('plugin.dian_bang_scan_set') == false) {
             throw new AppException('商城未开启快捷支付');

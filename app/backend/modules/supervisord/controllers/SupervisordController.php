@@ -19,7 +19,7 @@ class SupervisordController extends BaseController
 {
     private $supervisor = null;
 
-    public function __construct()
+    public function preAction()
     {
         $this->supervisor = app('supervisor');
         //$this->supervisor = new Supervisor('dev4.yunzshop.com', 9001);

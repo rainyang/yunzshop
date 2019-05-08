@@ -31,9 +31,9 @@ class ListController extends BaseController
      */
     protected $orderModel;
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $params = \YunShop::request()->get();
         $this->orderModel = $this->getOrder()->orders($params['search']);
     }

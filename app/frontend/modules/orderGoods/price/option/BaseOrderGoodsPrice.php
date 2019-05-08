@@ -68,7 +68,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
      * @throws \app\common\exceptions\AppException
      */
     public function getPaymentAmount()
-    {
+    {  
         if (!isset($this->paymentAmount)) {
             $this->paymentAmount = $this->getPriceAfter($this->getPriceNodes()->last()->getKey());
             $this->paymentAmount = max($this->paymentAmount, 0);
@@ -91,6 +91,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         ])->map(function (BaseDiscount $discount) {
             return new OrderGoodsDiscountPriceNode($this, $discount, 2000);
         });
+
         $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2100));
         // 订单抵扣节点
         $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction){
@@ -132,8 +133,8 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
     }
 
     /**
-     * 优惠券价
-     * @return int
+     * @return int|mixed
+     * @throws \app\common\exceptions\AppException
      */
     public function getCouponAmount()
     {
@@ -158,26 +159,6 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
 
         }
         return $this->deductionAmount;
-    }
-
-
-    /**
-     * 单品满减
-     * @return float|int
-     */
-    private function getSingleEnoughReduceAmount()
-    {
-        return $this->singleEnoughReduce->getAmount();
-    }
-
-    /**
-     * 全场满减
-     * @return float|int
-     */
-    private function getEnoughReduceAmount()
-    {
-
-        return $this->enoughReduce->getAmount();
     }
 
     /**

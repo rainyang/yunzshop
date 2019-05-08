@@ -31,7 +31,7 @@ class MessageTemp extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid', new UniacidScope);
+        static::addGlobalScope( new UniacidScope);
     }
 
 
@@ -97,7 +97,7 @@ class MessageTemp extends BaseModel
         if (!intval($temp_id)) {
             return false;
         }
-        $temp = self::withoutGlobalScopes('uniacid')->whereId($temp_id)->first();
+        $temp = self::withoutGlobalScopes(['uniacid'])->whereId($temp_id)->first();
         if (!$temp) {
             return false;
         }

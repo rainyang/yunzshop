@@ -10,6 +10,7 @@ namespace app\common\models\member;
 
 
 use app\common\models\BaseModel;
+use Illuminate\Database\Eloquent\Builder;
 use app\common\models\Member;
 
 class MemberChildren extends BaseModel

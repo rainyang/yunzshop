@@ -26,7 +26,8 @@ class DefaultNoticeController extends BaseController
      * DefaultNoticeController constructor.
      * @throws \app\common\exceptions\ShopException
      */
-    public function __construct() {
+    public function preAction() {
+        parent::preAction();
         $this->WechatApiModel = new WechatApi();
         $this->MessageTempModel = new MessageTemp();
         $this->TemplateDefaultModel = new TemplateMessageDefault();

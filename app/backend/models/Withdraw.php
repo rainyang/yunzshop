@@ -17,7 +17,7 @@ class Withdraw extends \app\common\models\Withdraw
     public static function boot()
     {
         parent::boot();
-        self::addGlobalScope('uniacid', new UniacidScope);
+        self::addGlobalScope( new UniacidScope);
     }
 
 

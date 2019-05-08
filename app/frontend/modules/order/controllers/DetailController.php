@@ -47,7 +47,6 @@ class DetailController extends ApiController
         $invoice->invoice = ("0" != $invoice->invoice) ? 1 : 0;
         $data['invoice_type'] =$invoice->invoice_type;
         $data['rise_type'] =$invoice->rise_type;
-        //$data['call'] =$invoice->call;
         $data['collect_name'] =$invoice->collect_name;
         $data['company_number'] =$invoice->company_number;
         $data['invoice_state'] = $invoice->invoice;

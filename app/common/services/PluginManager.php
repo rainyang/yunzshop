@@ -112,6 +112,7 @@ class PluginManager
     {
         return $this->getPlugins()->get($name);
     }
+
     public function getPluginId($name)
     {
         $pluginIdConfig =  array_first(config('shop-foundation.plugin'), function ($item) use ($name) {
@@ -119,6 +120,7 @@ class PluginManager
         }, []);
         return $pluginIdConfig['id'];
     }
+
     public function findPlugin($id)
     {
         return $this->getPlugins()->first(function (Plugin $plugin) use ($id) {
@@ -141,7 +143,7 @@ class PluginManager
                 $plugin = $this->getPlugin($name);
                 $enabled = $this->getEnabled();
 //                $enabled[] = $name;
-                $this->setEnabled($enabled[$name]['id'], 1, $name);
+                $this->setEnabled($enabled[$name]->id, 1, $name);
                 $plugin->setEnabled(true);
                 $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
             });
@@ -154,15 +156,14 @@ class PluginManager
      *
      * @param string $name
      */
-    public
-    function disable($name)
+    public function disable($name)
     {
 
         $enabled = $this->getEnabled();
 
         $plugin = $this->getPlugin($name);
 
-        $this->setEnabled($enabled[$name]['id'], 0);
+        $this->setEnabled($enabled[$name]->id, 0);
 
         $plugin->setEnabled(true);
         $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
@@ -184,8 +185,7 @@ class PluginManager
      *
      * @param string $name
      */
-    public
-    function uninstall($name)
+    public function uninstall($name)
     {
         $plugin = $this->getPlugin($name);
         $this->disable($name);
@@ -204,12 +204,12 @@ class PluginManager
      *
      * @return Collection
      */
-    public
-    function getEnabledPlugins()
+    public function getEnabledPlugins()
     {
         $only = [];
         foreach ($this->getEnabled() as $key => $plugin) {
-            if ($plugin['enabled']) {
+
+            if ($plugin->enabled) {
                 $only[] = $key;
             }
         }
@@ -221,8 +221,7 @@ class PluginManager
      *
      * @return Collection
      */
-    public
-    function getEnabledBootstrappers()
+    public function getEnabledBootstrappers()
     {
         $bootstrappers = new Collection;
         foreach ($this->getEnabledPlugins() as $plugin) {
@@ -239,8 +238,7 @@ class PluginManager
      *
      * @return array
      */
-    public
-    function getEnabled()
+    public function getEnabled()
     {
         //dd($this->option->get());
         return (array)$this->option->get();
@@ -252,8 +250,7 @@ class PluginManager
      *
      * @param array $enabled
      */
-    protected
-    function setEnabled($id, $enabled, $name = null)
+    protected function setEnabled($id, $enabled, $name = null)
     {
         if ($id) {
             return $this->option->editEnabledById($id, $enabled);
@@ -282,11 +279,11 @@ class PluginManager
      * @param $plugin
      * @return bool
      */
-    public
-    function isEnabled($plugin)
+    public function isEnabled($plugin)
     {
         $plugins = $this->getEnabled();
-        return $plugins[$plugin]['enabled'];
+
+        return $plugins[$plugin]->enabled;
 //        return in_array($plugin, $this->getEnabled());
     }
 
@@ -295,25 +292,22 @@ class PluginManager
      *
      * @return string
      */
-    protected
-    function getPluginsDir()
+    protected function getPluginsDir()
     {
         return $this->app->basePath() . '/plugins';
     }
 
-    public
-    function enTopShow($name, $enable)
+    public function enTopShow($name, $enable)
     {
         if (!$this->getPlugin($name)) {
             $name = str_replace("_", "-", $name);
         }
         $enabled = $this->getEnabled();
 
-        $this->setTopShow($enabled[$name]['id'], $enable);
+        $this->setTopShow($enabled[$name]->id, $enable);
     }
 
-    public
-    function setTopShow($id, $enabled, $name = null)
+    public function setTopShow($id, $enabled, $name = null)
     {
         if ($id) {
             return $this->option->editTopShowById($id, $enabled);
@@ -328,13 +322,12 @@ class PluginManager
         }
     }
 
-    public
-    function isTopShow($name)
+    public function isTopShow($name)
     {
         $plugins = (array)$this->option->get();
         if (!$this->getPlugin($name)) {
             $name = str_replace("_", "-", $name);
         }
-        return $plugins = $plugins[$name]['top_show'];
+        return $plugins = $plugins[$name]->top_show;
     }
 }

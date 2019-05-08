@@ -440,7 +440,7 @@ class ShopController extends BaseController
      *
      * @return string
      */
-    public function Entry()
+    public function entry()
     {
         return view('setting.shop.entry', [
 

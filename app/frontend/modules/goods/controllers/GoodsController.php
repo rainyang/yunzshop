@@ -595,7 +595,7 @@ class GoodsController extends ApiController
             'point_name' => $point_name, //积分名称
             'love_name' => '爱心值',
             'ed_num' => 0,      //满件包邮
-            'ed_money' => 0,    //满额包邮
+            'ed_money' => '',    //满额包邮
             'ed_full' => 0,      //单品满额
             'ed_reduction' => 0, //单品立减
             'award_balance' => 0, //赠送余额

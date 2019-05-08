@@ -2,6 +2,7 @@
 
 namespace app\common\models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 

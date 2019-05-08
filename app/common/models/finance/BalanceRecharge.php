@@ -43,7 +43,7 @@ class BalanceRecharge extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid', new UniacidScope);
+        static::addGlobalScope( new UniacidScope);
     }
 
     /**

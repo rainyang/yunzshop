@@ -33,8 +33,6 @@ use Illuminate\Support\Facades\DB;
 
 class OrderService
 {
-
-
     /**
      * 获取订单商品对象数组
      * @param Collection $memberCarts
