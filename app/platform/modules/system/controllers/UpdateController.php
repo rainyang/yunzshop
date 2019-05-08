@@ -332,8 +332,8 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
-            //TODO 检查并下载框架更新文件
-            $this->startDownloadFormwork();
+            //检查并下载框架更新文件
+            $this->startDownloadFramework();
 
             //覆盖
             foreach ($files as $f) {
