@@ -10,6 +10,7 @@ use app\Jobs\addSendCouponLogJob;
 use app\Jobs\updateCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\backend\modules\coupon\services\MessageNotice;
+use app\common\models\MemberCoupon;
 
 /**
  * Author: 芸众商城 www.yunzshop.com
@@ -50,17 +51,30 @@ class CouponSend
         }
         $this->setLog['current_m'] = date('m');
         Setting::set('shop.coupon_send_log', $this->setLog);
-
         $couponSendQueues = GoodsCouponQueue::getCouponQueue()->get();
+        \Log::info('------商品优惠券每月自动发放-------',$couponSendQueues);
+        // 统计优惠券已发放数量
+        $surplus = [];
         $surplusNums = [];//用于统计 剩余未发放数量
         foreach ($couponSendQueues as $couponSendQueue) {
             $updatedData = [];
             $coupon = $couponSendQueue->hasOneCoupon;
-            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id]) ? $surplusNums['coupon_id_' . $coupon->id] : $coupon->surplus;
+            //$surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id]) ? $surplusNums['coupon_id_' . $coupon->id] : $coupon->surplus;
+            if ($coupon->total != -1) {//限制发放数量
+                // 已领取
+                $count = MemberCoupon::uniacid()->where("coupon_id", $coupon->id)->count();
+                // 剩余
+                $surplus['coupon_id_' . $coupon->id] = $coupon->total - $count;
+            } else {
+                $surplus['coupon_id_' . $coupon->id] = 1;
+            }
+            $surplusNums['coupon_id_' . $coupon->id] = isset($surplusNums['coupon_id_' . $coupon->id]) ? $surplusNums['coupon_id_' . $coupon->id] : $surplus['coupon_id_' . $coupon->id];
 
             if ($surplusNums['coupon_id_' . $coupon->id] <= 0) {
+                \Log::info('------商品优惠券每月自动发放失败,优惠券数量不足-------',$coupon);
                 continue;
             }
+            \Log::info('------商品优惠券每月自动发放给会员-------',$couponSendQueue);
             $this->sendCouponForMember($couponSendQueue);//发放优惠券到会员
             //发送获取通知
             MessageNotice::couponNotice($couponSendQueue->coupon_id,$couponSendQueue->uid);
@@ -75,8 +89,11 @@ class CouponSend
             }
             $this->dispatch((new updateCouponQueueJob($condition, $updatedData)));
 
-            $surplusNums['coupon_id_' . $coupon->id] -= 1;
+            if ($coupon->total != -1) {
+                $surplusNums['coupon_id_' . $coupon->id] -= 1;
+            }
         }
+        \Log::info('------商品优惠券每月自动发放结束-------');
     }
 
     public function sendCouponForMember($couponSendQueue)

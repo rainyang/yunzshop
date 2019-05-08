@@ -93,7 +93,11 @@ class ExportService
                 file_delete(storage_path('exports/' . basename($val)));
             }
             //下面是输出下载;
-            $url = "http://". $_SERVER['HTTP_HOST']. storage_path('logs/') . $time ."down.zip";
+            if (env('APP_Framework') == 'platform') {
+                $url = "http://". $_SERVER['HTTP_HOST'].'/storage/logs/' . $time ."down.zip";
+            } else {
+                $url = "http://". $_SERVER['HTTP_HOST'].'/addons/yun_shop/storage/logs/' . $time ."down.zip";
+            }
             $backurl = "http://". $_SERVER['HTTP_HOST']. \config('app.isWeb') . "?c=site&a=entry&m=yun_shop&do=4302&route=" . $route;
             echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;"><a style="color:red;text-decorationnone;"  href="'.$url.'">点击获取下载文件</a><a style="color:#616161"  href="'.$backurl.'">返回</a><div>';
             exit;

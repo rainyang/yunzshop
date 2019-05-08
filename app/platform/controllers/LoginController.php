@@ -191,13 +191,15 @@ class LoginController extends BaseController
             if (!is_null($account) && in_array($account->role, $this->authRole)) {
                 $cfg['uniacid'] = $account->uniacid;
                 Utils::addUniacid($account->uniacidb);
+
+                \YunShop::app()->uniacid = $account->uniacid;
                 \config::set('app.global', $cfg);
 
                 return $this->successJson('成功', ['url' => Url::absoluteWeb('index.index', ['uniacid' => $account->uniacid])]);
             }
         }
 
-        return $this->successJson('成功', ['user' => $this->guard()->user()]);
+        return $this->successJson('成功');
     }
 
     /**

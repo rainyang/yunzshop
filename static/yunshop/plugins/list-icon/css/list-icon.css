@@ -156,6 +156,9 @@
 .froze {
     background-image: url('../img/marketing/froze.png');
 }
+.business_card {
+    background-image: url('../img/marketing/business_card.png');
+}
 
 .app_set {
     background-image: url('../img/tool/app_set.png');
