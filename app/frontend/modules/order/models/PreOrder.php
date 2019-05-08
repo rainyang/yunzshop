@@ -131,8 +131,6 @@ class PreOrder extends Order
         $this->beforeCreating();
         $this->setOrderGoods($orderGoods);
 
-        $this->discount = new OrderDiscount($this);
-
         $this->afterCreating();
 
         $this->initAttributes();
@@ -140,7 +138,7 @@ class PreOrder extends Order
         return $this;
     }
 
-    private function getDiscount()
+    public function getDiscount()
     {
         if (!isset($this->discount)) {
             $this->discount = new OrderDiscount($this);
