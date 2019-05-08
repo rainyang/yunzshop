@@ -12,6 +12,7 @@ namespace app\backend\modules\charts\modules\member\services;
 use app\backend\modules\charts\modules\member\models\MemberLowerOrder;
 use app\common\models\UniAccount;
 use Illuminate\Support\Facades\DB;
+use app\Jobs\TeamOrderJob;
 
 class LowerOrderService
 {
@@ -95,12 +96,22 @@ class LowerOrderService
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
                 $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
                 $result[$item['member_id']]['team_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
+                $res = explode(',',$item['child']);
+                $pay_count = 0;
+                foreach($res as $key => $value){
+                    $count = $order->where('uid',$value)->count();
+                    if($count >= 1){
+                        $pay_count += 1;
+                    }
+                }
+                $result[$item['member_id']]['team_count'] = count(explode(',',$item['child']));
+                $result[$item['member_id']]['pay_count'] = $pay_count;
             }
-//        dd($result);
             $memberModel = new MemberLowerOrder();
             foreach ($result as $item) {
                 $memberModel->updateOrCreate(['uid' => $item['uid']], $item);
             }
         }
+        dispatch(new TeamOrderJob());
     }
 }

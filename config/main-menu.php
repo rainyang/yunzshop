@@ -2943,8 +2943,6 @@ return [
                 'item'       => 'member_offline_charts',
                 'parents'    => ['charts',],
                 'child'      => [
-
-
                     'member_offline_count_charts' => [
                         'name'       => '下线人数排行',
                         'url'        => 'charts.member.offline-count.index',
@@ -2969,6 +2967,18 @@ return [
                         'item'       => 'member_offline_order_charts',
                         'parents'    => ['charts', 'member_offline_charts'],
 
+                    ],
+
+                    'member_offline_team_order_charts' => [
+                        'name'       => '团队支付订单排行',
+                        'url'        => 'charts.member.offline-team-order.index',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 1,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'member_offline_team_order_charts',
+                        'parents'    => ['charts', 'member_offline_charts'],
                     ],
                 ]
 
