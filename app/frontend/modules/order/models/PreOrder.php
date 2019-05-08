@@ -131,13 +131,19 @@ class PreOrder extends Order
         $this->beforeCreating();
         $this->setOrderGoods($orderGoods);
 
-        $this->discount = new OrderDiscount($this);
-
         $this->afterCreating();
 
         $this->initAttributes();
 
         return $this;
+    }
+
+    public function getDiscount()
+    {
+        if (!isset($this->discount)) {
+            $this->discount = new OrderDiscount($this);
+        }
+        return $this->discount;
     }
 
     public function getOrderDispatch()
@@ -214,6 +220,19 @@ class PreOrder extends Order
     public function beforeCreating()
     {
 
+        $this->setOrderAddress();
+        //临时处理，无扩展性
+        if ($this->getRequest()->input('mark') !== 'undefined') {
+            $this->mark = $this->getRequest()->input('mark', '');
+        }
+
+    }
+
+    /**
+     * @throws \app\common\exceptions\ShopException
+     */
+    public function setOrderAddress()
+    {
         $this->dispatch_type_id = $this->getRequest()->input('dispatch_type_id', 0);
         /**
          * @var PreOrderAddress $orderAddress
@@ -221,11 +240,6 @@ class PreOrder extends Order
         $orderAddress = app('OrderManager')->make('PreOrderAddress');
 
         $orderAddress->setOrder($this);
-        //临时处理，无扩展性
-        if ($this->getRequest()->input('mark') !== 'undefined') {
-            $this->mark = $this->getRequest()->input('mark', '');
-        }
-
     }
 
     /**
@@ -250,15 +264,6 @@ class PreOrder extends Order
     public function afterCreating()
     {
 
-    }
-
-    /**
-     * 订单优惠类
-     * @return OrderDiscount
-     */
-    public function getDiscount()
-    {
-        return $this->discount;
     }
 
 
@@ -387,7 +392,7 @@ class PreOrder extends Order
      */
     protected function getDiscounts()
     {
-        return $this->discount->getDiscounts();
+        return $this->getDiscount()->getDiscounts();
     }
 
     /**
@@ -396,7 +401,7 @@ class PreOrder extends Order
      */
     protected function getDiscountAmount()
     {
-        return $this->discount->getAmount();
+        return $this->getDiscount()->getAmount();
     }
 
     /**
