@@ -80,12 +80,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/index', 'UpdateController@index');
         // 检查更新
         Route::get('update/verifyCheck', 'UpdateController@verifyCheck');
-        // 更新
+        // 后台文件
         Route::any('update/fileDownload', 'UpdateController@fileDownload');
         // 版权
         Route::any('update/pirate', 'UpdateController@pirate');
-        // 初始程序
+        // 前端压缩包下载
         Route::any('update/startDownload', 'UpdateController@startDownload');
+        // 框架压缩包下载
+        Route::any('update/FrameworkDownload', 'UpdateController@startDownloadFramework');
         //短信设置
         Route::any('sms', 'AttachmentController@sms');
     });
