@@ -860,14 +860,7 @@ class MemberController extends ApiController
             'showOptionMenu',
             'scanQRCode',
             'updateAppMessageShareData',
-            'updateTimelineShareData',
-            'startRecord',
-            'stopRecord',
-            'playVoice',
-            'pauseVoice',
-            'stopVoice',
-            'uploadVoice',
-            'downloadVoice'
+            'updateTimelineShareData'
         ));
         $config = json_decode($config, 1);
 
@@ -1427,7 +1420,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code','business_card','my-friend']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code','my-friend']
         ];
 
         $data   = [];
@@ -1474,19 +1467,6 @@ class MemberController extends ApiController
                     'url'   => 'TransHome'
                 ];
             }
-
-            if (app('plugins')->isEnabled('business-card')) {
-                $is_open = Setting::get('business-card.is_open');
-                if($is_open == 1){
-                    $data[] = [
-                        'name'  => 'business_card',
-                        'title' => '名片',
-                        'class' => 'icon-member_card1',
-                        'url'   => 'CardCenter'
-                    ];
-                }
-            }
-
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
