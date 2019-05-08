@@ -22,6 +22,7 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Love\Common\Models\GoodsLove;
 use Yunshop\Love\Common\Services\SetService;
+use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
 
 class HomePageController extends ApiController
 {
@@ -1100,7 +1101,20 @@ class HomePageController extends ApiController
                 'desc'  => '商家分享'
             ];
         }
-
+        if (app('plugins')->isEnabled('designer')){
+            $index = (new RecordsController())->shareIndex();
+            foreach($index['data'] as $value){
+                foreach ($value['page_type_cast'] as $item){
+                    if ($item == 1){
+                        $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
+                        $share['title'] = $designer->title;
+                        $share['icon'] = $designer->img;
+                        $share['desc'] = $designer->desc;
+                        break;
+                    }
+                }
+            }
+        }
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置
