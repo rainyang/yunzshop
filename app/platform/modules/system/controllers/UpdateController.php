@@ -220,7 +220,8 @@ class UpdateController extends BaseController
                     'files' => $ret['files'],
                     'filecount' => count($files),
                     'log' => nl2br(base64_decode($ret['log'])),
-                    'frontendUpgrad' => $frontendUpgrad
+                    'frontendUpgrad' => count($frontendUpgrad),
+                    'list' => $frontendUpgrad
                 ];
             } else {
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
@@ -641,6 +642,6 @@ class UpdateController extends BaseController
 
         krsort($list);
 
-        return count($list);
+        return $list;
     }
 }
