@@ -2,6 +2,7 @@
 
 namespace app\common\services;
 
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Log;
 use Carbon\Carbon;
@@ -296,5 +297,40 @@ class Utils
                 }
             }
         }
+    }
+
+    public static function mkdirs($path)
+    {
+        $filesystem = app(Filesystem::class);
+
+        if (!$filesystem->isDirectory($path)) {
+            $filesystem->makeDirectory($path, 0755, true);
+        }
+
+        return $filesystem->isDirectory($path);
+    }
+
+    /**
+     * 清除uniacid
+     *
+     */
+    public static function removeUniacid()
+    {
+        setcookie('uniacid', null, time() - 3600, '/');
+        setcookie('uniacid', null, time() - 3600, '/admin');
+        setcookie('uniacid', null, time() - 3600, '/admin/shop');
+    }
+
+    /**
+     * 保存uniacid
+     */
+    public static function addUniacid($uniacid = null)
+    {
+        if (is_null($uniacid)) {
+            $uniacid = request('uniacid');
+        }
+
+        setcookie('uniacid', $uniacid, time() + 3600, '/admin');
+        setcookie('uniacid', $uniacid, time() + 3600, '/admin/shop');
     }
 }

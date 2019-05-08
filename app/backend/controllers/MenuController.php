@@ -131,7 +131,7 @@ class MenuController extends BaseController
     public function getRemoteUpdate()
     {
         /*if (request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production') {*/
-            $url = "http://test.yunzshop.com/addons/yun_shop/api.php?i=2&route=menu.to-list";
+            $url = "http://test.yunzshop.com" . config('app.webPath') . "/api.php?i=2&route=menu.to-list";
             $responseData = Curl::to($url)->get();
 
             if ($responseData) {

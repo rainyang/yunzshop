@@ -26,7 +26,6 @@ class OrderCountContentJob implements  ShouldQueue
     public function __construct($orderModel)
     {
         $this->orderModel = $orderModel;
-
     }
 
     public function handle()

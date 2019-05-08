@@ -192,6 +192,21 @@
                                 </label>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">收入明细购买者信息</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setdata[share_page_deail]" value="1" @if($set['share_page_deail'] == 1) checked="checked" @endif/>
+                                    显示
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setdata[share_page_deail]" value="0" @if($set['share_page_deail'] == 0) checked="checked" @endif/>
+                                    不显示
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="form-group"></div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

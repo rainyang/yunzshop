@@ -50,7 +50,7 @@ class Dispatch extends \app\common\models\goods\Dispatch
      */
     public static function getOneByDefault()
     {
-        return self::where('is_default', 1)
+        return self::uniacid()->where('is_default', 1)
             ->first();
     }
 

@@ -337,7 +337,6 @@ class Member extends \app\common\models\Member
 
         $result->leftJoin('yz_member_del_log', 'mc_members.uid', '=', 'yz_member_del_log.member_id')->whereNull('yz_member_del_log.member_id');
 
-
         return $result;
     }
 

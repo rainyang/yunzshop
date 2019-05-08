@@ -90,6 +90,7 @@ class MemberCartController extends ApiController
         }
 
         $validator = $cartModel->validator($cartModel->getAttributes());
+        event(new \app\common\events\cart\AddCartEvent($cartModel->getAttributes()));
         if ($validator->fails()) {
             return $this->errorJson("数据验证失败，添加购物车失败！！！");
         } else {
@@ -179,8 +180,8 @@ class MemberCartController extends ApiController
         if (is_null(request()->input('ids'))) {
             $ids = $this->getMemberCarId();
         }
-
         $result = MemberCartService::clearCartByIds($ids);
+
         if ($result) {
             return $this->successJson('移除购物车成功。');
         }

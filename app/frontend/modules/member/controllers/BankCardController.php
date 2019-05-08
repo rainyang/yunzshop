@@ -49,7 +49,7 @@ class BankCardController extends ApiController
         $bank_city = \YunShop::request()->bank_city;
         $bank_branch = \YunShop::request()->bank_branch;
 
-        $bankdata = [
+        $old_bankdata = [
             'member_name'       =>$bankCard->member_name,
             'bank_card'         =>$bankCard->bank_card,
             'bank_name'         =>$bankCard->bank_name,
@@ -57,10 +57,21 @@ class BankCardController extends ApiController
             'bank_city'         =>$bankCard->bank_city,
             'bank_branch'       =>$bankCard->bank_branch
         ];
+
+        $new_bankdata = [
+            'member_name'       =>$member_name,
+            'bank_card'         =>$bank_card,
+            'bank_name'         =>$bank_name,
+            'bank_province'     =>$bank_province,
+            'bank_city'         =>$bank_city,
+            'bank_branch'       =>$bank_branch
+        ];
+
         $membership_infomation = [
             'uniacid'        => \YunShop::app()->uniacid,
             'uid'            => \YunShop::app()->getMemberId(),
-            'old_data'       => serialize($bankdata),
+            'old_data'       => serialize($old_bankdata),
+            'new_data'       => serialize($new_bankdata),
             'session_id'     => session_id()
         ];
         $membership_infomation_log_model = MembershipInformationLog::create($membership_infomation);

@@ -30,7 +30,6 @@ class MemberAppYdbService extends MemberService
 
     public function login()
     {
-        load()->func('communication');
         $uniacid  = \YunShop::app()->uniacid;
         $mobile   = \YunShop::request()->mobile;
         $password = \YunShop::request()->password;
@@ -125,8 +124,9 @@ class MemberAppYdbService extends MemberService
     {
         //通过接口获取用户信息
         $url       = 'https://api.weixin.qq.com/sns/userinfo?access_token=' . $token . '&openid=' . $openid;
-        $res       = @ihttp_get($url);
-        $user_info = json_decode($res['content'], true);
+        $user_info = \Curl::to($url)
+            ->asJsonResponse(true)
+            ->get();
 
         if (!empty($uuid)) {
             $user_info['uuid'] = $uuid;
@@ -136,7 +136,7 @@ class MemberAppYdbService extends MemberService
             $this->memberLogin($user_info);
             exit('success');
         } else {
-            \Log::info('云打包获取用户信息错误：' . print_r($res, true));
+            \Log::info('云打包获取用户信息错误：' . print_r($user_info, true));
             exit('fail');
         }
     }
@@ -175,7 +175,6 @@ class MemberAppYdbService extends MemberService
     {
         $uid = parent::addMemberInfo($uniacid, $userinfo);
 
-        //$this->addMcMemberFans($uid, $uniacid, $userinfo);
         $this->addFansMember($uid, $uniacid, $userinfo);
 
         return $uid;

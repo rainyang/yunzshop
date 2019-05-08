@@ -57,11 +57,15 @@
 
                             @if(YunShop::app()->role)
                                 <ul class="dropdown-menu">
+                                    @if (env('APP_Framework') != 'platform')
                                     @if(YunShop::app()->role !='operator')
                                         <li class="about"> <i></i><a href="?c=account&a=post&uniacid={{YunShop::app()->uniacid}}&acid={{YunShop::app()->uniacid}}"> <span class="fa fa-wechat"></span>编辑当前账号资料</a> </li>
                                     @endif
                                     <li> <a href="?c=account&a=display&"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
                                     <li> <a target="_blank" href="?c=utility&a=emulator&"><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
+                                    @else
+                                        <li> <a href="/#/manage/index"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
+                                    @endif
                                     @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
                                         <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a></li>
                                     @endif
@@ -82,6 +86,7 @@
                             </p>
                         </a>
                         <ul class="dropdown-menu">
+                            @if (env('APP_Framework') != 'platform')
                             <li class="about"> <i></i> <a href="?c=user&a=profile&do=profile&"> <span class="fa fa-wechat fa-fw"></span>我的账号</a> </li>
                             @if(YunShop::app()->role == 'founder')
                                 <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
@@ -89,7 +94,16 @@
                                 <li class="system"> <a href="?c=system&a=welcome" target="_blank"><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
                                 <li class="system three"> <a href="?c=system&a=updatecache&" target="_blank"><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>
                             @endif
-                            <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+                            @endif
+
+                            @if (env('APP_Framework') == 'platform')
+                                    @if(YunShop::app()->role == 'founder')
+                                        <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
+                                    @endif
+                                <li class="drop_out"> <a href="javascript:void(0)" id="sys_logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+                            @else
+                                <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
+                            @endif
                         </ul>
 
                     </li>
@@ -115,3 +129,12 @@
         </div>
     </nav>
 </div>
+<script>
+    $(function () {
+        $("#sys_logout").click(function () {
+            $.get("/admin/logout",function(data,status){
+                location.href = '/';
+            });
+        });
+    });
+</script>
