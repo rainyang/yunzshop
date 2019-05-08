@@ -3,11 +3,13 @@
 namespace app\common\components;
 
 use app\common\exceptions\AppException;
+
 use app\common\exceptions\ShopException;
 use app\common\helpers\WeSession;
 use app\common\models\Modules;
 use app\common\services\Check;
 use app\common\services\Session;
+
 use app\common\traits\JsonTrait;
 use app\common\traits\MessageTrait;
 use app\common\traits\PermissionTrait;
@@ -15,6 +17,7 @@ use app\common\traits\TemplateTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * controller基类
@@ -26,8 +29,6 @@ use Illuminate\Routing\Controller;
 class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait, JsonTrait;
-
-    const COOKIE_EXPIRE = 864000;
 
     /**
      * controller中执行报错需要回滚的action数组
@@ -41,29 +42,27 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->setCookie();
     }
 
     /**
      * 前置action
      */
+
     public function preAction()
     {
-        //strpos(request()->get('route'),'setting.key')!== 0 && Check::app();
-
         //是否为商城后台管理路径
         if (env('APP_Framework') == 'platform') {
             strpos(request()->getRequestUri(),  config('app.isWeb')) === 0 && Check::setKey();
         } else {
             strpos(request()->getBaseUrl(),  '/web/index.php') === 0 && Check::setKey();
         }
+
     }
 
     protected function formatValidationErrors(Validator $validator)
     {
         return $validator->errors()->all();
     }
-
 
     /**
      * url参数验证
@@ -85,43 +84,6 @@ class BaseController extends Controller
         if ($validator->fails()) {
             throw new AppException($validator->errors()->first());
         }
-    }
-
-    /**
-     * 设置Cookie存储
-     *
-     * @return void
-     */
-    private function setCookie()
-    {
-        $session_id = '';
-        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
-            $pieces     = explode('-', \YunShop::request()->state);
-            $session_id = $pieces[1];
-            unset($pieces);
-        }
-
-        if (isset($_COOKIE[session_name()])) {
-            $session_id_1 = $_COOKIE[session_name()];
-            session_id($session_id_1);
-        }
-
-        //h5 app
-        if (!empty($_REQUEST['uuid'])) {
-            $session_id_2 = md5($_REQUEST['uuid']);
-            session_id($session_id_2);
-            setcookie(session_name(), $session_id_2);
-        }
-
-        if (empty($session_id) && \YunShop::request()->session_id
-            && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
-        ) {
-            $session_id = \YunShop::request()->session_id;
-            session_id($session_id);
-            setcookie(session_name(), $session_id);
-        }
-
-        Session::factory(\YunShop::app()->uniacid, self::COOKIE_EXPIRE);
     }
 
     /**
@@ -151,4 +113,5 @@ class BaseController extends Controller
 
         $this->apiData[$flag] = $data['json'];
     }
+
 }
