@@ -4,6 +4,11 @@ namespace app\Http\Middleware;
 
 use Closure;
 
+/**
+ * 微擎后台跳转
+ * Class We7
+ * @package app\Http\Middleware
+ */
 class We7
 {
     /**

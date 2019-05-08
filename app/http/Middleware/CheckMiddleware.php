@@ -5,6 +5,11 @@ namespace app\Http\Middleware;
 use app\common\services\Check;
 use Closure;
 
+/**
+ * 后台检测
+ * Class CheckMiddleware
+ * @package app\Http\Middleware
+ */
 class CheckMiddleware
 {
     /**

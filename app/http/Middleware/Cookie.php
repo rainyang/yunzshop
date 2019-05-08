@@ -14,6 +14,11 @@ use app\common\helpers\WeSession;
 use app\common\models\Modules;
 use Illuminate\Http\Request;
 
+/**
+ * 前端cookie
+ * Class Cookie
+ * @package app\http\Middleware
+ */
 class Cookie
 {
     const COOKIE_EXPIRE = 864000;

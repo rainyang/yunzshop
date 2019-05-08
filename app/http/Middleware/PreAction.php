@@ -12,6 +12,11 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * 所有controller
+ * Class PreAction
+ * @package app\http\Middleware
+ */
 class PreAction
 {
     /**

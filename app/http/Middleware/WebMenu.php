@@ -7,6 +7,11 @@ use app\common\services\PermissionService;
 use Closure;
 use Illuminate\Support\Facades\Config;
 
+/**
+ * 后台菜单
+ * Class WebMenu
+ * @package app\Http\Middleware
+ */
 class WebMenu
 {
     /**
