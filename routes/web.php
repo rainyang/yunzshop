@@ -134,7 +134,7 @@ Route::any('/', function () {
             if (!empty($plugins_dir)) {
                 \Artisan::call('update:version', ['version' => $plugins_dir]);
             }
-            
+
             if (!empty($eid)) {
                 $entry = module_entry($eid);
 

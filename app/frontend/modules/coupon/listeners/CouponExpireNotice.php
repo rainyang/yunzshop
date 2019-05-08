@@ -64,13 +64,13 @@ class CouponExpireNotice
                 'api_limit' => $this->apiLimit($memberCoupon->belongsToCoupon),
                 'time_end' => $memberCoupon->time_end
             ];
-            $this->sendNotice($couponData, $member->hasOneFans);
+            $this->sendNotice($couponData, $member);
         }
     }
 
     public function sendNotice($ouponData, $member)
     {
-        if ($this->set['template_id'] && ($member['follow'] == 1)) {
+        if ($member->hasOneFans->follow == 1) {
 //            $message = $this->set['expire'];
 //            $message = str_replace('[优惠券名称]', $ouponData['name'], $message);
 //            $message = str_replace('[优惠券使用范围]', $ouponData['api_limit'], $message);
@@ -88,6 +88,7 @@ class CouponExpireNotice
             }
             $params = [
                 ['name' => '优惠券名称', 'value' => $ouponData['name']],
+                ['name' => '昵称', 'value' => $member['nickname']],
                 ['name' => '优惠券使用范围', 'value' => $ouponData['api_limit']],
                 ['name' => '过期时间', 'value' => $ouponData['time_end']],
             ];

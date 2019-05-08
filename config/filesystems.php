@@ -1,5 +1,12 @@
 <?php
 
+if (env('APP_Framework') == 'platform') {
+    $attachment = 'static/upload';
+} else {
+    $attachment = '../../attachment';
+}
+
+
 return [
 
     /*
@@ -47,6 +54,26 @@ return [
             'driver' => 'local',
             'root' => storage_path('app'),
         ],
+        'syst_images' => [
+            'driver' => 'local',
+            'root' => base_path('static/upload/images/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/images/'.date('Y').'/'.date('m'),
+            'visibility' => 'public',
+        ],
+
+        'videos' => [
+            'driver' => 'local',
+            'root' => base_path('static/upload/videos/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/videos/'.date('Y').'/'.date('m'),
+            'visibility' => 'public',
+        ],
+
+        'audios' => [
+            'driver' => 'local',
+            'root' => base_path('static/upload/audios/'.date('Y').'/'.date('m')),
+            'url' => env('APP_URL').'/static/upload/audios/'.date('Y').'/'.date('m'),
+            'visibility' => 'public',
+        ],
 
         'public' => [
             'driver' => 'local',
@@ -57,14 +84,14 @@ return [
 
         'avatar' => [
             'driver' => 'local',
-            'root' => base_path('../../attachment/avatar'),
+            'root' => base_path($attachment .'/avatar'),
             'url' => env('APP_URL').'/attachment/avatar',
             'visibility' => 'public',
         ],
 
         'image' => [
             'driver' => 'local',
-            'root' => base_path('../../attachment/image'),
+            'root' => base_path($attachment . '/image'),
             'url' => env('APP_URL').'image',
             'visibility' => 'public',
         ],
@@ -96,12 +123,19 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public/netcar'),
         ],
-
+        
         // 易宝支付图片上传
         'yop' => [
             'driver' => 'local',
             'root' => storage_path('app/public/yop'),
             'url' => env('APP_URL').'/storage/public/yop',
+        ],
+
+        // 易宝支付图片上传
+        'business_card' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/business_card'),
+            'url' => env('APP_URL').'/storage/public/business_card',
         ],
 
         'upload' => [

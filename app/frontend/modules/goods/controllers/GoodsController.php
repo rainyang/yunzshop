@@ -244,12 +244,34 @@ class GoodsController extends ApiController
                 $requestSearch['category'] = $categorySearch;
             }
         }
-        $list = Goods::Search($requestSearch)->select('*', 'yz_goods.id as goods_id')
+
+//        $list = Goods::Search($requestSearch)->select( '*','yz_goods.id')
+//            ->where("status", 1)
+//            ->where(function($query) {
+//                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+//            })->groupBy('yz_goods.id')
+//            ->orderBy($order_field, $order_by)
+//            ->paginate(20)->toArray();
+
+
+//        $id_arr =  collect($list->get())->map(function($rows) {
+//            return $rows['id'];
+//        });
+        $list = Goods::Search($requestSearch)->select( 'yz_goods.id')
             ->where("status", 1)
             ->where(function($query) {
                 $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-            })->groupBy('yz_goods.id')
-            ->orderBy($order_field, $order_by)
+            });
+
+
+        $id_arr =  collect($list->get())->map(function($rows) {
+            return $rows['id'];
+        });
+        $list = Goods::whereIn('id',$id_arr)->select("*")
+            ->where("status", 1)
+            ->where(function($query) {
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+            })
             ->paginate(20)->toArray();
 
 
@@ -276,6 +298,9 @@ class GoodsController extends ApiController
 
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
+        }
+        foreach ($list["data"] as $key=>$row){
+            $list['data'][$key]['goods_id']=$list['data'][$key]['id'];
         }
         return $this->successJson('成功', $list);
     }
@@ -470,7 +495,7 @@ class GoodsController extends ApiController
                 $max_point_deduct = $goodsModel->hasOneSale->max_point_deduct;
             }
             if (!empty($max_point_deduct)) {
-                $data['value'][] = '最高抵扣'.$max_point_deduct.$data['name'];
+                $data['value'][] = '最高抵扣'.$max_point_deduct.'元';
             }
         }
         if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
@@ -479,7 +504,7 @@ class GoodsController extends ApiController
                 $min_point_deduct = $goodsModel->hasOneSale->min_point_deduct;
             }
             if (!empty($min_point_deduct)) {
-                $data['value'][] = '最少抵扣'.$min_point_deduct.$data['name'];
+                $data['value'][] = '最少抵扣'.$min_point_deduct.'元';
             }
         }
         if (!empty($data['value'])) {

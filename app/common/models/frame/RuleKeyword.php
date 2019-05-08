@@ -29,6 +29,17 @@ class RuleKeyword extends BaseModel
 
     protected static $module = 'yun_shop';
 
+    public function __construct()
+    {
+        // 新框架兼容微擎
+        if (env('APP_Framework') == 'platform') {
+            $this->table = 'yz_wechat_rule_keyword';
+        } else {
+            $this->table = 'rule_keyword';
+        }
+        parent::__construct();
+    }
+
 
     /*
      * 关键字是否存在，存在返回id，不存在返回false；

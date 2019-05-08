@@ -68,9 +68,8 @@ class YunShop
             $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
             //兼容旧插件使用
             $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
-        if (PermissionService::isFounder()) {
+            //创始人私有菜单
             $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
-        }
             Config::set('menu', $menuList);
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
 //            dd($item);
@@ -162,7 +161,11 @@ class YunShop
 
     public static function isWeb()
     {
-        return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return strpos(request()->getRequestUri(), config('app.isWeb')) !== false ? true : false;
+        } else {
+            return strpos($_SERVER['PHP_SELF'], '/web/index.php') !== false ? true : false;
+        }
     }
 
     public static function isApp()
@@ -185,8 +188,13 @@ class YunShop
      */
     public static function isWechatApi()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
-            strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return (strpos($_SERVER['REQUEST_URI'], '/wechat') !== false &&
+                strpos($_SERVER['REQUEST_URI'], '/api') !== false) ? true : false;
+        } else {
+            return (strpos($_SERVER['PHP_SELF'], '/addons/') === false &&
+                strpos($_SERVER['PHP_SELF'], '/api.php') !== false) ? true : false;
+        }
     }
 
     /**
@@ -195,8 +203,13 @@ class YunShop
      */
     public static function isPlugin()
     {
-        return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
-            strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
+        if (env('APP_Framework') == 'platform') {
+            return (strpos(request()->getRequestUri(), config('app.isWeb')) !== false &&
+                strpos(request()->getRequestUri(), '/plugin') !== false) ? true : false;
+        } else {
+            return (strpos($_SERVER['PHP_SELF'], '/web/') !== false &&
+                strpos($_SERVER['PHP_SELF'], '/plugin.php') !== false) ? true : false;
+        }
     }
 
     /**
@@ -207,6 +220,7 @@ class YunShop
     public static function isRole()
     {
         global $_W;
+
         if (app('plugins')->isEnabled('supplier')) {
             $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
             if (!$res) {
@@ -345,8 +359,6 @@ class YunShop
             } else {
 
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-//dump($controllerFile);
-//dump($path);
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }
@@ -450,8 +462,17 @@ class YunRequest extends YunComponent
 
     public function __construct()
     {
+        /*if (env('APP_Framework') == 'platform') {
+            $sys_global_params = \config('app.sys_global');
+        } else {
+            global $_GPC;
+
+            $sys_global_params = $_GPC;
+        }*/
+
         global $_GPC;
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : (array)$_GPC;
+
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : $_GPC;
     }
 
 
@@ -471,8 +492,11 @@ class YunApp extends YunComponent
     public function __construct()
     {
         global $_W;
+
         $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
+
+
     }
 
     public function getW()
@@ -541,21 +565,12 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (1||config('app.debug')) {
-            //dump($_GET);
-            if (isset($_GET['test_uid'])) {
-                return $_GET['test_uid'];
-            }
-            //return false;
-        }
-
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
             return 0;
         }
     }
-
 
 }
 

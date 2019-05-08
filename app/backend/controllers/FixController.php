@@ -27,8 +27,8 @@ class FixController extends BaseController
 {
     use DispatchesJobs;
 
-    public function errorDividendData(){
-
+    public function errorDividendData()
+    {
         $a = DB::table('yz_team_dividend')->select(['yz_team_dividend.uniacid as tuniacid','mc_members.uniacid as uniacid','yz_team_dividend.id' , 'yz_order.id as orderid', 'yz_order.uid', 'yz_team_dividend.order_sn', 'yz_team_dividend.member_id', 'yz_team_dividend.status'])
             ->join('yz_order', 'yz_order.order_sn', '=', 'yz_team_dividend.order_sn')
             ->join('mc_members', 'mc_members.uid', '=', 'yz_team_dividend.member_id')

@@ -281,4 +281,80 @@ class Setting extends BaseModel
         }
     }
 
+    /**
+     * 获取不区分公众号配置与值
+     *
+     * @param $key
+     * @param null $default 默认值
+     * @return mixed
+     */
+    public function getNotUniacidValue($key, $default = null)
+    {
+        if (app('SettingCache')->has($key)) {
+            //\Log::debug('-----setting get cache------'.$cacheKey);
+            $value = app('SettingCache')->get($key);
+        } else {
+            //\Log::debug('-----setting get db------'.$key);
+            list($group, $groupKey) = $this->parseKey($key);
+
+            $settingGroupItems = $this->getNotUniacidItems($group);
+            //\Log::debug('-----setting save cache------' . $cacheKey, $value);
+            if (!array_has($settingGroupItems, $groupKey)) {
+                // 如果数据库中不存在记录,需要在缓存中添加这个key,避免重复查库
+                yz_array_set($settingGroupItems, $groupKey, null);
+
+            }
+            $value = array_get($settingGroupItems, $groupKey, $default);
+            app('SettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
+        }
+        return $value;
+    }
+
+    /**
+     * 获取账号内当前组的所有配置信息
+     *
+     * @param $group
+     * @return array
+     */
+    public function getNotUniacidItems($group)
+    {
+        $items = array();
+        $settings = self::fetchNotUniacidSettings($group);
+        foreach ($settings as $item) {
+            switch (strtolower($item->type)) {
+                case 'string':
+                    $items[$item->key] = (string)$item->value;
+                    break;
+                case 'integer':
+                    $items[$item->key] = (integer)$item->value;
+                    break;
+                case 'double':
+                    $items[$item->key] = (double)$item->value;
+                    break;
+                case 'boolean':
+                    $items[$item->key] = (boolean)$item->value;
+                    break;
+                case 'array':
+                    $items[$item->key] = unserialize($item->value);
+                    break;
+                case 'null':
+                    $items[$item->key] = null;
+                    break;
+                default:
+                    $items[$item->key] = $item->value;
+            }
+        }
+        return $items;
+    }
+
+    /**
+     * 获取配置组数据
+     *
+     * @param $group
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
+    public function fetchNotUniacidSettings($group)
+    {
+        return self::where('group', $group)->get();
+    }
 }
