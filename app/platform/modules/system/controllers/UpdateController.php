@@ -134,7 +134,7 @@ class UpdateController extends BaseController
         }
 
         //前端更新文件检测
-        $frontendUpgrad = $this->frontendUpgrad();
+        $frontendUpgrad = $this->frontendUpgrad($key, $secret);
 
         //后台更新文件检测
         $update = new AutoUpdate(null, null, 300);
