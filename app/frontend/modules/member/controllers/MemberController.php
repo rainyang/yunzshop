@@ -164,11 +164,19 @@ class MemberController extends ApiController
 
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
+                //网约车
+                $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
+
+//                if ($data['is_open_net_car']) {
+//                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//                }
+
                 if (is_null($integrated)) {
                     return $this->successJson('', $data);
                 } else {
                     return show_json(1, $data);
                 }
+
             } else {
                 if (is_null($integrated)) {
                     return $this->errorJson('[' . $member_id . ']用户不存在');
@@ -860,7 +868,14 @@ class MemberController extends ApiController
             'showOptionMenu',
             'scanQRCode',
             'updateAppMessageShareData',
-            'updateTimelineShareData'
+            'updateTimelineShareData',
+            'startRecord',
+            'stopRecord',
+            'playVoice',
+            'pauseVoice',
+            'stopVoice',
+            'uploadVoice',
+            'downloadVoice'
         ));
         $config = json_decode($config, 1);
 
@@ -1420,7 +1435,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code','my-friend']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car']
         ];
 
         $data   = [];
@@ -1467,6 +1482,19 @@ class MemberController extends ApiController
                     'url'   => 'TransHome'
                 ];
             }
+
+            if (app('plugins')->isEnabled('business-card')) {
+                $is_open = Setting::get('business-card.is_open');
+                if($is_open == 1){
+                    $data[] = [
+                        'name'  => 'business_card',
+                        'title' => '名片',
+                        'class' => 'icon-member_card1',
+                        'url'   => 'CardCenter'
+                    ];
+                }
+            }
+
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
@@ -1719,6 +1747,21 @@ class MemberController extends ApiController
                     ];
                 }
             }
+
+        //网约车插件开启关闭
+        if (app('plugins')->isEnabled('net-car')) {
+
+            $video_demand_setting = Setting::get('plugin.net_car');
+
+            if ($video_demand_setting && $video_demand_setting['net_car_open']) {
+                $data[] = [
+                    'name'  => 'net_car',
+                    'title' => '网约车',
+                    'class' => 'icon-member_my-card',
+                    'url'   => 'online_car',
+                ];
+            }
+        }
 
         foreach ($data as $k => $v) {
 

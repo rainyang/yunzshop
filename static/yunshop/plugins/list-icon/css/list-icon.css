@@ -77,6 +77,11 @@
 .help_user_buying {
     background-image: url('../img/industry/help_user_buying.png');
 }
+.net_car {
+    background-image: url('../img/industry/net_car.png');
+}
+
+
 
 .point_activity {
     background-image: url('../img/marketing/point_activity.png');
@@ -150,6 +155,9 @@
 }
 .froze {
     background-image: url('../img/marketing/froze.png');
+}
+.business_card {
+    background-image: url('../img/marketing/business_card.png');
 }
 
 .app_set {

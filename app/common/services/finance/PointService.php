@@ -120,6 +120,12 @@ class PointService
     const POINT_MODE_EXCEL_RECHARGE = 29;
     const POINT_MODE_EXCEL_RECHARGE_ATTACHED = 'EXCEL充值';
 
+    const POINT_MODE_CARD_VISIT_REWARD = 30;
+    const POINT_MODE_CARD_VISIT_REWARD_ATTACHED = '名片访问奖励';
+
+    const POINT_MODE_CARD_REGISTER_REWARD = 31;
+    const POINT_MODE_CARD_REGISTER_REWARD_ATTACHED = '名片新增会员奖励';
+
 
 
     const POINT = 0;
@@ -329,6 +335,12 @@ class PointService
                 break;
             case (94):
                 $mode_attribute = self::POINT_MODE_HOTEL_ATTACHED;
+                break;
+            case (30):
+                $mode_attribute = self::POINT_MODE_CARD_VISIT_REWARD_ATTACHED;
+                break;
+            case (31):
+                $mode_attribute = self::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
                 break;
 
         }
