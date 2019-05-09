@@ -59,7 +59,7 @@ class ApplicationController extends BaseController
                     //到期前一周的时间  当前+1 直到 +7 小于等于 $value['validity_time']
                     $week = date('W');
 
-                    $nowstamp = mktime(0,0,0, date('m'), date('d'), date('Y');
+                    $nowstamp = mktime(0,0,0, date('m'), date('d'), date('Y') );
 
                     $time_week = date('W', $value['validity_time']);
 
