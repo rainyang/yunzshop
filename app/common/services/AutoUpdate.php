@@ -433,8 +433,9 @@ class AutoUpdate
             if (version::gt($version, $this->_currentVersion)) {
                 if (version::gt($version, $this->_latestVersion))
                     $this->_latestVersion = $version;
+
                 $this->_updates[] = [
-                    'version' => $version,
+                    'version' => $version->getVersion(),
                     'url'     => $updateUrl->url,
                     'description' => $updateUrl->description,
                     'created_at' => strtotime($updateUrl->created_at->date)
