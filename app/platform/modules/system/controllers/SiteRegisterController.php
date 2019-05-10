@@ -32,8 +32,6 @@ class SiteRegisterController extends BaseController
     public function index()
     {
         $upgrade      = Setting::get('shop.key');
-        $upgrade['key']      = '';
-        $upgrade['secret']      = '';
         $page = 'auth';
 
         if (empty($upgrade['key']) && empty($upgrade['secret'])) {
@@ -44,9 +42,6 @@ class SiteRegisterController extends BaseController
                 ->withData(['domain' => $domain])
                 ->asJsonResponse(true)
                 ->get();
-
-            $auth_str['data']['key'] = '';
-            $auth_str['data']['secret'] = '';
 
             if (empty($auth_str['data']['key']) && empty($auth_str['data']['secret'])) {
                 $page = 'free';
