@@ -21,7 +21,7 @@ class MemberCartController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function index()
+    public function index($request, $integrated = null)
     {
         $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', Member::current()->uid)
             ->pluginId()
@@ -49,7 +49,12 @@ class MemberCartController extends ApiController
             }
             //unset ($cartList[$key]['goods_option']);
         }
-        return $this->successJson('获取列表成功', $cartList);
+        if(is_null($integrated)){
+            return $this->successJson('获取列表成功', $cartList);
+        }else{
+            return show_json(1,$cartList);
+        }
+
     }
 
     /**
