@@ -49,6 +49,15 @@
 .separate {
     background-image: url('../img/dividend/separate.png');
 }
+.scoring-dividend {
+    background-image: url('../img/dividend/scoring-dividend.png');
+}
+.global-dividend {
+    background-image: url('../img/dividend/global-dividend.png');
+}
+.manual_bonus {
+    background-image: url('../img/dividend/manual_bonus.png');
+}
 
 .supplier {
     background-image: url('../img/industry/supplier.png');
@@ -110,7 +119,6 @@
 .love {
     background-image: url("../img/marketing/love.png");
 }
-
 .integral {
     background-image: url("../img/marketing/integral.png");
 }
@@ -159,6 +167,9 @@
 .business_card {
     background-image: url('../img/marketing/business_card.png');
 }
+.my-friend {
+    background-image: url('../img/marketing/my-friend.png');
+}
 
 .app_set {
     background-image: url('../img/tool/app_set.png');
@@ -205,6 +216,9 @@
 .usdtpay {
     background-image: url('../img/tool/usdtpay.png');
 }
+.alipay_onekey_login {
+    background-image: url('../img/tool/alipay_onekey_login.png');
+}
 
 
 .air {
@@ -249,9 +263,6 @@
 .order_meals {
     background-image: url('../img/api/order_meals.png');
 }
-.alipay_onekey_login {
-    background-image: url('../img/tool/alipay_onekey_login.png');
-}
 .eup_pay {
     background-image: url('../img/api/eup_pay.png');
 }
@@ -261,9 +272,12 @@
 .we7_wmall {
     background-image: url('../img/api/we7_wmall.png');
 }
+.weisrc_dish {
+    background-image: url('../img/api/weisrc_dish.png');
+}
+
+
+
 .asset {
     background-image: url('../img/blockchain/asset.png');
-}
-.my-friend {
-    background-image: url('../img/marketing/my-friend.png');
 }
