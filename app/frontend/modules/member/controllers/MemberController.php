@@ -43,10 +43,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Yunshop\AlipayOnekeyLogin\models\MemberAlipay;
 use Yunshop\AlipayOnekeyLogin\services\SynchronousUserInfo;
 use Yunshop\Commission\models\Agents;
+use Yunshop\Designer\models\ViewSet;
 use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
+use Yunshop\StoreCashier\common\models\Store;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 use app\frontend\models\MembershipInformationLog;
@@ -68,11 +70,15 @@ class MemberController extends ApiController
         'isValidatePage'
     ];
 
+    public $apiErrMsg = [];
+
+    public $apiData = [];
+
     /**
      * 获取用户信息
      *
      */
-    public function getUserInfo()
+    public function getUserInfo($request, $integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
         $v         = request('v');
@@ -158,15 +164,34 @@ class MemberController extends ApiController
 
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
-                return $this->successJson('', $data);
+                //网约车
+                $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
+
+//                if ($data['is_open_net_car']) {
+//                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//                }
+
+                if (is_null($integrated)) {
+                    return $this->successJson('', $data);
+                } else {
+                    return show_json(1, $data);
+                }
+
             } else {
-                return $this->errorJson('[' . $member_id . ']用户不存在');
+                if (is_null($integrated)) {
+                    return $this->errorJson('[' . $member_id . ']用户不存在');
+                } else {
+                    return show_json(0, '[' . $member_id . ']用户不存在');
+                }
             }
 
         } else {
-            return $this->errorJson('缺少访问参数');
+            if (is_null($integrated)) {
+                return $this->errorJson('缺少访问参数');
+            } else {
+                return show_json(0, '缺少访问参数');
+            }
         }
-
     }
 
 
@@ -552,12 +577,23 @@ class MemberController extends ApiController
                 'type'          => \YunShop::request()->type
             ];
 
+            $new_data = [
+                'alipay'        => $data['alipay'],
+                'alipayname'    => $data['alipay_name'],
+                'wechat'        => isset($data['wx']) ? $data['wx'] : '',
+                'mobile'        => $data['mobile'],
+                'name'          => $data['realname'],
+                'type'          => \YunShop::request()->type
+            ];
+
             $membership_infomation = [
                 'uniacid'        =>\YunShop::app()->uniacid,
                 'uid'            =>\YunShop::app()->getMemberId(),
                 'old_data'       => serialize($old_data),
+                'new_data'       => serialize($new_data),
                 'session_id'     =>session_id()
             ];
+
 
             MembershipInformationLog::create($membership_infomation);
 
@@ -797,6 +833,12 @@ class MemberController extends ApiController
      */
     public function wxJsSdkConfig()
     {
+        $member = \Setting::get('shop.member');
+
+        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+            return $this->successJson('', []);
+        }
+
         $url = \YunShop::request()->url;
         $pay = \Setting::get('shop.pay');
 
@@ -826,7 +868,14 @@ class MemberController extends ApiController
             'showOptionMenu',
             'scanQRCode',
             'updateAppMessageShareData',
-            'updateTimelineShareData'
+            'updateTimelineShareData',
+            'startRecord',
+            'stopRecord',
+            'playVoice',
+            'pauseVoice',
+            'stopVoice',
+            'uploadVoice',
+            'downloadVoice'
         ));
         $config = json_decode($config, 1);
 
@@ -1192,7 +1241,7 @@ class MemberController extends ApiController
     }
 
 
-    public function getCustomField()
+    public function getCustomField($request, $integrated = null)
     {
         // member.member.get-custom-field
         $member = Setting::get('shop.member');
@@ -1202,7 +1251,12 @@ class MemberController extends ApiController
             'is_validity'  => $member['level_type'] == 2 ? true : false,
             'term'         => $member['term'] ? $member['term'] : 0,
         ];
-        return $this->successJson('获取自定义字段成功！', $data);
+
+        if (is_null($integrated)) {
+            return $this->successJson('获取自定义字段成功！', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function saveCustomField()
@@ -1308,18 +1362,10 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-    public function isOpenRelation()
+    public function isOpenRelation($request, $integrated = null)
     {
         $data = ['switch' => 0];
 
-//        $relation = MemberRelation::getSetInfo()->first();
-        /*
-                if (!is_null($relation) && 1 == $relation->status) {
-                    $data = [
-                        'switch' => 1
-                    ];
-                }
-        */
         $switch = Setting::get('shop_app.pay.switch');
         if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
             $switch = 0;
@@ -1334,7 +1380,11 @@ class MemberController extends ApiController
             'switch' => $switch
         ];
 
-        return $this->successJson('', $data);
+        if (is_null($integrated)) {
+            return $this->successJson('', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function anotherShare()
@@ -1373,7 +1423,7 @@ class MemberController extends ApiController
         return $this->successJson('', $data);
     }
 
-   public function getEnablePlugins()
+   public function getEnablePlugins($request, $integrated = null)
     {
         $filter = [
             'conference',
@@ -1385,7 +1435,7 @@ class MemberController extends ApiController
             'tool' => ['separate'],
             'asset_equity' => ['integral','credit','asset'],
             'merchant' => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code']
+            'market' => ['ranking','article','clock_in','conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car']
         ];
 
         $data   = [];
@@ -1432,6 +1482,19 @@ class MemberController extends ApiController
                     'url'   => 'TransHome'
                 ];
             }
+
+            if (app('plugins')->isEnabled('business-card')) {
+                $is_open = Setting::get('business-card.is_open');
+                if($is_open == 1){
+                    $data[] = [
+                        'name'  => 'business_card',
+                        'title' => '名片',
+                        'class' => 'icon-member_card1',
+                        'url'   => 'CardCenter'
+                    ];
+                }
+            }
+
             if (app('plugins')->isEnabled('credit')) {
                 $credit_setting = Setting::get('plugin.credit');
                 if ($credit_setting && 1 == $credit_setting['is_credit']) {
@@ -1455,6 +1518,15 @@ class MemberController extends ApiController
                     ];
                 }
             }
+
+        if (app('plugins')->isEnabled('my-friend')) {
+            $data[] = [
+                'name'  => 'my-friend',
+                'title' => MY_FRIEND_NAME,
+                'class' => 'icon-member_my-friend',
+                'url'   => 'MyFriendApply'
+            ];
+        }
 
             if (app('plugins')->isEnabled('article')) {
                 $article_setting = Setting::get('plugin.article');
@@ -1676,6 +1748,21 @@ class MemberController extends ApiController
                 }
             }
 
+        //网约车插件开启关闭
+        if (app('plugins')->isEnabled('net-car')) {
+
+            $video_demand_setting = Setting::get('plugin.net_car');
+
+            if ($video_demand_setting && $video_demand_setting['net_car_open']) {
+                $data[] = [
+                    'name'  => 'net_car',
+                    'title' => '网约车',
+                    'class' => 'icon-member_my-card',
+                    'url'   => 'online_car',
+                ];
+            }
+        }
+
         foreach ($data as $k => $v) {
 
             if (in_array($v['name'], $diyarr['tool'])) {
@@ -1711,9 +1798,11 @@ class MemberController extends ApiController
             }
         }
 
-        
-        return $this->successJson('ok', $arr);
-
+        if (is_null($integrated)) {
+            return $this->successJson('ok', $arr);
+        } else {
+            return show_json(1, $arr);
+        }
     }
 
 
@@ -1943,21 +2032,6 @@ class MemberController extends ApiController
 
     public function isBindMobile($member_set, $member_id)
     {
-//        $is_bind_mobile = 0;
-//
-//        if (!is_null($member_set)) {
-//            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-//                if (Cache::has($member_id . '_member_info')) {
-//                    $member_model = Cache::get($member_id . '_member_info');
-//                } else {
-//                    $member_model = Member::getMemberById($member_id);
-//                }
-//
-//                if ($member_model && empty($member_model->mobile)) {
-//                    $is_bind_mobile = 1;
-//                }
-//            }
-//        }
         $is_bind_mobile = 0;
 
         if ((0 < $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
@@ -1985,8 +2059,53 @@ class MemberController extends ApiController
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
         }
-
-
-
     }
+
+    public function isOpen()
+    {
+        $settinglevel = \Setting::get('shop.member');
+
+        $info['is_open'] = 0;
+
+        //判断是否显示等级页
+        if ($settinglevel['display_page'])
+        {
+            $info['is_open'] = 1;
+        }
+
+        $info['level_type'] = $settinglevel['level_type']?:'0';
+
+        return show_json(1, $info);
+    }
+
+    public function pluginStore()
+    {
+        if (app('plugins')->isEnabled('store-cashier')) {
+            $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+            if (!$store) {
+                return show_json(0, ['status' => 0]);
+            }
+            if ($store->is_black == 1) {
+                return show_json(0, ['status' => 0]);
+            }
+
+            return show_json(1, ['status' => 1]);
+        }
+
+        return show_json(1, ['status' => 0]);
+    }
+
+    public function memberData($request)
+    {
+        $this->dataIntegrated($this->getUserInfo($request, true), 'member');
+        $this->dataIntegrated($this->getEnablePlugins($request,true), 'plugins');
+        $this->dataIntegrated($this->isOpenRelation($request,true), 'relation');
+        $this->dataIntegrated($this->getCustomField($request,true), 'custom');
+        $this->dataIntegrated($this->isOpen(), 'level');
+        $this->dataIntegrated($this->pluginStore(), 'isStore');
+
+        return $this->successJson('', $this->apiData);
+    }
+
+
 }

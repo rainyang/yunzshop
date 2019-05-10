@@ -77,6 +77,11 @@
 .help_user_buying {
     background-image: url('../img/industry/help_user_buying.png');
 }
+.net_car {
+    background-image: url('../img/industry/net_car.png');
+}
+
+
 
 .point_activity {
     background-image: url('../img/marketing/point_activity.png');
@@ -151,6 +156,9 @@
 .froze {
     background-image: url('../img/marketing/froze.png');
 }
+.business_card {
+    background-image: url('../img/marketing/business_card.png');
+}
 
 .app_set {
     background-image: url('../img/tool/app_set.png');
@@ -190,6 +198,12 @@
 }
 .wanmi_pay {
     background-image: url('../img/tool/wanmi_pay.png');
+}
+.wechat {
+    background-image: url('../img/tool/wechat.png');
+}
+.usdtpay {
+    background-image: url('../img/tool/usdtpay.png');
 }
 
 
@@ -249,4 +263,7 @@
 }
 .asset {
     background-image: url('../img/blockchain/asset.png');
+}
+.my-friend {
+    background-image: url('../img/marketing/my-friend.png');
 }
