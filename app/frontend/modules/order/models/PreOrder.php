@@ -2,12 +2,12 @@
 
 namespace app\frontend\modules\order\models;
 
-use Illuminate\Http\Request;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
 use app\common\models\OrderRequest;
 use app\common\modules\orderGoods\OrderGoodsCollection;
+use app\framework\Http\Request;
 use app\frontend\models\Order;
 use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\modules\deduction\OrderDeductManager;
@@ -131,8 +131,6 @@ class PreOrder extends Order
         $this->beforeCreating();
         $this->setOrderGoods($orderGoods);
 
-        $this->discount = new OrderDiscount($this);
-
         $this->afterCreating();
 
         $this->initAttributes();
@@ -140,7 +138,7 @@ class PreOrder extends Order
         return $this;
     }
 
-    private function getDiscount()
+    public function getDiscount()
     {
         if (!isset($this->discount)) {
             $this->discount = new OrderDiscount($this);
