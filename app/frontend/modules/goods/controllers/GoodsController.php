@@ -217,14 +217,6 @@ class GoodsController extends ApiController
         //判断是否酒店商品
         $goodsModel->is_hotel = $goodsModel->plugin_id == 33 ? 1 : 0;
         $goodsModel->is_store = $goodsModel-plugin_id == 32 ? 1 :0;
-        if($goodsModel-plugin_id == 32){
-            if(class_exists(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController)){
-                $goodsModel->StoreCashier = \Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request,true);
-                $goodsModel->ShopingCart = \Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true)
-            }else{
-                return show_json(0,'门店未开启');
-            }
-        }
 
         if(is_null($integrated)){
             return $this->successJson('成功', $goodsModel);

@@ -31,8 +31,11 @@ class MemberFavoriteController extends ApiController
     public function isFavorite($request, $integrated = null)
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = \YunShop::app()->getMemberId();
-        if (\YunShop::request()->goods_id){
+        $goodsId = \YunShop::request()->goods_id;
+        if(!$goodsId){
+            $goodsId = \YunShop::request()->id;
+        }
+        if ($goodsId){
             if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
                 $data = array(
                     'status' => 1,
@@ -47,7 +50,7 @@ class MemberFavoriteController extends ApiController
             if(is_null($integrated)){
                 return $this->successJson('接口访问成功', $data);
             }else{
-                return show(1,$data);
+                return show_json(1,$data);
             }
         }
 

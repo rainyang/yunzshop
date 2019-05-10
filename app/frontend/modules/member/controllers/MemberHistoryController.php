@@ -31,8 +31,14 @@ class MemberHistoryController extends ApiController
 
     public function store($request, $integrated = null)
     {
+
         $memberId = \YunShop::app()->getMemberId();
-        $goodsId = \YunShop::request()->goods_id;
+        if( \YunShop::request()->id){
+            $goodsId = \YunShop::request()->id ;
+        }else{
+            $goodsId = \YunShop::request()->goods_id ;
+        }
+
         $owner_id = intval(request()->owner_id);
         if (!$goodsId) {
             if(is_null($integrated)){
@@ -57,7 +63,7 @@ class MemberHistoryController extends ApiController
             if(is_null($integrated)){
                 return $this->successJson('更新足迹成功');
             }else{
-                return show_json(0,'未获取到商品ID，添加失败！');
+                return show_json(1,'更新足迹成功');
             }
         }
     }
