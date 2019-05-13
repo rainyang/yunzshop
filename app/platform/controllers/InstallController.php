@@ -309,12 +309,14 @@ class InstallController
 //        }
 
         try {
+            \Log::debug('安装初始数据迁移');
             $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
             $update     = new \app\common\services\AutoUpdate(null, null, 300);
             $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
             if (!empty($plugins_dir)) {
                 \Artisan::call('update:version', ['version' => $plugins_dir]);
             }
+            \Artisan::call('db:seed', ['--force' => true]);
         }catch (\Exception $e) {
             return $this->errorJson($e->getMessage());
         }
