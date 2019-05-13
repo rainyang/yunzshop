@@ -120,7 +120,7 @@ class UserController extends BaseController
             //dd(\YunShop::request());
             $userModel->status = $requestUser['status'];
             if ($requestUser['password']) {
-                $userModel->password = $this->password($requestUser['password'], $userModel->salt);
+                $userModel->password = user_hash($requestUser['password'], $userModel->salt);
             }
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;
@@ -188,7 +188,8 @@ class UserController extends BaseController
      * @param string $salt 附加字符串
      * @return string
      */
-    private function password($passwordinput, $salt) {
+    private function password($passwordinput, $salt)
+    {
         $authkey = \YunShop::app()->config['setting']['authkey'];
         $passwordinput = "{$passwordinput}-{$salt}-{$authkey}";
         return sha1($passwordinput);

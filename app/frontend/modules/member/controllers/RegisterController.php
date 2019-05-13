@@ -131,6 +131,7 @@ class RegisterController extends ApiController
                 'uniacid' => $uniacid,
                 'group_id' => $default_subgroup_id,
                 'level_id' => 0,
+                'invite_code' => \app\frontend\modules\member\models\MemberModel::generateInviteCode(),
             );
 
             SubMemberModel::insertData($sub_data);

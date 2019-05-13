@@ -131,6 +131,13 @@ return [
             'url' => env('APP_URL').'/storage/public/yop',
         ],
 
+        // 易宝支付图片上传
+        'business_card' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/business_card'),
+            'url' => env('APP_URL').'/storage/public/business_card',
+        ],
+
         'upload' => [
             'driver' => 'local',
             'root' => storage_path('app/public/avatar'),

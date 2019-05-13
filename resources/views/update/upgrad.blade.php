@@ -120,7 +120,7 @@
                             html+="<li><br/>恭喜您，您现在是最新版本！</li>"
                         } else {
                             var version     = '{{$version}}';
-                            var new_version = '{{$list[$count-1]['version']}}';;
+                            var new_version = '{{$list[$count-1]['version']}}';
 
                            //单独更新前端
                             html+="<li><br/>当前版本：<span style='color: #dd4b39'>" + version + "</span></li>"

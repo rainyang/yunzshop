@@ -11,8 +11,7 @@ namespace app\platform\modules\system\controllers;
 
 use app\common\components\BaseController;
 use app\common\facades\Option;
-// use app\common\facades\Setting;
-use app\common\models\Setting;
+use app\common\facades\Setting;
 use app\common\models\UniAccount;
 use app\common\services\AutoUpdate;
 use Illuminate\Filesystem\Filesystem;
@@ -29,8 +28,8 @@ class UpdateController extends BaseController
         //执行迁移文件
         $this->runMigrate();
 
-        $key = Setting::get('shop.key')['key'];
-        $secret = Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -72,8 +71,8 @@ class UpdateController extends BaseController
     public function check()
     {
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -128,12 +127,16 @@ class UpdateController extends BaseController
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'version' => ''];
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
 
+        //前端更新文件检测
+        $frontendUpgrad = $this->frontendUpgrad($key, $secret);
+
+        //后台更新文件检测
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('backcheck_app.json');
         $update->setCurrentVersion(config('version'));
@@ -216,7 +219,9 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log']))
+                    'log' => nl2br(base64_decode($ret['log'])),
+                    'frontendUpgrad' => count($frontendUpgrad),
+                    'list' => $frontendUpgrad
                 ];
             } else {
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
@@ -273,8 +278,8 @@ class UpdateController extends BaseController
                 }
             }
 
-            $key = $this->setting()['key'];
-            $secret = $this->setting()['secret'];
+            $key = Setting::getNotUniacid('shop.key')['key'];
+            $secret = Setting::getNotUniacid('shop.key')['secret'];
             if(!$key || !$secret) {
                 return;
             }
@@ -327,6 +332,9 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
+            //检查并下载框架更新文件
+            $this->startDownloadFramework();
+
             //覆盖
             foreach ($files as $f) {
                 $path = $f['path'];
@@ -368,7 +376,7 @@ class UpdateController extends BaseController
     }
 
     /**
-     * 开始下载并更新程序
+     * 开始下载并更新前端vue
      * @return \Illuminate\Http\RedirectResponse
      */
     public function startDownload()
@@ -377,8 +385,8 @@ class UpdateController extends BaseController
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = $this->setting()['key'];
-        $secret = $this->setting()['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -403,6 +411,57 @@ class UpdateController extends BaseController
         if ($update->newVersionAvailable()) {
 
             $result = $update->update();
+
+            if ($result === true) {
+                $list = $update->getUpdates();
+                if (!empty($list)) {
+                    $this->setSystemVersion($list);
+                }
+
+                $resultArr['status'] = 1;
+                $resultArr['msg'] = '更新成功';
+            } else {
+                $resultArr['msg'] = '更新失败: ' . $result;
+                if ($result = AutoUpdate::ERROR_SIMULATE) {
+                    $resultArr['data'] = $update->getSimulationResults();
+                }
+            }
+        } else {
+            $resultArr['msg'] = 'Current Version is up to date';
+        }
+        response()->json($resultArr)->send();
+        return;
+    }
+
+    /**
+     * 开始下载并更新框架vue
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function startDownloadFramework()
+    {
+        \Cache::flush();
+        $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
+        set_time_limit(0);
+
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
+
+        $update = new AutoUpdate(null, null, 300);
+        $update->setUpdateFile('check_fromework.json');
+        $update->setCurrentVersion(config('version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        $update->setBasicAuth($key, $secret);
+
+        //Check for a new update
+        if ($update->checkUpdate() === false) {
+            $resultArr['msg'] = 'Could not check for updates! See log file for details.';
+            response()->json($resultArr)->send();
+            return;
+        }
+
+        if ($update->newVersionAvailable()) {
+
+            $result = $update->update(2);
 
             if ($result === true) {
                 $list = $update->getUpdates();
@@ -564,5 +623,25 @@ class UpdateController extends BaseController
         }
 
         \Artisan::call('migrate',['--force' => true]);
+    }
+
+    private function frontendUpgrad($key, $secret)
+    {
+        $update = new AutoUpdate(null, null, 300);
+
+        //前端更新文件检测
+        $update->setUpdateFile('check_app.json');
+        $update->setCurrentVersion(config('front-version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        $update->setBasicAuth($key, $secret);
+        $update->checkUpdate();
+
+        if ($update->newVersionAvailable()) {
+            $list = $update->getUpdates();
+        }
+
+        krsort($list);
+
+        return $list;
     }
 }
