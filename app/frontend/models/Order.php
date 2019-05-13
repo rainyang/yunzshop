@@ -92,7 +92,7 @@ class Order extends \app\common\models\Order
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
             ])->where('status', 3)->orderBy('id', 'desc')->get();
     }
-    public static function getMyCommentListPaginate($status,$page)
+    public static function getMyCommentListPaginate($status,$page,$pageSize)
     {
         $operator = [];
         if ($status == 0) {
@@ -107,7 +107,7 @@ class Order extends \app\common\models\Order
         })
             ->with([
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
-            ])->where('status', 3)->orderBy('id', 'desc')->paginate($page);
+            ])->where('status', 3)->orderBy('id', 'desc')->paginate($pageSize,['*'],'page',$page);
     }
 
     /**
