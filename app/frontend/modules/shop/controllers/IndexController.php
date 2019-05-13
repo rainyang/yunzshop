@@ -201,7 +201,7 @@ class IndexController extends ApiController
         if(is_null($integrated)){
             return $this->errorJson('未开启共享链支付协议');
         }else{
-            return show_json(0,'未开启共享链支付协议');
+            return show_json(1,'');
         }
 
     }

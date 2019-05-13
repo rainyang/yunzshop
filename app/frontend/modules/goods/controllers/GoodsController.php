@@ -853,8 +853,10 @@ class GoodsController extends ApiController
         $this->dataIntegrated($this->getGoods($request, true),'get_goods');
         $storeId = $this->apiData['get_goods']->store_goods->store_id;
         if($storeId){
-            $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
-            $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
+            if(class_exists('\Yunshop\StoreCashier\frontend\store\GetStoreInfoController')){
+                $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
+                $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
+            }
         }
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
