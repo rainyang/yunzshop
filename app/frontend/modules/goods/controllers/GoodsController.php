@@ -862,7 +862,7 @@ class GoodsController extends ApiController
         }
         if($this->apiData['get_goods']->is_hotel){
             if(class_exists('\Yunshop\Hotel\frontend\hotel\GoodsController')){
-                $this->dataIntegrated(\Yunshop\Hotel\frontend\hotel\GoodsController::getGoodsDetailByGoodsId($request,true));
+                $this->dataIntegrated(\Yunshop\Hotel\frontend\hotel\GoodsController::getGoodsDetailByGoodsId($request,true),'get_hotel_info');
             }else{
                 return $this->errorJson('酒店插件未开启');
             }
