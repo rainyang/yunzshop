@@ -21,8 +21,8 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::post('install/agreement', 'InstallController@agreement');     // 安装协议
     Route::post('install/check', 'InstallController@check');     // 运行环境检测
     Route::post('install/file_power', 'InstallController@filePower');     // 文件权限设置
-    Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
-    Route::post('install/create_data', 'InstallController@createData');     // 创建数据
+    Route::get('install/set_info', 'InstallController@setInformation');     // 账号设置
+    Route::get('install/create_data', 'InstallController@createData');     // 创建数据
     Route::post('install/delete', 'InstallController@delete');     // 删除控制器
     Route::get('login/site', 'LoginController@site');               // 登录页面返回数据
 });
@@ -90,6 +90,16 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/FrameworkDownload', 'UpdateController@startDownloadFramework');
         //短信设置
         Route::any('sms', 'AttachmentController@sms');
+        // 站点注册-显示
+        Route::get('siteRegister/index', 'SiteRegisterController@index');
+        // 站点注册-获取城市
+        Route::post('siteRegister/getcity', 'SiteRegisterController@getcity');
+        // 站点注册-获取地区
+        Route::post('siteRegister/getarea', 'SiteRegisterController@getarea');
+        // 站点注册-获取手机验证码
+        Route::post('siteRegister/sendSms', 'SiteRegisterController@sendSms');
+        // 站点注册-注册
+        Route::post('siteRegister/register', 'SiteRegisterController@register');
     });
 
     // 用户管理
