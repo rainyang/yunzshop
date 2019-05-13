@@ -427,7 +427,7 @@ class UpdateController extends BaseController
                 }
             }
         } else {
-            $resultArr['msg'] = 'Current Version is up to date';
+            $resultArr['msg'] = 'Current Version is up to date frontend';
         }
         response()->json($resultArr)->send();
         return;
@@ -459,29 +459,17 @@ class UpdateController extends BaseController
             return;
         }
 
-        if ($update->newVersionAvailable()) {
+        $result = $update->update(2);
 
-            $result = $update->update(2);
-
-            if ($result === true) {
-                $list = $update->getUpdates();
-                if (!empty($list)) {
-                    $this->setSystemVersion($list);
-                }
-
-                $resultArr['status'] = 1;
-                $resultArr['msg'] = '更新成功';
-            } else {
-                $resultArr['msg'] = '更新失败: ' . $result;
-                if ($result = AutoUpdate::ERROR_SIMULATE) {
-                    $resultArr['data'] = $update->getSimulationResults();
-                }
-            }
+        if ($result === true) {
+            $resultArr['status'] = 1;
+            $resultArr['msg'] = '更新成功';
         } else {
-            $resultArr['msg'] = 'Current Version is up to date';
+            $resultArr['msg'] = '更新失败: ' . $result;
+            if ($result = AutoUpdate::ERROR_SIMULATE) {
+                $resultArr['data'] = $update->getSimulationResults();
+            }
         }
-        response()->json($resultArr)->send();
-        return;
     }
 
     /**

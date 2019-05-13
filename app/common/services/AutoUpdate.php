@@ -853,7 +853,7 @@ class AutoUpdate
                 $foldername = $this->_installDir . dirname($filename);
                 $absoluteFilename = $this->_installDir . $filename;
 
-                if (2 == $client) {
+                if (2 == $client || (1 == $client && env('APP_Framework') == 'platform')) {
                     $foldername = $this->_installDir . 'addons/yun_shop/' . dirname($filename);
                     $absoluteFilename = $this->_installDir . 'addons/yun_shop/' . $filename;
                 }
