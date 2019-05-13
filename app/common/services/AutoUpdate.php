@@ -643,7 +643,7 @@ class AutoUpdate
         return $simulateSuccess;
     }
 
-    protected function _simulateInstall_v2($updateFile, $version)
+    protected function _simulateInstall_v2($updateFile, $version, $client = 1)
     {
         $this->_log->notice('[SIMULATE] Install new version');
         clearstatcache();
@@ -666,6 +666,11 @@ class AutoUpdate
                 $filename = $rows->getRelativePathname();
                 $foldername = $this->_installDir . dirname($filename);
                 $absoluteFilename = $this->_installDir . $filename;
+
+                if (2 == $client || (1 == $client && env('APP_Framework') == 'platform')) {
+                    $foldername = $this->_installDir . 'addons/yun_shop/' . dirname($filename);
+                    $absoluteFilename = $this->_installDir . 'addons/yun_shop/' . $filename;
+                }
 
                 $files[$key] = [
                     'filename'          => $filename,
@@ -836,7 +841,7 @@ class AutoUpdate
     {
         $this->_log->notice(sprintf('Trying to install update "%s"', $updateFile));
         // Check if install should be simulated
-        if ($simulateInstall && !$this->_simulateInstall_v2($updateFile, $version)) {
+        if ($simulateInstall && !$this->_simulateInstall_v2($updateFile, $version, $client)) {
             $this->_log->critical('Simulation of update process failed!');
             return self::ERROR_SIMULATE;
         }
@@ -853,7 +858,7 @@ class AutoUpdate
                 $foldername = $this->_installDir . dirname($filename);
                 $absoluteFilename = $this->_installDir . $filename;
 
-                if (2 == $client) {
+                if (2 == $client || (1 == $client && env('APP_Framework') == 'platform')) {
                     $foldername = $this->_installDir . 'addons/yun_shop/' . dirname($filename);
                     $absoluteFilename = $this->_installDir . 'addons/yun_shop/' . $filename;
                 }
@@ -936,7 +941,7 @@ class AutoUpdate
         $this->_log->info('Trying to perform update');
         // Check for latest version
         if ($this->_latestVersion === null || count($this->_updates) === 0)
-            $this->checkUpdate();
+            $client == 2 ? $this->checkBackUpdate() : $this->checkUpdate();
         if ($this->_latestVersion === null || count($this->_updates) === 0) {
             $this->_log->error('Could not get latest version from server!');
             return self::ERROR_VERSION_CHECK;
@@ -1024,7 +1029,7 @@ class AutoUpdate
                     $cp_destination_path = 'app/auto-update/temp/';
 
                     if (2 == $client) {
-                        //TODO copy index.html到根目录后并删除
+                        //copy 框架index.html到根目录后并删除
                         if (is_dir(storage_path($cp_source_path))) {
                             $cp_index_path = $cp_source_path . $update['version'] . '/index.html';
                             $cp_des_path   = base_path() . '/index.html';
