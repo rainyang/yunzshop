@@ -133,6 +133,10 @@ class UpdateController extends BaseController
             return;
         }
 
+        //前端更新文件检测
+        $frontendUpgrad = $this->frontendUpgrad($key, $secret);
+
+        //后台更新文件检测
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('backcheck_app.json');
         $update->setCurrentVersion(config('version'));
@@ -215,7 +219,9 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log']))
+                    'log' => nl2br(base64_decode($ret['log'])),
+                    'frontendUpgrad' => count($frontendUpgrad),
+                    'list' => $frontendUpgrad
                 ];
             } else {
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
@@ -326,8 +332,8 @@ class UpdateController extends BaseController
                 file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
             }
         } else {
-            //TODO 检查并下载框架更新文件
-            $this->startDownloadFormwork();
+            //检查并下载框架更新文件
+            $this->startDownloadFramework();
 
             //覆盖
             foreach ($files as $f) {
@@ -617,5 +623,25 @@ class UpdateController extends BaseController
         }
 
         \Artisan::call('migrate',['--force' => true]);
+    }
+
+    private function frontendUpgrad($key, $secret)
+    {
+        $update = new AutoUpdate(null, null, 300);
+
+        //前端更新文件检测
+        $update->setUpdateFile('check_app.json');
+        $update->setCurrentVersion(config('front-version'));
+        $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
+        $update->setBasicAuth($key, $secret);
+        $update->checkUpdate();
+
+        if ($update->newVersionAvailable()) {
+            $list = $update->getUpdates();
+        }
+
+        krsort($list);
+
+        return $list;
     }
 }
