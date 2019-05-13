@@ -23,6 +23,14 @@ class MyCommentController extends ApiController
         ]);
     }
 
+    public function paging()
+    {
+        $list = Order::getMyCommentListPaginate( \YunShop::request()->status,15);
+        return $this->successJson('成功', [
+            'list' => $list->toArray()
+        ]);
+    }
+
     public function goods()
     {
         $list = OrderGoods::getMyCommentList(1);
