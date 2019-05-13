@@ -105,5 +105,9 @@ class GlobalParams
         if (app('plugins')->isEnabled('area-dividend')) {
             include base_path() . '/plugins/area-dividend/area_admin.php';
         }
+
+        if (app('plugins')->isEnabled('mryt')) {
+            include base_path() . '/plugins/mryt/storeMenu.php';
+        }
     }
 }
