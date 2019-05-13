@@ -941,7 +941,7 @@ class AutoUpdate
         $this->_log->info('Trying to perform update');
         // Check for latest version
         if ($this->_latestVersion === null || count($this->_updates) === 0)
-            $this->checkUpdate();
+            $client == 2 ? $this->checkBackUpdate() : $this->checkUpdate();
         if ($this->_latestVersion === null || count($this->_updates) === 0) {
             $this->_log->error('Could not get latest version from server!');
             return self::ERROR_VERSION_CHECK;
