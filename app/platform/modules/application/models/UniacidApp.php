@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use app\platform\modules\application\models\AppUser;
+use Illuminate\Support\Facades\Schema;
 
 class UniacidApp extends BaseModel
 {
@@ -18,7 +19,7 @@ class UniacidApp extends BaseModel
   	protected $guarded = [''];
   	protected $hidden = ['deleted_at', 'updated_at', 'created_at',
                          'type', 'kind', 'title', 'description', 'version'];
-    protected $appends = ['status_name', 'is_expire'];
+    protected $appends = ['status_name'];
 
   	
   	public function scopeSearch($query, $keyword)
@@ -80,31 +81,6 @@ class UniacidApp extends BaseModel
     public function getStatusNameAttribute()
     {
     	return ['禁用', '启用'][$this->status];
-    }
-
-    public function getIsExpireAttribute()
-    {
-        //到期前一周的时间  当前+1 直到 +7 小于等于 $value['validity_time']
-        $week = date('W');
-
-        $nowstamp = mktime(0,0,0, date('m'), date('d'), date('Y') );
-
-        $time_week = date('W', 'validity_time');
-
-        if ((date('W', strtotime('+1 week')) == $time_week) || (date('W') == $time_week && 'validity_time' >= $nowstamp)) {
-            
-            $this->is_expire = 1;  //到期前一周
-        } 
-
-        if ('validity_time' != 0 && 'validity_time' < $nowstamp) {
-            
-            $this->is_expire = 2;  //已经到期
-        } 
-
-        if('validity_time' === 0 || ( date('W', strtotime('+1 week') - $time_week > 1) && 'validity_time' > $nowstamp) ) {
-            $this->is_expire = 0;
-        }
-        return $this->is_expire;
     }
 
     public static function chekcApp($id)
