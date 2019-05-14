@@ -450,7 +450,7 @@ class UpdateController extends BaseController
     private function getFrontVersion($updateList)
     {
         rsort($updateList);
-        $version = $updateList[0]['version']->getVersion();
+        $version = $updateList[0]['version'];
 
         return $version;
     }
