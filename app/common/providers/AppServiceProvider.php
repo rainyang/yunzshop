@@ -7,7 +7,6 @@ use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
 use app\common\services\mews\captcha\src\Captcha;
 use app\common\services\Utils;
-use app\platform\modules\system\models\SystemSetting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Setting;
@@ -147,40 +146,8 @@ class AppServiceProvider extends ServiceProvider
         }
     }
 
-    private function getRemoteServicerInfo()
-    {
-        $remoteServicer = [
-            '2' => 'alioss',
-            '4' => 'cos'
-        ];
-
-        $systemSetting = new SystemSetting();
-
-        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
-            $setting[$remote['key']] = unserialize($remote['value']);
-        }
-
-        if ($setting['remote']['type'] != 0) {
-            $server = $setting['remote'][$remoteServicer[$setting['remote']['type']]];
-            $url = isset($server['url']) ? $server['url'] : '';
-
-            $data = [
-                'attachurl' => $url,
-                'attachurl_remote' => $url
-            ];
-        } else {
-            $data = [
-                'attachurl' => request()->getSchemeAndHttpHost() . '/static/upload/',
-                'attachurl_remote' => ''
-            ];
-        }
-
-        return $data;
-    }
-
     private function getSiteParams($uniacid)
     {
-        $att = $this->getRemoteServicerInfo();
         $account = AccountWechats::getAccountByUniacid($uniacid);
 
         $cfg = [
@@ -192,9 +159,9 @@ class AppServiceProvider extends ServiceProvider
             'username'         => \Auth::guard('admin')->user()->username,
             'siteroot'         => request()->getSchemeAndHttpHost() . '/',
             'siteurl'          => request()->getUri(),
-            'attachurl'        => $att['attachurl'],
+            'attachurl'        => '',
             'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
-            'attachurl_remote' => $att['attachurl_remote'],
+            'attachurl_remote' => '',
             'charset'          => 'utf-8'
         ];
 

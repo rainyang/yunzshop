@@ -5,7 +5,7 @@ use Illuminate\Support\Arr;
 use app\common\services\PermissionService;
 use app\common\helpers\Url;
 use Ixudra\Curl\Facades\Curl;
-use Yunshop\StoreCashier\common\models\weiqing\WeiQingUsers;
+use app\common\models\user\WeiQingUsers;
 use app\common\services\Utils;
 use \app\platform\modules\system\models\SystemSetting;
 use \app\common\helpers\Client;
