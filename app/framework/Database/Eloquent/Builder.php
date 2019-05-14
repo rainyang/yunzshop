@@ -38,7 +38,6 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
         // add our eager constraints. Then we will merge the wheres that were on the
         // query back to it in order that any where conditions might be specified.
         $relation = $this->expansionGetRelation($name);
-
         $relation->addEagerConstraints($models);
 
         $constraints($relation);
@@ -62,9 +61,6 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
                     $model = $this->getModel()->$name();
                 }else{
                     $model = $this->getModel()->expansionMethod($name,get_class($this->getModel()));
-                    if($model == null){
-                        throw new BadMethodCallException();
-                    }
                 }
                 return $model;
 
@@ -73,7 +69,7 @@ class Builder extends \Illuminate\Database\Eloquent\Builder
             }
         });
 
-        $nested = $this->relationsNestedUnder($name);
+        $nested = $this->nestedRelations($name);
 
         // If there are nested relationships set on the query, we will put those onto
         // the query instances so that they can be handled after this relationship
