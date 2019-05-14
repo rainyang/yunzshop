@@ -15,7 +15,7 @@ class AddDeletedAtToImsYzMemberCoupon extends Migration
     {
         if (Schema::hasTable('yz_member_coupon')) {
             Schema::table('yz_member_coupon', function (Blueprint $table) {
-                if (Schema::hasColumn('yz_member_coupon', 'deleted_at')) {
+                if (!Schema::hasColumn('yz_member_coupon', 'deleted_at')) {
                     $table->integer('deleted_at')->nullable();
                 }
             });
