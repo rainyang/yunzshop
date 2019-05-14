@@ -44,6 +44,9 @@ class ApiController extends BaseController
         $mark = \YunShop::request()->mark;
         $mark_id = \YunShop::request()->mark_id;
 
+        if($type == 1 and \Setting::get('shop.member.wechat_login_mode') == 1){
+            \YunShop::request()->type = 5;
+        }
         if (self::is_alipay() && $type != 8) {
             $type = 8;
         }
