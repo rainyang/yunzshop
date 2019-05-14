@@ -7,7 +7,7 @@ tmp/
 .idea/
 composer.lock
 /vendor/*
-
+/tests/
 .env
 /.phpstorm.meta.php
 /_ide_helper.php
@@ -22,14 +22,8 @@ vendor/
 /index.php
 /storage/framework/cache/data
 /xhprof/
-/node_modules
-/storage/*.key
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-npm-debug.log
-yarn-error.log
 /static/upload/
 /addons/*
 /bootstrap/install.lock
 /app/platform/controllers/user.txt
+/favicon.ico

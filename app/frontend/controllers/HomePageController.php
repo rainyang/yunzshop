@@ -751,6 +751,8 @@ class HomePageController extends ApiController
                 return show_json(1, $data);
             }
         }
+
+        return show_json(1, []);
     }
 
     public function getBalance()
@@ -857,22 +859,18 @@ class HomePageController extends ApiController
 
     public function wxJsSdkConfig()
     {
-        $url = \YunShop::request()->url;
-        $pay = \Setting::get('shop.pay');
+        $member = \Setting::get('shop.member');
 
-        if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
-            $app_id = $pay['weixin_appid'];
-            $secret = $pay['weixin_secret'];
-        } else {
-            $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-            $app_id = $account->key;
-            $secret = $account->secret;
+        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+            return show_json(1, []);
         }
 
+        $url = \YunShop::request()->url;
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
         $options = [
-            'app_id' => $app_id,
-            'secret' => $secret
+            'app_id' => $account->key,
+            'secret' => $account->secret
         ];
 
         $app = new Application($options);

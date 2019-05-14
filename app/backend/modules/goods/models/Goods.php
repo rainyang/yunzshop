@@ -15,6 +15,13 @@ class Goods extends \app\common\models\Goods
 {
     public $widgets = [];
 
+
+    //todo 兼容后端模拟支付时，调用
+    public function hasOneSale()
+    {
+        return $this->hasOne(\app\frontend\models\goods\Sale::class);
+    }
+
     /**
      * 在boot()方法里注册下模型观察类
      * boot()和observe()方法都是从Model类继承来的

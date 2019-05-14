@@ -260,13 +260,21 @@ class GoodsController extends ApiController
         $list = Goods::Search($requestSearch)->select( 'yz_goods.id')
             ->where("status", 1)
             ->where(function($query) {
-                $query->whereIn('plugin_id',[0,40,92,53]);
+                $query->whereIn('plugin_id', [0,40,92,41]);
+//              $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             });
-        
+
+        //todo 为什么要取出id, 如id过多超出in的长度如何处理
         $id_arr =  collect($list->get())->map(function($rows) {
             return $rows['id'];
         });
+
         $list = Goods::whereIn('id',$id_arr)->select("*")
+            ->where("status", 1)
+            ->where(function($query) {
+                $query->whereIn('plugin_id', [0,40,92,41]);
+                //$query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+            })
             ->paginate(20)->toArray();
 
 
@@ -293,6 +301,9 @@ class GoodsController extends ApiController
 
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
+        }
+        foreach ($list["data"] as $key=>$row){
+            $list['data'][$key]['goods_id']=$list['data'][$key]['id'];
         }
         return $this->successJson('成功', $list);
     }
@@ -363,7 +374,8 @@ class GoodsController extends ApiController
             ->where('status', '1')
             ->where('brand_id', $brand_id)
             ->where(function($query) {
-                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+                $query->whereIn('plugin_id', [0,40,92,41]);
+                //$query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
@@ -595,7 +607,7 @@ class GoodsController extends ApiController
             'point_name' => $point_name, //积分名称
             'love_name' => '爱心值',
             'ed_num' => 0,      //满件包邮
-            'ed_money' => '',    //满额包邮
+            'ed_money' => 0,    //满额包邮
             'ed_full' => 0,      //单品满额
             'ed_reduction' => 0, //单品立减
             'award_balance' => 0, //赠送余额

@@ -221,10 +221,8 @@ class YunShop
     {
         global $_W;
 
-        $global_params = $_W;
-
         if (app('plugins')->isEnabled('supplier')) {
-            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $global_params['uid'])->first();
+            $res = \Illuminate\Support\Facades\DB::table('yz_supplier')->where('uid', $_W['uid'])->first();
             if (!$res) {
                 return false;
             }
@@ -254,17 +252,7 @@ class YunShop
     public static function app()
     {
         if (self::$_app !== null) {
-            //新框架加载yunshop机制不同
-            if (env('APP_Framework') == 'platform') {
-                if (!preg_match("/cli/i", php_sapi_name())) {
-                    self::$_app = new YunApp();
-                    return self::$_app;
-                } else {
-                    return self::$_app;
-                }
-            } else {
-                return self::$_app;
-            }
+            return self::$_app;
         } else {
             self::$_app = new YunApp();
             return self::$_app;
@@ -371,8 +359,6 @@ class YunShop
             } else {
 
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
-//dump($controllerFile);
-//dump($path);
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
                 }
@@ -476,15 +462,17 @@ class YunRequest extends YunComponent
 
     public function __construct()
     {
-        if (env('APP_Framework') == 'platform') {
+        /*if (env('APP_Framework') == 'platform') {
             $sys_global_params = \config('app.sys_global');
         } else {
             global $_GPC;
 
             $sys_global_params = $_GPC;
-        }
+        }*/
 
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : $sys_global_params;
+        global $_GPC;
+
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? request()->input() : $_GPC;
     }
 
 
@@ -505,9 +493,7 @@ class YunApp extends YunComponent
     {
         global $_W;
 
-        $global_params = $_W;
-
-        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$global_params;
+        $this->values = !YunShop::isWeb() && !YunShop::isWechatApi() ? $this->getW() : (array)$_W;
         $this->routeList = Config::get('menu');
 
 
