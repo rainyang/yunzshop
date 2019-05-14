@@ -302,6 +302,235 @@ return [
         ]
     ],
 
+    /**
+     * 子平台入驻申请通知模板
+     */
+    'template.platform_residence_application'=> [
+        'title' => "子平台入驻申请通知",
+        'subtitle' => '子平台入驻申请通知',
+        'value' => 'platform_residence_application',
+        'param' => [
+            '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 采购单生成通知模板
+ */
+    'template.purchasing_order_generation'=> [
+    'title' => "采购单生成",
+    'subtitle' => '采购单生成',
+    'value' => 'purchasing_order_generation',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 采购单支付通知模板
+ */
+    'template.purchasing_order_pay'=> [
+    'title' => "采购单支付",
+    'subtitle' => '采购单支付',
+    'value' => 'purchasing_order_pay',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 供货单发货通知模板
+ */
+    'template.supply_delivery'=> [
+    'title' => "供货单发货",
+    'subtitle' => '供货单发货',
+    'value' => 'supply_delivery',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 供货单完成通知模板
+ */
+    'template.supply_complete'=> [
+    'title' => "供货单完成",
+    'subtitle' => '供货单完成',
+    'value' => 'supply_complete',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 子平台提现通知模板
+ */
+    'template.subplatform_presentation'=> [
+    'title' => "子平台提现",
+    'subtitle' => '子平台提现',
+    'value' => 'subplatform_presentation',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 审核通过通知模板
+ */
+    'template.audit_pass'=> [
+    'title' => "审核通过",
+    'subtitle' => '审核通过',
+    'value' => 'audit_pass',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 审核驳回通知模板
+ */
+    'template.audit_rejected'=> [
+    'title' => "审核驳回",
+    'subtitle' => '审核驳回',
+    'value' => 'audit_rejected',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 采购单生成通知模板
+ */
+    'template.purchasing_order_generation_subplatform'=> [
+    'title' => "采购单生成",
+    'subtitle' => '采购单生成',
+    'value' => 'purchasing_order_generation_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 采购单支付成功通知模板
+ */
+    'template.purchasing_order_pay_subplatform' => [
+    'title' => "采购单支付成功",
+    'subtitle' => '采购单支付成功',
+    'value' => 'purchasing_order_pay_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 供货单发货通知模板
+ */
+    'template.dupply_delivery_subplatform'=> [
+    'title' => "供货单发货",
+    'subtitle' => '供货单发货',
+    'value' => 'dupply_delivery_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 供货单完成通知模板
+ */
+    'template.completion_supply_order_subplatform'=> [
+    'title' => "供货单完成",
+    'subtitle' => '供货单完成',
+    'value' => 'completion_supply_order_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 销售订单发货通知模板
+ */
+    'template.sales_order_delivery_subplatform'=> [
+    'title' => "销售订单发货",
+    'subtitle' => '销售订单发货',
+    'value' => 'sales_order_delivery_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 销售订单完成通知模板
+ */
+    'template.sales_order_completion_subplatform'=> [
+    'title' => "销售订单完成",
+    'subtitle' => '销售订单完成',
+    'value' => 'sales_order_completion_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 提现申请通知模板
+ */
+    'template.cash_withdrawal_application_subplatform'=> [
+    'title' => "提现申请",
+    'subtitle' => '提现申请',
+    'value' => 'cash_withdrawal_application_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 提现审核通过通知模板
+ */
+    'template.presentation_approval_subplatform'=> [
+    'title' => "提现审核通过",
+    'subtitle' => '提现审核通过',
+    'value' => 'presentation_approval_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 提现驳回通知模板
+ */
+    'template.dismissal_subplatform'=> [
+    'title' => "提现驳回",
+    'subtitle' => '提现驳回',
+    'value' => 'dismissal_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 提现打款通知模板
+ */
+    'template.cash_withdrawals_subplatform'=> [
+    'title' => "提现打款",
+    'subtitle' => '提现打款',
+    'value' => 'cash_withdrawals_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+/**
+ * 提现到账通知模板
+ */
+    'template.cash_withdrawal_accoun_subplatform'=> [
+    'title' => "提现到账",
+    'subtitle' => '提现到账',
+    'value' => 'cash_withdrawal_accoun_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
+
+
     /*$data = [
         [
             'name' => '粉丝昵称',
