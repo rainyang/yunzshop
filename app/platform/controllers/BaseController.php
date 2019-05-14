@@ -12,6 +12,11 @@ use app\common\components\BaseController as Controller;
 
 class BaseController extends Controller
 {
+    public function __construct()
+    {
+        $this->checkRegister();
+    }
+
     /*
      * 基础跳转公共方法
      * @param 1 $path 跳转路径
@@ -60,5 +65,21 @@ class BaseController extends Controller
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8']);
+    }
+
+    /**
+     * 检测是否注册
+     */
+    public function checkRegister()
+    {
+        $key = \Setting::get('shop.key')['key'];
+        $secret = \Setting::get('shop.key')['secret'];
+
+        if (!$key || !$secret) {
+            $this->errorJson('', [
+                'status' => -5
+            ])->send();
+            exit;
+        }
     }
 }
