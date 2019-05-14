@@ -389,5 +389,7 @@ class InstallController
     public function delete()
     {
         @unlink(base_path().'/app/platform/controllers/InstallController.php');
+        
+        return $this->successJson('成功');
     }
 }
