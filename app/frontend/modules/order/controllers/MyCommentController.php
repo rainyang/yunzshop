@@ -26,6 +26,7 @@ class MyCommentController extends ApiController
     public function paging()
     {
         $page = \YunShop::request()->page?:1;
+        $page = ($page - 1) ? ($page - 1) *15 : 1;
         $list = Order::getMyCommentListPaginate( \YunShop::request()->status,$page,15);
         return $this->successJson('成功', [
             'list' => $list->toArray()
