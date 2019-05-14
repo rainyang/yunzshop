@@ -52,6 +52,7 @@ use Yunshop\StoreCashier\common\models\Store;
 use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 use app\frontend\models\MembershipInformationLog;
+use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
 
 class MemberController extends ApiController
 {
@@ -60,14 +61,16 @@ class MemberController extends ApiController
         'wxJsSdkConfig',
         'memberFromHXQModule',
         'dsAlipayUserModule',
-        'isValidatePage'
+        'isValidatePage',
+        'designer'
     ];
     protected $ignoreAction = [
         'guideFollow',
         'wxJsSdkConfig',
         'memberFromHXQModule',
         'dsAlipayUserModule',
-        'isValidatePage'
+        'isValidatePage',
+        'designer'
     ];
 
     public $apiErrMsg = [];
@@ -921,6 +924,7 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
+
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置
@@ -928,6 +932,35 @@ class MemberController extends ApiController
             'share'  => $share   //分享设置
         ];
         return $this->successJson('', $data);
+    }
+    public function designer()
+    {
+       $TemId =  \Yunshop::request()->id;
+        if ($TemId){
+            $designerModel = Designer::getDesignerByPageID(\Yunshop::request()->id);
+            if ($designerModel){
+//                $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
+//                foreach ($designerSet->toArray as &$set){
+//                    if (isset($set['temp']) && $set['temp'] == 'topbar'){
+//                        if (!empty($set['params']['title'])){
+//                            $shop = Setting::get('shop.shop');
+//                            $set['params']['title'] = $shop['name'];
+//                            $set['params']['img'] = $shop['logo'];
+//                        }
+//                    }
+//                }
+                $designerSet = json_decode(htmlspecialchars_decode($designerModel->page_info));
+                if($designerSet[0]->temp == 'topbar'){
+                    $share = Setting::get('shop.share');
+                    $designer['title'] = $designerSet[0]->params->title?:$share['title'];
+                    $designer['img'] = $designerSet[0]->params->img?:$share['icon'];
+                    $designer['desc'] = $designerSet[0]->params->desc?:$share['desc'];
+                }
+
+                return $this->successJson('获取数据成功!', $designer);
+            }
+        }
+        return $this->successJson('参数有误!', []);
     }
 
     /**
