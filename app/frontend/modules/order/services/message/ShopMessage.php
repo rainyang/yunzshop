@@ -4,7 +4,7 @@ namespace app\frontend\modules\order\services\message;
 
 use app\common\models\Notice;
 use app\common\models\notice\MessageTemp;
-
+use app\common\models\notice\MinAppTemplateMessage;
 /**
  * Created by PhpStorm.
  * User: shenyang
@@ -14,10 +14,9 @@ use app\common\models\notice\MessageTemp;
 class ShopMessage extends Message
 {
     protected $goods_title;
-
-    public function __construct($order)
+    public function __construct($order,$formId = '',$type = 1,$title)
     {
-        parent::__construct($order);
+        parent::__construct($order,$formId = '',$type = 1,$title);
         $this->goods_title = $this->order->hasManyOrderGoods()->first()->title;
         $this->goods_title .= $this->order->hasManyOrderGoods()->first()->goods_option_title ? '['.$this->order->hasManyOrderGoods()->first()->goods_option_title.']': '';
     }
@@ -31,8 +30,18 @@ class ShopMessage extends Message
             return;
         }
         //客服发送消息通知
-        foreach (\Setting::get('shop.notice.salers') as $saler) {
-            $this->notice($this->templateId, $this->msg, $saler['uid']);
+        foreach (\Setting::get('shop.miniNotice.salers') as $saler) {
+                $this->notice($this->templateId, $this->msg, $saler['uid']);
+        }
+    }
+    protected function miniSendToShops($templateId,$msg)
+    {
+        if (empty($templateId)) {
+            return;
+        }
+        \Log::debug('===============',[$templateId]);
+        foreach (\Setting::get('mini_app.notice.salers') as $saler) {
+            $this->MiniNotice($templateId, $msg, $saler['uid']);
         }
     }
 
@@ -62,6 +71,22 @@ class ShopMessage extends Message
             ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
         ];
         $this->transfer($temp_id, $params);
+
+        //小程序消息通知
+        $is_open = MinAppTemplateMessage::getTitle('订单生成通知');
+        if (!$is_open->is_open){
+            return;
+        }
+        $address = $this->order['address'];
+        $msg = [
+            'keyword1'=>['value'=> $this->order->belongsToMember->nickname],// 订单发起者
+            'keyword2'=>['value'=> $this->goods_title],//商品信息
+            'keyword3'=>['value'=>  $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],// 收货地址
+            'keyword4'=>['value'=> $this->order['price']],// 订单金额
+            'keyword5'=>['value'=> $this->order['create_time']->toDateTimeString()],// 生成时间
+            'keyword6'=>['value'=>$this->order->order_sn],//订单号
+        ];
+        $this->miniSendToShops($is_open->template_id, $msg);
     }
 
     public function paid()
@@ -85,6 +110,23 @@ class ShopMessage extends Message
             ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
         ];
         $this->transfer($temp_id, $params);
+
+        //小程序消息通知
+        $is_open = MinAppTemplateMessage::getTitle('订单支付提醒');
+        if (!$is_open->is_open){
+            return;
+        }
+        $address = $this->order['address'];
+        $msg = [
+            'keyword1'=>['value'=> $this->order->belongsToMember->nickname],// 用户
+            'keyword2'=>['value'=> $this->order->order_sn],//订单号
+            'keyword3'=>['value'=>  $this->goods_title],//商品名称
+            'keyword4'=>['value'=> $this->order->pay_type_name],// 支付方式
+            'keyword5'=>['value'=> $this->order['price']],// 支付金额
+            'keyword6'=>['value'=> $address['realname']],//收貨人
+            'keyword7'=>['value'=>   $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],//收貨地址
+        ];
+        $this->miniSendToShops($is_open->template_id, $msg);
     }
 
     public function received()
@@ -105,6 +147,22 @@ class ShopMessage extends Message
             ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
         ];
         $this->transfer($temp_id, $params);
+
+        //小程序消息
+        $is_open = MinAppTemplateMessage::getTitle('确认收货通知');
+        if (!$is_open->is_open){
+            return;
+        }
+        $msg = [
+            'keyword1'=>['value'=> $this->goods_title],// 商品名
+            'keyword2'=>['value'=> $this->order->belongsToMember->nickname],//买家昵称
+            'keyword3'=>['value'=> $this->order->order_sn],//  订单编号
+            'keyword4'=>['value'=> $this->order['create_time']->toDateTimeString()],//  订单时间
+            'keyword5'=>['value'=> $this->order['price']],//订单金額
+            'keyword6'=>['value'=> $this->order['finish_time']->toDateTimeString()],//  确认收货时间
+        ];
+        $this->miniSendToShops($is_open->template_id,$msg);
+
     }
 
     /**
@@ -139,6 +197,21 @@ class ShopMessage extends Message
             }
             $template_id = MessageTemp::$template_id;
             $this->notice($template_id, $msg, $goods_notice->uid);
+
+            //小程序消息通知
+            $is_open = MinAppTemplateMessage::getTitle('购买成功通知');
+            if (!$is_open->is_open){
+                return;
+            }
+            $miniParams = [
+                'keyword1'=>['value'=> $this->order->belongsToMember->nickname],// 会员姓名
+                'keyword2'=>['value'=>  $this->order->order_sn],//订单号
+                'keyword3'=>['value'=> $this->getGoodsTitle($goods)],// 物品名称
+                'keyword4'=>['value'=> $goods->total],//  数量
+                'keyword5'=>['value'=> $goods->price],// 购买金额
+                'keyword6'=>['value'=> $this->getOrderTime($status)],//购买时间
+            ];
+            $this->miniSendToShops($is_open->template_id,$miniParams);
         }
     }
 

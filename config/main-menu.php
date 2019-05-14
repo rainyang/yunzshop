@@ -3674,6 +3674,94 @@ return [
                     ],
                 ]
             ],
+            'setting_small_program' => [
+                'name'              => '自定义小程序模板',
+                'url'               => 'setting.small-program.index',
+                'url_params'        => '',
+                'permit'            => 1,
+                'menu'              => 1,
+                'icon'              => 'fa-bars',
+                'sort'              => '6',
+                'item'              => 'setting_small_program',
+                'parents'           => ['system', 'Setting',],
+                'child'         => [
+                    'setting_small_program_choose'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.wechat-notice.returnJson',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_choose',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+
+
+                    'setting_small_program_choose2'  => [
+                        'name'              => '选择模版（白名单）',
+                        'url'               => 'setting.small-program.tpl',
+                        'url_params'        => '',
+                        'permit'            => 0,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_choose2',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+
+                    'setting_small_program_index'  => [
+                        'name'              => '浏览列表',
+                        'url'               => 'setting.small-program.index',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_index',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+//                    'setting_small_program_add'  => [
+//                        'name'              => '添加模版',
+//                        'url'               => 'setting.small-program.add',
+//                        'url_params'        => '',
+//                        'permit'            => 1,
+//                        'menu'              => 0,
+//                        'item'              => 'setting_small_program_add',
+//                        'parents'           => ['system','setting_small_program'],
+//                    ],
+                    'setting_small_program_get_template_key'  => [
+                        'name'              => '选择模板',
+                        'url'               => 'setting.small-program.get-template-key',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_get_template_key',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+                    'setting_small_program_notice'  => [
+                        'name'              => '消息通知',
+                        'url'               => 'setting.small-program.notice',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_notice',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+                    'setting_small_program_edit'  => [
+                        'name'              => '修改模版',
+                        'url'               => 'setting.small-program.edit',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_small_program_edit',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+                    'setting_small_program_delete'  => [
+                        'name'              => '删除模版',
+                        'url'               => 'setting.small-program.del',
+                        'url_params'        => '',
+                        'permit'            => 1,
+                        'menu'              => 0,
+                        'item'              => 'setting_diy_temp_delete',
+                        'parents'           => ['system','setting_small_program'],
+                    ],
+                ]
+            ],
 
             'setting_diy_temp' => [
                 'name'       => '自定义模板管理',
@@ -3746,7 +3834,6 @@ return [
                     ],
                 ]
             ],
-
             'setting_shop_lang' => [
                 'name'       => '语言设置',
                 'url'        => 'setting.lang.index',
