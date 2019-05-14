@@ -316,7 +316,7 @@ class InstallController
             if (!empty($plugins_dir)) {
                 \Artisan::call('update:version', ['version' => $plugins_dir]);
             }
-            \Artisan::call('db:seed', ['--force' => true]);
+            \Artisan::call('db:seed', ['--class' => 'YzSystemSettingTableSeeder']);
         }catch (\Exception $e) {
             return $this->errorJson($e->getMessage());
         }

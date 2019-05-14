@@ -18,7 +18,7 @@ class YzSystemSettingTableSeeder extends Seeder
             echo $this->table." 不存在 跳过\n";
             return;
         }
-        $table = DB::table($this->table)->where('key', 'copyright')->first();
+        $table = DB::table($this->table)->where('key', 'global')->first();
         if($table){
             // 已经有数据了跳过
             echo $this->table." There's already data skipped.\n";
@@ -33,7 +33,7 @@ class YzSystemSettingTableSeeder extends Seeder
         $config['zip_percentage'] = 100;
 
         DB::table($this->table)->insert([
-            'key' => 'copyright',
+            'key' => 'global',
             'value' => serialize($config),
             'created_at' => time(),
             'updated_at' => time()
