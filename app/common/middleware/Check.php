@@ -30,7 +30,7 @@ class Check
         $key = \Setting::get('shop.key')['key'];
         $secret = \Setting::get('shop.key')['secret'];
 
-        if (!$key || !$secret) {
+        if ((!$key || !$secret) && (request()->path() != 'admin/index' && !strpos(request()->path(), 'siteRegister'))) {
             $this->errorJson('', [
                 'status' => -5
             ])->send();
