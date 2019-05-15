@@ -121,10 +121,12 @@ class AppServiceProvider extends ServiceProvider
     private function globalParamsHandle()
     {
         if (env('APP_Framework') == 'platform') {
+            global $_W, $_GPC;
+
             $this->install();
 
             $uniacid = 0;
-            $cfg = \config::get('app.global');
+            $cfg     = \config::get('app.global');
 
             if (!empty(request('uniacid')) && request('uniacid') > 0) {
                 $uniacid = request('uniacid');
@@ -135,16 +137,35 @@ class AppServiceProvider extends ServiceProvider
                 $uniacid = $_COOKIE['uniacid'];
             }
 
-            $account = AccountWechats::getAccountByUniacid($uniacid);
+            $cfg = $this->getSiteParams($uniacid);
 
-            $cfg['uniacid'] = $uniacid;
-            $cfg['account'] = $account ? $account->toArray() : '';
-
+            $_W   = $cfg;
+            $_GPC = array_merge(app('request')->input(), $_COOKIE);
             \config::set('app.global', $cfg);
-            global $_W;
-            $_W = $cfg;
             \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
         }
+    }
+
+    private function getSiteParams($uniacid)
+    {
+        $account = AccountWechats::getAccountByUniacid($uniacid);
+
+        $cfg = [
+            'uniacid'          => $uniacid,
+            'acid'             => $uniacid,
+            'account'          => $account ? $account->toArray() : '',
+            'openid'           => '',
+            'uid'              => \Auth::guard('admin')->user()->uid,
+            'username'         => \Auth::guard('admin')->user()->username,
+            'siteroot'         => request()->getSchemeAndHttpHost() . '/',
+            'siteurl'          => request()->getUri(),
+            'attachurl'        => '',
+            'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
+            'attachurl_remote' => '',
+            'charset'          => 'utf-8'
+        ];
+
+        return $cfg;
     }
 
     private function install()
@@ -162,7 +183,8 @@ class AppServiceProvider extends ServiceProvider
             file_put_contents($file, $f_data);
         }
 
-        if (!file_exists(base_path().'/bootstrap/install.lock')) {
+        $install = strpos(request()->path(), 'install');
+        if (!file_exists(base_path().'/bootstrap/install.lock') && !$install) {
             response()->json([
                 'result' => 0,
                 'msg' => '',

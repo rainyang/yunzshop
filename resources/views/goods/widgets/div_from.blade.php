@@ -16,6 +16,12 @@
                     </label>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <span>表单用途：用于跨境商品报税使用，开启后首次购买跨境商品的会员需要填写身份证号和真实姓名</span>
+                </div>
+           </div>
         </div>
     </div>
 

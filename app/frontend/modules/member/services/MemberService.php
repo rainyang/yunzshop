@@ -900,7 +900,7 @@ class MemberService
                     $del_shop_member->delete();
                 }
             } else {
-                MemberShopInfo::where('member_id', $abandon_member_id)->update(['member_id', $main_member_id]);
+                MemberShopInfo::where('member_id', $abandon_member_id)->update(['member_id' => $main_member_id]);
             }
 
             //商城unionid

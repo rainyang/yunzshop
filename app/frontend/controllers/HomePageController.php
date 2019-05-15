@@ -22,6 +22,7 @@ use Yunshop\Designer\models\DesignerMenu;
 use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Love\Common\Models\GoodsLove;
 use Yunshop\Love\Common\Services\SetService;
+use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
 
 class HomePageController extends ApiController
 {
@@ -33,6 +34,7 @@ class HomePageController extends ApiController
         'bindMobile',
         'wxapp',
         'isCloseSite',
+        'designerShare',
         'getParams'
     ];
     protected $ignoreAction = [
@@ -43,6 +45,7 @@ class HomePageController extends ApiController
         'bindMobile',
         'wxapp',
         'isCloseSite',
+        'designerShare',
         'getParams'
     ];
     private $pageSize = 16;
@@ -141,11 +144,13 @@ class HomePageController extends ApiController
 
         //如果安装了装修插件并开启插件
         if (app('plugins')->isEnabled('designer')) {
+
             $is_love = app('plugins')->isEnabled('love');
            if ($is_love){
                $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
                $result['designer']['love_name'] = $love_basics_set['name'];
            }
+
             //系统信息
             // TODO
             if (!Cache::has('designer_system')) {
@@ -227,8 +232,8 @@ class HomePageController extends ApiController
             //自定义菜单, 原来接口在  plugin.designer.home.index.menu
             switch ($footerMenuType) {
                 case 1:
-                    $result['item']['menus']     = self::defaultMenu($i, $mid, $type);
-                    $result['item']['menustyle'] = self::defaultMenuStyle();
+                    $result['item']['menus']     = self::defaultMenu($i, $mid, $type);//菜单
+                    $result['item']['menustyle'] = self::defaultMenuStyle();//菜单样式
                     break;
                 case 2:
                     if (!empty($footerMenuId)) {
@@ -292,12 +297,184 @@ class HomePageController extends ApiController
         }
     }
 
+//    public function renobationShare(){
+//        $pageId    = (int)\YunShop::request()->page_id ?: 0;
+//        if (app('plugins')->isEnabled('designer')) {
+//            $page_id = $pageId;
+//            if ($page_id) {
+//                $page = (new OtherPageService())->getOtherPage($page_id);
+//            } else {
+//                $page = (new IndexPageService())->getIndexPage();
+//            }
+//
+//            if ($page) {
+//                $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+//
+//                $result['item'] = $designer;
+//                //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
+//                if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
+//                    $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+//                } else {
+//                    $result['item']['topmenu'] = [
+//                        'menus'  => [],
+//                        'params' => [],
+//                        'isshow' => false
+//                    ];
+//                }
+//
+//            } elseif (empty($pageId)) { //如果是请求首页的数据, 提供默认值
+//                $result['default']         = self::defaultDesign();
+//                $result['item']['data']    = ''; //前端需要该字段
+//                $footerMenuType            = 1;
+//                $result['item']['topmenu'] = [
+//                    'menus'  => [],
+//                    'params' => [],
+//                    'isshow' => false
+//                ];
+//            } else { //如果是请求预览装修的数据
+//                $result['item']['data']    = ''; //前端需要该字段
+//                $footerMenuType            = 0;
+//                $result['item']['topmenu'] = [
+//                    'menus'  => [],
+//                    'params' => [],
+//                    'isshow' => false
+//                ];
+//            }
+//        }else{
+//            return $this->errorJson('失败，未开启装修插件');
+//        }
+//        return $this->successJson('ok', $result);
+//    }
+
+    public function designerShare()
+    {
+        $i         = \YunShop::request()->i;
+        $mid       = \YunShop::request()->mid;
+        $type      = \YunShop::request()->type;
+        $pageId    = (int)\YunShop::request()->page_id ?: 0;
+        $member_id = \YunShop::app()->getMemberId();
+
+        if (app('plugins')->isEnabled('designer')) {
+            //系统信息
+            // TODO
+            if (!Cache::has('designer_system')) {
+                $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
+
+                Cache::put('designer_system', $result['system'], 4200);
+            } else {
+                $result['system'] = Cache::get('designer_system');
+            }
+
+            $page_id = $pageId;
+            if ($page_id) {
+                $page = (new OtherPageService())->getOtherPage($page_id);
+            } else {
+                $page = (new IndexPageService())->getIndexPage();
+            }
+
+            if ($page) {
+                if (empty($pageId) && Cache::has($member_id . '_designer_default_0')) {
+                    $designer = Cache::get($member_id . '_designer_default_0');
+                } else {
+                    $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+                }
+
+                if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
+                    Cache::put($member_id . '_designer_default_0', $designer, 180);
+                }
+
+                $result['item'] = $designer;
+
+                //顶部菜单 todo 加快进度开发，暂时未优化模型，装修数据、顶部菜单、底部导航等应该在一次模型中从数据库获取、编译 Y181031
+                if ($designer['pageinfo']['params']['top_menu'] && $designer['pageinfo']['params']['top_menu_id']) {
+                    $result['item']['topmenu'] = (new PageTopMenuService())->getTopMenu($designer['pageinfo']['params']['top_menu_id']);
+                } else {
+                    $result['item']['topmenu'] = [
+                        'menus'  => [],
+                        'params' => [],
+                        'isshow' => false
+                    ];
+                }
+
+
+                $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
+                $footerMenuId   = $designer['footermenu'];
+            } elseif (empty($pageId)) { //如果是请求首页的数据, 提供默认值
+                $result['default']         = self::defaultDesign();
+                $result['item']['data']    = ''; //前端需要该字段
+                $footerMenuType            = 1;
+                $result['item']['topmenu'] = [
+                    'menus'  => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
+            } else { //如果是请求预览装修的数据
+                $result['item']['data']    = ''; //前端需要该字段
+                $footerMenuType            = 0;
+                $result['item']['topmenu'] = [
+                    'menus'  => [],
+                    'params' => [],
+                    'isshow' => false
+                ];
+            }
+            //自定义菜单, 原来接口在  plugin.designer.home.index.menu
+            switch ($footerMenuType) {
+                case 1:
+                    $result['item']['menus']     = self::defaultMenu($i, $mid, $type);//菜单
+                    $result['item']['menustyle'] = self::defaultMenuStyle();//菜单样式
+                    break;
+                case 2:
+                    if (!empty($footerMenuId)) {
+                        if (!Cache::has("designer_menu_{$footerMenuId}")) {
+                            $menustyle = DesignerMenu::getMenuById($footerMenuId);
+                            Cache::put("designer_menu_{$footerMenuId}", $menustyle, 4200);
+                        } else {
+                            $menustyle = Cache::get("designer_menu_{$footerMenuId}");
+                        }
+
+                        if (!empty($menustyle->menus) && !empty($menustyle->params)) {
+                            $result['item']['menus']     = json_decode($menustyle->toArray()['menus'], true);
+                            $result['item']['menustyle'] = json_decode($menustyle->toArray()['params'], true);
+                            //判断是否是商城外部链接
+                            foreach ($result['item']['menus'] as $key => $value) {
+                                if (!strexists($value['url'], 'addons/yun_shop/')) {
+                                    $result['item']['menus'][$key]['is_shop'] = 1;
+                                } else {
+                                    $result['item']['menus'][$key]['is_shop'] = 0;
+                                }
+                            }
+                        } else {
+                            $result['item']['menus']     = self::defaultMenu($i, $mid, $type);
+                            $result['item']['menustyle'] = self::defaultMenuStyle();
+                        }
+                    } else {
+                        $result['item']['menus']     = self::defaultMenu($i, $mid, $type);
+                        $result['item']['menustyle'] = self::defaultMenuStyle();
+                    }
+                    break;
+                default:
+                    $result['item']['menus']     = false;
+                    $result['item']['menustyle'] = false;
+            }
+        } elseif (empty($pageId)) { //如果是请求首页的数据, 但是没有安装"装修插件"或者"装修插件"没有开启, 则提供默认值
+            $result['default']           = self::defaultDesign();
+            $result['item']['menus']     = self::defaultMenu($i, $mid, $type);
+            $result['item']['menustyle'] = self::defaultMenuStyle();
+            $result['item']['data']      = ''; //前端需要该字段
+            $result['item']['topmenu']   = [
+                'menus'  => [],
+                'params' => [],
+                'isshow' => false
+            ];
+        }
+        return $this->successJson('ok', $result);
+    }
+
     public function getLoveGoods($goods_id)
     {
         $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
-
     }
     /*
      * 获取分页数据
@@ -326,103 +503,14 @@ class HomePageController extends ApiController
         return $captcha_base64;
     }
 
+    /**
+     * 原生小程序首页装修接口
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function wxapp()
     {
-        $i         = \YunShop::request()->i;
-        $mid       = \YunShop::request()->mid;
-        $type      = \YunShop::request()->type;
-        $pageId    = \YunShop::request()->page_id;
-        $member_id = \YunShop::app()->getMemberId();
-
-        //商城设置, 原来接口在 setting.get
-        $key = \YunShop::request()->setting_key ? \YunShop::request()->setting_key : 'shop';
-        if (!empty($key)) {
-            $setting = Setting::get('shop.' . $key);
-        } else {
-            $setting = Setting::get('shop');
-        }
-
-        if ($setting) {
-            $setting['logo'] = replace_yunshop(yz_tomedia($setting['logo']));
-
-            $relation = MemberRelation::getSetInfo()->first();
-
-            if ($relation) {
-                $setting['agent'] = $relation->status ? true : false;
-            } else {
-                $setting['agent'] = false;
-            }
-
-            //强制绑定手机号
-            $member_set = Setting::get('shop.member');
-
-            if ((1 == $member_set['is_bind_mobile']) && $member_id && $member_id > 0) {
-                $member_model = Member::getMemberById($member_id);
-
-                if ($member_model && $member_model->mobile) {
-                    $setting['is_bind_mobile'] = 0;
-                } else {
-                    $setting['is_bind_mobile'] = 1;
-                }
-            } else {
-                $setting['is_bind_mobile'] = 0;
-            }
-            $setting['diycode'] = html_entity_decode($setting['diycode']);
-            $result['mailInfo'] = $setting;
-
-        } else {
-            $result['mailInfo']['is_bind_mobile'] = 0;
-        }
-
-        //用户信息, 原来接口在 member.member.getUserInfo
-        if (empty($pageId)) { //如果是请求首页的数据
-            if (!empty($member_id)) {
-                $member_info = MemberModel::getUserInfos($member_id)->first();
-
-                if (!empty($member_info)) {
-                    $member_info = $member_info->toArray();
-                    $data        = MemberModel::userData($member_info, $member_info['yz_member']);
-                    $data        = MemberModel::addPlugins($data);
-
-                    $result['memberinfo'] = $data;
-                }
-            }
-        }
-
-        //插件信息, 原来接口在 plugins.get-plugin-data
-        $enableds = app('plugins')->getEnabledPlugins()->toArray();
-
-        //如果安装了装修插件并开启插件
-        if (array_key_exists('designer', $enableds)) {
-
-            //系统信息
-            $result['system'] = (new \Yunshop\Designer\services\DesignerService())->getSystemInfo();
-
-            //装修数据, 原来接口在 plugin.designer.home.index.page
-            if (empty($pageId)) { //如果是请求首页的数据
-                $page = Designer::getDefaultDesigner(9);
-            } else {
-                $page = Designer::getDesignerByPageID($pageId);
-            }
-            if ($page) {
-                $designer       = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
-                $result['item'] = $designer;
-                $footerMenuType = $designer['footertype']; //底部菜单: 0 - 不显示, 1 - 显示系统默认, 2 - 显示选中的自定义菜单
-                $footerMenuId   = $designer['footermenu'];
-            } else { //如果是请求首页的数据, 提供默认值
-                $result['default']      = self::defaultDesign();
-                $result['item']['data'] = ''; //前端需要该字段
-                $footerMenuType         = 1;
-            }
-
-        } else { //如果是请求首页的数据, 但是没有安装"装修插件"或者"装修插件"没有开启, 则提供默认值
-            $result['default']           = self::defaultDesign();
-            $result['item']['menus']     = self::defaultMenu($i, $mid, $type);
-            $result['item']['menustyle'] = self::defaultMenuStyle();
-            $result['item']['data']      = ''; //前端需要该字段
-        }
-
-        return $this->successJson('ok', $result);
+        return $this->index();
     }
 
     /**
@@ -751,6 +839,8 @@ class HomePageController extends ApiController
                 return show_json(1, $data);
             }
         }
+
+        return show_json(1, []);
     }
 
     public function getBalance()
@@ -857,22 +947,18 @@ class HomePageController extends ApiController
 
     public function wxJsSdkConfig()
     {
-        $url = \YunShop::request()->url;
-        $pay = \Setting::get('shop.pay');
+        $member = \Setting::get('shop.member');
 
-        if (!empty($pay['weixin_appid']) && !empty($pay['weixin_secret'])) {
-            $app_id = $pay['weixin_appid'];
-            $secret = $pay['weixin_secret'];
-        } else {
-            $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-
-            $app_id = $account->key;
-            $secret = $account->secret;
+        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+            return show_json(1, []);
         }
 
+        $url = \YunShop::request()->url;
+        $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+
         $options = [
-            'app_id' => $app_id,
-            'secret' => $secret
+            'app_id' => $account->key,
+            'secret' => $account->secret
         ];
 
         $app = new Application($options);
@@ -926,7 +1012,20 @@ class HomePageController extends ApiController
                 'desc'  => '商家分享'
             ];
         }
-
+        if (app('plugins')->isEnabled('designer')){
+            $index = (new RecordsController())->shareIndex();
+            foreach($index['data'] as $value){
+                foreach ($value['page_type_cast'] as $item){
+                    if ($item == 1){
+                        $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
+                        $share['title'] = $designer->title;
+                        $share['icon'] = $designer->img;
+                        $share['desc'] = $designer->desc;
+                        break;
+                    }
+                }
+            }
+        }
         $data = [
             'config' => $config,
             'info'   => $info,   //商城设置

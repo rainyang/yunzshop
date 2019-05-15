@@ -26,3 +26,4 @@ vendor/
 /addons/*
 /bootstrap/install.lock
 /app/platform/controllers/user.txt
+/favicon.ico

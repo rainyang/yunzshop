@@ -138,6 +138,21 @@ class Order extends BaseModel
             ->count('id');
     }
 
+    /**
+     * 订单流程和标准订单不一样的插件订单，不显示在前端我的订单里
+     * @param $query
+     * @return mixed
+     */
+    public function scopeHidePluginIds($query, $plugin_ids)
+    {
+        if (empty($plugin_ids)) {
+            //酒店订单、网约车订单
+            $plugin_ids = [33,41];
+        }
+
+        return $query->whereNotIn('plugin_id', $plugin_ids);
+    }
+
 
     /**
      * 获取用户消费总额
