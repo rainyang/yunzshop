@@ -315,7 +315,8 @@ class ListController extends BaseController
         $data = [];
         foreach ($levelId as $k => $value) {
             foreach ($member['has_many_parent_team'] as $key => $parent) {
-                if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value) {
+
+                if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value && $parent['level'] == 1) {
                     $data[$k] = $parent['has_one_member']['nickname'].' '.$parent['has_one_member']['realname'].' '.$parent['has_one_member']['mobile'];
                     break;
                 }
