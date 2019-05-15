@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\facades\Setting;
+use Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener;
 
 
 class TestController extends BaseController
@@ -400,19 +401,21 @@ echo '<pre>'; print_r($attr);
     protected $GoodsGroupTable = 'yz_goods_group_goods';
     protected $DesignerTable = 'yz_designer';
     public function test(){
-        (new \Yunshop\TripartiteProvider\admin\tripartiteProvider\ListController)->updatePlatform(
-            [
-                "uid" => "21",
-                "nickname" => "[21]贾丰臣",
-                "domain" => "www.wq.cn",
-                "uniacid" => "2",
-                "name" => "敖德萨所多",
-                "realname" => "订单",
-                "mobile" => "12312321333",
-                "platform_domain" => "www.wq.com",
-                "platform_uniacid" => "2"
-]
-        );
+//        (new \Yunshop\TripartiteProvider\admin\tripartiteProvider\ListController)->updatePlatform(
+//            [
+//                "uid" => "21",
+//                "nickname" => "[21]贾丰臣",
+//                "domain" => "www.wq.cn",
+//                "uniacid" => "2",
+//                "name" => "敖德萨所多",
+//                "realname" => "订单",
+//                "mobile" => "12312321333",
+//                "platform_domain" => "www.wq.com",
+//                "platform_uniacid" => "2"
+//]
+//        );
+        $this->order = Order::find(1736);
+        (new \Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener)->withdraw($this->order);
     }
 
 }
