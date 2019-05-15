@@ -55,7 +55,13 @@ class BatchExcelRechargeController extends BaseController
      */
     public function index()
     {
-        return view('finance.batchExcelRecharge');
+        $love_open =0;
+        if (app('plugins')->isEnabled('love')) {
+            $love_open = 1;
+        }
+        return view('finance.batchExcelRecharge', [
+            'love_open' => $love_open,
+        ]);
     }
 
     /**
