@@ -975,13 +975,13 @@ class MemberService
      *
      * @param $member_id
      */
-    public function chkAccount($member_id)
+    public function chkAccount($member_id, $key = 'chekAccount', $minute = 30)
     {
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
 
-        if (1 == $type && !Cache::has($member_id . ':chekAccount')) {
-            Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
+        if (1 == $type && !Cache::has($member_id . ':' . $key)) {
+            Cache::put($member_id. ':' . $key, 1, \Carbon\Carbon::now()->addMinutes($minute));
             $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
