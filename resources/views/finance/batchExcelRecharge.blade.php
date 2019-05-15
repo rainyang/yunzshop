@@ -27,6 +27,7 @@
                     <select class="form-control" name="batch_type">
                         <option value="balance" data-name="充值余额">充值余额</option>
                         <option value="point" data-name="充值积分">充值积分</option>
+                        <option value="love" data-name="充值爱心值">充值爱心值</option>
                     </select>
                 </div>
             </div>

@@ -15,6 +15,7 @@ use app\common\helpers\Url;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\PointService;
+use Yunshop\Love\Common\Services\LoveChangeService;
 
 class BatchExcelRechargeController extends BaseController
 {
@@ -193,6 +194,46 @@ class BatchExcelRechargeController extends BaseController
                 'point_income_type' => $rechargeValue < 0 ? PointService::POINT_INCOME_LOSE : PointService::POINT_INCOME_GET
             ]))->changePoint();
 
+
+            if ($result) {
+                $this->successNum += 1;
+            } else {
+                $this->errorNum += 1;
+            }
+        } catch (\Exception $exception) {
+
+            $this->errorNum += 1;
+        }
+    }
+
+    private function batchRechargeLove()
+    {
+        $values = $this->getRow();
+
+        foreach ($values as $key => $value) {
+
+            $this->handleNum += 1;
+            $memberId = trim($value[0]);
+            $rechargeValue = trim($value[1]);
+
+            if (!$memberId || !$rechargeValue && $rechargeValue < 0) {
+                continue;
+            }
+
+            $this->LoveRecharge($memberId, $rechargeValue);
+        }
+    }
+
+    private function LoveRecharge($memberId, $rechargeValue)
+    {
+        try {
+            $result = (new LoveChangeService())->recharge([
+                'member_id'     => $memberId,
+                'change_value'  => $rechargeValue,
+                'operator'      => ConstService::OPERATOR_MEMBER,
+                'operator_id'   => 0,
+                'remark'        => 'Excel批量充值'.$rechargeValue,
+            ]);
 
             if ($result) {
                 $this->successNum += 1;
