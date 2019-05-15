@@ -122,7 +122,8 @@ class PluginsController extends BaseController
 //        $recharge['name'] = '生活充值';
 //        $api['name'] = '接口类';
 
-        $plugins = Config::get('plugins_menu');//全部插件
+        $plugins = \Config::get('plugins_menu');//全部插件
+
         foreach ($plugins as $key => $plugin) {
             $type = $plugin['type'];
             switch ($type) {

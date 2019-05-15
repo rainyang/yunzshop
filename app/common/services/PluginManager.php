@@ -143,7 +143,7 @@ class PluginManager
                 $plugin = $this->getPlugin($name);
                 $enabled = $this->getEnabled();
 //                $enabled[] = $name;
-                $this->setEnabled($enabled[$name]->id, 1, $name);
+                $this->setEnabled($enabled[$name]['id'], 1, $name);
                 $plugin->setEnabled(true);
                 $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
             });
@@ -163,7 +163,7 @@ class PluginManager
 
         $plugin = $this->getPlugin($name);
 
-        $this->setEnabled($enabled[$name]->id, 0);
+        $this->setEnabled($enabled[$name]['id'], 0);
 
         $plugin->setEnabled(true);
         $this->dispatcher->fire(new events\PluginWasEnabled($plugin));
@@ -208,8 +208,7 @@ class PluginManager
     {
         $only = [];
         foreach ($this->getEnabled() as $key => $plugin) {
-
-            if ($plugin->enabled) {
+            if ($plugin['enabled']) {
                 $only[] = $key;
             }
         }
@@ -240,7 +239,6 @@ class PluginManager
      */
     public function getEnabled()
     {
-        //dd($this->option->get());
         return (array)$this->option->get();
 //        return (array)json_decode($this->option->get('plugins_enabled'), true);
     }
@@ -282,8 +280,7 @@ class PluginManager
     public function isEnabled($plugin)
     {
         $plugins = $this->getEnabled();
-
-        return $plugins[$plugin]->enabled;
+        return $plugins[$plugin]['enabled'];
 //        return in_array($plugin, $this->getEnabled());
     }
 
@@ -304,7 +301,7 @@ class PluginManager
         }
         $enabled = $this->getEnabled();
 
-        $this->setTopShow($enabled[$name]->id, $enable);
+        $this->setTopShow($enabled[$name]['id'], $enable);
     }
 
     public function setTopShow($id, $enabled, $name = null)
@@ -328,6 +325,6 @@ class PluginManager
         if (!$this->getPlugin($name)) {
             $name = str_replace("_", "-", $name);
         }
-        return $plugins = $plugins[$name]->top_show;
+        return $plugins = $plugins[$name]['top_show'];
     }
 }

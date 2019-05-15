@@ -8,6 +8,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 use app\platform\modules\application\models\AppUser;
+use Illuminate\Support\Facades\Schema;
 
 class UniacidApp extends BaseModel
 {

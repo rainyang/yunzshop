@@ -94,30 +94,31 @@ class MessageTemp extends BaseModel
 
     public static function getSendMsg($temp_id, $params)
     {
-        if (!intval($temp_id)) {
-            return false;
-        }
-        $temp = self::withoutGlobalScopes(['uniacid'])->whereId($temp_id)->first();
-        if (!$temp) {
-            return false;
-        }
-        self::$template_id = $temp->template_id;
-        $msg = [
-            'first' => [
-                'value' => self::replaceTemplate($temp->first, $params),
-                'color' => $temp->first_color
-            ],
-            'remark' => [
-                'value' => self::replaceTemplate($temp->remark, $params),
-                'color' => $temp->remark_color
-            ]
-        ];
-        foreach ($temp->data as $row) {
-            $msg[$row['keywords']] = [
-                'value' => self::replaceTemplate($row['value'], $params),
-                'color' => $row['color']
+            if (!intval($temp_id)) {
+                return false;
+            }
+            $temp = self::withoutGlobalScopes('uniacid')->whereId($temp_id)->first();
+            if (!$temp) {
+                return false;
+            }
+            self::$template_id = $temp->template_id;
+            $msg = [
+                'first' => [
+                    'value' => self::replaceTemplate($temp->first, $params),
+                    'color' => $temp->first_color
+                ],
+                'remark' => [
+                    'value' => self::replaceTemplate($temp->remark, $params),
+                    'color' => $temp->remark_color
+                ]
             ];
-        }
+            foreach ($temp->data as $row) {
+                $msg[$row['keywords']] = [
+                    'value' => self::replaceTemplate($row['value'], $params),
+                    'color' => $row['color']
+                ];
+            }
+
         return $msg;
     }
 
