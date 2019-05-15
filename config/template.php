@@ -398,17 +398,17 @@ return [
         ]
     ],
 
-/**
- * 采购单生成通知模板
- */
-    'template.purchasing_order_generation_subplatform'=> [
-    'title' => "采购单生成通知",
-    'subtitle' => '采购单生成通知',
-    'value' => 'purchasing_order_generation_subplatform',
-    'param' => [
-        '昵称', '时间'
-        ]
-    ],
+///**
+// * 采购单生成通知模板
+// */
+//    'template.purchasing_order_generation_subplatform'=> [
+//    'title' => "采购单生成通知",
+//    'subtitle' => '采购单生成通知',
+//    'value' => 'purchasing_order_generation_subplatform',
+//    'param' => [
+//        '昵称', '时间'
+//        ]
+//    ],
 
 /**
  * 采购单支付成功通知模板
