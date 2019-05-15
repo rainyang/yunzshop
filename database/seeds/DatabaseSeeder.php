@@ -86,7 +86,7 @@ class DatabaseSeeder extends Seeder
 
 //        $this->call(YzpluginSeeder::class);
 
-        require "YzPluginUniacidSeeder.php";
+        require_once "YzPluginUniacidSeeder.php";
         $this->call(YzPluginUniacidSeeder::class);
     }
 }

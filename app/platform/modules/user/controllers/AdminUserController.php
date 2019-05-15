@@ -38,11 +38,7 @@ class AdminUserController extends BaseController
         $parames = request();
         $users = User::getList($parames);
 
-        if (!$users->isEmpty()) {
-            return $this->successJson('成功', $users);
-        } else {
-            return $this->check(6);
-        }
+        return $this->successJson('成功', $users);
     }
 
     /**
@@ -126,7 +122,7 @@ class AdminUserController extends BaseController
         $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
 
         if ($validator->fails()) {
-            return $this->errorJson('失败', $validator->errors()->all());
+            return $this->errorJson($validator->errors()->all());
         }
     }
 
@@ -227,22 +223,22 @@ class AdminUserController extends BaseController
                 return $this->successJson('成功');
                 break;
             case 2:
-                return $this->errorJson('原密码错误');
+                return $this->errorJson(['原密码错误']);
                 break;
             case 3:
-                return $this->errorJson('新密码与原密码一致');
+                return $this->errorJson(['新密码与原密码一致']);
                 break;
             case 4:
-                return $this->errorJson('存储相关信息表失败');
+                return $this->errorJson(['存储相关信息表失败']);
                 break;
             case 5:
-                return $this->errorJson('参数错误');
+                return $this->errorJson(['参数错误']);
                 break;
             case 6:
-                return $this->errorJson('未获取到数据');
+                return $this->errorJson(['未获取到数据']);
                 break;
             default:
-                return $this->errorJson('失败');
+                return $this->errorJson(['失败']);
         }
     }
 
@@ -292,9 +288,9 @@ class AdminUserController extends BaseController
         $user['total'] += $total;
 
         if (!$user) {
-            return $this->errorJson('未获取到该用户');
+            return $this->errorJson(['未获取到该用户']);
         } elseif ($user->hasManyAppUser->isEmpty() && $uniacid_apps->isEmpty()) {
-                return $this->errorJson('该用户暂时没有平台');
+            return $this->successJson('该用户暂时没有平台');
         }
 
         $user = $user->toArray();
@@ -326,10 +322,6 @@ class AdminUserController extends BaseController
             }
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
-        }
-
-        if ($user->isEmpty()) {
-            return $this->errorJson('未获取到店员信息');
         }
 
         return $this->successJson('成功', $user);

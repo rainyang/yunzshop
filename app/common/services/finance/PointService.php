@@ -193,7 +193,9 @@ class PointService
 
     public function addLog()
     {
-        $this->point_data['uniacid'] = \YunShop::app()->uniacid;
+        //$this->point_data['uniacid'] = \YunShop::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
+        $this->point_data['uniacid'] = !empty($uniacid) ? $uniacid : $this->point_data['uniacid'];
         $point_model = PointLog::create($this->point_data);
         if (!isset($point_model)) {
             return false;
