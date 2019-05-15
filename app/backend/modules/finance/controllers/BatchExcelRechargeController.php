@@ -235,7 +235,7 @@ class BatchExcelRechargeController extends BaseController
                 'remark'        => 'Excel批量充值'.$rechargeValue,
             ]);
 
-            if ($result) {
+            if ($result === true) {
                 $this->successNum += 1;
             } else {
                 $this->errorNum += 1;
