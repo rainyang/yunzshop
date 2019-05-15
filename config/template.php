@@ -302,24 +302,24 @@ return [
         ]
     ],
 
-    /**
-     * 子平台入驻申请通知模板
-     */
-    'template.platform_residence_application'=> [
-        'title' => "子平台入驻申请通知",
-        'subtitle' => '子平台入驻申请通知',
-        'value' => 'platform_residence_application',
-        'param' => [
-            '昵称', '时间'
-        ]
-    ],
+//    /**
+//     * 子平台入驻申请通知模板
+//     */
+//    'template.platform_residence_application'=> [
+//        'title' => "子平台入驻申请通知",
+//        'subtitle' => '子平台入驻申请通知',
+//        'value' => 'platform_residence_application',
+//        'param' => [
+//            '昵称', '时间'
+//        ]
+//    ],
 
 /**
- * 采购单生成通知模板
+ * 主平台-采购单生成通知模板
  */
     'template.purchasing_order_generation'=> [
-    'title' => "采购单生成通知",
-    'subtitle' => '采购单生成通知',
+    'title' => "主平台-采购单生成通知",
+    'subtitle' => '主平台-采购单生成通知',
     'value' => 'purchasing_order_generation',
     'param' => [
         '昵称', '时间'
@@ -339,23 +339,23 @@ return [
     ],
 
 /**
- * 供货单发货通知模板
+ * 主平台-供货单发货通知模板
  */
     'template.supply_delivery'=> [
-    'title' => "供货单发货通知",
-    'subtitle' => '供货单发货通知',
+    'title' => "主平台-供货单发货通知",
+    'subtitle' => '主平台-供货单发货通知',
     'value' => 'supply_delivery',
     'param' => [
         '昵称', '时间'
         ]
     ],
 
-/**
- * 供货单完成通知模板
+/**主平台-供货单完成通知
+ * 模板
  */
     'template.supply_complete'=> [
-    'title' => "供货单完成通知",
-    'subtitle' => '供货单完成通知',
+    'title' => "主平台-供货单完成通知",
+    'subtitle' => '主平台-供货单完成通知',
     'value' => 'supply_complete',
     'param' => [
         '昵称', '时间'
@@ -398,17 +398,17 @@ return [
         ]
     ],
 
-///**
-// * 采购单生成通知模板
-// */
-//    'template.purchasing_order_generation_subplatform'=> [
-//    'title' => "采购单生成通知",
-//    'subtitle' => '采购单生成通知',
-//    'value' => 'purchasing_order_generation_subplatform',
-//    'param' => [
-//        '昵称', '时间'
-//        ]
-//    ],
+/**
+ * 采购单生成通知模板
+ */
+    'template.purchasing_order_generation_subplatform'=> [
+    'title' => "采购单生成通知",
+    'subtitle' => '采购单生成通知',
+    'value' => 'purchasing_order_generation_subplatform',
+    'param' => [
+        '昵称', '时间'
+        ]
+    ],
 
 /**
  * 采购单支付成功通知模板
