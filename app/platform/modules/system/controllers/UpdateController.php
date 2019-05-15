@@ -447,7 +447,7 @@ class UpdateController extends BaseController
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_fromework.json');
-        $update->setCurrentVersion(config('backend-version'));
+        $update->setCurrentVersion(config('backend_version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         $update->setBasicAuth($key, $secret);
 
