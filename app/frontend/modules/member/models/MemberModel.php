@@ -481,7 +481,7 @@ class MemberModel extends Member
             }
 
             //团队1级会员
-            $order = DB::table('yz_order')->select('uid','price')->where('status', 3)->where('uniacid', $unicid)->get();
+            $order = DB::table('yz_order')->select('uid','price','goods_total')->where('status', 3)->where('uniacid', $unicid)->get();
             $member_1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('level', 1)->where('uniacid', $unicid)->get();
             foreach ($member_1 as $child_id) {
                 $child_id1[] = $child_id['child_id'];
