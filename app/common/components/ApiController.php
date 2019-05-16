@@ -39,6 +39,10 @@ class ApiController extends BaseController
 
         $relaton_set = MemberRelation::getSetInfo()->first();
 
+        if(\YunShop::request()->type == 1 and \Setting::get('shop.member.wechat_login_mode') == 1){
+            \YunShop::request()->type = 5;
+        }
+
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
         $mark = \YunShop::request()->mark;

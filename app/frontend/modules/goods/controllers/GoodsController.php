@@ -288,6 +288,7 @@ class GoodsController extends ApiController
             return $rows['id'];
         });
 
+
 //        $list = Goods::whereIn('id',$id_arr)->select("*")
 //            ->where("status", 1)
 //            ->where(function($query) {
