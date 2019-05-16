@@ -23,7 +23,7 @@
                         <li class="{{in_array($key,Yunshop::$currentItems) ? 'active' : ''}}">
                             <a href="{{ \app\common\services\MenuService::canAccess($key) }}">
                                 <i class="fa {{array_get($value,'icon','fa-circle-o') ?: 'fa-circle-o'}}"></i>
-                                <p style=" margin-top: -5px;">{{$value['name'] ?? ''}}</p>
+                                <p style=" margin-top: -5px;">{{$value['name'] or ''}}</p>
                             </a>
                         </li>
                     @endif
