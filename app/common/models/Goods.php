@@ -303,6 +303,9 @@ class Goods extends BaseModel
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
+                case 'goods_id':
+                    $query->where('yz_goods.id', '=', $value);
+                    break;
                 case 'brand_id':
                     $query->where('brand_id', $value);
                     break;
