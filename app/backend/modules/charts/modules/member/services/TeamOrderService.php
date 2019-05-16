@@ -45,7 +45,7 @@ class TeamOrderService
             foreach ($member_all as $item){
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
-                $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
+                $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->sum('goods_total');
                 $result[$item['member_id']]['team_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
                 $res = explode(',',$item['child']);
                 $pay_count = 0;
