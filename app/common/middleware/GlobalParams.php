@@ -86,28 +86,12 @@ class GlobalParams
      */
     public function checkClear()
     {
-        if (app('plugins')->isEnabled('supplier')) {
-            include base_path() . '/plugins/supplier/menu.php';
-        }
-
-        if (app('plugins')->isEnabled('store-cashier')) {
-            include base_path() . '/plugins/store-cashier/storeMenu.php';
-        }
-
-        if (app('plugins')->isEnabled('subsidiary')) {
-            include base_path() . '/plugins/subsidiary/subsidiaryMenu.php';
-        }
-
-        if (app('plugins')->isEnabled('hotel')) {
-            include base_path() . '/plugins/hotel/hotelMenu.php';
-        }
-
-        if (app('plugins')->isEnabled('area-dividend')) {
-            include base_path() . '/plugins/area-dividend/area_admin.php';
-        }
-
-        if (app('plugins')->isEnabled('mryt')) {
-            include base_path() . '/plugins/mryt/storeMenu.php';
+        $installed = app('plugins')->getPlugins();
+        foreach ($installed as $install) {
+            $install = $install->toArray();
+            if (app('plugins')->isEnabled($install['name'])) {
+                include $install['path'].'/menu.php';
+            }
         }
     }
 }

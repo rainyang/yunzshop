@@ -16,11 +16,14 @@ class MessageService extends \app\common\services\MessageService
 {
     private $buyerMessage;
     private $shopMessage;
-
-    function __construct($order)
+    protected $formId;
+    protected $noticeType;
+    function __construct($order,$formId = '',$type = 1,$title)
     {
-        $this->buyerMessage = new BuyerMessage($order);
-        $this->shopMessage = new ShopMessage($order);
+        $this->buyerMessage = new BuyerMessage($order,$formId,$type,$title);
+        $this->shopMessage = new ShopMessage($order,$formId,$type,$title);
+        $this->formId = $formId;
+        $this->noticeType = $type;
     }
 
     public function canceled()
@@ -58,7 +61,13 @@ class MessageService extends \app\common\services\MessageService
     public function received()
     {
         $this->shopMessage->goodsBuy(3);
-        if (\Setting::get('shop.notice.notice_enable.received')) {
+        if ($this->noticeType == 2){
+
+            $this->shopMessage->received();
+        }else{
+            $noticeUrl = 'shop.notice.notice_enable.received';
+        }
+        if (\Setting::get($noticeUrl)) {
             $this->shopMessage->received();
         }
         $this->buyerMessage->received();
