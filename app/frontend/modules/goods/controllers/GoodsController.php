@@ -337,7 +337,6 @@ class GoodsController extends ApiController
 //        foreach ($list["data"] as $key=>$row){
 //            $list['data'][$key]['goods_id']=$list['data'][$key]['id'];
 //        }
-
         return $this->successJson('成功', $list);
     }
 
