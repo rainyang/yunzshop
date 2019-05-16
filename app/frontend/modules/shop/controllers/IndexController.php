@@ -99,7 +99,7 @@ class IndexController extends ApiController
                 })
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
-                ->paginate(15);
+                ->paginate(16);
 //                ->get()->map(function (Goods $goods) {
 //                    return $goods->append('vip_price');
 //                });
