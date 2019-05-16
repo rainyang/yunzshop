@@ -179,7 +179,6 @@
 
                                     <div class="col-sm-7 col-lg-9 col-xs-12">
                                         <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
-                                        <input type="hidden" name="token" value="{{$var['token']}}"/>
                                         @section('export')
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel

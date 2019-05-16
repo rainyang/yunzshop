@@ -53,7 +53,6 @@ class OrderDiscount
             foreach (config('shop-foundation.order-discount') as $configItem) {
                 $this->discounts->put($configItem['key'], call_user_func($configItem['class'], $this->order));
             }
-
             $this->setOrderDiscounts();
 
         }

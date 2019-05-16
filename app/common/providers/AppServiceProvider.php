@@ -6,10 +6,12 @@ use App;
 use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
 use app\common\services\mews\captcha\src\Captcha;
+
+use app\framework\Log\TraceLog;
+use app\common\facades\Setting;
+use Illuminate\Support\ServiceProvider;
 use app\common\services\Utils;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\ServiceProvider;
-use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //require_once $this->app->path('helpers.php');
         \Cron::setDisablePreventOverlapping();
 
         //微信接口不输出错误
@@ -116,15 +117,20 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Support\Str']
             );
         });
+        $this->app->singleton('Log.trace', function (){
+            return new TraceLog();
+        });
     }
 
     private function globalParamsHandle()
     {
         if (env('APP_Framework') == 'platform') {
+            global $_W, $_GPC;
+
             $this->install();
 
             $uniacid = 0;
-            $cfg = \config::get('app.global');
+            $cfg     = \config::get('app.global');
 
             if (!empty(request('uniacid')) && request('uniacid') > 0) {
                 $uniacid = request('uniacid');
@@ -135,16 +141,35 @@ class AppServiceProvider extends ServiceProvider
                 $uniacid = $_COOKIE['uniacid'];
             }
 
-            $account = AccountWechats::getAccountByUniacid($uniacid);
+            $cfg = $this->getSiteParams($uniacid);
 
-            $cfg['uniacid'] = $uniacid;
-            $cfg['account'] = $account ? $account->toArray() : '';
-
+            $_W   = $cfg;
+            $_GPC = array_merge(app('request')->input(), $_COOKIE);
             \config::set('app.global', $cfg);
-            global $_W;
-            $_W = $cfg;
             \config::set('app.sys_global', array_merge(app('request')->input(), $_COOKIE));
         }
+    }
+
+    private function getSiteParams($uniacid)
+    {
+        $account = AccountWechats::getAccountByUniacid($uniacid);
+
+        $cfg = [
+            'uniacid'          => $uniacid,
+            'acid'             => $uniacid,
+            'account'          => $account ? $account->toArray() : '',
+            'openid'           => '',
+            'uid'              => \Auth::guard('admin')->user()->uid,
+            'username'         => \Auth::guard('admin')->user()->username,
+            'siteroot'         => request()->getSchemeAndHttpHost() . '/',
+            'siteurl'          => request()->getUri(),
+            'attachurl'        => '',
+            'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
+            'attachurl_remote' => '',
+            'charset'          => 'utf-8'
+        ];
+
+        return $cfg;
     }
 
     private function install()
@@ -162,7 +187,8 @@ class AppServiceProvider extends ServiceProvider
             file_put_contents($file, $f_data);
         }
 
-        if (!file_exists(base_path().'/bootstrap/install.lock')) {
+        $install = strpos(request()->path(), 'install');
+        if (!file_exists(base_path().'/bootstrap/install.lock') && !$install) {
             response()->json([
                 'result' => 0,
                 'msg' => '',

@@ -61,6 +61,18 @@ class Setting extends Facade
     }
 
     /**
+     * 获取不区分公众号配置信息
+     *
+     * @param $key
+     * @param null $default
+     * @return mixed
+     */
+    public static function getNotUniacid($key, $default = null)
+    {
+        return self::getInstance()->getNotUniacidValue($key, $default);
+    }
+
+    /**
      * 检测是否存在分组
      * @param $group
      * @return bool

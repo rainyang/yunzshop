@@ -17,9 +17,9 @@ class CountController extends BaseController
 {
     protected $memberService;
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->memberService = new CountService();
     }
 

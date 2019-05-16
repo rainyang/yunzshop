@@ -50,19 +50,7 @@ class AttachmentController extends BaseController
             }
         }
 
-        $config['image_extentions'] = ['0' => 'gif', '1' => 'jpg', '2' => 'jpeg', '3' => 'png'];
-        $config['image_limit'] = 5000;
-        $config['audio_extentions'] = ['0' => 'mp3'];
-        $config['audio_limit'] = 5000;
-
-        if (!$global) {
-            $global = $config;
-        }
-
         $global['thumb_width'] = intval($global['thumb_width']);
-        if (!$global['thumb_width']) {
-            $global['thumb_width'] = 800;
-        }
 
         if ($global['image_extentions']['0']) {
             $global['image_extentions'] = implode("\n", $global['image_extentions']);
@@ -70,10 +58,6 @@ class AttachmentController extends BaseController
 
         if ($global['audio_extentions']['0']) {
             $global['audio_extentions'] = implode("\n", $global['audio_extentions']);
-        }
-
-        if (!$global['zip_percentage']) {
-            $global['zip_percentage'] = 100;
         }
 
         return $this->successJson('成功', [

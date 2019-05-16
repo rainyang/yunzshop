@@ -53,7 +53,7 @@ class BalanceSetController extends BaseController
 
     private function getPostValue()
     {
-        $this->validate($this->rules(),request(),'',$this->customAttributes());
+        $this->validate($this->rules(),request(),[],$this->customAttributes());
 
         $request_data = \YunShop::request()->balance;
 
@@ -116,7 +116,7 @@ class BalanceSetController extends BaseController
         }
 
         foreach ($sale as $key => $item) {
-            $this->validatorCustomRules($item, $this->saleRules(), '', $this->saleCustomAttributes());
+            $this->validatorCustomRules($item, $this->saleRules(), [], $this->saleCustomAttributes());
         }
         return $sale;
     }

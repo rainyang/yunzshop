@@ -24,7 +24,6 @@ class CouponService
     private $selectedMemberCoupon;
     public function __construct( $order, $coupon_method = null, $orderGoods = [])
     {
-
         $this->order = $order;
         $this->orderGoods = $orderGoods;
         $this->coupon_method = $coupon_method;

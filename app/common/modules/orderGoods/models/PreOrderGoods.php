@@ -268,7 +268,6 @@ class PreOrderGoods extends OrderGoods
     }
 
     /**
-     * 获取vip优惠金额
      * @return mixed
      */
     protected function getVipDiscountAmount()

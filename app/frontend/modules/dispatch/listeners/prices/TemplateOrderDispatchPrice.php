@@ -11,6 +11,7 @@ namespace app\frontend\modules\dispatch\listeners\prices;
 use app\backend\modules\goods\models\Dispatch;
 use app\common\events\dispatch\OrderDispatchWasCalculated;
 use app\common\models\goods\GoodsDispatch;
+use app\common\modules\orderGoods\OrderGoodsCollection;
 use app\frontend\models\OrderGoods;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
@@ -71,7 +72,7 @@ class TemplateOrderDispatchPrice
      * @param $orderGoodsCollection
      * @return array
      */
-    private function getDispatchIds(PreOrderGoodsCollection $orderGoodsCollection)
+    private function getDispatchIds(OrderGoodsCollection $orderGoodsCollection)
     {
         $dispatch_ids = [];
         foreach ($orderGoodsCollection as $aOrderGoods) {

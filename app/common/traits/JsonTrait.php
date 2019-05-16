@@ -23,8 +23,8 @@ trait JsonTrait
             'result' => 1,
             'msg' => $message,
             'data' => $data
-        ], 200, ['charset' => 'utf-8'])
-            ->send();
+        ], 200, ['charset' => 'utf-8'])->send();
+            exit();
     }
 
     /**
@@ -39,8 +39,7 @@ trait JsonTrait
             'result' => 0,
             'msg' => $message,
             'data' => $data
-        ], 200, ['charset' => 'utf-8'])
-            ->send();
-        exit;
+        ], 200, ['charset' => 'utf-8'])->send();
+        exit();
     }
 }

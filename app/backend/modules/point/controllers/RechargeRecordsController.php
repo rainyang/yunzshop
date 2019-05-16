@@ -30,10 +30,9 @@ class RechargeRecordsController extends BaseController
      */
     protected $rechargeModel;
 
-
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         $this->search = $this->getSearch();
         $this->rechargeModel = $this->getMenuModels();

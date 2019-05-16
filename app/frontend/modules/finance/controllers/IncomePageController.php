@@ -25,9 +25,9 @@ class IncomePageController extends ApiController
     private $relationSet;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->relationSet = $this->getRelationSet();
     }
 

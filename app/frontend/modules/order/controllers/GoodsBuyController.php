@@ -43,6 +43,7 @@ class GoodsBuyController extends ApiController
             'options_id' => 'integer',
             'total' => 'integer|min:1',
         ]);
+
     }
 
     /**

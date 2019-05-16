@@ -252,12 +252,16 @@ class Coupon
     public function isOptional()
     {
         if (!isset($this->useScope)) {
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '范围设置无效');
             return false;
         }
         if (!isset($this->price)) {
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '满减类型设置无效');
             return false;
         }
         if (!isset($this->timeLimit)) {
+            trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '时限类型设置无效');
+
             return false;
         }
         //满足范围

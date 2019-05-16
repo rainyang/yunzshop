@@ -54,15 +54,12 @@ class IncomeWithdrawController extends ApiController
     //提现金额
     private $withdraw_amounts;
 
-
-
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->setWithdrawSet();
+
     }
-
-
 
     //////
 
@@ -116,8 +113,6 @@ class IncomeWithdrawController extends ApiController
         }
         return $this->errorJson('未检测到数据!');
     }
-
-
 
 
     public function getLangTitle($data)
@@ -187,7 +182,6 @@ class IncomeWithdrawController extends ApiController
     }
 
 
-
     /**
      * 提现到余额独立手续费比例
      * @return int|mixed
@@ -211,7 +205,6 @@ class IncomeWithdrawController extends ApiController
     }
 
 
-
     /**
      * 提现到余额独立劳务税
      * @return int|mixed
@@ -226,8 +219,6 @@ class IncomeWithdrawController extends ApiController
 
         return $this->special_service_tax_rate = empty($value) ? 0 : $value;
     }
-
-
 
 
     /**
@@ -246,10 +237,6 @@ class IncomeWithdrawController extends ApiController
     }
 
 
-
-
-
-
     /**
      * 是否开启提现到余额独立手续费、劳务税
      * @return bool
@@ -260,7 +247,6 @@ class IncomeWithdrawController extends ApiController
     }
 
 
-
     /**
      * 手续费计算公式
      * @param $amount
@@ -269,9 +255,8 @@ class IncomeWithdrawController extends ApiController
      */
     private function poundageMath($amount, $rate)
     {
-        return bcmul(bcdiv($amount,100,4),$rate,2);
+        return bcmul(bcdiv($amount, 100, 4), $rate, 2);
     }
-
 
 
     /*
@@ -282,7 +267,6 @@ class IncomeWithdrawController extends ApiController
     {
         return $this->withdraw_set = Setting::get('withdraw.income');
     }
-
 
 
     /**
@@ -396,7 +380,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function getIncomeAmountFetter()
     {
-        $value = array_get($this->income_set,'roll_out_limit', 0);
+        $value = array_get($this->income_set, 'roll_out_limit', 0);
         return empty($value) ? 0 : $value;
     }
 
@@ -441,7 +425,7 @@ class IncomeWithdrawController extends ApiController
      */
     private function incomeIsCanWithdraw()
     {
-        if (bccomp($this->withdraw_amounts,$this->getIncomeAmountFetter(),2) == -1 || bccomp($this->withdraw_amounts,0,2) != 1) {
+        if (bccomp($this->withdraw_amounts, $this->getIncomeAmountFetter(), 2) == -1 || bccomp($this->withdraw_amounts, 0, 2) != 1) {
             return false;
         }
         return true;
@@ -468,9 +452,6 @@ class IncomeWithdrawController extends ApiController
 
 
     /************************ todo 杨雷原代码 *********************************/
-
-
-
 
 
     /**
@@ -501,7 +482,7 @@ class IncomeWithdrawController extends ApiController
                 'income' => $typeModel->sum('amount')
             ];
             if ($item['agent_class']) {
-                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+                $agentModel = $item['agent_class']::{$item['agent_name']}(\YunShop::app()->getMemberId());
 
                 if ($item['agent_status']) {
                     $agentModel = $agentModel->where('status', 1);
@@ -571,7 +552,6 @@ class IncomeWithdrawController extends ApiController
     }
 
 
-
     /**
      * @return \Illuminate\Http\JsonResponse
      */
@@ -608,7 +588,6 @@ class IncomeWithdrawController extends ApiController
 
         return $this->errorJson('未检测到数据!');
     }
-
 
 
 }

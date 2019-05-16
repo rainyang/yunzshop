@@ -79,8 +79,9 @@ class MemberCartCollection extends Collection
     public function groupByGroupId()
     {
         $groups = $this->groupBy(function (MemberCart $memberCart) {
-            return $memberCart->getGroupId();
+           return $memberCart->getGroupId();
         });
+
         $groups->map(function (MemberCartCollection $memberCartCollection) {
             return $memberCartCollection;
         });

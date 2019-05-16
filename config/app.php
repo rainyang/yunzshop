@@ -195,7 +195,7 @@ return [
         Ixudra\Curl\CurlServiceProvider::class,
 
         //二维码
-        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        \app\common\modules\qrCode\QrCodeServiceProvider::class,
 
         //短信发送
         Toplan\PhpSms\PhpSmsServiceProvider::class,

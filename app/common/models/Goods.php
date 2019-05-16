@@ -24,6 +24,7 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property string status
  * @property string status_name
  * @property string title
+ * @property int uniacid
  * @property int id
  * @property int stock
  * @property float max_price
@@ -104,6 +105,7 @@ class Goods extends BaseModel
             32 => 门店商品
             40 => 租赁商品
             41 => 网约车商品
+            42 => 网约车分红
             92 => 供应商商品
      */
 
