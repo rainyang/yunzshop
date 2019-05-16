@@ -9,7 +9,10 @@
 namespace app\frontend\modules\member\services;
 
 use app\common\exceptions\AppException;
+use app\common\exceptions\MemberNotLoginException;
+use app\common\helpers\Cache;
 use app\common\helpers\Client;
+use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\member\MemberDel;
 use app\common\models\MemberGroup;
@@ -967,5 +970,22 @@ class MemberService
         }
 
         return 0;
+    }
+
+    /**
+     *
+     * @param $member_id
+     */
+    public function chkAccount($member_id, $key = 'chekAccount', $minute = 30)
+    {
+        $type = \YunShop::request()->type;
+        $mid = Member::getMid();
+
+        if (1 == $type && !Cache::has($member_id . ':' . $key)) {
+            Cache::put($member_id. ':' . $key, 1, \Carbon\Carbon::now()->addMinutes($minute));
+            $queryString = ['type'=>$type,'session_id'=>session_id(), 'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.chekAccount', $queryString)]);
+        }
     }
 }

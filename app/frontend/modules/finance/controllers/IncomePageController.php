@@ -19,6 +19,7 @@ use app\frontend\models\MemberRelation;
 use app\frontend\modules\finance\factories\IncomePageFactory;
 use app\frontend\modules\finance\services\PluginSettleService;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\services\MemberService;
 
 class IncomePageController extends ApiController
 {
@@ -39,6 +40,10 @@ class IncomePageController extends ApiController
      */
     public function index()
     {
+        $member_id = \YunShop::app()->getMemberId();
+        $memberService = app(MemberService::class);
+        $memberService->chkAccount($member_id);
+
         list($available, $unavailable) = $this->getIncomeInfo();
 
         $data = [
