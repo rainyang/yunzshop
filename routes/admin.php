@@ -36,7 +36,7 @@ Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\syst
     Route::any('video', 'UploadController@video');       // 音频视频列表
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap', 'check']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 

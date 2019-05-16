@@ -57,5 +57,6 @@ class Kernel extends HttpKernel
         'authShop' => \app\common\middleware\AuthenticateShop::class,
         'globalparams' => \app\common\middleware\GlobalParams::class,
         'shopbootstrap' => \app\common\middleware\ShopBootstrap::class,
+        'check' => \app\common\middleware\Check::class,
     ];
 }

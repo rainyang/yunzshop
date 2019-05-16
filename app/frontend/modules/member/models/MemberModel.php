@@ -55,7 +55,7 @@ class MemberModel extends Member
 
         $member_model->uniacid = $data['uniacid'];
         $member_model->email = '';
-        $member_model->groupid = $data['groupid'];
+        $member_model->groupid = is_null($data['groupid']) ? 0 : $data['groupid'];
         $member_model->createtime = time();
         $member_model->nickname = stripslashes($userinfo['nickname']);
         $member_model->avatar = $userinfo['headimgurl'];
