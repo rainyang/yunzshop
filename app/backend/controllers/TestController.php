@@ -451,8 +451,10 @@ class TestController extends BaseController
 //                "platform_uniacid" => "2"
 //]
 //        );
-        $this->order = Order::find(1736);
-        (new \Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener)->withdraw($this->order);
+//        $this->order = Order::find(1736);
+//        (new \Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener)->withdraw($this->order);
+
+        (new \app\frontend\modules\orderPay\controllers\SuccessfulPaymentController)->paymentJump('PN20181120110651NW');
     }
 
 }
