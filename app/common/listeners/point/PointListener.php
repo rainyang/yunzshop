@@ -33,18 +33,35 @@ class PointListener
 
     public function changePoint(AfterOrderReceivedEvent $event)
     {
+        \Log::debug('sdfsdfsdfsdfsdfsdfsd]');
         $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->pointSet = $this->orderModel->getSetting('point.set');
         // 订单商品赠送积分[ps:商品单独设置]
-        $this->byGoodsGivePoint();
+        $this->givingTime($this->orderModel);
         // 订单金额赠送积分[ps:积分基础设置]
-        $this->orderGivePoint();
+        $this->orderGivePoint($this->orderModel);
 
         // 订单插件分红记录
         $this->dispatch(new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel));
     }
 
-    private function getPointDataByGoods($order_goods_model)
+    private function givingTime($orderModel)
+    {
+        \Log::debug('订单完成立]',$orderModel);
+
+        $data = self::byGoodsGivePoint($orderModel);
+        \Log::debug('订单完成$data',$data);
+//      每月赠送
+        if ($data['goodsSale']['point_type'] && $data['goodsSale']['max_once_point'] > 0) {
+                PointQueue::handle($this->orderModel, $data['goodsSale'], $data['point_data']['point']);
+        } else {
+        // 订单完成立即赠送[ps:原业务逻辑]
+            $this->addPointLog($data['point_data']);
+            \Log::debug('订单完成立即赠送[ps:原业务逻辑]');
+        }
+    }
+
+    public function getPointDataByGoods($order_goods_model)
     {
         $pointData = [
             'point_income_type' => 1,
@@ -56,7 +73,7 @@ class PointListener
         return $pointData;
     }
 
-    private function getPointDateByOrder()
+    public function getPointDateByOrder($orderModel)
     {
         $pointData = [
             'point_income_type' => 1,
@@ -64,7 +81,8 @@ class PointListener
             'order_id' => $this->orderModel->id,
             'point_mode' => 2
         ];
-        $pointData += CalculationPointService::calcuationPointByOrder($this->orderModel);
+
+        $pointData += CalculationPointService::calcuationPointByOrder($orderModel);
         return $pointData;
     }
 
@@ -76,27 +94,40 @@ class PointListener
         }
     }
 
-    private function byGoodsGivePoint()
+    public function byGoodsGivePoint($orderModel)
     {
         // 验证订单商品是立即赠送还是每月赠送
-        foreach ($this->orderModel->hasManyOrderGoods as $orderGoods) {
+        $data = [];
+        foreach ($orderModel->hasManyOrderGoods as $orderGoods) {
             // 商品营销数据
-            $goodsSale = $orderGoods->hasOneGoods->hasOneSale;
+            $data['goodsSale'] = $orderGoods->hasOneGoods->hasOneSale;
             // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
-            $point_data = $this->getPointDataByGoods($orderGoods);
-            // 每月赠送
-            if ($goodsSale->point_type && $goodsSale->max_once_point > 0) {
-                PointQueue::handle($this->orderModel, $goodsSale, $point_data['point']);
-            } else {
-                // 订单完成立即赠送[ps:原业务逻辑]
-                $this->addPointLog($point_data);
-            }
+            $data['point_data'] = self::getPointDataByGoods($orderGoods);
+            return $data;
         }
     }
+//    private function byGoodsGivePoint()
+//    {
+//        // 验证订单商品是立即赠送还是每月赠送
+//        foreach ($this->orderModel->hasManyOrderGoods as $orderGoods) {
+//            // 商品营销数据
+//            $goodsSale = $orderGoods->hasOneGoods->hasOneSale;
+//            // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
+//            $point_data = $this->getPointDataByGoods($orderGoods);
+//            // 每月赠送
+//            if ($goodsSale->point_type && $goodsSale->max_once_point > 0) {
+//                PointQueue::handle($this->orderModel, $goodsSale, $point_data['point']);
+//            } else {
+//                // 订单完成立即赠送[ps:原业务逻辑]
+//                $this->addPointLog($point_data);
+//            }
+//        }
+//    }
 
-    private function orderGivePoint()
+    private function orderGivePoint($orderModel)
     {
-        $pointData = $this->getPointDateByOrder();
+        \Log::debug('赠送积分');
+        $pointData = $this->getPointDateByOrder($orderModel);
         $this->addPointLog($pointData);
     }
 

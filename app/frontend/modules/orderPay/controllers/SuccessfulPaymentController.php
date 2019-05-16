@@ -13,7 +13,7 @@ use app\common\components\ApiController;
 use app\common\models\OrderPay;
 use app\common\models\Order;
 use app\common\services\finance\CalculationPointService;
-use Intervention\Image\Point;
+use app\common\listeners\point\PointListener;
 use  app\common\models\finance\PointLog;
 
 class SuccessfulPaymentController extends ApiController
@@ -40,12 +40,20 @@ class SuccessfulPaymentController extends ApiController
             }else{
                 $orderPay = OrderPay::where('pay_sn', $outtradeno)->first();
             }
-            $orders = Order::whereIn('id', $orderPay->order_ids)->with('orderGoods')->get();
+//            $orders = Order::find($orderPay->order_ids);
 
-            foreach ($orders as $itme){
-                $integral = PointLog::where('order_id',$itme->id)->first();
-                $data['integral'] += $integral['point'];
-            }
+            $orders = Order::where('id', $orderPay->order_ids)->with('orderGoods')->first();
+
+
+            $order_integral = PointListener::getPointDateByOrder($orders);//point
+
+            $integral = PointListener::byGoodsGivePoint($orders);
+//
+//            foreach ($orders as $itme){
+//                $integral = PointLog::where('order_id',$itme->id)->first();
+//                $data['integral'] += $integral['point'];
+//            }
+            $data['integral'] = bcadd($integral['point_data']['point'] , $order_integral['point'],2);
         }
 
         if (app('plugins')->isEnabled('app-set')) {
