@@ -20,7 +20,7 @@ if (!function_exists("yz_tpl_ueditor")) {
         }
 
         $s = '';
-        $fileUploader = resource_get('static/js/fileUploader.min.js');
+        $fileUploader = resource_get('static/js/app/fileUploader.min.js');
         if (!defined('TPL_INIT_UEDITOR')) {
             if (env('APP_Framework') == 'platform') {
                 $s .= '<script type="text/javascript" src="' . $file_dir .'/app/common/components/ueditor/ueditor.config.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/ueditor.all.min.js"></script><script type="text/javascript" src="' . $file_dir . '/app/common/components/ueditor/lang/zh-cn/zh-cn.js"></script><link href="/static/resource/components/webuploader/webuploader.css" rel="stylesheet"><link href="/static/resource/components/webuploader/style.css" rel="stylesheet">';
