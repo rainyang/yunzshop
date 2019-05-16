@@ -21,9 +21,6 @@ class TeamOrderService
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
             $member_all = [];
-            $member_1 = [];
-            $member_2 = [];
-            $member_3 = [];
             $result = [];
             \Log::debug('--------执行-------', \YunShop::app()->uniacid);
             $order   = DB::table('yz_order')->select('uid','price')->where('status', '>=' ,1)->where('uniacid', \YunShop::app()->uniacid)->get();
