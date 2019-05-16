@@ -100,6 +100,7 @@ class MemberCartController extends ApiController
             return $this->errorJson("数据验证失败，添加购物车失败！！！");
         } else {
             if ($cartModel->save()) {
+                event(new \app\common\events\cart\AddCartEvent($cartModel));
                 return $this->successJson("添加购物车成功");
             } else {
                 return $this->errorJson("写入出错，添加购物车失败！！！");

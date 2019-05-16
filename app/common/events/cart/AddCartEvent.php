@@ -1,29 +1,28 @@
 <?php
-
 /**
  * Created by PhpStorm.
- * Author: 芸众商城 www.yunzshop.com
- * Date: 2017/4/5
- * Time: 上午11:33
+ * User: 芸众网
+ * Date: 2019/4/29
+ * Time: 9:21
  */
 
 namespace app\common\events\cart;
 
 use app\common\events\Event;
-
 class AddCartEvent extends Event
 {
-    protected $carts;
+    protected $cartModel;
 
-    public function __construct($carts)
+    public function __construct($cartModel)
     {
-        $this->carts = $carts;
+        $this->cartModel = $cartModel;
     }
     /**
      * (监听者)获取购物车model
      * @return mixed
      */
-    public function getCarts(){
-        return $this->carts;
+    public function getCartModel(){
+        return $this->cartModel;
     }
+
 }

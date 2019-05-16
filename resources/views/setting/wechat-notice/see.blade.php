@@ -15,13 +15,14 @@
                     <div class='form-control-static'>{{$template['title']}}</div>
                 </div>
             </div>
+            @if(!isset($notice_type) && $notice_type !=2)
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >所属行业</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class='form-control-static'>{{$template['primary_industry']}}/{{$template['deputy_industry']}}</div>
                 </div>
             </div>
-
+            @endif
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模板格式</label>
                 <div class="col-sm-9 col-xs-12">
