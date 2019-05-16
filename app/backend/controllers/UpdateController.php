@@ -450,7 +450,7 @@ class UpdateController extends BaseController
     private function getFrontVersion($updateList)
     {
         rsort($updateList);
-        $version = $updateList[0]['version']->getVersion();
+        $version = $updateList[0]['version'];
 
         return $version;
     }
@@ -498,6 +498,16 @@ class UpdateController extends BaseController
                 ]
             ]
         ];
+
+        if (env('APP_Framework', 'shop') == 'shop') {
+            array_push($files, [
+                'path' => base_path(),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('index.php')
+                ]
+            ]);
+        }
 
         foreach ($files as $rows) {
             $scan_file = $filesystem->files($rows['path']);

@@ -124,8 +124,29 @@ class AlipayController extends PaymentController
     public function returnUrl()
     {
         $trade = \Setting::get('shop.trade');
+
+        if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
+            $alipayresult = json_decode($_GET['alipayresult'], true);
+            if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
+                $data = explode('_', $alipayresult['alipay_trade_app_pay_response']['out_trade_no']);
+                $out_trade_no = $data[1];
+                \YunShop::app()->uniacid = $data[0];
+            } else {
+                $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
+            }
+            \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
+        } elseif (strpos($_GET['out_trade_no'], '_') !== false) {
+            $data = explode('_', $_GET['out_trade_no']);
+            $out_trade_no = $data[1];
+            \YunShop::app()->uniacid = $data[0];
+            \Log::debug('=============商城支付宝APP支付2.0===========:', $data);
+        } else {
+            $out_trade_no = $this->substr_var($_GET['out_trade_no']);
+        }
+
+        //这里做支付后跳转，需要取到支付流水号
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            return redirect($trade['redirect_url'])->send();
+            return redirect($trade['redirect_url'].'&outtradeno='.$out_trade_no)->send();
         }
 
         if ($_GET['sign_type'] == 'MD5') {
@@ -143,24 +164,24 @@ class AlipayController extends PaymentController
         } else {
             //定义app支付类型，验证app回调信息
             //验证是否是芸打包支付宝APP2.0支付
-            if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
-                $alipayresult = json_decode($_GET['alipayresult'], true);
-                if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
-                    $data = explode('_', $alipayresult['alipay_trade_app_pay_response']['out_trade_no']);
-                    $out_trade_no = $data[1];
-                    \YunShop::app()->uniacid = $data[0];
-                } else {
-                    $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
-                }
-                \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
-            } elseif (strpos($_GET['out_trade_no'], '_') !== false) {
-                $data = explode('_', $_GET['out_trade_no']);
-                $out_trade_no = $data[1];
-                \YunShop::app()->uniacid = $data[0];
-                \Log::debug('=============商城支付宝APP支付2.0===========:', $data);
-            } else {
-                $out_trade_no = $this->substr_var($_GET['out_trade_no']);
-            }
+//            if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
+//                $alipayresult = json_decode($_GET['alipayresult'], true);
+//                if (strpos($alipayresult['alipay_trade_app_pay_response']['out_trade_no'], '_') !== false) {
+//                    $data = explode('_', $alipayresult['alipay_trade_app_pay_response']['out_trade_no']);
+//                    $out_trade_no = $data[1];
+//                    \YunShop::app()->uniacid = $data[0];
+//                } else {
+//                    $out_trade_no = $alipayresult['alipay_trade_app_pay_response']['out_trade_no'];
+//                }
+//                \Log::debug('====================支付宝APP支付2.0======================:', $alipayresult['alipay_trade_app_pay_response']);
+//            } elseif (strpos($_GET['out_trade_no'], '_') !== false) {
+//                $data = explode('_', $_GET['out_trade_no']);
+//                $out_trade_no = $data[1];
+//                \YunShop::app()->uniacid = $data[0];
+//                \Log::debug('=============商城支付宝APP支付2.0===========:', $data);
+//            } else {
+//                $out_trade_no = $this->substr_var($_GET['out_trade_no']);
+//            }
             if ($out_trade_no) {
                 $orderPay = OrderPay::where('pay_sn', $out_trade_no)->first();
 

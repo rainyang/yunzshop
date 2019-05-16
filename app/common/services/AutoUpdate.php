@@ -433,8 +433,9 @@ class AutoUpdate
             if (version::gt($version, $this->_currentVersion)) {
                 if (version::gt($version, $this->_latestVersion))
                     $this->_latestVersion = $version;
+
                 $this->_updates[] = [
-                    'version' => $version,
+                    'version' => $version->getVersion(),
                     'url'     => $updateUrl->url,
                     'description' => $updateUrl->description,
                     'created_at' => strtotime($updateUrl->created_at->date)
@@ -512,12 +513,12 @@ class AutoUpdate
             ->download($updateFile);
     }
 
-    protected function _downloadUpdate_v2($updateUrl, $updateFile)
+    protected function _downloadUpdate_v2($updateUrl, $updateFile, $client)
     {
         $this->_log->info(sprintf('Downloading update "%s" to "%s"', $updateUrl, $updateFile));
 
         //获取文件夹数据
-        $checkUpdateFileUurl = $updateUrl . '/check/1';
+        $checkUpdateFileUurl = $updateUrl . '/check/' . $client . '/0';
 
         $files = Curl::to($checkUpdateFileUurl)
             ->withHeader(
@@ -530,7 +531,7 @@ class AutoUpdate
             $downloadUrl = $updateUrl . '/download/';
 
             foreach ($files['result'] as $item) {
-                $updateUrl =  $downloadUrl . $item;
+                $updateUrl =  $downloadUrl . $client . '/' . $item;
                 $updateFile = $this->_tempDir . $item;
 
                 Curl::to($updateUrl)
@@ -642,7 +643,7 @@ class AutoUpdate
         return $simulateSuccess;
     }
 
-    protected function _simulateInstall_v2($updateFile, $version)
+    protected function _simulateInstall_v2($updateFile, $version, $client = 1)
     {
         $this->_log->notice('[SIMULATE] Install new version');
         clearstatcache();
@@ -665,6 +666,11 @@ class AutoUpdate
                 $filename = $rows->getRelativePathname();
                 $foldername = $this->_installDir . dirname($filename);
                 $absoluteFilename = $this->_installDir . $filename;
+
+                if (2 == $client || (1 == $client && env('APP_Framework') == 'platform')) {
+                    $foldername = $this->_installDir . 'addons/yun_shop/' . dirname($filename);
+                    $absoluteFilename = $this->_installDir . 'addons/yun_shop/' . $filename;
+                }
 
                 $files[$key] = [
                     'filename'          => $filename,
@@ -831,11 +837,11 @@ class AutoUpdate
         return true;
     }
 
-    protected function _install_v2($updateFile, $simulateInstall, $version)
+    protected function _install_v2($updateFile, $simulateInstall, $version, $client = 1)
     {
         $this->_log->notice(sprintf('Trying to install update "%s"', $updateFile));
         // Check if install should be simulated
-        if ($simulateInstall && !$this->_simulateInstall_v2($updateFile, $version)) {
+        if ($simulateInstall && !$this->_simulateInstall_v2($updateFile, $version, $client)) {
             $this->_log->critical('Simulation of update process failed!');
             return self::ERROR_SIMULATE;
         }
@@ -851,6 +857,11 @@ class AutoUpdate
                 $filename = $rows->getRelativePathname();
                 $foldername = $this->_installDir . dirname($filename);
                 $absoluteFilename = $this->_installDir . $filename;
+
+                if (2 == $client || (1 == $client && env('APP_Framework') == 'platform')) {
+                    $foldername = $this->_installDir . 'addons/yun_shop/' . dirname($filename);
+                    $absoluteFilename = $this->_installDir . 'addons/yun_shop/' . $filename;
+                }
 
                 $this->_log->debug(sprintf('Updating file "%s"', $filename));
                 if (!is_dir($foldername)) {
@@ -925,12 +936,12 @@ class AutoUpdate
      *
      * @return mixed integer|bool
      */
-    public function update($simulateInstall = true, $deleteDownload = true)
+    public function update($client = 1, $simulateInstall = true, $deleteDownload = true)
     {
         $this->_log->info('Trying to perform update');
         // Check for latest version
         if ($this->_latestVersion === null || count($this->_updates) === 0)
-            $this->checkUpdate();
+            $client == 2 ? $this->checkBackUpdate() : $this->checkUpdate();
         if ($this->_latestVersion === null || count($this->_updates) === 0) {
             $this->_log->error('Could not get latest version from server!');
             return self::ERROR_VERSION_CHECK;
@@ -961,9 +972,10 @@ class AutoUpdate
             }
 
             $updateFile = $this->_tempDir . $update['version'] . '.zip';
+
             // Download update
             if (!is_file($updateFile)) {
-                if (!$this->_downloadUpdate_v2($update['url'], $updateFile)) {
+                if (!$this->_downloadUpdate_v2($update['url'], $updateFile, $client)) {
                     $this->_log->critical(sprintf('Failed to download update from "%s" to "%s"!', $update['url'], $updateFile));
                     return self::ERROR_DOWNLOAD_UPDATE;
                 }
@@ -1005,14 +1017,27 @@ class AutoUpdate
                 $this->_log->debug('Download zip file successfull');
 
                 if (empty($error)) {
+                    $default_dir = $client == 2 ? 'backend' :'apps';
+
                     // Install update
                     $yZip = new YZip();
                     $yZip->unzip($this->_tempDir, $this->_tempDir);
 
                     $chk_url = substr(config('auto-update.checkUrl'), strpos(config('auto-update.checkUrl'), '/')+2);
                     $chk_url = substr($chk_url, 0, strpos($chk_url, '/'));
-                    $cp_source_path = 'app/auto-update/temp/data/www/' . $chk_url . '/storage/app/apps/upgrade/';
+                    $cp_source_path = 'app/auto-update/temp/data/www/' . $chk_url . '/storage/app/' . $default_dir . '/upgrade/';
                     $cp_destination_path = 'app/auto-update/temp/';
+
+                    if (2 == $client) {
+                        //copy 框架index.html到根目录后并删除
+                        if (is_dir(storage_path($cp_source_path))) {
+                            $cp_index_path = $cp_source_path . $update['version'] . '/index.html';
+                            $cp_des_path   = base_path() . '/index.html';
+
+                            app(Filesystem::class)->copy(storage_path($cp_index_path), $cp_des_path);
+                            app(Filesystem::class)->delete(storage_path($cp_index_path));
+                        }
+                    }
 
                     if (is_dir(storage_path($cp_source_path))) {
                         \Log::debug('copy file start.....', $cp_source_path);
@@ -1021,7 +1046,7 @@ class AutoUpdate
                         \Log::debug('copy file end.....');
                     }
 
-                    $result = $this->_install_v2($updateFile, $simulateInstall, $update['version']);
+                    $result = $this->_install_v2($updateFile, $simulateInstall, $update['version'], $client);
 
                     if ($result === true) {
                         $this->runOnEachUpdateFinishCallbacks($update['version']);

@@ -221,6 +221,8 @@
 
                         <div id="fe-tab-link-li-101" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 101)" data-href="{{ yzAppFullUrl('voiceList') }}">音频文章</div>
 
+                        <div id="fe-tab-link-li-101" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 101)" data-href="{{ yzAppFullUrl('/member/payrecharge') }}">支付积分</div>
+
                         <!-- 新增链接结束 -->
 <!-- ========================================================================= -->
                     </div>

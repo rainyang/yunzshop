@@ -42,6 +42,13 @@ class CreateGoodsService
         $this->brands = Brand::getBrands()->get();
 
         if ($goods_data) {
+
+            // 正则匹配富文本更改视频标签样式
+            preg_match_all(htmlspecialchars("/<p[\s\S]*<video[\s\S]*?class\s*=\s*[\"|\\'](.*?)[\"|\\'][\s\S]*?>[\s\S]*<[\s\S]p>/"), $goods_data['content'], $preg_video);
+            $preg_p = preg_replace(htmlspecialchars('/<p[\s\S]/'), htmlspecialchars('<p style="display: inline-block;">'), $preg_video[0][0]);
+            $preg_class = preg_replace(htmlspecialchars("/class\s*=\s*[\"|\\'](.*?)[\"|\\']/"), 'x5-playsinline="true" webkit-playsinline="true" playsinline="true"', $preg_p);
+            $goods_data['content'] = preg_replace(htmlspecialchars("/<p[\s\S]*<video[\s\S]*?class\s*=\s*[\"|\\'](.*?)[\"|\\'][\s\S]*?>[\s\S]*<[\s\S]p>/"), $preg_class, $goods_data['content']);
+
             // dd($this->request);
 
             if ($this->type == 1) {
