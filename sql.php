@@ -248,6 +248,35 @@ CREATE TABLE IF NOT EXISTS ims_mc_mapping_fans  (
 
 
 
+# Dump of table ims_mc_fans_groups
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_mc_fans_groups (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned NOT NULL,
+  `acid` int(10) unsigned NOT NULL,
+  `groups` varchar(10000) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uniacid` (`uniacid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
+# Dump of table ims_mc_fans_tag_mapping
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_mc_fans_tag_mapping (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `fanid` int(11) unsigned NOT NULL,
+  `tagid` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mapping` (`fanid`,`tagid`),
+  KEY `fanid_index` (`fanid`),
+  KEY `tagid_index` (`tagid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+
+
 # Dump of table ims_yz_mc_groups
 # ------------------------------------------------------------
 
@@ -814,6 +843,26 @@ CREATE TABLE IF NOT EXISTS ims_yz_goods_share (
   PRIMARY KEY (`id`),
   KEY `idx_goodid` (`goods_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+
+# Dump of table ims_mc_chats_record
+# ------------------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS ims_mc_chats_record (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `uniacid` int(10) unsigned NOT NULL,
+  `acid` int(10) unsigned NOT NULL,
+  `flag` tinyint(3) unsigned NOT NULL,
+  `openid` varchar(32) NOT NULL,
+  `msgtype` varchar(15) NOT NULL,
+  `content` varchar(10000) NOT NULL,
+  `createtime` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `uniacid` (`uniacid`,`acid`),
+  KEY `openid` (`openid`),
+  KEY `createtime` (`createtime`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
 
