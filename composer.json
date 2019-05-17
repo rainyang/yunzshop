@@ -94,5 +94,14 @@
     "process-timeout": 1800
 },
 "extra":
-{}
+{},
+"repositories":
+{
+    "packagist":
+    {
+        "type": "composer",
+        "url": "https://packagist.laravel-china.org"
+    }
+}
+
 }
