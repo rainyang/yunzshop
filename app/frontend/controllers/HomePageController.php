@@ -1036,6 +1036,11 @@ class HomePageController extends ApiController
         return show_json(1, $data);
     }
 
+    public function getFirstGoodsPage()
+    {
+        $list = (new IndexController())->getRecommentGoods();
+        $this->successJson('',$list);
+    }
     public function getParams($request)
     {
         $this->dataIntegrated($this->index($request, true), 'home');

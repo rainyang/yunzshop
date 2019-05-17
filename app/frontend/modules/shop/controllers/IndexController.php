@@ -88,7 +88,7 @@ class IndexController extends ApiController
     {
         //$goods = new Goods();
         $field = ['id as goods_id', 'thumb', 'title', 'price', 'market_price'];
-        if (!Cache::has('YZ_Index_goodsList')) {
+//        if (!Cache::has('YZ_Index_goodsList')) {
 
             $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
                 ->where("is_recommand", 1)
@@ -99,31 +99,35 @@ class IndexController extends ApiController
                 })
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
-                ->get();
+                ->paginate(16);
 //                ->get()->map(function (Goods $goods) {
 //                    return $goods->append('vip_price');
 //                });
-            foreach ($goodsList as &$value) {
-                $value->thumb = yz_tomedia($value->thumb);
+           if($goodsList){
+              $goodsList = $goodsList->toArray();
+           }
+
+            foreach ($goodsList['data'] as &$value) {
+                $value['thumb'] = yz_tomedia($value['thumb']);
             }
             if (app('plugins')->isEnabled('love')){
                // $love_basics_set = SetService::getLoveSet();//获取爱心值基础设置
                // $goodsList->love_name = $love_basics_set['name'];
-                  foreach ($goodsList as &$goodsValue){
+                  foreach ($goodsList['data'] as &$goodsValue){
                       $love_value = \Yunshop\Love\Common\Models\GoodsLove::select('award_proportion')
                           ->where('uniacid',\Yunshop::app()->uniacid)
-                          ->where('goods_id',$goodsValue->goods_id)
+                          ->where('goods_id',$goodsValue['goods_id'])
                           ->where('award',1)
                           ->first();
-                      $goodsValue->award_proportion = $love_value->award_proportion;
+                      $goodsValue['award_proportion'] = $love_value->award_proportion;
                   }
             }
-            Cache::put('YZ_Index_goodsList', $goodsList, 4200);
+//            Cache::put('YZ_Index_goodsList', $goodsList, 4200);
 
-        } else {
-            $goodsList = Cache::get('YZ_Index_goodsList');
-
-        }
+//        } else {
+//            $goodsList = Cache::get('YZ_Index_goodsList');
+//
+//        }
         /*//是否是课程商品
         $videoDemand = new VideoDemandCourseGoods();
         foreach ($goodsList as &$value) {
@@ -131,7 +135,6 @@ class IndexController extends ApiController
             $value->is_course = $videoDemand->isCourse($value->goods_id);
 
         }*/
-
         return $goodsList;
     }
 
