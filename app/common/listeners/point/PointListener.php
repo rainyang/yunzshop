@@ -33,7 +33,6 @@ class PointListener
 
     public function changePoint(AfterOrderReceivedEvent $event)
     {
-        \Log::debug('sdfsdfsdfsdfsdfsdfsd]');
         $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->pointSet = $this->orderModel->getSetting('point.set');
         // 订单商品赠送积分[ps:商品单独设置]
@@ -47,17 +46,13 @@ class PointListener
 
     private function givingTime($orderModel)
     {
-        \Log::debug('订单完成立]',$orderModel);
-
         $data = self::byGoodsGivePoint($orderModel);
-        \Log::debug('订单完成$data',$data);
 //      每月赠送
         if ($data['goodsSale']['point_type'] && $data['goodsSale']['max_once_point'] > 0) {
                 PointQueue::handle($this->orderModel, $data['goodsSale'], $data['point_data']['point']);
         } else {
         // 订单完成立即赠送[ps:原业务逻辑]
             $this->addPointLog($data['point_data']);
-            \Log::debug('订单完成立即赠送[ps:原业务逻辑]');
         }
     }
 
