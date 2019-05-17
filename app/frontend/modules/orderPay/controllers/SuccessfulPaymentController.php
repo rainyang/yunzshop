@@ -32,12 +32,15 @@ class SuccessfulPaymentController extends ApiController
         /**
          * 判断是余额还是第三方支付
          */
+        \Log::debug('rrrrrrrrrrr',$outtradeno);
         if ($outtradeno){
-
+            \Log::debug('66665656',$outtradeno);
             if(preg_match('/^([1-9][0-9]*){1,10}$/',$outtradeno)){
                 //余额
                 $orderPay = OrderPay::find($outtradeno);
+                \Log::debug('余额99999999',$outtradeno);
             }else{
+                \Log::debug('判断是余额还是第三方支付',$outtradeno);
                 $orderPay = OrderPay::where('pay_sn', $outtradeno)->first();
             }
 //            $orders = Order::find($orderPay->order_ids);
@@ -46,8 +49,9 @@ class SuccessfulPaymentController extends ApiController
 
 
             $order_integral = PointListener::getPointDateByOrder($orders);//point
-
+//            \Log::debug('getPointDateByOrder');
             $integral = PointListener::byGoodsGivePoint($orders);
+//            \Log::debug('byGoodsGivePoint');
 //
 //            foreach ($orders as $itme){
 //                $integral = PointLog::where('order_id',$itme->id)->first();
@@ -60,6 +64,7 @@ class SuccessfulPaymentController extends ApiController
             $set = \Setting::get('shop_app.pay');
             $data['app_links'] = $set['app_links'];
         }
+        \Log::debug('请求成功',$data);
         return $this->successJson('请求成功',$data);
     }
 

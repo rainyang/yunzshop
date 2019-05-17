@@ -123,7 +123,6 @@ class AlipayController extends PaymentController
 
     public function returnUrl()
     {
-        $trade = \Setting::get('shop.trade');
 
         if (isset($_GET['alipayresult']) && !empty($_GET['alipayresult'])) {
             $alipayresult = json_decode($_GET['alipayresult'], true);
@@ -143,7 +142,7 @@ class AlipayController extends PaymentController
         } else {
             $out_trade_no = $this->substr_var($_GET['out_trade_no']);
         }
-
+        $trade = \Setting::get('shop.trade');
         //这里做支付后跳转，需要取到支付流水号
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             return redirect($trade['redirect_url'].'&outtradeno='.$out_trade_no)->send();
