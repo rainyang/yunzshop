@@ -259,18 +259,18 @@
 </div>
 
 <!-->
-@section('isputaway')
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['isputaway']}}</label>
-    <div class="col-sm-9 col-xs-12">
-        <label for="isshow1" class="radio-inline"><input type="radio" name="goods[status]" value="1" id="isshow1" @if ($goods['status'] == 1) checked="true" @endif /> 是</label>
-        &nbsp;&nbsp;&nbsp;
-        <label for="isshow2" class="radio-inline"><input type="radio" name="goods[status]" value="0" id="isshow2"  @if ($goods['status'] == 0) checked="true" @endif /> 否</label>
-        <span class="help-block"></span>
-
-    </div>
-</div>
-@show
+@if(\app\common\services\PermissionService::can('goods_goods_property'))
+    @section('isputaway')
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['isputaway']}}</label>
+            <div class="col-sm-9 col-xs-12">
+                <label for="isshow1" class="radio-inline"><input type="radio" name="goods[status]" value="1" id="isshow1" @if ($goods['status'] == 1) checked="true" @endif /> 是</label>
+                <label for="isshow2" class="radio-inline"><input type="radio" name="goods[status]" value="0" id="isshow2" @if ($goods['status'] == 0) checked="true" @endif /> 否</label>
+                <span class="help-block"></span>
+            </div>
+        </div>
+    @show
+@endif
 <script type="text/javascript">
     $('#brand').select2();
 
