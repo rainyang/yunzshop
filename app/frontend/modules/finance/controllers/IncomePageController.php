@@ -47,10 +47,8 @@ class IncomePageController extends ApiController
 
         //添加跳转链接
         $relation_set = \Setting::get('member.relation');
-        $jump_link = [
-            'is_jump' => $relation_set['is_jump'] ?: 0,
-            'jump_link' => $relation_set['jump_link'] ?: ''
-        ];
+
+        $jump_link = $relation_set['is_jump'] ? $relation_set['jump_link'] : '';
         //添加商城营业额
         $is_show_performance = OrderAllController::isShow();
 
