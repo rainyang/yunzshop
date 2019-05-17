@@ -24,7 +24,6 @@ trait JsonTrait
             'msg' => $message,
             'data' => $data
         ], 200, ['charset' => 'utf-8'])->send();
-            exit();
     }
 
     /**
