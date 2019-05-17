@@ -130,7 +130,7 @@ class UpdateController extends BaseController
         $key = Setting::getNotUniacid('shop.key')['key'];
         $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
-            return response()->json(['result' => 0, 'msg' => '商城未授权', 'data' => []])->send();
+            return response()->json(['result' => -1, 'msg' => '商城未授权', 'data' => []])->send();
         }
 
         //前端更新文件检测
