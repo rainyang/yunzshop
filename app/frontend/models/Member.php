@@ -10,6 +10,7 @@ namespace app\frontend\models;
 
 
 use app\common\exceptions\AppException;
+use app\common\exceptions\MemberNotLoginException;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
 use app\frontend\modules\member\services\MemberService;
@@ -35,7 +36,7 @@ class Member extends \app\common\models\Member
         if (!isset(static::$current)) {
             static::$current = self::find(\YunShop::app()->getMemberId());
             if(!static::$current){
-                throw new AppException('请登录');
+                throw new MemberNotLoginException('请登录');
             }
         }
         return static::$current;

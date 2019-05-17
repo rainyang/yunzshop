@@ -88,7 +88,7 @@ class ApiController extends BaseController
      * @param $mid
      * @throws ShopException
      */
-    private function jumpUrl($type, $mid)
+    protected function jumpUrl($type, $mid)
     {
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
