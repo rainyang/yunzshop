@@ -259,7 +259,7 @@
 </div>
 
 <!-->
-@if(\app\common\services\PermissionService::can('goods_goods_property'))
+@if(\app\common\services\PermissionService::can('goods_goods_putaway'))
     @section('isputaway')
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">{{$lang['isputaway']}}</label>
