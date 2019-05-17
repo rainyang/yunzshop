@@ -43,7 +43,7 @@ class ApiController extends BaseController
         $mid = Member::getMid();
         $mark = \YunShop::request()->mark;
         $mark_id = \YunShop::request()->mark_id;
-
+        
         if (self::is_alipay() && $type != 8) {
             $type = 8;
         }
@@ -88,7 +88,7 @@ class ApiController extends BaseController
      * @param $mid
      * @throws ShopException
      */
-    private function jumpUrl($type, $mid)
+    protected function jumpUrl($type, $mid)
     {
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();

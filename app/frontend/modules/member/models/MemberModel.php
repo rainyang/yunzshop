@@ -481,13 +481,14 @@ class MemberModel extends Member
             }
 
             //团队1级会员
-            $order = DB::table('yz_order')->select('uid','price')->where('status', 3)->where('uniacid', $unicid)->get();
+            $order = DB::table('yz_order')->select('uid','price','goods_total')->where('status',  '>=',1)->where('uniacid', $unicid)->get();
+
             $member_1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('level', 1)->where('uniacid', $unicid)->get();
             foreach ($member_1 as $child_id) {
                 $child_id1[] = $child_id['child_id'];
             }
-            $data['child_total'] = collect($child_id1)->count();
-            $data['child_order_money'] = $order->whereIn('uid', $child_id1)->sum('price');
+            $data['child_total'] = collect($child_id1)->where('status',3)->count();
+            $data['child_order_money'] = $order->whereIn('uid', $child_id1)->where('status',3)->sum('price');
 
             //团队会员
             $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('uniacid', $unicid)->get();
@@ -495,7 +496,8 @@ class MemberModel extends Member
                 $child_idAll[] = $child_id['child_id'];
             }
             $data['team_total'] = collect($child_idAll)->count();
-            $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->sum('price');
+            $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->where('status',3)->sum('price');
+            $data['team_goods_total'] = $order->whereIn('uid', $child_idAll)->sum('goods_total');
 //            dd($data);
         }
         $data['wechat'] = $member_set['relation_level']['wechat']?:0;

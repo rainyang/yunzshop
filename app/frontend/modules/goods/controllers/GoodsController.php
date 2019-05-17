@@ -33,11 +33,16 @@ class GoodsController extends ApiController
     protected $publicAction = ['getRecommendGoods'];
     protected $ignoreAction = ['getRecommendGoods'];
 
-    public function getGoods()
+    public function getGoods($request, $integrated = null)
     {
         $id = intval(\YunShop::request()->id);
         if (!$id) {
-            return $this->errorJson('请传入正确参数.');
+            if(is_null($integrated)){
+                return $this->errorJson('请传入正确参数.');
+            }else{
+                return show_json(0,'请传入正确参数.');
+            }
+
         }
 
         $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
@@ -61,9 +66,9 @@ class GoodsController extends ApiController
             ->with('hasOneGoodsLimitBuy')
             ->with('hasOneInvitePage')
             ->with(['hasOneBrand' => function ($query) {
-                return $query->select('id','logo', 'name', 'desc');
+                return $query->select('id', 'logo', 'name', 'desc');
             }])
-            ->with(['hasOneGoodsLimitbuy'=> function ($query) {
+            ->with(['hasOneGoodsLimitbuy' => function ($query) {
                 return $query->select('goods_id', 'end_time');
             }])
             ->with('hasOneGoodsVideo')
@@ -82,10 +87,12 @@ class GoodsController extends ApiController
                 $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
             }
         }
-
-
         if (!$goodsModel) {
-            return $this->errorJson('商品不存在.');
+            if(is_null($integrated)){
+                return $this->errorJson('商品不存在.');
+            }else{
+                return show_json(0,'商品不存在.');
+            }
         }
         $current_time = time();
 
@@ -97,7 +104,12 @@ class GoodsController extends ApiController
         }
 
         if (!$goodsModel->status) {
-            return $this->errorJson('商品已下架.');
+            if(is_null($integrated)){
+                return $this->errorJson('商品已下架.');
+            }else{
+                return show_json(0,'商品已下架.');
+            }
+
         }
 
         //商品营销 todo 优化新的
@@ -144,13 +156,13 @@ class GoodsController extends ApiController
         if (!is_null($goodsModel->hasOneGoodsVideo) && $goodsModel->hasOneGoodsVideo->goods_video) {
             $goodsModel->goods_video = yz_tomedia($goodsModel->hasOneGoodsVideo->goods_video);
 
-            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image?yz_tomedia($goodsModel->hasOneGoodsVideo->video_image):yz_tomedia($goodsModel->thumb);
+            $goodsModel->video_image = $goodsModel->hasOneGoodsVideo->video_image ? yz_tomedia($goodsModel->hasOneGoodsVideo->video_image) : yz_tomedia($goodsModel->thumb);
         } else {
             $goodsModel->goods_video = '';
             $goodsModel->video_image = '';
         }
 
-        
+
         foreach ($goodsModel->hasManySpecs as &$spec) {
             $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
             foreach ($spec['specitem'] as &$specitem) {
@@ -166,7 +178,7 @@ class GoodsController extends ApiController
                     $goodsModel->$key_name = $row_res;
                     //供应商在售商品总数
                     $class = new $row['class']();
-                    if(method_exists($class,'getGoodsIdsBySid')){
+                    if (method_exists($class, 'getGoodsIdsBySid')) {
                         $supplier_goods_id = SupplierGoods::getGoodsIdsBySid($goodsModel->supplier->id);
                         $supplier_goods_count = Goods::select('id')
                             ->whereIn('id', $supplier_goods_id)
@@ -182,7 +194,7 @@ class GoodsController extends ApiController
             $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
         }
 
-        if($goodsModel->hasOneShare){
+        if ($goodsModel->hasOneShare) {
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
         $this->setGoodsPluginsRelations($goodsModel);
@@ -204,8 +216,14 @@ class GoodsController extends ApiController
 
         //判断是否酒店商品
         $goodsModel->is_hotel = $goodsModel->plugin_id == 33 ? 1 : 0;
+        $goodsModel->is_store = $goodsModel-plugin_id == 32 ? 1 :0;
 
-        return $this->successJson('成功', $goodsModel);
+        if(is_null($integrated)){
+            return $this->successJson('成功', $goodsModel);
+        }else{
+            return show_json(1,$goodsModel);
+        }
+
     }
 
     public function validatePrivilege($goodsModel, $member)
@@ -214,9 +232,10 @@ class GoodsController extends ApiController
         Privilege::validatePrivilegeGroup($goodsModel, $member);
     }
 
-    private function setGoodsPluginsRelations($goods){
+    private function setGoodsPluginsRelations($goods)
+    {
         $goodsRelations = app('GoodsManager')->tagged('GoodsRelations');
-        collect($goodsRelations)->each(function($goodsRelation) use($goods){
+        collect($goodsRelations)->each(function ($goodsRelation) use ($goods) {
             $goodsRelation->setGoods($goods);
         });
     }
@@ -226,7 +245,7 @@ class GoodsController extends ApiController
         $requestSearch = \YunShop::request()->search;
 
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])) {
             $order_field = 'display_order';
         }
         $order_by = (\YunShop::request()->order_by == 'asc') ? 'asc' : 'desc';
@@ -257,7 +276,7 @@ class GoodsController extends ApiController
 //        $id_arr =  collect($list->get())->map(function($rows) {
 //            return $rows['id'];
 //        });
-        $list = Goods::Search($requestSearch)->select( 'yz_goods.id')
+        $list = Goods::Search($requestSearch)->select('yz_goods.id')
             ->where("status", 1)
             ->where(function($query) {
 //                $query->whereIn('plugin_id', [0,40,92,41]);
@@ -265,9 +284,10 @@ class GoodsController extends ApiController
             });
 
         //todo 为什么要取出id, 如id过多超出in的长度如何处理
-        $id_arr =  collect($list->get())->map(function($rows) {
+        $id_arr = collect($list->get())->map(function ($rows) {
             return $rows['id'];
         });
+
 
 //        $list = Goods::whereIn('id',$id_arr)->select("*")
 //            ->where("status", 1)
@@ -291,8 +311,8 @@ class GoodsController extends ApiController
 
 
         if ($list['total'] > 0) {
-            $data = collect($list['data'])->map(function($rows) {
-                return collect($rows)->map(function($item, $key) {
+            $data = collect($list['data'])->map(function ($rows) {
+                return collect($rows)->map(function ($item, $key) {
                     if (($key == 'thumb' && preg_match('/^images/', $item)) || ($key == 'thumb' && preg_match('/^image/', $item))) {
                         return replace_yunshop(yz_tomedia($item));
                     } else {
@@ -329,7 +349,7 @@ class GoodsController extends ApiController
         }
 
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])) {
             $order_field = 'display_order';
         }
 
@@ -341,7 +361,7 @@ class GoodsController extends ApiController
             $categorys->thumb = yz_tomedia($categorys->thumb);
         }
 
-        $goodsList = Goods::uniacid()->select('yz_goods.id','yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
+        $goodsList = Goods::uniacid()->select('yz_goods.id', 'yz_goods.id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->join('yz_goods_category', 'yz_goods_category.goods_id', '=', 'yz_goods.id')
             ->where("category_id", $category_id)
             ->where('status', '1')
@@ -363,7 +383,7 @@ class GoodsController extends ApiController
     {
         $brand_id = intval(\YunShop::request()->brand_id);
         $order_field = \YunShop::request()->order_field;
-        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])){
+        if (!in_array($order_field, ['price', 'show_sales', 'comment_num'])) {
             $order_field = 'display_order';
         }
 
@@ -382,11 +402,11 @@ class GoodsController extends ApiController
 
         $brand->logo = yz_tomedia($brand->logo);
 
-        $goodsList = Goods::uniacid()->select('id','id as goods_id', 'title', 'thumb', 'price', 'market_price')
+        $goodsList = Goods::uniacid()->select('id', 'id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)
-            ->where(function($query) {
-                $query->whereIn('plugin_id', [0,40,92,41]);
+            ->where(function ($query) {
+                $query->whereIn('plugin_id', [0, 40, 92, 41]);
                 //$query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             })->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
@@ -436,7 +456,7 @@ class GoodsController extends ApiController
             $level = Setting::get('shop.member.level_name');
             $level_name = '普通会员';
 
-            if (!empty($level)){//判断是否设置了，默认会员等级名称
+            if (!empty($level)) {//判断是否设置了，默认会员等级名称
                 $level_name = $level;
             }
             $data = [
@@ -463,11 +483,11 @@ class GoodsController extends ApiController
             $data['key'] = 'ed_num';
             $data['type'] = 'array';
             if ($goodsModel->hasOneSale->ed_num) {
-                $data['value'][] = '本商品满'.$goodsModel->hasOneSale->ed_num.'件包邮';
+                $data['value'][] = '本商品满' . $goodsModel->hasOneSale->ed_num . '件包邮';
             }
 
             if ($goodsModel->hasOneSale->ed_money) {
-                $data['value'][] = '本商品满￥'.$goodsModel->hasOneSale->ed_money.'包邮';
+                $data['value'][] = '本商品满￥' . $goodsModel->hasOneSale->ed_money . '包邮';
 
             }
             array_push($sale, $data);
@@ -478,22 +498,22 @@ class GoodsController extends ApiController
             $data['name'] = '满减';
             $data['key'] = 'ed_full';
             $data['type'] = 'string';
-            $data['value'] = '本商品满￥'. $goodsModel->hasOneSale->ed_full.'立减￥'.$goodsModel->hasOneSale->ed_reduction;
+            $data['value'] = '本商品满￥' . $goodsModel->hasOneSale->ed_full . '立减￥' . $goodsModel->hasOneSale->ed_reduction;
             array_push($sale, $data);
             $data = [];
         }
 
         if ($goodsModel->hasOneSale->award_balance) {
-            $data['name'] = $shopSet['credit']?:'余额';
+            $data['name'] = $shopSet['credit'] ?: '余额';
             $data['key'] = 'award_balance';
             $data['type'] = 'string';
-            $data['value'] = '购买赠送'.$goodsModel->hasOneSale->award_balance.$data['name'];
+            $data['value'] = '购买赠送' . $goodsModel->hasOneSale->award_balance . $data['name'];
             array_push($sale, $data);
             $data = [];
         }
 
-        $data['name'] = $shopSet['credit1']?:'积分';
-        $data['key']  = 'point';
+        $data['name'] = $shopSet['credit1'] ?: '积分';
+        $data['key'] = 'point';
         $data['type'] = 'array';
         if ($goodsModel->hasOneSale->point !== '0') {
             $point = $set['give_point'] ? $set['give_point'] : 0;
@@ -501,26 +521,26 @@ class GoodsController extends ApiController
                 $point = $goodsModel->hasOneSale->point;
             }
             if (!empty($point)) {
-                $data['value'][] = '购买赠送'.$point.$data['name'];
+                $data['value'][] = '购买赠送' . $point . $data['name'];
             }
 
         }
         if ($set['point_deduct'] && $goodsModel->hasOneSale->max_point_deduct !== '0') {
-            $max_point_deduct = $set['money_max'] ? $set['money_max'].'%' : 0;
+            $max_point_deduct = $set['money_max'] ? $set['money_max'] . '%' : 0;
             if ($goodsModel->hasOneSale->max_point_deduct) {
                 $max_point_deduct = $goodsModel->hasOneSale->max_point_deduct;
             }
             if (!empty($max_point_deduct)) {
-                $data['value'][] = '最高抵扣'.$max_point_deduct.'元';
+                $data['value'][] = '最高抵扣' . $max_point_deduct . '元';
             }
         }
         if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
-            $min_point_deduct = $set['money_min'] ? $set['money_min'].'%' : 0;
+            $min_point_deduct = $set['money_min'] ? $set['money_min'] . '%' : 0;
             if ($goodsModel->hasOneSale->min_point_deduct) {
                 $min_point_deduct = $goodsModel->hasOneSale->min_point_deduct;
             }
             if (!empty($min_point_deduct)) {
-                $data['value'][] = '最少抵扣'.$min_point_deduct.'元';
+                $data['value'][] = '最少抵扣' . $min_point_deduct . '元';
             }
         }
         if (!empty($data['value'])) {
@@ -531,7 +551,7 @@ class GoodsController extends ApiController
 
         if ($goodsModel->hasOneGoodsCoupon->is_give) {
             $data['name'] = '购买返券';
-            $data['key']  = 'coupon';
+            $data['key'] = 'coupon';
             $data['type'] = 'string';
             $data['value'] = $goodsModel->hasOneGoodsCoupon->send_type ? '商品订单完成返优惠券' : '每月一号返优惠券';
             array_push($sale, $data);
@@ -546,11 +566,11 @@ class GoodsController extends ApiController
             $data['key'] = 'love';
             $data['type'] = 'array';
             if ($love_goods['deduction']) {
-                $data['value'][] = '最高抵扣'.$love_goods['deduction_proportion'].$data['name'];
+                $data['value'][] = '最高抵扣' . $love_goods['deduction_proportion'] . $data['name'];
             }
 
             if ($love_goods['award']) {
-                $data['value'][] = '购买赠送'.$love_goods['award_proportion'].$data['name'];
+                $data['value'][] = '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
 
             if (!empty($data['value'])) {
@@ -571,13 +591,13 @@ class GoodsController extends ApiController
                     $data['type'] = 'array';
 
                     if (!empty($commission_data['first_commission']) && ($commission_data['commission_show_level'] > 0)) {
-                        $data['value'][] = '一级佣金'.$commission_data['first_commission'].'元';
+                        $data['value'][] = '一级佣金' . $commission_data['first_commission'] . '元';
                     }
                     if (!empty($commission_data['second_commission']) && ($commission_data['commission_show_level'] > 1)) {
-                        $data['value'][] = '二级佣金'.$commission_data['second_commission'].'元';
+                        $data['value'][] = '二级佣金' . $commission_data['second_commission'] . '元';
                     }
                     if (!empty($commission_data['third_commission']) && ($commission_data['commission_show_level'] > 2)) {
-                        $data['value'][] = '三级佣金'.$commission_data['third_commission'].'元';
+                        $data['value'][] = '三级佣金' . $commission_data['third_commission'] . '元';
                     }
                     array_push($sale, $data);
                     $data = [];
@@ -587,7 +607,7 @@ class GoodsController extends ApiController
 
         return [
             'sale_count' => count($sale),
-            'first_strip_key' =>  $sale ? $sale[rand(0, (count($sale)-1))] : [],
+            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
             'sale' => $sale,
         ];
     }
@@ -667,7 +687,7 @@ class GoodsController extends ApiController
 
         if ($set['point_deduct'] && $goodsModel->hasOneSale->max_point_deduct !== '0') {
 
-            $data['max_point_deduct'] = $set['money_max'] ? $set['money_max'].'%' : 0;
+            $data['max_point_deduct'] = $set['money_max'] ? $set['money_max'] . '%' : 0;
 
             if ($goodsModel->hasOneSale->max_point_deduct) {
 
@@ -680,7 +700,7 @@ class GoodsController extends ApiController
         }
         if ($set['point_deduct'] && $goodsModel->hasOneSale->min_point_deduct !== '0') {
 
-            $data['min_point_deduct'] = $set['money_min'] ? $set['money_min'].'%' : 0;
+            $data['min_point_deduct'] = $set['money_min'] ? $set['money_min'] . '%' : 0;
 
             if ($goodsModel->hasOneSale->min_point_deduct) {
 
@@ -751,7 +771,7 @@ class GoodsController extends ApiController
 
 
         $data = [
-            'name' => \Setting::get('love.name') ? : '爱心值',
+            'name' => \Setting::get('love.name') ?: '爱心值',
             'deduction' => 0, //是否开启爱心值抵扣 0否，1是
             'deduction_proportion' => 0, //爱心值最高抵扣
             'award' => 0, //是否开启爱心值奖励 0否，1是
@@ -766,7 +786,7 @@ class GoodsController extends ApiController
             // $price = $goods->price * ($deduction_proportion / 100);
 
             $data['deduction'] = $item->deduction;
-            $data['deduction_proportion'] = $deduction_proportion.'%';
+            $data['deduction_proportion'] = $deduction_proportion . '%';
         }
 
         if ($item->award) {
@@ -775,7 +795,7 @@ class GoodsController extends ApiController
             // $award_price = $goods->price * ($award_proportion / 100);
 
             $data['award'] = $item->award;
-            $data['award_proportion'] = $award_proportion.'%';
+            $data['award_proportion'] = $award_proportion . '%';
 
         }
 
@@ -786,22 +806,22 @@ class GoodsController extends ApiController
     {
         $uid = \YunShop::app()->getMemberId();
         $member = MemberShopInfo::getMemberShopInfo($uid);
-        if(empty($member)){
+        if (empty($member)) {
             return $this->errorJson('没有找到该用户', []);
         }
         $memberLevel = $member->level_id;
 
         $now = strtotime('now');
         $coupons = Coupon::getCouponsForMember($uid, $memberLevel, null, $now)
-            ->orderBy('display_order','desc')
-            ->orderBy('updated_at','desc');
-        if($coupons->get()->isEmpty()){
+            ->orderBy('display_order', 'desc')
+            ->orderBy('updated_at', 'desc');
+        if ($coupons->get()->isEmpty()) {
             return 0;
         }
         $coupons = $coupons->get()->toArray();
 
-        foreach($coupons as &$v){
-            if (($v['total'] != MemberCouponController::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])){
+        foreach ($coupons as &$v) {
+            if (($v['total'] != MemberCouponController::NO_LIMIT) && ($v['has_many_member_coupon_count'] >= $v['total'])) {
 
             } else {
 
@@ -839,6 +859,31 @@ class GoodsController extends ApiController
                 ];
             }
         }
+    }
+
+    public function getGoodsPage()
+    {
+        $this->dataIntegrated($this->getGoods($request, true),'get_goods');
+        $storeId = $this->apiData['get_goods']->store_goods->store_id;
+        if($storeId){
+                if(class_exists('\Yunshop\StoreCashier\frontend\store\GetStoreInfoController')){
+                    $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
+                    $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
+                }else{
+                    return $this->errorJson('门店插件未开启');
+                }
+        }
+        if($this->apiData['get_goods']->is_hotel){
+            if(class_exists('\Yunshop\Hotel\frontend\hotel\GoodsController')){
+                $this->dataIntegrated(\Yunshop\Hotel\frontend\hotel\GoodsController::getGoodsDetailByGoodsId($request,true),'get_hotel_info');
+            }else{
+                return $this->errorJson('酒店插件未开启');
+            }
+        }
+        $this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
+        $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
+        $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
+        return $this->successJson('', $this->apiData);
     }
 
 }

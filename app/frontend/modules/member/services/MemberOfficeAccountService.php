@@ -428,7 +428,7 @@ class MemberOfficeAccountService extends MemberService
             $fans_info = McMappingFansModel::getFansById(\YunShop::app()->getMemberId());
 
             if ($fans_info->openid != $userinfo['openid']) {
-                \Log::debug('----openid error----', $fans_info->uid);
+                \Log::debug('----openid error----', [$fans_info->uid, $userinfo['openid']]);
                 session_destroy();
                 Cache::forget($fans_info->uid . ':chekAccount');
                 redirect($redirect_url)->send();
