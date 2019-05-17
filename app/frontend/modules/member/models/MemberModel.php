@@ -497,7 +497,7 @@ class MemberModel extends Member
             }
             $data['team_total'] = collect($child_idAll)->count();
             $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->where('status',3)->sum('price');
-            $data['team_goods_total'] = $order->whereIn('uid', $child_idAll->sum('goods_total');
+            $data['team_goods_total'] = $order->whereIn('uid', $child_idAll)->sum('goods_total');
 //            dd($data);
         }
         $data['wechat'] = $member_set['relation_level']['wechat']?:0;
