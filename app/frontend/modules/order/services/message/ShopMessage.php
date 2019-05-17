@@ -30,7 +30,7 @@ class ShopMessage extends Message
             return;
         }
         //客服发送消息通知
-        foreach (\Setting::get('shop.miniNotice.salers') as $saler) {
+        foreach (\Setting::get('shop.notice.salers') as $saler) {
                 $this->notice($this->templateId, $this->msg, $saler['uid']);
         }
     }
