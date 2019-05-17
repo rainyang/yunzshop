@@ -116,7 +116,7 @@ class Coupon extends \app\common\models\Coupon
     {
         $CouponsModel = self::uniacid()
             ->select(['id','display_order','name', 'enough',
-                    'coupon_method', 'deduct', 'discount', 'get_type', 'created_at']);
+                    'coupon_method', 'deduct', 'discount', 'get_type', 'created_at','total']);
 
         if(!empty($title)){
             $CouponsModel = $CouponsModel->where('name', 'like', '%'.$title.'%');

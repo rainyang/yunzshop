@@ -25,7 +25,7 @@ use Yunshop\Merchant\common\models\MerchantLevel;
 use Yunshop\Micro\common\models\MicroShopLevel;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 use app\common\helpers\ImageHelper;
-
+use Setting as min_app_setting;
 class MemberModel extends Member
 {
     /**
@@ -55,7 +55,7 @@ class MemberModel extends Member
 
         $member_model->uniacid = $data['uniacid'];
         $member_model->email = '';
-        $member_model->groupid = $data['groupid'];
+        $member_model->groupid = is_null($data['groupid']) ? 0 : $data['groupid'];
         $member_model->createtime = time();
         $member_model->nickname = stripslashes($userinfo['nickname']);
         $member_model->avatar = $userinfo['headimgurl'];
@@ -481,13 +481,14 @@ class MemberModel extends Member
             }
 
             //团队1级会员
-            $order = DB::table('yz_order')->select('uid','price')->where('status', 3)->where('uniacid', $unicid)->get();
+            $order = DB::table('yz_order')->select('uid','price','goods_total')->where('status',  '>=',1)->where('uniacid', $unicid)->get();
+
             $member_1 = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('level', 1)->where('uniacid', $unicid)->get();
             foreach ($member_1 as $child_id) {
                 $child_id1[] = $child_id['child_id'];
             }
-            $data['child_total'] = collect($child_id1)->count();
-            $data['child_order_money'] = $order->whereIn('uid', $child_id1)->sum('price');
+            $data['child_total'] = collect($child_id1)->where('status',3)->count();
+            $data['child_order_money'] = $order->whereIn('uid', $child_id1)->where('status',3)->sum('price');
 
             //团队会员
             $childMemberTeam = DB::table('yz_member_children')->select('child_id')->where('member_id', $member_id)->where('uniacid', $unicid)->get();
@@ -495,7 +496,8 @@ class MemberModel extends Member
                 $child_idAll[] = $child_id['child_id'];
             }
             $data['team_total'] = collect($child_idAll)->count();
-            $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->sum('price');
+            $data['team_order_money'] = $order->whereIn('uid', $child_idAll)->where('status',3)->sum('price');
+            $data['team_goods_total'] = $order->whereIn('uid', $child_idAll->sum('goods_total');
 //            dd($data);
         }
         $data['wechat'] = $member_set['relation_level']['wechat']?:0;
@@ -526,10 +528,69 @@ class MemberModel extends Member
         $extend = 'png';
         $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
         $path = \Storage::url('app/public/qr/');
-
+                      //格式                        参数    保存路径
         QrCode::format($extend)->size(400)->generate($url,  base_path($path) . $filename);
 
         return request()->getSchemeAndHttpHost() . config('app.webPath') . $path . $filename;
+    }
+    //生成小程序二维码
+    public function getWxacode($extra='')
+    {
+        if (!empty($extra)) {
+            $extra = '_' . $extra;
+        }
+        $extend = 'png';
+        $filename = \YunShop::app()->uniacid . '_' . \YunShop::app()->getMemberId() . $extra . '.' . $extend;
+        $paths = \Storage::url('app/public/qr/');
+
+        $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
+        $token = self::getTokenUrlStr();
+        $url .= "access_token=" . $token;
+        $postdata = [
+            "scene"=> 'mid=' . \YunShop::app()->getMemberId(),
+            "page" => 'pages/member/index_v2/index_v2',
+            'width' => 200
+        ];
+//        $path = storage_path('app/public/goods/qrcode/'.\YunShop::app()->uniacid);
+//        if (!is_dir($path)) {
+//            load()->func('file');
+//            mkdirs($path);
+//        }
+        $res = self::curl_post($url,json_encode($postdata),$options=array());//请求生成二维码
+        file_put_contents(base_path($paths) . $filename, $res);//保存二维码
+        return request()->getSchemeAndHttpHost() . config('app.webPath') . $paths . $filename;
+    }
+
+    //获取token的url参数拼接
+    public function getTokenUrlStr()
+    {
+        $set = min_app_setting::get('plugin.min_app');
+        $getTokenUrl = "https://api.weixin.qq.com/cgi-bin/token?"; //获取token的url
+        $WXappid     =  $set['key']; //APPID
+        $WXsecret    = $set['secret']; //secret
+        $str  = $getTokenUrl;
+        $str .= "grant_type=client_credential&";
+        $str .= "appid=" . $WXappid . "&";
+        $str .= "secret=" . $WXsecret;
+        $res = self::curl_post($str,$postdata='',$options=array());
+        $data = json_decode($res,JSON_FORCE_OBJECT);
+        return $data['access_token'];
+    }
+
+    public function curl_post($url='',$postdata='',$options=array()){
+        $ch=curl_init($url);
+        curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+        curl_setopt($ch,CURLOPT_POST,1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postdata);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if(!empty($options)){
+            curl_setopt_array($ch, $options);
+        }
+        $data=curl_exec($ch);
+        curl_close($ch);
+        return $data;
     }
 
     /**
