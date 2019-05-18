@@ -43,14 +43,22 @@ class IncomePageController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $memberService = app(MemberService::class);
         $memberService->chkAccount($member_id);
-
         list($available, $unavailable) = $this->getIncomeInfo();
+
+        //添加跳转链接
+        $relation_set = \Setting::get('member.relation');
+
+        $jump_link = $relation_set['is_jump'] ? $relation_set['jump_link'] : '';
+        //添加商城营业额
+        $is_show_performance = OrderAllController::isShow();
 
         $data = [
             'info' => $this->getPageInfo(),
             'parameter' => $this->getParameter(),
             'available' => $available,
             'unavailable' => $unavailable,
+            'is_show_performance' => $is_show_performance,
+            'jump_link' => $jump_link,
         ];
 
         return $this->successJson('ok', $data);
