@@ -262,7 +262,7 @@ class AllUploadController extends BaseController
         
         $setting = SystemSetting::settingLoad('remote', 'system_remote');
 
-        if ($core['upload_type']== 2) { //oss
+        if ($core['type']== 2) { //oss
             try {
                 $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
             } catch (OssException $e) {
