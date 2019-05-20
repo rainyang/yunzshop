@@ -16,6 +16,7 @@ use app\common\models\Income;
 use app\common\services\popularize\PortType;
 use app\frontend\models\Member;
 use app\frontend\models\MemberRelation;
+use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\finance\factories\IncomePageFactory;
 use app\frontend\modules\finance\services\PluginSettleService;
 use app\frontend\modules\member\models\MemberModel;
@@ -48,7 +49,13 @@ class IncomePageController extends ApiController
         //添加跳转链接
         $relation_set = \Setting::get('member.relation');
 
-        $jump_link = $relation_set['is_jump'] ? $relation_set['jump_link'] : '';
+        if ($relation_set['is_jump']) {
+            $is_agent = MemberShopInfo::uniacid()->where('member_id', $member_id)->where('is_agent',1)->first();
+            if ($is_agent) {
+                $jump_link = $relation_set['jump_link'] ?: '';
+            }
+        }
+
         //添加商城营业额
         $is_show_performance = OrderAllController::isShow();
 
