@@ -39,6 +39,7 @@ use app\common\modules\status\StatusContainer;
 use app\frontend\modules\coupon\listeners\CouponExpireNotice;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use app\frontend\modules\coupon\listeners\ShoppingShareCouponListener;
+use app\frontend\modules\finance\listeners\BalanceRechargeCompletedListener;
 use app\frontend\modules\finance\listeners\IncomeWithdraw;
 use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
@@ -124,6 +125,7 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
 
+        BalanceRechargeCompletedListener::class,
         /**
          * 收入提现监听者类
          */
