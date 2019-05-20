@@ -51,7 +51,7 @@ class IncomePageController extends ApiController
 
         if ($relation_set['is_jump']) {
             $is_agent = MemberShopInfo::uniacid()->where('member_id', $member_id)->where('is_agent',1)->first();
-            if ($is_agent) {
+            if (!$is_agent) {
                 $jump_link = $relation_set['jump_link'] ?: '';
             }
         }
