@@ -345,7 +345,10 @@ class AdminUserController extends BaseController
                     return $this->errorJson(['用户名已存在']);
             }
 
-            if ($data['password']) {
+            if ($data['password'] && $data['old_password'] && $data['re_password']) {
+                if ($data['password'] != $data['re_password']) {
+                    return $this->errorJson(['两次密码不一致']);
+                }
                 if (!Hash::check($data['old_password'], $user['password'])) {
                     return $this->check(2);
                 } elseif (Hash::check($data['password'], $user['password'])) {
