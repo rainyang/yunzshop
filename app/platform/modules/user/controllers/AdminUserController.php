@@ -351,6 +351,9 @@ class AdminUserController extends BaseController
                 } elseif (Hash::check($data['password'], $user['password'])) {
                     return $this->check(3);
                 }
+                unset($data['old_password']);
+                unset($data['re_password']);
+                $data['password'] = bcrypt($data['password']);
             }
             $user->fill($data);
             if ($user->save()) {
