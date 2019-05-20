@@ -28,7 +28,7 @@ class ShopIncomeListController extends BaseController
         $search = \YunShop::request()->search;
         $list = OrderIncomeCount::search($search)
             ->where('status', 3)
-            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier'])
+            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier','order_id'])
             ->orderBy('id', 'desc')
             ->paginate($pageSize);
         $pager = PaginationHelper::show($list->total(), $list->currentPage(), $list->perPage());
@@ -45,7 +45,7 @@ class ShopIncomeListController extends BaseController
         $search = \YunShop::request()->search;
         $builder = OrderIncomeCount::search($search)
             ->where('status', 3)
-            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier'])
+            ->select(['order_sn', 'buy_name', 'price', 'shop_name', 'plugin_id', 'undividend', 'cost_price', 'supplier', 'store', 'cashier','order_id'])
             ->orderBy('id', 'desc');
         $export_page = request()->export_page ? request()->export_page : 1;
         $export_model = new ExportService($builder, $export_page);
