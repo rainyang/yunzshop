@@ -11,7 +11,6 @@ namespace app\platform\modules\user\controllers;
 
 use app\common\events\UserActionEvent;
 use app\platform\controllers\BaseController;
-use app\platform\modules\user\models\AdminUser as User;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
@@ -37,7 +36,7 @@ class AdminUserController extends BaseController
     public function index()
     {
         $parames = request();
-        $users = User::getList($parames);
+        $users = AdminUser::getList($parames);
 
         return $this->successJson('成功', $users);
     }
@@ -55,7 +54,7 @@ class AdminUserController extends BaseController
             if ($validate) {
                 return $validate;
             }
-            return $this->check(User::saveData($user, $user_model = ''));
+            return $this->check(AdminUser::saveData($user, $user_model = ''));
         }
     }
 
@@ -100,7 +99,7 @@ class AdminUserController extends BaseController
      */
     public function destroy($uid)
     {
-        $tag = User::find((int)$uid);
+        $tag = AdminUser::find((int)$uid);
         foreach ($tag->roles as $v) {
             $tag->roles()->detach($v);
         }
@@ -341,6 +340,10 @@ class AdminUserController extends BaseController
         }
         if ($data){
             $user = \Auth::guard('admin')->user();
+
+            if ($data['username'] && AdminUser::whereNotIn('uid', [$user['uid']])->first()) {
+                return $this->errorJson(['用户名已存在']);
+            }
 
             if ($data['password']) {
                 if (!Hash::check($data['old_password'], $user['password'])) {
