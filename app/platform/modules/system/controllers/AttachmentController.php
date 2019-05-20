@@ -263,7 +263,7 @@ class AttachmentController extends BaseController
         } else {
             $url = 'http://'.$bucket.'.'.$buckets[$bucket]['location'].'.aliyuncs.com/';
         }
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         $response = \Curl::to($url. '/'.$filename)->get();
         if (!$response) {
             return $this->errorJson('配置失败，阿里云访问url错误');
@@ -326,7 +326,7 @@ class AttachmentController extends BaseController
         if (is_error($auth)) {
             return $this->errorJson('配置失败，请检查配置' . $auth['message']);
         }
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         $response = \Curl::to($cos['url']. '/'. $filename)->get();
         if (!$response) {
             return $this->errorJson('配置失败，腾讯cos访问url错误');
