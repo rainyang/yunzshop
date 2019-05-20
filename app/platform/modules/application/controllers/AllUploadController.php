@@ -276,7 +276,7 @@ class AllUploadController extends BaseController
                 return $res;
             }
 
-        } elseif ($core['upload_type'] == 4) { //cos
+        } elseif ($core['type'] == 4) { //cos
             try {
 
 	            $cos = new Api([
