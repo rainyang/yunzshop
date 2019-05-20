@@ -19,6 +19,7 @@ use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 use app\platform\modules\application\models\AppUser;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends BaseController
 {
@@ -325,6 +326,41 @@ class AdminUserController extends BaseController
         }
 
         return $this->successJson('成功', $user);
+    }
+
+    /**
+     * 修改当前用户信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifyCurrentUser()
+    {
+        $uid = request()->uid;
+        $data = request()->user;
+        if (!$uid || !$data) {
+            return $this->check(5);
+        }
+        if ($data){
+            $user = AdminUser::getData($uid);
+            if (!$user) {
+                return $this->check(6);
+            }
+
+            if ($data['password']) {
+                if (!Hash::check($data['old_password'], $user['password'])) {
+                    return $this->check(2);
+                } elseif (Hash::check($data['password'], $user['password'])) {
+                    return $this->check(3);
+                }
+            }
+
+            $user->fill($data);
+            if ($user->save()) {
+                return $this->successJson('修改用户信息成功');
+            } else {
+                return $this->errorJson('修改用户信息失败');
+            }
+        }
     }
 }
 
