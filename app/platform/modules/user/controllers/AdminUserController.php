@@ -341,8 +341,8 @@ class AdminUserController extends BaseController
         if ($data){
             $user = \Auth::guard('admin')->user();
 
-            if ($data['username'] && AdminUser::whereNotIn('uid', [$user['uid']])->first()) {
-                return $this->errorJson(['用户名已存在']);
+            if ($data['username'] && AdminUser::where('uid', $user['uid'])->whereNotIn('uid', [$user['uid']])->first()) {
+                    return $this->errorJson(['用户名已存在']);
             }
 
             if ($data['password']) {
