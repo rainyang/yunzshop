@@ -32,6 +32,13 @@ class BalanceRechargeCompletedListener
     private $amount;
 
     /**
+     * yuan|fen
+     *
+     * @var string
+     */
+    private $unit;
+
+    /**
      * 充值单号
      *
      * @var string
@@ -59,12 +66,22 @@ class BalanceRechargeCompletedListener
     {
         $resultData = $event->getRechargeData();
 
+        $this->setUnit($resultData['unit']);
         $this->setRechargeAmount($resultData['total_fee']);
         $this->setRechargeOrderSn($resultData['order_sn']);
 
         if ($this->isHandle()) {
             $this->handleBalanceRechargeCompleted();
         }
+    }
+
+
+    /**
+     * @param $unit
+     */
+    private function setUnit($unit)
+    {
+        $this->unit = (string)$unit;
     }
 
     /**
@@ -81,6 +98,30 @@ class BalanceRechargeCompletedListener
     private function setRechargeOrderSn($orderSn)
     {
         $this->orderSn = (string)$orderSn;
+    }
+
+    /**
+     * @return BalanceRecharge
+     * @throws ShopException
+     */
+    private function setBalanceRechargeModel()
+    {
+        !isset($this->rechargeModel) && $this->_setBalanceRechargeModel();
+
+        return $this->rechargeModel;
+    }
+
+    /**
+     * @throws ShopException
+     */
+    private function _setBalanceRechargeModel()
+    {
+        $rechargeModel = BalanceRecharge::where('ordersn', $this->orderSn)->first();
+
+        if (!$rechargeModel) {
+            throw new ShopException('Balance recharge record do not exist！');
+        }
+        $this->rechargeModel = $rechargeModel;
     }
 
     /**
@@ -110,7 +151,9 @@ class BalanceRechargeCompletedListener
     {
         $this->setBalanceRechargeModel();
 
-        $compare = bccomp($this->amount, $this->rechargeModel->money, 2);
+        $completeAmount = $this->getCompletedAmount();
+
+        $compare = bccomp($completeAmount, $this->rechargeModel->money, 2);
         if ($compare == 0) {
             return true;
         }
@@ -124,27 +167,14 @@ class BalanceRechargeCompletedListener
     }
 
     /**
-     * @return BalanceRecharge
-     * @throws ShopException
+     * @return float
      */
-    private function setBalanceRechargeModel()
+    private function getCompletedAmount()
     {
-        !isset($this->rechargeModel) && $this->_setBalanceRechargeModel();
-
-        return $this->rechargeModel;
-    }
-
-    /**
-     * @throws ShopException
-     */
-    private function _setBalanceRechargeModel()
-    {
-        $rechargeModel = BalanceRecharge::where('ordersn', $this->orderSn)->first();
-
-        if (!$rechargeModel) {
-            throw new ShopException('Balance recharge record do not exist！');
+        if ($this->unit == 'fen') {
+            return bcdiv($this->amount, 100, 2);
         }
-        $this->rechargeModel = $rechargeModel;
+        return $this->amount;
     }
 
     /**
