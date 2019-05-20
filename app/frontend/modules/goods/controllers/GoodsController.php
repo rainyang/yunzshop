@@ -264,18 +264,6 @@ class GoodsController extends ApiController
             }
         }
 
-//        $list = Goods::Search($requestSearch)->select( '*','yz_goods.id')
-//            ->where("status", 1)
-//            ->where(function($query) {
-//                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-//            })->groupBy('yz_goods.id')
-//            ->orderBy($order_field, $order_by)
-//            ->paginate(20)->toArray();
-
-
-//        $id_arr =  collect($list->get())->map(function($rows) {
-//            return $rows['id'];
-//        });
         $list = Goods::Search($requestSearch)->select('yz_goods.id')
             ->where("status", 1)
             ->where(function($query) {
@@ -289,26 +277,9 @@ class GoodsController extends ApiController
         });
 
 
-//        $list = Goods::whereIn('id',$id_arr)->select("*")
-//            ->where("status", 1)
-//            ->where(function($query) {
-//                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-//            })
-//            ->paginate(20)->toArray();
-
         $list = Goods::whereIn('id',$id_arr)->selectRaw("*, id as goods_id")
             ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
-
-
-//        $list = Goods::whereIn('id',$id_arr)->select("*")
-//            ->where("status", 1)
-//            ->where(function($query) {
-//                $query->whereIn('plugin_id', [0,40,92,41]);
-//                //$query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-//            })
-//            ->paginate(20)->toArray();
-
 
         if ($list['total'] > 0) {
             $data = collect($list['data'])->map(function ($rows) {
@@ -334,9 +305,7 @@ class GoodsController extends ApiController
         if (empty($list)) {
             return $this->errorJson('没有找到商品.');
         }
-//        foreach ($list["data"] as $key=>$row){
-//            $list['data'][$key]['goods_id']=$list['data'][$key]['id'];
-//        }
+
         return $this->successJson('成功', $list);
     }
 
