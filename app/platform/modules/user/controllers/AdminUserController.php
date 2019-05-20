@@ -335,16 +335,12 @@ class AdminUserController extends BaseController
      */
     public function modifyCurrentUser()
     {
-        $uid = request()->uid;
         $data = request()->user;
-        if (!$uid || !$data) {
+        if (!$data) {
             return $this->check(5);
         }
         if ($data){
-            $user = AdminUser::getData($uid);
-            if (!$user) {
-                return $this->check(6);
-            }
+            $user = \Auth::guard('admin')->user();
 
             if ($data['password']) {
                 if (!Hash::check($data['old_password'], $user['password'])) {
@@ -353,7 +349,6 @@ class AdminUserController extends BaseController
                     return $this->check(3);
                 }
             }
-
             $user->fill($data);
             if ($user->save()) {
                 return $this->successJson('修改用户信息成功');
