@@ -8,13 +8,14 @@
 
 namespace app\frontend\models;
 
+
+use app\common\exceptions\AppException;
 use app\common\exceptions\MemberNotLoginException;
 use app\common\models\MemberCoupon;
 use app\frontend\modules\member\models\MemberAddress;
+use app\frontend\modules\member\services\MemberService;
 use app\frontend\repositories\MemberAddressRepository;
 use Illuminate\Database\Eloquent\Collection;
-use app\common\services\Session;
-
 
 /**
  * Class Member
@@ -28,26 +29,18 @@ class Member extends \app\common\models\Member
 
     /**
      * @return self
-     * @throws MemberNotLoginException
+     * @throws AppException
      */
     public static function current()
     {
         if (!isset(static::$current)) {
-            if (app()->environment() !== 'production') {
-                if($_GET['test_uid']){
-                    static::$current = self::find($_GET['test_uid']);
-                }
+            static::$current = self::find(\YunShop::app()->getMemberId());
+            if(!static::$current){
+                throw new MemberNotLoginException('请登录');
             }
-            if (Session::get('member_id')) {
-                static::$current = self::find(Session::get('member_id'));
-            }
-        }
-        if (!static::$current) {
-            throw new MemberNotLoginException('请登录');
         }
         return static::$current;
     }
-
     /**
      * 会员－会员优惠券1:多关系
      * @param null $backType
@@ -56,11 +49,11 @@ class Member extends \app\common\models\Member
     public function hasManyMemberCoupon($backType = null)
     {
         return $this->hasMany(MemberCoupon::class, 'uid', 'uid')
-            ->where('used', 0)->with(['belongsToCoupon'=> function ($query) use ($backType) {
+            ->where('used', 0)->with('belongsToCoupon', function ($query) use ($backType) {
                 if (isset($backType)) {
                     $query->where('coupon_method', $backType);
                 }
-            }]);
+            });
     }
 
     public function defaultAddress()

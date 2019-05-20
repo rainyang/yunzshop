@@ -43,6 +43,12 @@ class PaymentController extends BaseController
 
                     \YunShop::app()->uniacid = (int)substr($batch_no, 17, 5);
                     break;
+                case 'returnUrl':
+                    if (strpos($_GET['out_trade_no'], '_') !== false) {
+                        $data = explode('_', $_GET['out_trade_no']);
+                        \YunShop::app()->uniacid = $data[0];
+                    }
+                    break;
                 default:
                     \YunShop::app()->uniacid = $this->getUniacid();
                     break;
@@ -62,6 +68,7 @@ class PaymentController extends BaseController
     private function getUniacid()
     {
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
+        \Log::debug('body===========',$body);
         //区分app支付获取
         if ($_REQUEST['sign_type'] == 'MD5') {
             $uniacid = substr($body, strrpos($body, ':')+1);

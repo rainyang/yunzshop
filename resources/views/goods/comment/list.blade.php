@@ -44,7 +44,9 @@
                             </select>
                         </div>
                         <div class="time-btn" >
-                            {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime'])], true) !!}
+                            <div class="search-select">
+                            </div>
+                                {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[time]', ['starttime'=>date('Y-m-d H:i', $search['starttime']), 'endtime'=>date('Y-m-d H:i',$search['endtime']),'start'=>0,'end'=>0], true) !!}
                         </div>
 
                     </div>

@@ -181,7 +181,7 @@ class MergePayController extends ApiController
         $redirect = '';
 
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            $redirect = $trade['redirect_url'];
+            $redirect = $trade['redirect_url'].'&outtradeno='.request()->input('order_pay_id');
         }
 
         $data['redirect'] = $redirect;
@@ -207,6 +207,9 @@ class MergePayController extends ApiController
          */
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
         $data = $orderPay->getPayResult(PayFactory::PAY_ALIPAY);
+
+
+
         return $this->successJson('成功', $data);
     }
 

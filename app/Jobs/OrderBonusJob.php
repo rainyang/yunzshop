@@ -10,6 +10,7 @@ namespace app\Jobs;
 
 use app\backend\modules\charts\models\OrderIncomeCount;
 use app\common\events\order\CreatedOrderPluginBonusEvent;
+use app\common\models\Order;
 use app\common\models\order\OrderPluginBonus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -38,7 +39,7 @@ class OrderBonusJob implements  ShouldQueue
         $this->foreignKey = $foreignKey;
         $this->localKey = $localKey;
         $this->amountColumn = $amountColumn;
-        $this->orderModel = $orderModel;
+        $this->orderModel = Order::find($orderModel->id);
         $this->totalDividend = $totalDividend;
         $this->condition = $condition;
     }
