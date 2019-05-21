@@ -11,7 +11,6 @@ namespace app\platform\modules\user\controllers;
 
 use app\common\events\UserActionEvent;
 use app\platform\controllers\BaseController;
-use app\platform\modules\user\models\AdminUser as User;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
@@ -19,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 use app\platform\modules\application\models\AppUser;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends BaseController
 {
@@ -36,7 +36,7 @@ class AdminUserController extends BaseController
     public function index()
     {
         $parames = request();
-        $users = User::getList($parames);
+        $users = AdminUser::getList($parames);
 
         return $this->successJson('成功', $users);
     }
@@ -54,7 +54,7 @@ class AdminUserController extends BaseController
             if ($validate) {
                 return $validate;
             }
-            return $this->check(User::saveData($user, $user_model = ''));
+            return $this->check(AdminUser::saveData($user, $user_model = ''));
         }
     }
 
@@ -99,7 +99,7 @@ class AdminUserController extends BaseController
      */
     public function destroy($uid)
     {
-        $tag = User::find((int)$uid);
+        $tag = AdminUser::find((int)$uid);
         foreach ($tag->roles as $v) {
             $tag->roles()->detach($v);
         }
@@ -325,6 +325,46 @@ class AdminUserController extends BaseController
         }
 
         return $this->successJson('成功', $user);
+    }
+
+    /**
+     * 修改当前用户信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifyCurrentUser()
+    {
+        $data = request()->user;
+        if (!$data) {
+            return $this->check(5);
+        }
+        if ($data){
+            $user = \Auth::guard('admin')->user();
+
+            if ($data['username'] && AdminUser::where('uid', $user['uid'])->whereNotIn('uid', [$user['uid']])->first()) {
+                    return $this->errorJson(['用户名已存在']);
+            }
+
+            if ($data['password'] && $data['old_password'] && $data['re_password']) {
+                if ($data['password'] != $data['re_password']) {
+                    return $this->errorJson(['两次密码不一致']);
+                }
+                if (!Hash::check($data['old_password'], $user['password'])) {
+                    return $this->check(2);
+                } elseif (Hash::check($data['password'], $user['password'])) {
+                    return $this->check(3);
+                }
+                unset($data['old_password']);
+                unset($data['re_password']);
+                $data['password'] = bcrypt($data['password']);
+            }
+            $user->fill($data);
+            if ($user->save()) {
+                return $this->successJson('修改用户信息成功');
+            } else {
+                return $this->errorJson('修改用户信息失败');
+            }
+        }
     }
 }
 
