@@ -49,10 +49,11 @@ class IncomePageController extends ApiController
         //添加跳转链接
         $relation_set = \Setting::get('member.relation');
 
-        if ($relation_set['is_jump']) {
+        $jump_link = '';
+        if ($relation_set['is_jump'] && !empty($relation_set['jump_link'])) {
             $is_agent = MemberShopInfo::uniacid()->where('member_id', $member_id)->where('is_agent',1)->first();
             if (!$is_agent) {
-                $jump_link = $relation_set['jump_link'] ?: '';
+                $jump_link = $relation_set['jump_link'];
             }
         }
 
