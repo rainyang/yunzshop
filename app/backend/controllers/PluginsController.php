@@ -125,10 +125,11 @@ class PluginsController extends BaseController
             }
             $data[$plugin['type']][$key] = $plugin;
             $data[$plugin['type']][$key]['description'] = app('plugins')->getPlugin($key)->description;
-//            if (!base_path('static\yunshop\plugins\list-icon\img\\'.$plugin['list_icon'].'.png')) {
-//                $data[$plugin['type']][$key]['icon_url'] = static_url("yunshop/plugins/list-icon/img/default.png");
-//            }
             $data[$plugin['type']][$key]['icon_url'] = static_url("yunshop/plugins/list-icon/img/{$plugin['list_icon']}.png");
+            if (!file_exists(base_path('static\yunshop\plugins\list-icon\img\\'.$plugin['list_icon'].'.png'))) {
+                $data[$plugin['type']][$key]['icon_url'] = static_url("yunshop/plugins/list-icon/img/default.png");
+            }
+
         }
 
         return view('admin.pluginslist', [
