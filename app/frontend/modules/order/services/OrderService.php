@@ -26,6 +26,7 @@ use app\frontend\modules\order\services\behavior\OrderPay;
 use app\frontend\modules\order\services\behavior\OrderReceive;
 use app\frontend\modules\order\services\behavior\OrderSend;
 use app\frontend\modules\orderGoods\models\PreOrderGoods;
+use app\frontend\modules\orderGoods\models\PreOrderGoodsCollection;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -67,7 +68,7 @@ class OrderService
             return $orderGoods;
         });
 
-        return new OrderGoodsCollection($result);
+        return new PreOrderGoodsCollection($result);
     }
 
     /**

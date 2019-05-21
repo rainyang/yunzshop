@@ -30,20 +30,21 @@ class OrderAllController extends ApiController
         return $this->successJson('ok',$data);
     }
 
-    public function isShow(){
+
+    public static function isShow(){
         $set = Setting::get('shop.shop');
         $member_id = \YunShop::app()->getMemberId();
-        $data=['status'=>0];
+        $status = 1;
         if($set['achievement'] != 1){
-            return $this->successJson('',$data);
+            $status = 0;
         }
         if(!in_array(-1,$set['member_level'])){
             $member_level = MemberShopInfo::where('member_id',$member_id)->first();
             if(!in_array($member_level['level_id'],$set['member_level'])){
-                return $this->successJson('',$data);
+                $status = 0;
             }
         }
-        return $this->successJson('',['status'=>1]);
+        return $status;
     }
 
     private function getMoney($mark){

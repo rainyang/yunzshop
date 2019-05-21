@@ -180,6 +180,32 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广中心跳转</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setting[is_jump]" value="1" @if($setting['is_jump'] == 1) checked="checked" @endif/>
+                                    显示
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio"  name="setting[is_jump]" value="0" @if($setting['is_jump'] == 0) checked="checked" @endif/>
+                                    不显示
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">链接</label>
+                            <div class="col-sm-9 col-xs-9">
+                                <div class="input-group">
+                                    <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{{ $setting['jump_link'] }}" name="setting[jump_link]">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                                    </span>
+                                </div>
+                                <span class="help-block">当会员没有获得推广资格的时候，点击推广中心跳转到指定的页面的，默认进入推广中心</span>
+                            </div>
+                        </div>
+                        @include('public.admin.mylink')
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">我的收入页面</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio-inline">

@@ -22,6 +22,10 @@ class OrderSend extends ChangeStatusOperation
     public $params = [];
     protected $past_tense_class_name = 'OrderSent';
 
+    protected function _fireEvent()
+    {
+        $this->fireSentEvent();
+    }
     /**
      * @return bool|void
      */
@@ -41,7 +45,7 @@ class OrderSend extends ChangeStatusOperation
 
             $db_express_model->order_id = $order_id;
             // $db_express_model->express_code = request()->input('express_code','');
-            $db_express_model->express_code = $data['express_code'];
+            $db_express_model->express_code = $data['express_code']?:'';
 
             // $db_express_model->express_company_name = request()->input('express_company_name', function (){
             //     return array_get(ExpressCompany::create()->where('value',request()->input('express_code',''))->first(),'name','');
@@ -49,7 +53,7 @@ class OrderSend extends ChangeStatusOperation
             $db_express_model->express_company_name = array_get(ExpressCompany::create()->where('value', $data['express_code'])->first(),'name','');
             
             // $db_express_model->express_sn = request()->input('express_sn','');
-            $db_express_model->express_sn = $data['express_sn'];
+            $db_express_model->express_sn = $data['express_sn']?:'';
 
             // dd($db_express_model->express_sn);
             $db_express_model->save();

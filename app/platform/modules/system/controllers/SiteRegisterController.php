@@ -161,7 +161,7 @@ class SiteRegisterController extends BaseController
 
     public function register()
     {
-        $data = request()->data;
+        $data = request()->setdata;
 
         $auth_url = '/admin/system/siteRegister/index';
 

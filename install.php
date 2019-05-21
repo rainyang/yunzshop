@@ -14,6 +14,16 @@ foreach ($create_dir as $dir_path) {
     }
 }
 
+$del_file = [
+    '../addons/yun_shop/index.php',
+];
+
+foreach ($del_file as $file) {
+    if (is_file($file)) {
+        @unlink($file);
+    }
+}
+
 $sql = "
 CREATE TABLE IF NOT EXISTS ". tablename('yz_account_open_config')." (
   `config_id` int(11) NOT NULL,

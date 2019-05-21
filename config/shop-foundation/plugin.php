@@ -15,6 +15,14 @@ return [
         'name'=>'store'
     ],
     [
+        'id'=> 51,
+        'name'=>'provider-platform'
+    ],
+    [
+        'id'=> 53,
+        'name'=>'tripartite-provider'
+    ],
+    [
         'id'=>92,
         'name'=>'supplier'
     ],
