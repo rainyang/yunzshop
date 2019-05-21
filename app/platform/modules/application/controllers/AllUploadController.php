@@ -217,7 +217,7 @@ class AllUploadController extends BaseController
             $search['month'] = request()->month;
         }
 
-        $core = $core->where('type', 1)->orderBy('id', 'desc');
+        $core = $core->where('uniacid', 0)->where('type', 1)->orderBy('id', 'desc');
 
         if ($search) {
             $core = $core->search($search);
@@ -262,7 +262,7 @@ class AllUploadController extends BaseController
         
         $setting = SystemSetting::settingLoad('remote', 'system_remote');
 
-        if ($core['type']== 2) { //oss
+        if ($core['upload_type']== 2) { //oss
             try {
                 $oss = new OssClient($setting['alioss']['key'], $setting['alioss']['secret'], $setting['alioss']['ossurl']);
             } catch (OssException $e) {
@@ -276,7 +276,7 @@ class AllUploadController extends BaseController
                 return $res;
             }
 
-        } elseif ($core['type'] == 4) { //cos
+        } elseif ($core['upload_type'] == 4) { //cos
             try {
 
 	            $cos = new Api([
@@ -332,7 +332,7 @@ class AllUploadController extends BaseController
         }
 
         $d = [
-            'uniacid' => \YunShop::app()->uniacid ? : 0,
+            'uniacid' => 0,
             'uid' => \Auth::guard('admin')->user()->uid,
             'filename' => $originalName,
             'type' => $type, //类型1.图片; 2.音乐
