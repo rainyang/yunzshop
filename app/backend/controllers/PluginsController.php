@@ -112,65 +112,29 @@ class PluginsController extends BaseController
         ]);
     }
 
+
     public function getPluginList()
     {
-
-//        $dividend['name'] = '分润类';
-//        $industry['name'] = '行业类';
-//        $marketing['name'] = '营销类';
-//        $tool['name'] = '工具类';
-//        $recharge['name'] = '生活充值';
-//        $api['name'] = '接口类';
+        $class = $this->getType();
+        $data = [];
 
         $plugins = Config::get('plugins_menu');//全部插件
         foreach ($plugins as $key => $plugin) {
-            $type = $plugin['type'];
-            switch ($type) {
-                case 'dividend'://分润类
-                    $dividend[$key]                = $plugin;
-                    $dividend[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                    break;
-                case 'industry'://行业类
-                    $industry[$key]                = $plugin;
-                    $industry[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                    break;
-                case 'marketing'://营销类
-                    $marketing[$key]                = $plugin;
-                    $marketing[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                    break;
-                case 'tool'://工具类
-                    $tool[$key]                = $plugin;
-                    $tool[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                    break;
-                case 'recharge'://生活充值类
-                    $recharge[$key]                = $plugin;
-                    $recharge[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                    break;
-                case 'api'://接口类
-                    $api[$key] = $plugin;
-//                    if (!$pluginsModel->getPlugin($key)) {
-//                        $api[$key]['description'] = $pluginsModel->getPlugin(str_replace("_","-",$key));
-//                    } else {
-//                        $api[$key]['description'] = $pluginsModel->getPlugin($key);
-//                    }
-//                    $api[$key]['description'] = $pluginsModel->getPlugin($key)->description;
-                break;
-                case 'blockchain':
-                    $blockchain[$key] = $plugin;
-                    $blockchain[$key]['description'] = app('plugins')->getPlugin($key)->description;
-                break;
+            if (!$plugin['type']) {
+                continue;
             }
+            $data[$plugin['type']][$key] = $plugin;
+            $data[$plugin['type']][$key]['description'] = app('plugins')->getPlugin($key)->description;
+//            if (!base_path('static\yunshop\plugins\list-icon\img\\'.$plugin['list_icon'].'.png')) {
+//                $data[$plugin['type']][$key]['icon_url'] = static_url("yunshop/plugins/list-icon/img/default.png");
+//            }
+            $data[$plugin['type']][$key]['icon_url'] = static_url("yunshop/plugins/list-icon/img/{$plugin['list_icon']}.png");
         }
 
         return view('admin.pluginslist', [
-            'plugins'   => $plugins,
-            'dividend'  => $dividend,
-            'industry'  => $industry,
-            'marketing' => $marketing,
-            'tool' => $tool,
-            'recharge' => $recharge,
-            'blockchain' => $blockchain,
-            'api' => $api,
+            'plugins' => $plugins,
+            'data' => $data,
+            'class' => $class
         ]);
     }
 
@@ -208,6 +172,40 @@ class PluginsController extends BaseController
                 throw new ShopException('应用未授权');
             }
         }
+    }
+
+    public function getType()
+    {
+        return [
+            'dividend' => [
+                'name' => '分润类',
+                'color' => '#F15353',
+            ],
+            'industry' => [
+                'name' => '行业类',
+                'color' => '#eb6f50',
+            ],
+            'marketing' => [
+                'name' => '营销类',
+                'color' => '#f0b652',
+            ],
+            'tool' => [
+                'name' => '工具类',
+                'color' => '#f59753',
+            ],
+            'recharge' => [
+                'name' => '生活充值',
+                'color' => '#50d9a7',
+            ],
+            'api' => [
+                'name' => '接口类',
+                'color' => '#53d5f0',
+            ],
+            'blockchain' => [
+                'name' => '区块链类',
+                'color' => '#469de2',
+            ],
+        ];
     }
 
 }
