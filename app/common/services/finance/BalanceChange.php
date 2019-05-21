@@ -15,7 +15,7 @@ use app\common\models\Member;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
 use app\common\models\notice\MinAppTemplateMessage;
-use app\common\services\MessageService;
+use app\common\services\MessageService as MsgService;
 class BalanceChange extends Credit
 {
 
@@ -191,7 +191,7 @@ class BalanceChange extends Credit
         }
 
         \Log::debug('===============',[$templateId]);
-        MessageService::MiniNotice($templateId, $msg, $uid);
+        MsgService::MiniNotice($templateId, $msg, $uid);
     }
 
 

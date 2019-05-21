@@ -49,6 +49,10 @@
 .separate {
     background-image: url('../img/dividend/separate.png');
 }
+
+.team_rewards {
+    background-image: url('../img/dividend/team_rewards.png');
+}
 .scoring-dividend {
     background-image: url('../img/dividend/scoring-dividend.png');
 }

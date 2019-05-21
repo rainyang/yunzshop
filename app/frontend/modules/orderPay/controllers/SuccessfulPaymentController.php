@@ -64,6 +64,9 @@ class SuccessfulPaymentController extends ApiController
             $set = \Setting::get('shop_app.pay');
             $data['app_links'] = $set['app_links'];
         }
+
+        $data['name'] = \Setting::get('shop.shop.name');
+
         \Log::debug('请求成功',$data);
         return $this->successJson('请求成功',$data);
     }
