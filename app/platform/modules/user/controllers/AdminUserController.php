@@ -68,11 +68,11 @@ class AdminUserController extends BaseController
     {
         $uid = request()->uid;
         if (!$uid) {
-            return $this->check(5);
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
         $user = AdminUser::with('hasOneProfile')->find($uid);
         if (!$user) {
-            return $this->check(6);
+            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
         }
         $data = request()->user;
 
@@ -87,7 +87,7 @@ class AdminUserController extends BaseController
         if ($user) {
             return $this->successJson('成功', $user);
         } else {
-            return $this->check(0);
+            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
         }
     }
 
