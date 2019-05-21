@@ -13,9 +13,9 @@ class UpdateImsYzUsersProfileMobile extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('yz_users_profile_mobile')) {
-            if (Schema::hasColumn('yz_users_profile_mobile', 'mobile')) {
-                Schema::table('yz_users_profile_mobile', function (Blueprint $table) {
+        if (Schema::hasTable('yz_users_profile')) {
+            if (Schema::hasColumn('yz_users_profile', 'mobile')) {
+                Schema::table('yz_users_profile', function (Blueprint $table) {
                     $table->string('mobile', 11)->comment('手机号')->change();
                 });
             }
@@ -29,6 +29,6 @@ class UpdateImsYzUsersProfileMobile extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('yz_users_profile_mobile');
+        Schema::dropIfExists('yz_users_profile');
     }
 }
