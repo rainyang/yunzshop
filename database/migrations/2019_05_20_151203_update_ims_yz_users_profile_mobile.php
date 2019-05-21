@@ -15,8 +15,8 @@ class UpdateImsYzUsersProfileMobile extends Migration
     {
         if (Schema::hasTable('yz_users_profile')) {
             if (Schema::hasColumn('yz_users_profile', 'mobile')) {
-                Schema::table('yz_users_profile', function ($table) {
-                    $table->string('mobile', 11)->comment('手机号')->change();
+                Schema::table('yz_users_profile', function (Blueprint $table) {
+                    $table->string('mobile', 12)->comment('手机号')->change();
                 });
             }
         }
