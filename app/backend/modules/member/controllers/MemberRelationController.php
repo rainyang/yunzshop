@@ -31,6 +31,7 @@ class MemberRelationController extends BaseController
     public function index()
     {
         $relation = Relation::getSetInfo()->first();
+        $setting = \Setting::get('member.relation');
 
         if (!empty($relation)) {
             $relation = $relation->toArray();
@@ -59,6 +60,7 @@ class MemberRelationController extends BaseController
 
         return view('member.relation', [
             'set' => $relation,
+            'setting' => $setting,
             'goods' => $goods,
         ])->render();
     }
@@ -71,6 +73,10 @@ class MemberRelationController extends BaseController
     public function save()
     {
         $setData = \YunShop::request()->setdata;
+        $setting = \YunShop::request()->setting;
+        if ($setting) {
+            \Setting::set('member.relation',$setting);
+        }
         $setData['uniacid'] = \YunShop::app()->uniacid;
 
         if (empty($setData['become_ordercount'])) {
