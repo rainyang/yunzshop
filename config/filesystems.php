@@ -57,21 +57,21 @@ return [
         'syst_images' => [
             'driver' => 'local',
             'root' => base_path('static/upload/images/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/images/'.date('Y').'/'.date('m'),
+            'url' => env('APP_URL').'/static/upload/images/0/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
         'videos' => [
             'driver' => 'local',
             'root' => base_path('static/upload/videos/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/videos/'.date('Y').'/'.date('m'),
+            'url' => env('APP_URL').'/static/upload/videos/0/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
         'audios' => [
             'driver' => 'local',
             'root' => base_path('static/upload/audios/0/'.date('Y').'/'.date('m')),
-            'url' => env('APP_URL').'/static/upload/audios/'.date('Y').'/'.date('m'),
+            'url' => env('APP_URL').'/static/upload/audios/0/'.date('Y').'/'.date('m'),
             'visibility' => 'public',
         ],
 
