@@ -47,6 +47,8 @@ class PaymentController extends BaseController
                     if (strpos($_GET['out_trade_no'], '_') !== false) {
                         $data = explode('_', $_GET['out_trade_no']);
                         \YunShop::app()->uniacid = $data[0];
+                    } else {
+                        \YunShop::app()->uniacid = $this->getUniacid();
                     }
                     break;
                 default:
