@@ -1549,8 +1549,8 @@ class MemberController extends ApiController
             $data[] = [
                 'name'  => 'material-center',
                 'title' => '素材中心',
-                'class' => 'icon-member-01',
-                'url'   => 'MaterialCenter'
+                'class' => 'icon-member_material',
+                'url'   => 'materialCenter'
             ];
         }
 
