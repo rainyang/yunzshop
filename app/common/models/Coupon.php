@@ -178,6 +178,13 @@ class  Coupon extends BaseModel
                     'scope' => $categoryIds,
                 ];
                 break;
+            case self::COUPON_STORE_USE:
+                $categoryIds = self::getApplicalbeCategoryIds($couponId);
+                return [
+                    'type' => self::COUPON_STORE_USE,
+                    'scope' => $categoryIds,
+                ];
+                break;
             case self::COUPON_SINGLE_STORE_USE:
                 $categoryIds = self::getApplicalbeCategoryIds($couponId);
                 return [
