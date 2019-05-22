@@ -66,6 +66,11 @@ class BalanceService
         return $this->_recharge_set['transfer'] ? true : false;
     }
 
+    public function convertSet()
+    {
+        return $this->_recharge_set['love_swich'] ? true :false;
+    }
+
     //余额提现设置
     public function withdrawSet()
     {

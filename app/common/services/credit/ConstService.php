@@ -36,6 +36,7 @@ class ConstService
 
     const SOURCE_TRANSFER          = 3; //转让
 
+
     const SOURCE_DEDUCTION         = 4; //抵扣
 
     const SOURCE_AWARD             = 5; //奖励
@@ -57,6 +58,9 @@ class ConstService
     const SOURCE_REJECTED         = 12; //提现驳回
 
     const SOURCE_EXCEL_RECHARGE    = 13; //EXCEL充值
+
+    const SOURCE_CONVERT         = 14; //余额转化爱心值
+
 
 
     protected static $title = '余额';
@@ -89,7 +93,8 @@ class ConstService
             self::SOURCE_RECHARGE_MINUS        => '后台扣除',
             self::SOURCE_RECHARGE_CODE         => '充值码充值',
             self::SOURCE_EXCEL_RECHARGE         => 'EXCEL充值',
-            self::SOURCE_REJECTED              => static::$title . '提现驳回'
+            self::SOURCE_REJECTED              => static::$title . '提现驳回',
+            self::SOURCE_CONVERT               => static::$title.'转化爱心值'
         ];
     }
 

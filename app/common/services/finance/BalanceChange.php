@@ -95,6 +95,12 @@ class BalanceChange extends Credit
         return $result === true ? $this->addition($data) : $result;
     }
 
+    public function convert(array $data)
+    {
+        $result = parent::convert($data);
+        return $result;
+    }
+
     /**
      * 检测单号是否可用，为空则生成唯一单号
      * @return bool|string
