@@ -222,6 +222,23 @@
     </div>
 </div>
 
+
+<div class="tab-pane  active">
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">劳务税计算方式</label>
+        <div class="col-sm-9 col-xs-12">
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][alipay]' value='1' @if($set['alipay'] == 1) checked @endif />
+                提现金额-手续费
+            </label>
+            <label class='radio-inline'>
+                <input type='radio' name='withdraw[income][alipay]' value='0' @if($set['alipay'] == 0) checked @endif />
+                提现金额
+            </label>
+        </div>
+    </div>
+</div>
+
 <div class="tab-pane  active">
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">劳务税比例</label>
