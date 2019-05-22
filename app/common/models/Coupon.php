@@ -47,8 +47,11 @@ class  Coupon extends BaseModel
     const COUPON_SHOP_USE = 0; //适用范围 - 商城通用
     const COUPON_CATEGORY_USE = 1; //适用范围 - 指定分类
     const COUPON_GOODS_USE = 2; //适用范围 - 指定商品
-    const COUPON_SUPPLIER_USE = 3; //适用范围 - 指定供应商
+    const COUPON_SUPPLIER_USE = 3; //适用范围 - 指定供应商single
     const COUPON_STORE_USE = 4; //适用范围 - 指定门店
+    const COUPON_SINGLE_STORE_USE = 5; //适用范围 - 指定单个门店
+
+
 
     const COUPON_MONEY_OFF = 1; //优惠方式- 立减
     const COUPON_DISCOUNT = 2; //优惠方式- 折扣
@@ -172,6 +175,13 @@ class  Coupon extends BaseModel
                 $categoryIds = self::getApplicalbeCategoryIds($couponId);
                 return [
                     'type' => self::COUPON_CATEGORY_USE,
+                    'scope' => $categoryIds,
+                ];
+                break;
+            case self::COUPON_SINGLE_STORE_USE:
+                $categoryIds = self::getApplicalbeCategoryIds($couponId);
+                return [
+                    'type' => self::COUPON_SINGLE_STORE_USE,
                     'scope' => $categoryIds,
                 ];
                 break;
