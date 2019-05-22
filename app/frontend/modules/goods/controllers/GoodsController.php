@@ -621,9 +621,19 @@ class GoodsController extends ApiController
                     $data['name'] = '经销商提成';
                     $data['key'] = 'team-dividend';
                     $data['type'] = 'array';
-                    if ( 1 == 1) {
-                        $data['value'][] = '经销商提成' . $team_dividend_data['first_commission'] . '元';
+                    if ( $team_dividend_data['team_dividend_type'] == 0) {
+                        if(1){
+                            $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'] . '%';
+
+                        }elseif(1){
+                            $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'] . '元';
+                        }
                     }
+
+                    if ( $team_dividend_data['team_dividend_type'] == 1) {
+                        $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'] . '%';
+                    }
+
                     array_push($sale, $data);
                     $data = [];
                 }
@@ -632,7 +642,8 @@ class GoodsController extends ApiController
         }
         return [
             'sale_count' => count($sale),
-            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
+//            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
+            'first_strip_key' => $sale ? $sale[0] : [],
             'sale' => $sale,
         ];
     }
