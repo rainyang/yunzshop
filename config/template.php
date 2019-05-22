@@ -281,7 +281,7 @@ return [
         'subtitle' => '子平台业务通知',
         'value' => 'subplatform',
         'param' => [
-            '昵称', '时间','业务类型','变动数量','当前剩余值'
+            '昵称', '时间','业务类型'
         ]
     ],
     'main_platform' => [
@@ -289,7 +289,7 @@ return [
         'subtitle' => '主平台通知业务通知',
         'value' => 'main_platform',
         'param' => [
-            '昵称', '时间','业务类型','变动数量','当前剩余值'
+            '昵称', '时间','业务类型'
         ]
     ],
 
@@ -298,7 +298,7 @@ return [
         'subtitle' => '供货平台(子平台入驻申请通知)',
         'value' => 'settled_in',
         'param' => [
-            '昵称', '时间','业务类型','变动数量','当前剩余值'
+            '昵称', '时间','业务类型'
         ]
     ],
 
@@ -322,7 +322,7 @@ return [
     'subtitle' => '主平台(采购单生成通知)',
     'value' => 'purchasing_order_generation',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -334,7 +334,7 @@ return [
     'subtitle' => '主平台(采购单支付通知)',
     'value' => 'purchasing_order_pay',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型','变动数量','当前剩余值'
         ]
     ],
 
@@ -346,7 +346,7 @@ return [
     'subtitle' => '主平台(供货单发货通知)',
     'value' => 'supply_delivery',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -358,7 +358,7 @@ return [
     'subtitle' => '主平台(供货单完成通知)',
     'value' => 'supply_complete',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -370,7 +370,7 @@ return [
     'subtitle' => '供货平台(子平台提现通知)',
     'value' => 'subplatform_presentation',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -382,7 +382,7 @@ return [
     'subtitle' => '供货平台(审核通过通知)',
     'value' => 'audit_pass',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -394,7 +394,7 @@ return [
     'subtitle' => '供货平台(审核驳回通知)',
     'value' => 'audit_rejected',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -406,7 +406,7 @@ return [
     'subtitle' => '采购单生成通知',
     'value' => 'purchasing_order_generation_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -418,7 +418,7 @@ return [
     'subtitle' => '采购单支付成功通知',
     'value' => 'purchasing_order_pay_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型','变动数量','当前剩余值'
         ]
     ],
 
@@ -430,7 +430,7 @@ return [
     'subtitle' => '供货单发货通知',
     'value' => 'dupply_delivery_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -442,7 +442,7 @@ return [
     'subtitle' => '供货单完成通知',
     'value' => 'completion_supply_order_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -454,7 +454,7 @@ return [
     'subtitle' => '销售订单发货通知',
     'value' => 'sales_order_delivery_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -466,7 +466,7 @@ return [
     'subtitle' => '销售订单完成通知',
     'value' => 'sales_order_completion_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -478,7 +478,7 @@ return [
     'subtitle' => '供货平台(提现申请通知)',
     'value' => 'cash_withdrawal_application_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -490,7 +490,7 @@ return [
     'subtitle' => '供货平台(提现审核通过通知)',
     'value' => 'presentation_approval_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -502,7 +502,7 @@ return [
     'subtitle' => '供货平台(提现驳回通知)',
     'value' => 'dismissal_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -514,7 +514,7 @@ return [
     'subtitle' => '供货平台(提现打款通知)',
     'value' => 'cash_withdrawals_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型'
         ]
     ],
 
@@ -526,7 +526,7 @@ return [
     'subtitle' => '供货平台(提现到账通知)',
     'value' => 'cash_withdrawal_accoun_subplatform',
     'param' => [
-        '昵称', '时间'
+        '昵称', '时间','业务类型','变动数量','当前剩余值'
         ]
     ],
 
