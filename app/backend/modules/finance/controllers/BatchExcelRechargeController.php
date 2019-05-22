@@ -15,6 +15,8 @@ use app\common\helpers\Url;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\PointService;
+use Yunshop\Love\Common\Services\LoveChangeService;
+use Yunshop\Love\Common\Services\SetService;
 
 class BatchExcelRechargeController extends BaseController
 {
@@ -54,7 +56,16 @@ class BatchExcelRechargeController extends BaseController
      */
     public function index()
     {
-        return view('finance.batchExcelRecharge');
+        $love_open =0;
+        $love_name = '爱心值';
+        if (app('plugins')->isEnabled('love')) {
+            $love_open = 1;
+            $love_name = SetService::getLoveName();
+        }
+        return view('finance.batchExcelRecharge', [
+            'love_open' => $love_open,
+            'love_name' => $love_name,
+        ]);
     }
 
     /**
@@ -195,6 +206,47 @@ class BatchExcelRechargeController extends BaseController
 
 
             if ($result) {
+                $this->successNum += 1;
+            } else {
+                $this->errorNum += 1;
+            }
+        } catch (\Exception $exception) {
+
+            $this->errorNum += 1;
+        }
+    }
+
+    private function batchRechargeLove()
+    {
+        $love_type = request()->love_type;
+        $values = $this->getRow();
+
+        foreach ($values as $key => $value) {
+
+            $this->handleNum += 1;
+            $memberId = trim($value[0]);
+            $rechargeValue = trim($value[1]);
+
+            if (!$memberId || !$rechargeValue && $rechargeValue < 0) {
+                continue;
+            }
+
+            $this->LoveRecharge($memberId, $rechargeValue, $love_type);
+        }
+    }
+
+    private function LoveRecharge($memberId, $rechargeValue, $love_type)
+    {
+        try {
+            $result = (new LoveChangeService($love_type))->recharge([
+                'member_id'     => $memberId,
+                'change_value'  => $rechargeValue,
+                'operator'      => ConstService::OPERATOR_MEMBER,
+                'operator_id'   => 0,
+                'remark'        => 'Excel批量充值'.$rechargeValue,
+            ]);
+
+            if ($result === true) {
                 $this->successNum += 1;
             } else {
                 $this->errorNum += 1;
