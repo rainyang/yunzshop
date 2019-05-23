@@ -42,16 +42,16 @@ class DivFromController extends ApiController
     }
 
     //获取服务费
-    public function service(){
-        $goodsId = \YunShop::request()->goodsId;
-        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
-        if (!$serviceFee){
-            return $this->errorJson('未获取到该商品服务信息');
-        }
-        $service = \Setting::get('goods.service');
-        $service['service']['fee'] = $serviceFee->serviceFee;
-        return $this->successJson('ok',['service'=>$service]);
-    }
+//    public function service(){
+//        $goodsId = \YunShop::request()->goodsId;
+//        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
+//        if (!$serviceFee){
+//            return $this->errorJson('未获取到该商品服务信息');
+//        }
+//        $service = \Setting::get('goods.service');
+//        $service['service']['fee'] = $serviceFee->serviceFee;
+//        return $this->successJson('ok',['service'=>$service]);
+//    }
 
     //判断是否开启发票
     public function isinvoice()

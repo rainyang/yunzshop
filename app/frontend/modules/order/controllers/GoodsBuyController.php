@@ -11,7 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-
+use app\common\models\goods\GoodsService;
 class GoodsBuyController extends ApiController
 {
     /**
@@ -54,6 +54,18 @@ class GoodsBuyController extends ApiController
     {
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
+        $trade['service'] = $this->service(\YunShop::request()->goods_id);
         return $this->successJson('成功', $trade);
+    }
+
+    public function service($goodsId){
+        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
+        $service = \Setting::get('goods.service');
+        if (!$serviceFee){
+            $service['service']['fee'] = 0;
+        }else{
+            $service['service']['fee'] = $serviceFee->serviceFee;
+        }
+        return $service;
     }
 }
