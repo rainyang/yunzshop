@@ -173,6 +173,12 @@ class PointLog extends BaseModel
             case (22):
                 $mode_attribute = PointService::POINT_MODE_COMMUNITY_REWARD_ATTACHED;
                 break;
+            case (30):
+                $mode_attribute = PointService::POINT_MODE_CARD_VISIT_REWARD_ATTACHED;
+                break;
+            case (31):
+                $mode_attribute = PointService::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }
