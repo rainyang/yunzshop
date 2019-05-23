@@ -169,14 +169,14 @@ class OrderDeductManager
                 throw new AppException("订单支付总金额{$this->order->getPriceBefore('orderDispatchPrice')}元,不满足最低抵扣总金额{$this->checkedOrderDeductionCollection->minAmount()}元");
             }
 
-            // 将抵扣总金额保存在订单优惠信息表中
-            $preOrderDiscount = new PreOrderDiscount([
-                'discount_code' => 'deduction',
-                'amount' => $this->checkedOrderDeductionCollection->usedAmount(),
-                'name' => '抵扣金额',
-
-            ]);
-            $preOrderDiscount->setOrder($this->order);
+//            // 将抵扣总金额保存在订单优惠信息表中
+//            $preOrderDiscount = new PreOrderDiscount([
+//                'discount_code' => 'deduction',
+//                'amount' => $this->checkedOrderDeductionCollection->usedAmount(),
+//                'name' => '抵扣金额',
+//
+//            ]);
+//            $preOrderDiscount->setOrder($this->order);
 
         }
 

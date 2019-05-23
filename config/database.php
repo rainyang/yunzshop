@@ -17,17 +17,26 @@ $db_conn_name     = env('DB_CONNECTION', 'mysql');
 if (env('APP_Framework') != 'platform') {
     include dirname(dirname(dirname(__DIR__))) . '/data/config.php';
 
-    $default_host     = $config['db']['master']['host'];
-    $default_port     = $config['db']['master']['port'];
-    $default_db       = $config['db']['master']['database'];
-    $default_username = $config['db']['master']['username'];
-    $default_password = $config['db']['master']['password'];
-    $default_prefix   = $config['db']['master']['tablepre'];
+    if (isset($config['db']['master'])) {
+        $default_host     = $config['db']['master']['host'];
+        $default_port     = $config['db']['master']['port'];
+        $default_db       = $config['db']['master']['database'];
+        $default_username = $config['db']['master']['username'];
+        $default_password = $config['db']['master']['password'];
+        $default_prefix   = $config['db']['master']['tablepre'];
 
-    $default_slave_host     = $config['db']['slave'][1]['host'];
-    $default_slave_username = $config['db']['slave'][1]['username'];
-    $default_slave_password = $config['db']['slave'][1]['password'];
-    $default_slave_port     = $config['db']['slave'][1]['port'];
+        $default_slave_host     = $config['db']['slave'][1]['host'];
+        $default_slave_username = $config['db']['slave'][1]['username'];
+        $default_slave_password = $config['db']['slave'][1]['password'];
+        $default_slave_port     = $config['db']['slave'][1]['port'];
+    } else {
+        $default_host     = $config['db']['host'];
+        $default_port     = $config['db']['port'];
+        $default_db       = $config['db']['database'];
+        $default_username = $config['db']['username'];
+        $default_password = $config['db']['password'];
+        $default_prefix   = $config['db']['tablepre'];
+    }
 }
 
 return [

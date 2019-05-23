@@ -274,7 +274,7 @@ class BaseModel extends Model
      * @return mixed
      * @throws \Exception
      */
-    public function scopeExclude(self $query, $excludeFields)
+    public function scopeExclude($query, $excludeFields)
     {
         if (!is_array($excludeFields)) {
             $excludeFields = explode(',', $excludeFields);
