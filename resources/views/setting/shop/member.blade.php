@@ -53,6 +53,16 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情会员折扣</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class='radio-inline'><input type='radio' name='member[discount]' value='1'
+                                                                   checked /> 是</label>
+                                <label class='radio-inline'><input type='radio' name='member[discount]' value='0'
+                                                                   @if ($set['discount'] == 0) checked @endif />否</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
