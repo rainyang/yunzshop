@@ -230,7 +230,7 @@
                                     <input type="radio" name="member[invite_page]" value="1"
                                            @if ($set['invite_page'] == 1) checked @endif/> 开启
                                 </label>
-                                <span class="help-block"></span>
+                                <span class="help-block">邀请页面与强制绑定手机页面不能同时启用</span>
                             </div>
                         </div>
 
