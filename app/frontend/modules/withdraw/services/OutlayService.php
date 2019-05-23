@@ -144,8 +144,8 @@ class OutlayService
 
 
     /**
-     * 劳务税 = （提现金额 - 手续费）* 劳务税比例
-     *
+     * 劳务税 1 = （提现金额 - 手续费）* 劳务税比例
+     *劳务税  2 =   提现金额 * 劳务税比例
      * @return float
      */
     public function getToBalanceServiceTax()
@@ -156,6 +156,10 @@ class OutlayService
         $withdraw_poundage = $this->getToBalancePoundage();
 
         $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
+
+        if(array_get($this->withdraw_set,'service_tax_calculation',0) == 1){
+            return   $amount * $rate;
+        }
 
         return $this->calculate($amount, $rate);
     }
