@@ -49,7 +49,7 @@ class DivFromController extends ApiController
             return $this->errorJson('未获取到该商品服务信息');
         }
         $service = \Setting::get('goods.service');
-        $service['service'] = $serviceFee->serviceFee;
+        $service['service']['fee'] = $serviceFee->serviceFee;
         return $this->successJson('ok',['service'=>$service]);
     }
 
