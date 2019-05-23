@@ -282,9 +282,9 @@
 .weisrc_dish {
     background-image: url('../img/api/weisrc_dish.png');
 }
-
-
-
 .asset {
     background-image: url('../img/blockchain/asset.png');
+}
+.declaration {
+    background-image: url('../img/marketing/declaration.png');
 }
