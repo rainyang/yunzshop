@@ -59,7 +59,7 @@
                                 <label class='radio-inline'><input type='radio' name='member[discount]' value='0'
                                                                    @if ($set['discount'] == 0) checked @endif />否</label>
                                 <label class='radio-inline'><input type='radio' name='member[discount]' value='1'
-                                                                   @if ($set['discount'] == 0) checked @endif /> 是</label>
+                                                                   @if ($set['discount'] == 1) checked @endif /> 是</label>
 
                             </div>
                         </div>
