@@ -415,11 +415,12 @@ class GoodsController extends ApiController
      */
     public function getDiscount(Goods $goodsModel, $memberModel)
     {
-
+        $discount_switch = \ Setting::get('shop.member.discount');
         if ($memberModel->level) {
             $data = [
                 'level_name' => $memberModel->level->level_name,
                 'discount_value' => $goodsModel->vip_price,
+                'discount' => $discount_switch,
             ];
         } else {
             $level = Setting::get('shop.member.level_name');
@@ -431,6 +432,7 @@ class GoodsController extends ApiController
             $data = [
                 'level_name' => $level_name,
                 'discount_value' => $goodsModel->vip_price,
+                'discount' => $discount_switch,
             ];
         }
 
