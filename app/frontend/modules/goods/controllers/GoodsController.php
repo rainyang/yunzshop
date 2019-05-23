@@ -622,10 +622,6 @@ class GoodsController extends ApiController
                     $data['key'] = 'team-dividend';
                     $data['type'] = 'array';
                     $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'];
-
-
-
-
                     array_push($sale, $data);
                     $data = [];
                 }
