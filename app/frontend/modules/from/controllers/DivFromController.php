@@ -14,7 +14,7 @@ use app\common\components\ApiController;
 use app\common\services\DivFromService;
 use app\common\services\IDCardService;
 use app\frontend\models\Member;
-
+use app\common\models\goods\GoodsService;
 class DivFromController extends ApiController
 {
     /**
