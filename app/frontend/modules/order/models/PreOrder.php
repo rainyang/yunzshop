@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\order\OrderFee;
 use Illuminate\Http\Request;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
@@ -136,6 +137,14 @@ class PreOrder extends Order
         $this->initAttributes();
 
         return $this;
+    }
+
+    public function getOrderFee()
+    {
+        if (!isset($this->orderDispatch)) {
+            $this->orderDispatch = new OrderFee($this);
+        }
+        return $this->orderDispatch;
     }
 
     public function getDiscount()
