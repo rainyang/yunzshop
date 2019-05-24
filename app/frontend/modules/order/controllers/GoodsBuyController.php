@@ -24,7 +24,6 @@ class GoodsBuyController extends ApiController
             'total' => request()->input('total'),
             'option_id' => request()->input('option_id'),
         ];
-
         $result = new MemberCartCollection();
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
@@ -54,18 +53,7 @@ class GoodsBuyController extends ApiController
     {
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
-//        $trade['service'] = $this->service(\YunShop::request()->goods_id);
         return $this->successJson('成功', $trade);
     }
 
-//    public function service($goodsId){
-//        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
-//        $service = \Setting::get('goods.service');
-//        if (!$serviceFee){
-//            $service['service']['fee'] = 0;
-//        }else{
-//            $service['service']['fee'] = $serviceFee->serviceFee;
-//        }
-//        return $service;
-//    }
 }
