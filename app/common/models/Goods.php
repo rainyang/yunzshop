@@ -24,6 +24,7 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property string status
  * @property string status_name
  * @property string title
+ * @property int uniacid
  * @property int id
  * @property int stock
  * @property float max_price
@@ -188,11 +189,6 @@ class Goods extends BaseModel
     public function hasOneBrand()
     {
         return $this->hasOne('app\common\models\Brand', 'id', 'brand_id');
-    }
-
-    public function hasOneService()
-    {
-        return $this->hasOne('Yunshop\ServiceFee\models\ServiceFeeModel', 'id', 'goods_id');
     }
 
     public function hasOneShare()

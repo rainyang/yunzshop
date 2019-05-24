@@ -27,6 +27,7 @@ class GoodsBuyController extends ApiController
         ];
         $result = new MemberCartCollection();
         $result->push(MemberCartService::newMemberCart($goods_params));
+        $trade['service'] = $this->service(\YunShop::request()->goods_id);
         return $result;
     }
 
@@ -53,9 +54,9 @@ class GoodsBuyController extends ApiController
     {
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
-        $trade['service'] = $this->service(\YunShop::request()->goods_id);
         return $this->successJson('成功', $trade);
     }
+
 
     public function service($goodsId){
 
