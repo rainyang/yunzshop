@@ -18,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 use app\platform\modules\application\models\AppUser;
+use app\platform\controllers\ResetpwdController;
 
 class AdminUserController extends BaseController
 {
@@ -26,6 +27,12 @@ class AdminUserController extends BaseController
         'phone' => '',
         'roles' => [],
     ];
+    protected $user;
+
+    public function __construct()
+    {
+        $this->user = \Auth::guard('admin')->user();
+    }
 
     /**
      * Display a listing of the resource.(显示用户列表.)
@@ -257,13 +264,50 @@ class AdminUserController extends BaseController
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
 
-        $user = \Auth::guard('admin')->user();
+        $user = $this->user;
 
         $validate  = $this->validate($this->rules($user, $data), $data, $this->message());
         if ($validate) {
             return $validate;
         }
         return $this->check(AdminUser::saveData($data, $user));
+    }
+
+    /**
+     * 发送手机验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendCode()
+    {
+        if (request()->mobile != $this->user['hasOneProfile']['mobile']) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        return (new ResetpwdController)->SendCode();
+    }
+
+    /**
+     * 修改手机号
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifyMobile()
+    {
+        $data = request()->data;
+        $mobile = $this->user['hasOneProfile']['mobile'];
+
+        if (request()->data['old_mobile'] != $mobile) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        $data['avatar'] = $mobile;
+
+        if (AdminUser::saveProfile($data, $this->user)) {
+            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
+        } else {
+            return $this->check(AdminUser::returnData('1'));
+        }
     }
 
     /**
