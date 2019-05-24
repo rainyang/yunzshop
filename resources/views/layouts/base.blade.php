@@ -214,7 +214,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $cache['menu'] = ob_get_contents();
         $cache['uid'] = $_W['uid'];
         \app\common\helpers\Cache::forever('menu_list'.$_W['uid'], $cache);
-        ob_end_flush();
+        ob_implicit_flush(false);
     @endphp
     @else
         @php \Log::debug('----读取顶端和左端 menu----'); echo $menu_list['menu']; @endphp
