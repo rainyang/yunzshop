@@ -50,6 +50,10 @@ return [
             'title' => '服务提供',
             'class' => 'app\backend\widgets\goods\ServiceWidget'
         ],
+        'tab_service_fee' => [
+            'title' => '服务费',
+            'class' => 'app\backend\widgets\goods\ServiceFee'
+        ],
     ],
     'withdraw' => [
         'income' => [

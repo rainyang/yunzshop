@@ -47,7 +47,7 @@ abstract class BaseOrderFee
         $preOrderFee = new PreOrderFee([
             'fee_code' => $this->code,
             'amount' => $this->amount,
-            'name' => $this->name,
+            'name' => $this->getName(),
 
         ]);
         $preOrderFee->setOrder($this->order);
@@ -55,6 +55,9 @@ abstract class BaseOrderFee
     }
     public function getCode(){
         return $this->code;
+    }
+    public function getName(){
+        return $this->name;
     }
     abstract protected function _getAmount();
 }

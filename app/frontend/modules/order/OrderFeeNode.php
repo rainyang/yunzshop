@@ -18,6 +18,6 @@ class OrderFeeNode extends OrderPriceNode
 
     public function getPrice()
     {
-        return $this->order->getOrderFee()->getAmount();
+        return $this->order->getOrderFeeManager()->getAmount();
     }
 }

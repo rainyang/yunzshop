@@ -21,13 +21,13 @@ class GoodsService extends \app\common\models\goods\GoodsService
         	return false;
         }
         $model = self::getModel($goodsId, $operate);
-
         //判断deleted
         if ($operate == 'deleted') {
             return $model->delete();
         }
         $attr['goods_id'] = $goodsId;
         $attr['uniacid'] = \YunShop::app()->uniacid;
+        $attr['serviceFee'] = $data['service_fee'];
         $attr['is_automatic'] = $data['is_automatic'];
         if ($data['is_automatic'] == 1) {
         	$attr['on_shelf_time'] = strtotime($data['time']['start']);

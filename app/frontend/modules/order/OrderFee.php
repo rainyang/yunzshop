@@ -8,12 +8,9 @@
 
 namespace app\frontend\modules\order;
 
-use app\frontend\models\order\PreOrderDiscount;
-use app\frontend\modules\order\discount\BaseDiscount;
-use app\frontend\modules\order\discount\CouponDiscount;
+use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\order\fee\BaseOrderFee;
 use app\frontend\modules\order\models\PreOrder;
-use Illuminate\Support\Collection;
 
 class OrderFee
 {
@@ -24,17 +21,15 @@ class OrderFee
     protected $order;
 
     /**
-     * 优惠券类
-     * @var CouponDiscount
+     * OrderFee constructor.
+     * @param PreOrder $order
      */
-
     public function __construct(PreOrder $order)
     {
         $this->order = $order;
 
         // 订单手续费集合
-        $this->orderFee = $order->newCollection();
-        $order->setRelation('orderFee', $this->orderFee);
+        $order->setRelation('orderFees', new Collection());
 
     }
 
@@ -42,12 +37,9 @@ class OrderFee
     {
         if (!isset($this->orderFee)) {
             $this->orderFee = collect();
-            // todo 未开启的和金额为0的优惠项是否隐藏
-            foreach (config('shop-foundation.order-discount') as $configItem) {
+            foreach (config('shop-foundation.order-fee') as $configItem) {
                 $this->orderFee->put($configItem['key'], call_user_func($configItem['class'], $this->order));
             }
-
-
         }
         return $this->orderFee;
     }

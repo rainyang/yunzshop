@@ -14,7 +14,7 @@ use app\common\components\ApiController;
 use app\common\services\DivFromService;
 use app\common\services\IDCardService;
 use app\frontend\models\Member;
-
+use app\common\models\goods\GoodsService;
 class DivFromController extends ApiController
 {
     /**
@@ -41,6 +41,18 @@ class DivFromController extends ApiController
         return $this->successJson('ok',$explain );
     }
 
+    //获取服务费
+//    public function service(){
+//        $goodsId = \YunShop::request()->goodsId;
+//        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
+//        if (!$serviceFee){
+//            return $this->errorJson('未获取到该商品服务信息');
+//        }
+//        $service = \Setting::get('goods.service');
+//        $service['service']['fee'] = $serviceFee->serviceFee;
+//        return $this->successJson('ok',['service'=>$service]);
+//    }
+
     //判断是否开启发票
     public function isinvoice()
     {
@@ -48,7 +60,19 @@ class DivFromController extends ApiController
         $trade = \Setting::get('shop.trade');
         $invoice['papery'] = $trade['invoice']['papery']!=0 ? $trade['invoice']['papery'] :0;
         $invoice['electron'] = $trade['invoice']['electron']!=0 ? $trade['invoice']['electron'] :0;
-        return $this->successJson('ok',['invoice'=>$invoice]);
+        $service = $this->service(\YunShop::request()->goods_id);
+        return $this->successJson('ok',['invoice'=>$invoice,'service'=>$service]);
+    }
+
+    public function service($goodsId){
+        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
+        $service = \Setting::get('goods.service');
+        if (!$serviceFee){
+            $service['service']['fee'] = 0;
+        }else{
+            $service['service']['fee'] = $serviceFee->serviceFee;
+        }
+        return $service;
     }
     /**
      * 修改会员真实姓名、身份证ID
