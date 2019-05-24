@@ -30,7 +30,6 @@ class EnoughReduce extends BaseDiscount
      */
     protected function getAmountInOrder()
     {
-        //dump($this->code);
         return $this->orderGoods->order->getDiscount()->getAmountByCode($this->code)->getAmount();
     }
 
