@@ -10,13 +10,9 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-use app\common\facades\Setting;
 use app\common\models\DispatchType;
 use app\common\models\Order;
-use app\common\modules\refund\services\RefundService;
-use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
-use Yunshop\StoreCashier\common\models\StoreDelivery;
 use app\common\services\plugin\leasetoy\LeaseToySet;
 use app\common\services\goods\VideoDemandCourseGoods;
 
@@ -28,13 +24,13 @@ class DetailController extends ApiController
      * @throws AppException
      * @throws \app\common\exceptions\ShopException
      */
-    public function index(Request $request)
+    public function index($request)
     {
         $this->validate([
             'order_id' => 'required|integer'
         ]);
         $orderId = $request->query('order_id');
-        $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
+        $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderFees','orderCoupon'])->find($orderId);
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
 //        }
