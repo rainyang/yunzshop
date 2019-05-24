@@ -21,9 +21,6 @@ class TeamOrderService
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
             $member_all = [];
-            $member_1 = [];
-            $member_2 = [];
-            $member_3 = [];
             $result = [];
             \Log::debug('--------执行-------', \YunShop::app()->uniacid);
             $order   = DB::table('yz_order')->select('uid','price')->where('status', '>=' ,1)->where('uniacid', \YunShop::app()->uniacid)->get();
@@ -45,7 +42,7 @@ class TeamOrderService
             foreach ($member_all as $item){
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
-                $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->count();
+                $result[$item['member_id']]['team_order_quantity'] = $order->whereIn('uid', explode(',',$item['child']))->sum('goods_total');
                 $result[$item['member_id']]['team_order_amount'] = $order->whereIn('uid', explode(',',$item['child']))->sum('price');
                 $res = explode(',',$item['child']);
                 $pay_count = 0;

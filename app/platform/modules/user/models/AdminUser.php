@@ -18,12 +18,20 @@ use Illuminate\Support\Facades\Hash;
 class AdminUser extends Authenticatable
 {
     use Notifiable;
+
     public $primaryKey = 'uid';
     protected $table = 'yz_admin_users';
     public $timestamps = true;
     protected $guarded = [''];
     protected $dateFormat = 'U';
     public static $base = '';
+
+    const ORIGINAL          = '原密码错误';
+    const NEW_AND_ORIGINAL  = '新密码与原密码一致';
+    const STORAGE           = '存储相关信息表失败';
+    const PARAM             = '参数错误';
+    const NO_DATA           = '未获取到数据';
+    const FAIL              = '失败';
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -80,6 +88,7 @@ class AdminUser extends Authenticatable
 
     /**
      * 保存数据
+     *
      * @param $data
      * @param string $user_model
      * @return mixed
@@ -87,69 +96,52 @@ class AdminUser extends Authenticatable
     public static function saveData($data, $user_model)
     {
         $verify_res = self::verifyData($data, $user_model);
-        if ($verify_res == '1') {
-            return 2;
-        } elseif ($verify_res == '2') {
-            return 3;
+        if ($verify_res['sign'] == '0') {
+            return $verify_res;
         }
-
-        if ($verify_res['re_password']) {
-            $verify_res['password'] = bcrypt($verify_res['password']);
-            unset($verify_res['re_password']);
-        }
-        $result = $verify_res->save();
-        if ($result) {
-            if (self::saveProfile($data, $verify_res)) {
-                return 4;
+        $verify_res['password'] ? $verify_res['password'] = bcrypt($verify_res['password']) : null;
+        unset($verify_res['re_password']);
+        if ($verify_res->save()) {
+            if ((request()->path() != "admin/user/modify_user" && request()->path() == "admin/user/change")) {
+                if (self::saveProfile($data, $verify_res)) {
+                    return self::returnData(0, self::STORAGE);
+                }
             }
-//            Cache::put('admin_users', $data, 3600);
-            return 1;
+            return self::returnData(1);
         } else {
-            return 0;
+            return self::returnData(0, self::FAIL);
         }
     }
 
     /**
      * 整合数据
+     *
      * @param $data
-     * @param string $user_model
-     * @return AdminUser|string
+     * @param array $user_model
+     * @return AdminUser|array
      */
-    public static function verifyData($data, $user_model = '')
+    public static function verifyData($data, $user_model = [])
     {
-        if (request()->path() != "admin/user/change") {
-            $data['username'] = trim($data['username']);
-            if ($data['application_number'] == 0) {
-                $data['application_number'] = '';
-            }
-            if ($data['endtime'] == 0) {
-                $data['endtime'] = '';
-            } /*else {*/
-//                $data['endtime'] = strtotime($data['endtime']);
-//            }
-            $data['remark'] = trim($data['remark']);
-        } else {
+        $data['username'] ? $data['username'] = trim($data['username']) : null;
+        $data['password'] ? $data['password'] = trim($data['password']) : null;
+
+        if (request()->path() == "admin/user/change" || (request()->path() == "admin/user/modify_user" && $data['password'])) {
             $data['old_password'] = trim($data['old_password']);
             if (!Hash::check($data['old_password'], $user_model['password'])) {
-                return '1';
+                return self::returnData(0, self::ORIGINAL);
             } elseif (Hash::check($data['password'], $user_model['password'])) {
-                return '2';
+                return self::returnData(0, self::NEW_AND_ORIGINAL);
             }
             unset($data['old_password']);
         }
-        if (request()->path() != "admin/user/edit") {
-            $data['password'] = trim($data['password']);
-            $data['re_password'] = trim($data['re_password']);
-        }
-        unset($data['avatar']);
+
         $data['lastvisit'] =time();
         $data['lastip'] = Utils::getClientIp();
-        $data['joinip'] = Utils::getClientIp();
-        $data['salt'] = self::randNum(8);
+        unset($data['avatar']);
 
-        if (!$user_model) {
-            $user_model = new self();
-        }
+        !$user_model ? $user_model = new self() : null;
+        !$user_model['joinip'] ? $user_model['joinip'] = Utils::getClientIp() : null;
+        !$user_model['salt'] ? $user_model['salt'] = Utils::getClientIp() : null;
         $user_model->fill($data);
         unset($user_model['mobile']);
 
@@ -166,11 +158,8 @@ class AdminUser extends Authenticatable
         $users = self::searchUsers($parames)->where('type', 1)->orderBy('uid', 'desc')->paginate();
         foreach ($users as $item) {
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
-            if ($item['status'] == 2) {
-                $item['state'] = '有效';
-            } elseif ($item['status'] == 3) {
-                $item['state'] = '已禁用';
-            }
+            $item['status'] == 2 ? $item['state'] = '有效' : null;
+            $item['status'] == 3 ? $item['state'] = '已禁用' : null;
             if ($item['endtime'] == 0) {
                 $item['endtime'] = '永久有效';
             }else {
@@ -245,7 +234,8 @@ class AdminUser extends Authenticatable
      * @param boolean $numeric 是否为纯数字
      * @return string
      */
-    protected static function randNum($length, $numeric = FALSE) {
+    protected static function randNum($length, $numeric = FALSE)
+    {
         $seed = base_convert(md5(microtime() . $_SERVER['DOCUMENT_ROOT']), 16, $numeric ? 10 : 35);
         $seed = $numeric ? (str_replace('0', '', $seed) . '012340567890') : ($seed . 'zZ' . strtoupper($seed));
         if ($numeric) {
@@ -270,30 +260,29 @@ class AdminUser extends Authenticatable
      */
     public static function saveProfile($data, $user)
     {
+        $data = [
+            'mobile' => $data['mobile'],
+            'avatar' => $data['avatar']
+        ];
+
+        $type = 1;
+        $content = '添加了用户';
+        $profile_model = new YzUserProfile;
+
         if (request()->path() == "admin/user/create") {
-            $data = [
-                'mobile' => $data['mobile'],
-                'uid' => $user->uid,
-                'avatar' => $data['avatar']
-            ];
-            $profile_model = new YzUserProfile;
-            $profile_model->fill($data);
-            if (!$profile_model->save()) {
-                return 1;
-            }
-            event(new UserActionEvent(self::class, $user['uid'], 1, '添加了用户' . $user['username']));
+            $data['uid'] = $user->uid;
         } elseif (request()->path() == "admin/user/edit") {
-            $data = [
-                'mobile' => $data['mobile'],
-                'avatar' => $data['avatar']
-            ];
+            $type = 3;
+            $content = '编辑了用户';
             $profile_model = YzUserProfile::where('uid', $user->uid)->first();
-            $profile_model->fill($data);
-            if (!$profile_model->save()) {
-                return 1;
-            }
-            event(new UserActionEvent(AdminUser::class, $user['uid'], 3, '编辑了用户' . $user['username']));
         }
+
+        $profile_model->fill($data);
+        if (!$profile_model->save()) {
+            return 1;
+        }
+
+        event(new UserActionEvent(self::class, $user['uid'], $type, $content . $user['username']));
     }
 
     /**
@@ -324,5 +313,13 @@ class AdminUser extends Authenticatable
     public function hasOneAppUser()
     {
         return $this->hasOne(\app\platform\modules\application\models\AppUser::class, 'uid', 'uid');
+    }
+
+    public static function returnData($sign = '', $message = '')
+    {
+        return [
+            'sign' => $sign,
+            'message' => $message
+        ];
     }
 }

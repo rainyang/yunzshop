@@ -36,7 +36,7 @@ Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\syst
     Route::any('video', 'UploadController@video');       // 音频视频列表
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap', 'check']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
@@ -114,6 +114,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::post('status', 'AdminUserController@status');
         // 用户修改密码
         Route::post('change', 'AdminUserController@change');
+        // 用户信息修改
+        Route::post('modify_user', 'AdminUserController@modifyCurrentUser');
         // 平台列表
         Route::post('app_list', 'AdminUserController@applicationList');
         // 店员用户列表

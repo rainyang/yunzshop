@@ -58,7 +58,7 @@ class AuthenticateAdmin
         'admin/appuser/add',
         'admin/appuser/delete',
         'admin/appuser/checkname',
-        'admin/all/upload/',
+        'admin/all/upload',
         'admin/application/getApp',
         'admin/application/delete/{id}',
         'admin/application/add',
@@ -66,7 +66,7 @@ class AuthenticateAdmin
         'admin/application/update/{id}',
         'admin/application/switchStatus/{id}',
         'admin/all/list',
-        'admin/all/delImg/'
+        'admin/all/delImg'
     ];
 
     /**

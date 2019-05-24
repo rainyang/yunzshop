@@ -71,7 +71,7 @@ class WechatController extends PaymentController
         $trade = \Setting::get('shop.trade');
 
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            return redirect($trade['redirect_url'])->send();
+            return redirect($trade['redirect_url'].'&outtradeno='.\YunShop::request()->outtradeno)->send();
         }
 
         if (\YunShop::request()->outtradeno) {

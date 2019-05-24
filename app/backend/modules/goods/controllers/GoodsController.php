@@ -397,6 +397,14 @@ class GoodsController extends BaseController
         //$this->error($goods);
     }
 
+    /**
+     * 商品上下架权限需要独立控制 Yi_190517
+     */
+    public function setPutaway()
+    {
+        return $this->setProperty();
+    }
+
     public function setProperty()
     {
         $id = \YunShop::request()->id;

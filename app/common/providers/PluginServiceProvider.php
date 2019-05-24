@@ -24,6 +24,9 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot(PluginManager $plugins)
     {
+        if (strpos(request()->path(), 'install')) {
+            return;
+        }
         // store paths of class files of plugins
         $srcPaths = [];
         $loader = $this->app->make('translation.loader');

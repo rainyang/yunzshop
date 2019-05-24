@@ -14,6 +14,12 @@ use app\common\scopes\UniacidScope;
 use app\common\traits\CreateOrderSnTrait;
 use Illuminate\Database\Eloquent\Builder;
 
+/**
+ * @property double $money
+ *
+ * Class BalanceRecharge
+ * @package app\common\models\finance
+ */
 class BalanceRecharge extends BaseModel
 {
     use CreateOrderSnTrait;

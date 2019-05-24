@@ -14,10 +14,12 @@ use app\frontend\modules\finance\models\Withdraw;
 
 class WithdrawController extends ApiController
 {
+    public $pageSize = 15;
+
     public function withdrawLog()
     {
         $status = \YunShop::request()->status;
-        $request = Withdraw::getWithdrawLog($status)->orderBy('created_at', 'desc')->get();
+        $request = Withdraw::getWithdrawLog($status)->orderBy('created_at', 'desc')->paginate($this->pageSize);
         if ($request) {
             return $this->successJson('获取数据成功!', $request->toArray());
         }

@@ -309,6 +309,9 @@ class Goods extends BaseModel
                 case 'keyword':
                     $query->where('title', 'LIKE', "%{$value}%");
                     break;
+                case 'goods_id':
+                    $query->where('yz_goods.id', '=', $value);
+                    break;
                 case 'brand_id':
                     $query->where('brand_id', $value);
                     break;
@@ -415,6 +418,20 @@ class Goods extends BaseModel
     public static function getGoodsByName($keyword)
     {
         return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'sku', 'plugin_id', 'stock')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            //->where('is_plugin', 0)
+            ->whereNotIn('plugin_id', [20, 31, 60])//屏蔽门店、码上点餐、第三方插件接口的虚拟商品
+            ->get();
+    }
+
+    /**
+     * @param $keyword
+     * @return mixed
+     */
+    public static function getGoodsByNames($keyword)
+    {
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales','virtual_sales', 'sku', 'plugin_id', 'stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
