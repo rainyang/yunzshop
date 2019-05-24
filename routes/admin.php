@@ -13,6 +13,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
     Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
     Route::any('detail', 'ResetpwdController@detail'); //检查验证码
+    Route::any('auth', 'ResetpwdController@authPassword'); // 管理员修改密码
 
 
     Route::get('/', 'IndexController@index');
@@ -21,7 +22,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::post('install/agreement', 'InstallController@agreement');     // 安装协议
     Route::post('install/check', 'InstallController@check');     // 运行环境检测
     Route::post('install/file_power', 'InstallController@filePower');     // 文件权限设置
-    Route::post('install/set_info', 'InstallController@setInformation');     // 账号设置
+    Route::get('install/set_info', 'InstallController@setInformation');     // 账号设置
     Route::post('install/create_data', 'InstallController@createData');     // 创建数据
     Route::post('install/delete', 'InstallController@delete');     // 删除控制器
     Route::get('login/site', 'LoginController@site');               // 登录页面返回数据

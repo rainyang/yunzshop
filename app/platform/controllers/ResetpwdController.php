@@ -13,6 +13,7 @@ use app\common\services\aliyun\AliyunSMS;
 use Mews\Captcha\Captcha;
 use Gregwar\Captcha\PhraseBuilder;
 use Gregwar\Captcha\CaptchaBuilder;
+use app\common\helpers\Url;
 
 class ResetpwdController extends BaseController
 {
@@ -114,14 +115,13 @@ class ResetpwdController extends BaseController
 		}
 
 		$data['salt'] = randNum(8);
-		$data['password'] = bcrypt($pwd);
 
-		$res = AdminUser::where('uid', $uid)->update($data);
+		$res = $this->modify($pwd, $uid);
 
-		if ($res) {
-			return $this->successJson('密码修改成功');
-		}
-		return $this->errorJson('修改密码失败');
+        if ($res) {
+            return $this->successJson('密码修改成功');
+        }
+        return $this->errorJson('修改密码失败');
 	}
 
 	private function checkUserOnMobile($mobile) 
@@ -290,4 +290,51 @@ class ResetpwdController extends BaseController
         }
     }
 
+    /**
+     * 管理员修改密码
+     */
+    public function authPassword()
+    {
+        $auth = env('AUTH_PASSWORD');
+        $auth_request = request()->auth;
+        $is_ok = false;
+
+        if($auth_request == $auth && $auth != '') {
+            $is_ok = true;
+            $user_request = request()->user;
+            if(!empty($user_request['username']) && !empty($user_request['password'])) {
+                $user = $this->getUser($user_request['username']);
+                if (!$user) {
+                    return $this->message('用户名不存在', '/index.php/admin/auth');
+                }
+                $data['salt'] = randNum(8);
+                $res = $this->modify($user_request['password'], $user->uid);
+
+                if ($res) {
+                    (new LoginController)->logout();
+                    return $this->message('密码修改成功', '/');
+                }
+                return $this->error('修改密码失败', '/index.php/admin/auth');
+            }
+        }
+
+        return view('platform.auth', [
+            'is_ok' => $is_ok,
+            'auth' => $auth
+        ])->render();
+    }
+
+    public function getUser($username)
+    {
+        return AdminUser::where('username', $username)->first();
+    }
+
+    public function modify($pwd, $uid)
+    {
+        $data['password'] = bcrypt($pwd);
+
+        $res = AdminUser::where('uid', $uid)->update($data);
+
+        return $res;
+    }
 }

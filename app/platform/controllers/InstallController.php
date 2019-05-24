@@ -227,7 +227,8 @@ class InstallController
      * @param $dir
      * @return int
      */
-    private function check_writeable($dir) {
+    private function check_writeable($dir)
+    {
         $writeable = 0;
         if(!is_dir($dir)) {
             @mkdir($dir, 0777);
@@ -251,6 +252,7 @@ class InstallController
     {
         $set = request()->set;
         $user = request()->user;
+        $set['AUTH_PASSWORD'] = mt_rand(1000000, 9999999);
 
         $filename = base_path().'/.env';
         $env = file_get_contents($filename);
@@ -265,7 +267,7 @@ class InstallController
             if ((bool)$check_env_key) {
                 $env = substr_replace($env, "{$item}={$value}", $check_env_key, $num);
             } else {
-                $env .= "{$item}=$value\n";
+                $env .= "\n{$item}=$value\n";
             }
         }
 
