@@ -102,6 +102,7 @@ class MemberCart extends BaseModel
      */
     public function getGroupId()
     {
+        return $this->goods_id;
         if (!$this->goods->getPlugin()) {
             return 0;
         }
