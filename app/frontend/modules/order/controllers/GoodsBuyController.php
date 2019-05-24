@@ -58,15 +58,22 @@ class GoodsBuyController extends ApiController
     }
 
     public function service($goodsId){
-        $serviceFee = (new ServiceFeeModel())->where(['goods_id' => $goodsId])->first();
-        $service = \Setting::get('goods.service');
-        if (!$serviceFee){
-            $service['service']['fee'] = 0;
-            $service['service']['is_open'] = 0;
-            $service['service']['open'] = 0;
-        }else{
-            $service['service']['fee'] = $serviceFee->fee;
-            $service['service']['is_open'] = $serviceFee->is_open;
+
+        $service = \Setting::get('plugins.service-fee');
+       if(app('plugins')->isEnabled('service-fee'))
+       {
+            $serviceFee = (new ServiceFeeModel())->where(['goods_id' => $goodsId])->first();
+            if (!$serviceFee){
+                $service['service']['fee'] = 0;
+                $service['service']['is_open'] = 0;
+                $service['service']['open'] = 0;
+            }else{
+                $service['service']['fee'] = $serviceFee->fee;
+                $service['service']['is_open'] = $serviceFee->is_open;
+            }
+       }else{
+           $service['service']['open'] = 0;
+           $service['service']['fee'] = 0;
         }
         return $service;
     }

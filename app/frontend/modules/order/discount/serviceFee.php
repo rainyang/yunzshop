@@ -28,9 +28,9 @@ class serviceFee extends BaseDiscount
     public function __construct(PreOrder $order)
     {
         parent::__construct($order);
-        $service = \Setting::get('goods.service');
-       $this->name = $service['service']['name'];
-       $this->open =  $service['service']['open'];
+        $service = \Setting::get('plugins.service-fee');
+       $this->name = $service['service']['name']?: '商品服务费';
+       $this->open =  $service['service']['open']?:0;
     }
 
     protected function _getAmount()

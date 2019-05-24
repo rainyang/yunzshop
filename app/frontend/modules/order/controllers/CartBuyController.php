@@ -11,6 +11,8 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\frontend\modules\memberCart\MemberCartCollection;
+use Yunshop\ServiceFee\models\ServiceFeeModel;
+
 
 class CartBuyController extends ApiController
 {
@@ -23,10 +25,23 @@ class CartBuyController extends ApiController
     {
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
-
+        $this->service($trade);
         return $this->successJson('成功', $trade);
     }
-
+    public function service(&$trade){
+        $service = \Setting::get('plugins.service-fee');
+        $goods = $trade->toArray();
+        if(app('plugins')->isEnabled('service-fee'))
+        {
+            foreach ($goods['orders'] as &$orders){
+                foreach ($orders['order_goods'] as &$goodsData){
+                    $serviceFee = (new ServiceFeeModel())->where(['goods_id' => $goodsData['goods_id']])->first();
+                    $goodsData['is_open'] =  $serviceFee->is_open;
+                    $goodsData['fee'] = $serviceFee->fee;
+                }
+            }
+        }
+    }
     /**
      * @throws \app\common\exceptions\ShopException
      */
@@ -57,7 +72,6 @@ class CartBuyController extends ApiController
             $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
 
             $memberCarts = new MemberCartCollection($memberCarts);
-            $memberCarts->fee=11;
             $memberCarts->loadRelations();
         }
 
