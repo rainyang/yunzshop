@@ -27,7 +27,6 @@ class GoodsService extends \app\common\models\goods\GoodsService
         }
         $attr['goods_id'] = $goodsId;
         $attr['uniacid'] = \YunShop::app()->uniacid;
-        $attr['serviceFee'] = $data['service_fee'];
         $attr['is_automatic'] = $data['is_automatic'];
         if ($data['is_automatic'] == 1) {
         	$attr['on_shelf_time'] = strtotime($data['time']['start']);
