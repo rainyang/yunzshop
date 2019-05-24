@@ -173,8 +173,6 @@ class InstallController
         $ret['mysql_connect'] = function_exists('mysql_connect');
         // 检测 file_get_content
         $ret['file_get_content'] = function_exists('file_get_contents');
-        // 检测 exec
-        $ret['exec'] = function_exists('exec');
 
         $check_function = [
             [
@@ -186,11 +184,6 @@ class InstallController
                 'name' => 'file_get_content',
                 'need' => '支持',
                 'value' => $ret['file_get_content'] ? '支持' : '不支持',
-            ],
-            [
-                'name' => 'exec',
-                'need' => '支持',
-                'value' => $ret['exec'] ? '支持' : '不支持',
             ],
         ];
 

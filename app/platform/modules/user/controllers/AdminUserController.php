@@ -49,14 +49,12 @@ class AdminUserController extends BaseController
      */
     public function create()
     {
-        $user = request()->user;
-        if ($user) {
-            $validate = $this->validate($this->rules(), $user, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($user, $user_model = ''));
+        $data = request()->user;
+        if (!$data) {
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
+
+        return $this->returnMessage(0, $data);
     }
 
     /**
@@ -68,28 +66,15 @@ class AdminUserController extends BaseController
     public function edit()
     {
         $uid = request()->uid;
+        $data = request()->user;
+
         if (!$uid) {
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
+
         $user = AdminUser::with('hasOneProfile')->find($uid);
-        if (!$user) {
-            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
-        }
-        $data = request()->user;
 
-        if($data) {
-            $validate  = $this->validate($this->rules($user), $data, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($data, $user));
-        }
-
-        if ($user) {
-            return $this->successJson('成功', $user);
-        } else {
-            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
-        }
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -150,15 +135,8 @@ class AdminUserController extends BaseController
         }
 
         $user = AdminUser::getData($uid);
-        if (!$user) {
-            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
-        }
-        $validate  = $this->validate($this->rules(), $data, $this->message());
-        if ($validate) {
-            return $validate;
-        }
 
-        return $this->check(AdminUser::saveData($data, $user));
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -260,11 +238,7 @@ class AdminUserController extends BaseController
 
         $user = \Auth::guard('admin')->user();
 
-        $validate  = $this->validate($this->rules($user, $data), $data, $this->message());
-        if ($validate) {
-            return $validate;
-        }
-        return $this->check(AdminUser::saveData($data, $user));
+        return $this->returnMessage(0, $data, $user);
     }
 
     /**
@@ -317,6 +291,28 @@ class AdminUserController extends BaseController
         $state = \YunShop::request()->state ? : '86';
 
         return (new ResetpwdController)->send($mobile, $state);
+    }
+
+    /**
+     * 返回消息
+     *
+     * @param $sign 1: 修改, 0: 添加
+     * @param array $data 参数
+     * @param null $user 用户信息
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function returnMessage($sign, $data = [], $user = null)
+    {
+        if ($sign && !$user) {
+            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
+        }
+
+        $validate = $this->validate($this->rules(), $user, $this->message());
+        if ($validate) {
+            return $validate;
+        }
+
+        return $this->check(AdminUser::saveData($data, $user));
     }
 
     /**

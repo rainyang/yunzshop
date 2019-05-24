@@ -93,7 +93,7 @@ class AdminUser extends Authenticatable
      * @param string $user_model
      * @return mixed
      */
-    public static function saveData($data, $user_model)
+    public static function saveData($data, $user_model = [])
     {
         $verify_res = self::verifyData($data, $user_model);
         if ($verify_res['sign'] == '0') {
@@ -120,7 +120,7 @@ class AdminUser extends Authenticatable
      * @param array $user_model
      * @return AdminUser|array
      */
-    public static function verifyData($data, $user_model = [])
+    public static function verifyData($data, $user_model)
     {
         $data['username'] ? $data['username'] = trim($data['username']) : null;
         $data['password'] ? $data['password'] = trim($data['password']) : null;
