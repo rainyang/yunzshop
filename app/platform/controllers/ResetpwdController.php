@@ -114,8 +114,6 @@ class ResetpwdController extends BaseController
 			return $this->errorJson('该手机号不存在');
 		}
 
-		$data['salt'] = randNum(8);
-
 		$res = $this->modify($pwd, $uid);
 
         if ($res) {
@@ -307,9 +305,8 @@ class ResetpwdController extends BaseController
                 if (!$user) {
                     return $this->message('用户名不存在', '/index.php/admin/auth');
                 }
-                $data['salt'] = randNum(8);
-                $res = $this->modify($user_request['password'], $user->uid);
 
+                $res = $this->modify($user_request['password'], $user->uid);
                 if ($res) {
                     (new LoginController)->logout();
                     return $this->message('密码修改成功', '/');

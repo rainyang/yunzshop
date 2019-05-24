@@ -252,7 +252,7 @@ class InstallController
     {
         $set = request()->set;
         $user = request()->user;
-        $set['AUTH_PASSWORD'] = mt_rand(1000000, 9999999);
+        $set['AUTH_PASSWORD'] = randNum(8);
 
         $filename = base_path().'/.env';
         $env = file_get_contents($filename);
