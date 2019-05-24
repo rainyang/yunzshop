@@ -265,13 +265,12 @@ class AdminUserController extends BaseController
     {
         $data = request()->data;
         $user = \Auth::guard('admin')->user();
-        $mobile = $user['hasOneProfile']['mobile'];
 
-        if (request()->data['old_mobile'] != $mobile) {
+        if (request()->data['old_mobile'] != $user['hasOneProfile']['mobile']) {
             return $this->errorJson(['您输入的手机与登录的账号不符合']);
         }
 
-        $data['avatar'] = $mobile;
+        $data['avatar'] = $user['hasOneProfile']['avatar'];
 
         if (AdminUser::saveProfile($data, $user)) {
             return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
