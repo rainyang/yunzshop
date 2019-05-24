@@ -17,7 +17,7 @@ class AddServiceFee extends Migration
         if (Schema::hasTable('yz_goods_service')) {
             if (!Schema::hasColumn('yz_goods_service', 'serviceFee')) {
                 Schema::table('yz_goods_service', function (Blueprint $table) {
-                    $table->string('serviceFee')->nullable();
+                    $table->decimal('serviceFee',14)->nullable();
                 });
             }
         }

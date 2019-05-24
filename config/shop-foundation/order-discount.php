@@ -22,5 +22,10 @@ return array(
         'class' => function (\app\frontend\modules\order\models\PreOrder $preOrder) {
             return new \app\frontend\modules\order\discount\CouponDiscount($preOrder);
         }
+    ], [
+        'key' => 'serviceFee',
+        'class' => function (\app\frontend\modules\order\models\PreOrder $preOrder) {
+            return new \app\frontend\modules\order\discount\serviceFee($preOrder);
+        }
     ]
 );

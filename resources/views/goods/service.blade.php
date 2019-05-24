@@ -50,7 +50,7 @@
                 if (!temp || temp.length === 0) {
                     temp = {
                         service: {
-                            'open': 1,
+                            'open': 0,
                             'name': '服务费',
                         },
 

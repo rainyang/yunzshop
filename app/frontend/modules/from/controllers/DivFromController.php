@@ -60,7 +60,19 @@ class DivFromController extends ApiController
         $trade = \Setting::get('shop.trade');
         $invoice['papery'] = $trade['invoice']['papery']!=0 ? $trade['invoice']['papery'] :0;
         $invoice['electron'] = $trade['invoice']['electron']!=0 ? $trade['invoice']['electron'] :0;
-        return $this->successJson('ok',['invoice'=>$invoice]);
+        $service = $this->service(\YunShop::request()->goods_id);
+        return $this->successJson('ok',['invoice'=>$invoice,'service'=>$service]);
+    }
+
+    public function service($goodsId){
+        $serviceFee = (new GoodsService())->where(['goods_id' => $goodsId])->first();
+        $service = \Setting::get('goods.service');
+        if (!$serviceFee){
+            $service['service']['fee'] = 0;
+        }else{
+            $service['service']['fee'] = $serviceFee->serviceFee;
+        }
+        return $service;
     }
     /**
      * 修改会员真实姓名、身份证ID
