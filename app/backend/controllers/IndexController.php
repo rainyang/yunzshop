@@ -10,11 +10,30 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use Illuminate\Support\Facades\DB;
-
+use app\common\models\goods\GoodsService;
+use Yunshop\ServiceFee\models\ServiceFeeModel;
 class IndexController extends BaseController
 {
     public function index()
     {
+        $goods_id =[213,3,310,99];
+        $serviceFee = (new ServiceFeeModel())->select(['fee','goods_id','is_open'])->whereIn('goods_id' , $goods_id)->get()->toArray();
+        $service = \Setting::get('goods.service');
+        $i = 0;
+        foreach ($goods_id as $id){
+            foreach ($serviceFee as $serviceid){
+                if ($id == $serviceid){
+                    continue;
+                }
+                $serviceFee[$i]['goods_id'] = $id;
+                $serviceFee[$i]['fee'] = 0;
+                $serviceFee[$i]['is_open'] = 0;
+                break;
+            }
+            ++$i;
+        }
+        $serviceFee['set'] = $service['service'];
+
         return view('index',[])->render();
     }
 

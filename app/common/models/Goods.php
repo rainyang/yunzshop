@@ -190,6 +190,11 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\Brand', 'id', 'brand_id');
     }
 
+    public function hasOneService()
+    {
+        return $this->hasOne('Yunshop\ServiceFee\models\ServiceFeeModel', 'id', 'goods_id');
+    }
+
     public function hasOneShare()
     {
         return $this->hasOne('app\common\models\goods\Share');

@@ -55,7 +55,9 @@ class CartBuyController extends ApiController
         }
         if (!isset($memberCarts)) {
             $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
+
             $memberCarts = new MemberCartCollection($memberCarts);
+            $memberCarts->fee=11;
             $memberCarts->loadRelations();
         }
 
@@ -68,6 +70,7 @@ class CartBuyController extends ApiController
 
             throw new AppException('请选择下单商品');
         }
+        dd($memberCarts->attributes);
         return $memberCarts;
     }
 }
