@@ -311,6 +311,19 @@ class AdminUserController extends BaseController
     }
 
     /**
+     * 发送新手机号验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendNewCode()
+    {
+        $mobile = request()->mobile;
+        $state = \YunShop::request()->state ? : '86';
+
+        return (new ResetpwdController)->send($mobile, $state);
+    }
+
+    /**
      * 处理表单验证
      *
      * @param array $rules

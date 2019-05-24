@@ -118,6 +118,8 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::post('modify_user', 'AdminUserController@modifyCurrentUser');
         // 发送手机验证码
         Route::post('send_code', 'AdminUserController@sendCode');
+        // 发送新手机号验证码
+        Route::post('send_new_code', 'AdminUserController@sendNewCode');
         // 修改手机号
         Route::post('modify_mobile', 'AdminUserController@modifyMobile');
         // 平台列表

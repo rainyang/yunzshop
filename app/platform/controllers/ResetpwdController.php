@@ -29,7 +29,12 @@ class ResetpwdController extends BaseController
         if (!$uid) {
             return $this->errorJson('该手机号不存在');
         }
-        
+
+        return $this->send($mobile, $state);
+	}
+
+	public function send($mobile, $state)
+    {
         $code = rand(1000, 9999);
 
         Cache::put($mobile.'_code', $code, 60 * 10);
@@ -37,9 +42,9 @@ class ResetpwdController extends BaseController
         if (!MemberService::smsSendLimit(\YunShop::app()->uniacid? : 0, $mobile)) {
             return $this->errorJson('发送短信数量达到今日上限');
         } else {
-        	return $this->sendSmsV2($mobile, $code, $state);
+            return $this->sendSmsV2($mobile, $code, $state);
         }
-	}
+    }
 
 	public function checkCode()
 	{
