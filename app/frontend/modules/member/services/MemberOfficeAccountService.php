@@ -82,6 +82,9 @@ class MemberOfficeAccountService extends MemberService
             \YunShop::app()->openid = $userinfo['openid'];
 
             Session::set('member_id', $member_id);
+
+            Cache::forget($member_id . ':chekAccount');
+            Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
         } else {
             $this->_setClientRequestUrl();
 
