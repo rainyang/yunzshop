@@ -57,7 +57,6 @@ class CartBuyController extends ApiController
             $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
 
             $memberCarts = new MemberCartCollection($memberCarts);
-            $memberCarts->fee=11;
             $memberCarts->loadRelations();
         }
 
