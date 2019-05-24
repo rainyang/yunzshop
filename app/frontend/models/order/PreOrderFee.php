@@ -22,6 +22,7 @@ class PreOrderFee extends OrderFee
     {
         $this->order = $order;
         $this->uid = $order->uid;
-        $order->orderDiscounts->push($this);
+
+        $order->orderFees->push($this);
     }
 }

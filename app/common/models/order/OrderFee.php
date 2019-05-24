@@ -14,7 +14,7 @@ use app\common\models\BaseModel;
  * Class OrderFee
  * @package app\common\models\order
  * @property string name
- * @property string code
+ * @property string fee_code
  * @property float amount
  * @property int uid
  * @property int order_id

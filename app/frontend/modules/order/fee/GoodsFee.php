@@ -2,7 +2,6 @@
 
 namespace app\frontend\modules\order\fee;
 
-use app\frontend\models\order\PreOrderFee;
 
 class GoodsFee extends BaseOrderFee
 {
