@@ -101,15 +101,15 @@ class BaseController extends Controller
         }
 
         if (isset($_COOKIE[session_name()])) {
-            $session_id_1 = $_COOKIE[session_name()];
-            session_id($session_id_1);
+            $session_id = $_COOKIE[session_name()];
+            session_id($session_id);
         }
 
         //h5 app
         if (!empty($_REQUEST['uuid'])) {
-            $session_id_2 = md5($_REQUEST['uuid']);
-            session_id($session_id_2);
-            setcookie(session_name(), $session_id_2);
+            $session_id = md5($_REQUEST['uuid']);
+            session_id($session_id);
+            setcookie(session_name(), $session_id);
         }
 
         if (empty($session_id) && \YunShop::request()->session_id
