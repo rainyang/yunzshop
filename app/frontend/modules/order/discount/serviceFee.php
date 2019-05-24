@@ -10,6 +10,8 @@ namespace app\frontend\modules\order\discount;
 
 use app\common\modules\orderGoods\models\PreOrderGoods;
 use app\common\models\goods\GoodsService;
+use app\frontend\modules\order\models\PreOrder;
+
 /**
  * 单品满减优惠
  * Class SingleEnoughReduce
@@ -18,15 +20,28 @@ use app\common\models\goods\GoodsService;
 class serviceFee extends BaseDiscount
 {
     protected $code = 'serviceFee';
+
     protected $name = '商品服务费';
+
+    private $open = 0;
+
+    public function __construct(PreOrder $order)
+    {
+        parent::__construct($order);
+        $service = \Setting::get('goods.service');
+       $this->name = $service['service']['name'];
+       $this->open =  $service['service']['open'];
+    }
 
     protected function _getAmount()
     {
         //对订单商品按goods_id累加单品满减金额
         $result = 0;
-         $this->order->orderGoods->each(function (PreOrderGoods $orderGoods) use(&$result) {
-             $result += $this->totalAmount($orderGoods)*$orderGoods->total;
-        })->sum();
+        if ($this->open) {
+            $this->order->orderGoods->each(function (PreOrderGoods $orderGoods) use (&$result) {
+                $result += $this->totalAmount($orderGoods) * $orderGoods->total;
+            })->sum();
+        }
         return -1*$result;
     }
 
