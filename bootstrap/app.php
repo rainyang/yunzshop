@@ -24,13 +24,13 @@ $app = new Illuminate\Foundation\Application(
 | incoming requests to this application from both the web and CLI.
 |
 */
-$app->singleton('LogTrace', function (){
+$app->singleton('Log.trace', function (){
     return new \app\framework\Log\TraceLog();
 });
-$app->singleton('LogDebug', function (){
+$app->singleton('Log.debug', function (){
     return new \app\framework\Log\DebugLog();
 });
-$app->singleton('LogError', function (){
+$app->singleton('Log.error', function (){
     return new \app\framework\Log\ErrorLog();
 });
 $app->singleton(
