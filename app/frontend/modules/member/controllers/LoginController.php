@@ -111,4 +111,9 @@ class LoginController extends ApiController
             $member->chekAccount();
         }
     }
+
+    public function checkLogin()
+    {
+        return $this->successJson('已登录');
+    }
 }

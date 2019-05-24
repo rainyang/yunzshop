@@ -41,7 +41,6 @@ class BaseController extends Controller
 
     public function __construct()
     {
-        $this->setCookie();
     }
 
     /**
@@ -92,7 +91,7 @@ class BaseController extends Controller
      *
      * @return void
      */
-    private function setCookie()
+    protected function setCookie()
     {
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {

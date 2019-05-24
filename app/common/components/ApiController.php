@@ -26,6 +26,10 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
+    public function __construct()
+    {
+        $this->setCookie();
+    }
     /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
@@ -90,19 +94,20 @@ class ApiController extends BaseController
      */
     protected function jumpUrl($type, $mid)
     {
-        if (empty($type) || $type == 'undefined') {
-            $type = Client::getType();
+        if ($this->controller == 'Login' && $this->action == 'checkLogin') {
+            if (empty($type) || $type == 'undefined') {
+                $type = Client::getType();
+            }
+
+            $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+
+            if (5 == $type || 7 == $type) {
+                throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
+            }
+
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
+        } else {
+            return $this->successJson('请登录');
         }
-
-        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
-
-        if (5 == $type || 7 == $type) {
-            throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
-        }
-
-        throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
     }
-
-
-
 }
