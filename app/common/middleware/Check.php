@@ -17,7 +17,7 @@ class Check
 
     public function handle($request, \Closure $next)
     {
-        $this->checkRegister();
+//        $this->checkRegister();
 
         return $next($request);
     }

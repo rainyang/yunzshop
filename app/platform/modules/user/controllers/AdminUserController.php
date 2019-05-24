@@ -27,12 +27,6 @@ class AdminUserController extends BaseController
         'phone' => '',
         'roles' => [],
     ];
-    protected $user;
-
-    public function __construct()
-    {
-        $this->user = \Auth::guard('admin')->user();
-    }
 
     /**
      * Display a listing of the resource.(显示用户列表.)
@@ -264,7 +258,7 @@ class AdminUserController extends BaseController
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
 
-        $user = $this->user;
+        $user = \Auth::guard('admin')->user();
 
         $validate  = $this->validate($this->rules($user, $data), $data, $this->message());
         if ($validate) {
@@ -280,7 +274,8 @@ class AdminUserController extends BaseController
      */
     public function sendCode()
     {
-        if (request()->mobile != $this->user['hasOneProfile']['mobile']) {
+        $user = \Auth::guard('admin')->user();
+        if (request()->mobile != $user['hasOneProfile']['mobile']) {
             return $this->errorJson(['您输入的手机与登录的账号不符合']);
         }
 
@@ -295,7 +290,8 @@ class AdminUserController extends BaseController
     public function modifyMobile()
     {
         $data = request()->data;
-        $mobile = $this->user['hasOneProfile']['mobile'];
+        $user = \Auth::guard('admin')->user();
+        $mobile = $user['hasOneProfile']['mobile'];
 
         if (request()->data['old_mobile'] != $mobile) {
             return $this->errorJson(['您输入的手机与登录的账号不符合']);
@@ -303,7 +299,7 @@ class AdminUserController extends BaseController
 
         $data['avatar'] = $mobile;
 
-        if (AdminUser::saveProfile($data, $this->user)) {
+        if (AdminUser::saveProfile($data, $user)) {
             return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
         } else {
             return $this->check(AdminUser::returnData('1'));
