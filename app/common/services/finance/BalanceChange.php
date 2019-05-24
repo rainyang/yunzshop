@@ -101,6 +101,11 @@ class BalanceChange extends Credit
         return $result;
     }
 
+    public function deduct(array $data)
+    {
+        $result = parent::consume($data);
+    }
+
     /**
      * 检测单号是否可用，为空则生成唯一单号
      * @return bool|string
