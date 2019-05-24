@@ -26,6 +26,7 @@ class InstallController
 
     public function agreement()
     {
+        /* // 取出 xml 单独标签列
         $file = base_path().'/manifest.xml';
         $con = file_get_contents($file);
 
@@ -36,7 +37,9 @@ class InstallController
         $first = strpos($temp[0][0],"]");
         // 返回 [ 最后一次出现的位置
         $end = strripos($temp[0][0],"[")+1;
-        $version = substr($temp[0][0], $end, $first-$end);
+        $version = substr($temp[0][0], $end, $first-$end);*/
+
+        $version = require base_path('config/version.php').'';
 
         return $this->successJson('成功', [
             'version' => $version

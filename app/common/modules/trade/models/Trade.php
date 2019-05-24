@@ -12,6 +12,7 @@ use app\common\models\BaseModel;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
 use app\frontend\models\order\PreOrderDiscount;
+use app\frontend\models\order\PreOrderFee;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -37,9 +38,37 @@ class Trade extends BaseModel
         $this->setRelation('dispatch', $this->getDispatch());
         $this->amount_items = $this->getAmountItems();
         $this->discount_amount_items = $this->getDiscountAmountItems();
+        $this->fee_items = $this->getFeeItems();
         $this->total_price = $this->orders->sum('price');
     }
+    private function getFeeItems(){
+        $orderFeesItems = $this->orders->reduce(function (Collection $result, PreOrder $order) {
+            foreach ($order->orderFees as $orderFee) {
+                /**
+                 * @var PreOrderFee $orderFee
+                 */
+                $item = $result->where('code', $orderFee->fee_code)->first();
+                if(!$orderFee->amount){
+                    continue;
+                }
+                if (isset($item)) {
 
+                    $item['amount'] += $orderFee->amount;
+                } else {
+                    $result[] = [
+                        'code' => $orderFee->fee_code,
+                        'name' => $orderFee->name,
+                        'amount' => $orderFee->amount,
+                    ];
+                }
+            }
+            return $result;
+        }, collect())->map(function ($item) {
+            $item['amount'] = sprintf('%.2f', $item['amount']);
+            return $item;
+        })->toArray();
+        return $orderFeesItems;
+    }
     private function getAmountItems()
     {
         $items = [

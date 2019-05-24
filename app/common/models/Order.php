@@ -22,6 +22,7 @@ use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
+use app\common\models\order\OrderFee;
 use app\common\models\order\OrderSetting;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
@@ -71,6 +72,7 @@ use Illuminate\Support\Facades\DB;
  * @property float change_price
  * @property float cost_amount
  * @property float change_dispatch_price
+ * @property float fee
  * @property int plugin_id
  * @property int is_plugin
  * @property Collection orderGoods
@@ -615,7 +617,10 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
-
+    public function orderFees()
+    {
+        return $this->hasMany(OrderFee::class, 'order_id', 'id');
+    }
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');

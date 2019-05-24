@@ -150,7 +150,7 @@ class AllUploadController extends BaseController
         \Log::info('disk and url', [\Storage::disk($file_type), \Storage::disk($file_type)->url()]);
        
         //执行本地上传
-        $local_res = \Storage::disk($file_type)->put(substr($newFileName, 14), file_get_contents($realPath));
+        $local_res = \Storage::disk($file_type)->put(substr($newFileName, 17), file_get_contents($realPath));
         	
         	\Log::info('local_upload', $local_res);
 
@@ -201,7 +201,7 @@ class AllUploadController extends BaseController
      */
     public function getNewFileName($originalName, $ext, $file_type)
     {
-        return $file_type.'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        return $file_type.'/0/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
 
 	//获取本地已上传图片的列表
