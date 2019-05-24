@@ -70,7 +70,6 @@ class CartBuyController extends ApiController
 
             throw new AppException('请选择下单商品');
         }
-        dd($memberCarts->attributes);
         return $memberCarts;
     }
 }
