@@ -51,7 +51,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders(Order $order_builder, $search)
+    public function scopeOrders(Builder $order_builder, $search)
     {
         $order_builder->search($search);
 
