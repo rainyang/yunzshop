@@ -348,7 +348,6 @@ class BalanceController extends ApiController
     {
         //统一走爱心值交易类型接口
 
-        return $this->successJson('转让成功');
         $_LoveChangeService = new  \Yunshop\Love\Common\Services\LoveChangeService('usable');
         $data = [
             'member_id'         => $this->model->member_id,
