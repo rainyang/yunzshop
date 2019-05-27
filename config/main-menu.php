@@ -1146,7 +1146,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_set_freight',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                             'goods_dispatch_select_category' => [
@@ -1158,7 +1158,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_select_category',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                             'goods_dispatch_freight_save' => [
@@ -1170,7 +1170,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_freight_save',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                             'goods_dispatch_update_freight' => [
@@ -1182,7 +1182,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_update_freight',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                             'goods_dispatch_freight_delete' => [
@@ -1194,7 +1194,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_freight_delete-save',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                         ],
