@@ -10,11 +10,13 @@ namespace app\backend\controllers;
 
 use app\common\components\BaseController;
 use Illuminate\Support\Facades\DB;
-
+use app\common\models\goods\GoodsService;
+use Yunshop\ServiceFee\models\ServiceFeeModel;
 class IndexController extends BaseController
 {
     public function index()
     {
+
         return view('index',[])->render();
     }
 
