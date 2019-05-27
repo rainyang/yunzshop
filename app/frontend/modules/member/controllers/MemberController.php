@@ -1485,7 +1485,7 @@ class MemberController extends ApiController
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car','declaration']
         ];
 
         $data = [];
@@ -1575,6 +1575,15 @@ class MemberController extends ApiController
                 'title' => MY_FRIEND_NAME,
                 'class' => 'icon-member_my-friend',
                 'url'   => 'MyFriendApply'
+            ];
+        }
+        
+        if (app('plugins')->isEnabled('Declaration')) {
+            $data[] = [
+                'name'  => 'declaration',
+                'title' => DECLARATION_NAME,
+                'class' => 'icon-member_declaration',
+                'url'   => 'DeclarationApply'
             ];
         }
 
