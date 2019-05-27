@@ -70,7 +70,7 @@ class AttachmentController extends BaseController
     /**
      * 保存及显示远程设置
      *
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \app\common\exceptions\AppException
      */
     public function remote()
@@ -98,6 +98,7 @@ class AttachmentController extends BaseController
         }
 
         $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']);
+        !$this->remote['cos'] ? $this->remote['cos'] = '' : null;
 
         switch($this->remote['cos']['local']) {
             case 'tj':
@@ -139,7 +140,7 @@ class AttachmentController extends BaseController
      * @param \Request|null $request
      * @param array $messages
      * @param array $customAttributes
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
