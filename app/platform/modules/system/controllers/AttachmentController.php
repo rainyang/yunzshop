@@ -79,7 +79,7 @@ class AttachmentController extends BaseController
         $cos = request()->cos;
 
         if ($alioss || $cos) {
-            if ($alioss) {
+            if ($alioss['key']) {
                 $validate  = $this->validate($this->rules(1), $alioss, $this->message());
             } else {
                 $validate  = $this->validate($this->rules(2), $cos, $this->message());
@@ -97,8 +97,7 @@ class AttachmentController extends BaseController
             }
         }
 
-        $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']);
-        !$this->remote['cos'] ? $this->remote['cos'] = '' : null;
+        $this->remote['alioss']['internal'] ? $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']) : null;
 
         switch($this->remote['cos']['local']) {
             case 'tj':

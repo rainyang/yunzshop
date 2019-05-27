@@ -106,6 +106,8 @@ class AdminUser extends Authenticatable
                 if (self::saveProfile($data, $verify_res)) {
                     return self::returnData(0, self::STORAGE);
                 }
+            } else {
+                \Log::info("管理员: (uid:{$verify_res['uid']})操作成功, 用户信息: ".$verify_res);
             }
             return self::returnData(1);
         } else {

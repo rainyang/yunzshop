@@ -113,7 +113,10 @@ class AdminUserController extends BaseController
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
         $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
+        $status == '2' ? $state = '有效' : $state = '无效' ;
+
         if ($result) {
+            \Log::info('状态修改成功，现状态'.$state);
             return $this->check(AdminUser::returnData('1'));
         } else {
             return $this->check(AdminUser::returnData('0', AdminUser::FAIL));

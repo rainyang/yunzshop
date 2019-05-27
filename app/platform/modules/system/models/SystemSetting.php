@@ -36,14 +36,18 @@ class SystemSetting extends BaseModel
         if (!$is_exists) {
             $system_setting = new self;
             // 添加
+            $type = '添加 ';
             $result = $system_setting::create([
                 'key'       => $key,
                 'value'     => $data
             ]);
+
         } else {
+            $type = '修改 ';
             // 修改
             $result = self::where('key', $key)->update(['value' => $data]);
         }
+        \Log::info($type.$key.' 设置');
         $result ? Cache::put($cache_name, ['key' => $key, 'value' => $data] , 3600) : null;
 
         return $result;
