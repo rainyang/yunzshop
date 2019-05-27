@@ -258,7 +258,7 @@ class Goods extends BaseModel
 
     public function hasOneGoodsService()
     {
-        return $this->hasOne('app\common\models\goods\GoodsService', 'goods_id', 'id');
+        return $this->hasOne('Yunshop\ServiceFee\models\ServiceFeeModel', 'goods_id', 'id');
     }
 
     public function hasOneGoodsVideo()
