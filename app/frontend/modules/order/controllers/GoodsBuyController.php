@@ -11,7 +11,6 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-use Yunshop\ServiceFee\models\ServiceFeeModel;
 class GoodsBuyController extends ApiController
 {
     /**

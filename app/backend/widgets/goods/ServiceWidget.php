@@ -7,9 +7,7 @@
 namespace app\backend\widgets\goods;
 
 use app\common\components\Widget;
-use app\common\facades\Setting;
 use app\common\models\goods\GoodsService;
-use Yunshop\ServiceFee\models\ServiceFeeModel;
 
 class ServiceWidget extends Widget
 {
