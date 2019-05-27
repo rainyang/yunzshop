@@ -13,17 +13,16 @@ use Yunshop\ServiceFee\models\ServiceFeeModel;
 
 class ServiceWidget extends Widget
 {
-	
-	public function run()
+        public function run()
     {
 
-        $service = ServiceFeeModel::select()->ofGoodsId($this->goods_id)->first();
+        $service = GoodsService::select()->ofGoodsId($this->goods_id)->first();
         if ($service->on_shelf_time && $service->lower_shelf_time) {
-        	$time['starttime'] = $service->on_shelf_time;
-        	$time['endtime'] = $service->lower_shelf_time;
+            $time['starttime'] = $service->on_shelf_time;
+            $time['endtime'] = $service->lower_shelf_time;
         } else {
-        	$time['starttime'] = time();
-        	$time['endtime'] = strtotime('1 month');
+            $time['starttime'] = time();
+            $time['endtime'] = strtotime('1 month');
         }
 
         return view('goods.widgets.service', [
