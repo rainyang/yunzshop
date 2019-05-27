@@ -9,6 +9,7 @@ namespace app\backend\widgets\goods;
 use app\common\components\Widget;
 use app\common\facades\Setting;
 use app\common\models\goods\GoodsService;
+use Yunshop\ServiceFee\models\ServiceFeeModel;
 
 class ServiceWidget extends Widget
 {
@@ -16,7 +17,7 @@ class ServiceWidget extends Widget
 	public function run()
     {
 
-        $service = GoodsService::select()->ofGoodsId($this->goods_id)->first();
+        $service = ServiceFeeModel::select()->ofGoodsId($this->goods_id)->first();
         if ($service->on_shelf_time && $service->lower_shelf_time) {
         	$time['starttime'] = $service->on_shelf_time;
         	$time['endtime'] = $service->lower_shelf_time;
