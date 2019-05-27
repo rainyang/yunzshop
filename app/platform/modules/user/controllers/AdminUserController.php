@@ -296,17 +296,17 @@ class AdminUserController extends BaseController
      * 返回消息
      *
      * @param $sign 1: 修改, 0: 添加
-     * @param array $data 参数
-     * @param null $user 用户信息
+     * @param null $data 参数
+     * @param array $user 用户信息
      * @return \Illuminate\Http\JsonResponse
      */
-    public function returnMessage($sign, $data = [], $user = null)
+    public function returnMessage($sign, $data = null, $user = [])
     {
         if ($sign && !$user) {
             return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
         }
 
-        $validate = $this->validate($this->rules(), $user, $this->message());
+        $validate = $this->validate($this->rules(), $data, $this->message());
         if ($validate) {
             return $validate;
         }
