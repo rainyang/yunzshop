@@ -78,7 +78,7 @@ class Trade extends BaseModel
             [
                 'code' => 'total_goods_price',
                 'name' => '订单总金额',
-                'amount' => $this->orders->sum('goods_price'),
+                'amount' => $this->orders->sum('order_goods_price'),
             ], [
                 'code' => 'total_dispatch_price',
                 'name' => '总运费',
