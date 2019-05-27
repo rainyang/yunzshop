@@ -27,7 +27,6 @@ class GoodsBuyController extends ApiController
         ];
         $result = new MemberCartCollection();
         $result->push(MemberCartService::newMemberCart($goods_params));
-        $trade['service'] = $this->service(\YunShop::request()->goods_id);
         return $result;
     }
 
@@ -57,25 +56,4 @@ class GoodsBuyController extends ApiController
         return $this->successJson('成功', $trade);
     }
 
-
-    public function service($goodsId){
-
-        $service = \Setting::get('plugins.service-fee');
-       if(app('plugins')->isEnabled('service-fee'))
-       {
-            $serviceFee = (new ServiceFeeModel())->where(['goods_id' => $goodsId])->first();
-            if (!$serviceFee){
-                $service['service']['fee'] = 0;
-                $service['service']['is_open'] = 0;
-                $service['service']['open'] = 0;
-            }else{
-                $service['service']['fee'] = $serviceFee->fee;
-                $service['service']['is_open'] = $serviceFee->is_open;
-            }
-       }else{
-           $service['service']['open'] = 0;
-           $service['service']['fee'] = 0;
-        }
-        return $service;
-    }
 }
