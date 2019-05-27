@@ -49,19 +49,19 @@ class Trade extends BaseModel
                 /**
                  * @var PreOrderFee $orderFee
                  */
-                $item = $result->where('code', $orderFee->fee_code)->first();
+                $old = $result->where('code', $orderFee->fee_code)->first();
                 if (!$orderFee->amount) {
                     continue;
                 }
                 // 删除旧的元素
-                $result = $result->filter(function ($item)use($orderFee) {
-                    return $item->code == $orderFee->fee_code;
+                $result = $result->filter(function ($item)use($old) {
+                    return $item->code == $old->code;
                 });
                 // 添加累加后的值
                 $result[] = [
                     'code' => $orderFee->fee_code,
                     'name' => $orderFee->name,
-                    'amount' => $item['amount'] + $orderFee->amount,
+                    'amount' => $old['amount'] + $orderFee->amount,
                 ];
             }
             return $result;
@@ -78,7 +78,7 @@ class Trade extends BaseModel
             [
                 'code' => 'total_goods_price',
                 'name' => '订单总金额',
-                'amount' => $this->orders->sum('goods_price'),
+                'amount' => $this->orders->sum('order_goods_price'),
             ], [
                 'code' => 'total_dispatch_price',
                 'name' => '总运费',
@@ -107,19 +107,20 @@ class Trade extends BaseModel
                 /**
                  * @var PreOrderDiscount $orderDiscount
                  */
-                $item = $result->where('code', $orderDiscount->discount_code)->first();
+                $old = $result->where('code', $orderDiscount->discount_code)->first();
+
                 if (!$orderDiscount->amount) {
                     continue;
                 }
                 // 删除旧的元素
-                $result = $result->filter(function ($item)use($orderDiscount) {
-                    return $item->code == $orderDiscount->discount_code;
+                $result = $result->filter(function ($item)use($old) {
+                    return $item->code == $old->code;
                 });
                 // 添加累加后的值
                 $result[] = [
                     'code' => $orderDiscount->discount_code,
                     'name' => $orderDiscount->name,
-                    'amount' => $item['amount'] + $orderDiscount->amount,
+                    'amount' => $old['amount'] + $orderDiscount->amount,
                 ];
             }
             return $result;
