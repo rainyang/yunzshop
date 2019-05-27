@@ -69,7 +69,8 @@ class PreOrder extends Order
     /**
      * @var OrderDiscount 优惠类
      */
-    protected $discount; /**
+    protected $discount;
+    /**
      * @var OrderFee 手续费类
      */
     protected $orderFeeManager;
@@ -95,9 +96,11 @@ class PreOrder extends Order
         $nodes = collect($nodeSettings)->map(function ($nodeSetting) {
             return call_user_func($nodeSetting['class'], $this);
         });
+        $discountWeight = 0;
         // 订单优惠的节点
-        $discountNodes = $this->getDiscounts()->map(function (BaseDiscount $discount) {
-            return new OrderDiscountPriceNode($this, $discount, 2000);
+        $discountNodes = $this->getDiscounts()->map(function (BaseDiscount $discount) use ($discountWeight) {
+            $discountWeight++;
+            return new OrderDiscountPriceNode($this, $discount, 2000 + $discountWeight);
         });
         // 订单最低抵扣节点
         $deductionMinNodes = $this->getOrderDeductions()->map(function (PreOrderDeduction $orderDeduction) {
@@ -412,6 +415,7 @@ class PreOrder extends Order
     {
         return $this->getDiscount()->getAmount();
     }
+
     /**
      * 获取总手续费金额
      * @return Collection
@@ -420,6 +424,7 @@ class PreOrder extends Order
     {
         return $this->getOrderFeeManager()->getAmount();
     }
+
     /**
      * 获取订单抵扣金额
      * @return int
@@ -493,7 +498,7 @@ class PreOrder extends Order
     /**
      * @var array 需要批量更新的字段
      */
-    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions','orderFees'];
+    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions', 'orderFees'];
 
     /**
      * 保存关联模型
