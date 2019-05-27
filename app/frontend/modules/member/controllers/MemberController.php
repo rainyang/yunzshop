@@ -1578,7 +1578,7 @@ class MemberController extends ApiController
             ];
         }
         
-        if (app('plugins')->isEnabled('Declaration')) {
+        if (app('plugins')->isEnabled('declaration')) {
             $data[] = [
                 'name'  => 'declaration',
                 'title' => DECLARATION_NAME,
