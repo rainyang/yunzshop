@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\DB;
  * @property float change_price
  * @property float cost_amount
  * @property float change_dispatch_price
- * @property float fee
+ * @property float fee_amount
  * @property int plugin_id
  * @property int is_plugin
  * @property Collection orderGoods
