@@ -1131,43 +1131,6 @@ return [
                     ],
                 ],
             ],
-            'service_set' => [
-                'name'       => '服务费',
-                'url'        => 'goods.service.index',
-                'url_params' => '',
-                'permit'     => 1,
-                'menu'       => 1,
-                'icon'       => 'fa-gift',
-                'sort'       => '6',
-                'item'       => 'service_set',
-                'parents'    => ['Goods',],
-                'child'      => [
-                    'service_charge' => [
-                        'name'       => '服务费设置',
-                        'url'        => 'goods.service.index',
-                        'url_params' => '',
-                        'permit'     => 1,
-                        'menu'       => 0,
-                        'icon'       => 'fa-sitemap',
-                        'sort'       => '2',
-                        'item'       => 'service_charge',
-                        'parents'    => ['Goods','service_set'],
-                        'child'      => []
-                    ],
-                    'service_charge_store' => [
-                        'name'       => '保存服务费',
-                        'url'        => 'goods.service.index',
-                        'url_params' => '',
-                        'permit'     => 1,
-                        'menu'       => 0,
-                        'icon'       => 'fa-sitemap',
-                        'sort'       => '2',
-                        'item'       => 'service_charge_store',
-                        'parents'    => ['Goods','service_set'],
-                        'child'      => []
-                    ],
-                ],
-            ],
         ],
     ],
 
