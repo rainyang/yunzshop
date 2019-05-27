@@ -286,14 +286,13 @@ class BalanceController extends ApiController
     //余额转换爱心值
     public function convertStart()
     {
-        $convert_amount = \Yunshop::request()->convert_amount;
        if (!$this->getMemberInfo()) {
            return '未获取到会员信息';
        }
        if (\YunShop::request()->convert_amount <= 0){
            return '转化金额必须大于零';
        }
-       if ($this->memberInfo->credit2 < \YunShop::request()->transfer_money) {
+       if ($this->memberInfo->credit2 < \Yunshop::request()->convert_amount) {
            return '转化余额不能大于您的余额';
        }
         $this->model = new BalanceConvertLove();
@@ -351,7 +350,7 @@ class BalanceController extends ApiController
         $_LoveChangeService = new  \Yunshop\Love\Common\Services\LoveChangeService('usable');
         $data = [
             'member_id'         => $this->model->member_id,
-            'change_value'      => $this->model->covert_amount,
+            'change_value'      => ($this->model->covert_amount * \Setting::get('finance.balance.love_rate')) /100,
             'operator'          => ConstService::OPERATOR_MEMBER,
             'operator_id'       => $this->model->member_id,
             'remark'            => '会员【ID:'.$this->model->member_id.'】余额转化爱心值会员【ID：'.$this->model->member_id. '】' . $this->model->covert_amount . '元',
