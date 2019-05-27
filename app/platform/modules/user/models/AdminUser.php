@@ -101,13 +101,12 @@ class AdminUser extends Authenticatable
         }
         $verify_res['password'] ? $verify_res['password'] = bcrypt($verify_res['password']) : null;
         unset($verify_res['re_password']);
+        \Log::info("----------管理员用户----------", "管理员:(uid:{$verify_res['uid']})-----用户信息-----".$verify_res.'-----参数-----'.json_encode($data));
         if ($verify_res->save()) {
             if (request()->path() != "admin/user/modify_user" && request()->path() != "admin/user/change") {
                 if (self::saveProfile($data, $verify_res)) {
                     return self::returnData(0, self::STORAGE);
                 }
-            } else {
-                \Log::info("管理员: (uid:{$verify_res['uid']})操作成功, 用户信息: ".$verify_res);
             }
             return self::returnData(1);
         } else {

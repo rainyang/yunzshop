@@ -41,13 +41,12 @@ class SystemSetting extends BaseModel
                 'key'       => $key,
                 'value'     => $data
             ]);
-
         } else {
             $type = '修改 ';
             // 修改
             $result = self::where('key', $key)->update(['value' => $data]);
         }
-        \Log::info($type.$key.' 设置');
+        \Log::info('----------系统设置----------', $type.$key.'-----设置数据-----'.json_encode($data));
         $result ? Cache::put($cache_name, ['key' => $key, 'value' => $data] , 3600) : null;
 
         return $result;
