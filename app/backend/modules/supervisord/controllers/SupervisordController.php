@@ -44,6 +44,13 @@ class SupervisordController extends BaseController
         ])->render();
 
     }
+    public function store(){
+
+
+        return view('supervisor.store',[
+
+        ])->render();
+    }
 
     public function process()
     {
