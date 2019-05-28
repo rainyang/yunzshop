@@ -114,6 +114,11 @@ class LoginController extends ApiController
 
     public function checkLogin()
     {
-        return $this->successJson('已登录');
+        $data = [
+            'token' => $_COOKIE['Yz-Token'],
+            'uid'   => $_COOKIE['Yz-Uid']
+        ];
+
+        return $this->successJson('已登录', $data);
     }
 }
