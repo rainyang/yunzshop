@@ -130,7 +130,7 @@ class UpdateController extends BaseController
         $key = Setting::getNotUniacid('shop.key')['key'];
         $secret = Setting::getNotUniacid('shop.key')['secret'];
         if(!$key || !$secret) {
-            return;
+            return response()->json(['result' => -1, 'msg' => '商城未授权', 'data' => []])->send();
         }
 
         //前端更新文件检测
@@ -409,7 +409,6 @@ class UpdateController extends BaseController
         }
 
         if ($update->newVersionAvailable()) {
-
             $result = $update->update();
 
             if ($result === true) {
@@ -448,7 +447,7 @@ class UpdateController extends BaseController
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_fromework.json');
-        $update->setCurrentVersion(config('version'));
+        $update->setCurrentVersion(config('backend_version'));
         $update->setUpdateUrl(config('auto-update.checkUrl')); //Replace with your server update directory
         $update->setBasicAuth($key, $secret);
 
@@ -459,16 +458,24 @@ class UpdateController extends BaseController
             return;
         }
 
-        $result = $update->update(2);
+        if ($update->newVersionAvailable()) {
+            $result = $update->update(2);
 
-        if ($result === true) {
-            $resultArr['status'] = 1;
-            $resultArr['msg'] = '更新成功';
-        } else {
-            $resultArr['msg'] = '更新失败: ' . $result;
-            if ($result = AutoUpdate::ERROR_SIMULATE) {
-                $resultArr['data'] = $update->getSimulationResults();
+            if ($result === true) {
+                $resultArr['status'] = 1;
+                $resultArr['msg'] = '-----------后台框架更新成功---------';
+                \Log::debug($resultArr['msg']);
+            } else {
+                $resultArr['msg'] = '---------后台框架更新失败---------: ' . $result;
+                if ($result = AutoUpdate::ERROR_SIMULATE) {
+                    $resultArr['data'] = $update->getSimulationResults();
+                }
+
+                response()->json($resultArr)->send();
+                return;
             }
+        } else {
+            \Log::debug('--------后台框架已是最新版本-------');
         }
     }
 

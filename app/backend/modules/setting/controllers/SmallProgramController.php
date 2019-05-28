@@ -52,7 +52,7 @@ class SmallProgramController extends BaseController
                 'url'=>'setting.small-program.save'
             ])->render();
     }
-    public function initialTemplate(){
+    private function initialTemplate(){
         $title_list = [
             'AT0009' => ['52','5','3','7','10','12','6'],
             'AT0036' => ['36','3','5','4','14'],

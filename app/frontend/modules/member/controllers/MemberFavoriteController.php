@@ -28,11 +28,14 @@ class MemberFavoriteController extends ApiController
         return $this->successJson('成功', $favoriteList);
     }
 
-    public function isFavorite()
+    public function isFavorite($request, $integrated = null)
     {
         $memberId = \YunShop::app()->getMemberId();
-        $memberId = \YunShop::app()->getMemberId();
-        if (\YunShop::request()->goods_id){
+        $goodsId = \YunShop::request()->goods_id;
+        if(!$goodsId){
+            $goodsId = \YunShop::request()->id;
+        }
+        if ($goodsId){
             if (MemberFavorite::getFavoriteByGoodsId(\YunShop::request()->goods_id, $memberId)){
                 $data = array(
                     'status' => 1,
@@ -44,9 +47,18 @@ class MemberFavoriteController extends ApiController
                     'message' => '商品未收藏'
                 );
             }
-            return $this->successJson('接口访问成功', $data);
+            if(is_null($integrated)){
+                return $this->successJson('接口访问成功', $data);
+            }else{
+                return show_json(1,$data);
+            }
         }
-        return $this->errorJson('未获取到商品ID');
+
+        if(is_null($integrated)){
+            return $this->errorJson('未获取到商品ID');
+        }else{
+            return show_json(0,'未获取到商品ID');
+        }
     }
 
     public function store()

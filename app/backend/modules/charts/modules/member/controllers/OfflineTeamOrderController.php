@@ -30,4 +30,10 @@ class OfflineTeamOrderController extends OfflineCountController
             'list' => $list,
         ])->render();
     }
+
+    public function res()
+    {
+        (new TeamOrderService())->memberOrder();
+        dd(ok);
+    }
 }

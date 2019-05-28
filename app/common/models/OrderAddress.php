@@ -33,7 +33,8 @@ class OrderAddress extends BaseModel
     public $district;
     public $street;
     protected $attributes = [
-        'street_id' => 0
+        'street_id' => 0,
+        'zipcode' => '',
     ];
     /**
      *  定义字段名

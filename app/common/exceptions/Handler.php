@@ -29,7 +29,9 @@ class Handler extends ExceptionHandler
         \Illuminate\Session\TokenMismatchException::class,
         \Illuminate\Validation\ValidationException::class,
         \EasyWeChat\Core\Exceptions\HttpException::class,
+        \EasyWeChat\Core\Exceptions\InvalidArgumentException::class,
         NotFoundException::class,
+        MemberNotLoginException::class,
     ];
 
     /**
@@ -41,6 +43,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
+        if ($this->shouldntReport($exception)) {
+            return;
+        }
         try{
             // 记录错误日志
             if(!app()->runningInConsole()){

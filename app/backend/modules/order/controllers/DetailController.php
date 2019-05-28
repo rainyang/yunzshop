@@ -57,7 +57,7 @@ class DetailController extends BaseController
             $dispatch['tel'] = '95533';
             $dispatch['status_name'] = $express['status_name'];
         }
-
+        return $order->toArray();
     }
 
     /**
@@ -66,7 +66,7 @@ class DetailController extends BaseController
      * @throws AppException
      * @throws \Throwable
      */
-    public function index(\Request $request)
+    public function index(\Illuminate\Http\Request $request)
     {
         $order = Order::orders()->with(['deductions', 'coupons', 'discounts', 'orderPays' => function ($query) {
             $query->with('payType');
