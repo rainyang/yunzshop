@@ -21,10 +21,6 @@ class EnoughReduce extends BaseDiscount
      */
     protected function _getAmount()
     {
-        if (!$this->orderDiscountCalculated()) {
-            // 确保订单优惠先行计算
-            return null;
-        }
         // (支付金额/订单中同种商品已计算的支付总价 ) * 全场满减金额
         return ($this->orderGoods->getPriceBefore($this->getCode()) / $this->getOrderGoodsPrice()) * $this->getAmountInOrder();
     }
