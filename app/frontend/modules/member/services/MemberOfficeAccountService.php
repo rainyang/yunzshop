@@ -83,7 +83,7 @@ class MemberOfficeAccountService extends MemberService
 
             Session::set('member_id', $member_id);
 
-            setcookie('Yz-Toke', time());
+            setcookie('Yz-Token', time());
             setcookie('Yz-Uid', $member_id);
 
             Cache::forget($member_id . ':chekAccount');
