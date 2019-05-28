@@ -45,10 +45,18 @@ class SupervisordController extends BaseController
 
     }
     public function store(){
+        $setting = request()->input('setting');
+        if ($setting){
 
+            $setting['address']['ip'] = $setting['address']['ip']?:'http://127.0.0.1';
+            Setting::set('supervisor',$setting);
+            return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
+        }
+        $supervisord  = Setting::get('supervisor');
+        $supervisord['address']['ip'] = $supervisord['address']['ip']?: 'http://127.0.0.1';
 
         return view('supervisor.store',[
-
+             'setting'=>json_encode($supervisord)
         ])->render();
     }
 
