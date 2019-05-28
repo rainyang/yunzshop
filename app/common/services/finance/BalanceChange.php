@@ -104,6 +104,7 @@ class BalanceChange extends Credit
     public function deduct(array $data)
     {
         $result = parent::consume($data);
+        return $result;
     }
 
     /**
