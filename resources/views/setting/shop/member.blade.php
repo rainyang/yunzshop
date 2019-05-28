@@ -57,7 +57,7 @@
                             <div class="col-sm-9 col-xs-12">
 
                                 <label class='radio-inline'><input type='radio' name='member[discount]' value='1'
-                                                                   @if ($set['discount'] == 1) checked @endif />显示</label>
+                                                                   @if ($set['discount'] == 1 ||empty($set['discount'])) checked @endif />显示</label>
                                 <label class='radio-inline'><input type='radio' name='member[discount]' value='2'
                                                                    @if ($set['discount'] == 2) checked @endif /> 隐藏</label>
 
