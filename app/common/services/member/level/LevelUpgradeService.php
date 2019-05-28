@@ -278,8 +278,9 @@ class LevelUpgradeService
         if (!$msg) {
             return;
         }
-
-        MessageService::notice(MessageTemp::$template_id, $msg, $memberModel->uid);
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        MessageService::notice(MessageTemp::$template_id, $msg, $memberModel->uid,'',$news_link);
     }
 
 
