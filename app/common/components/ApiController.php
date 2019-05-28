@@ -26,10 +26,6 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
-    public function __construct()
-    {
-        $this->setCookie();
-    }
     /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
