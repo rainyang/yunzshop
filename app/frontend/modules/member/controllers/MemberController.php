@@ -1582,7 +1582,7 @@ class MemberController extends ApiController
             $data[] = [
                 'name'  => 'declaration',
                 'title' => DECLARATION_NAME,
-                'class' => 'icon-declaration-system',
+                'class' => 'icon-declaration_system',
                 'url'   => 'DeclarationApply'
             ];
         }

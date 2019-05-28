@@ -20,7 +20,7 @@ class CreateYzBalanceCovertLoveTable extends Migration
                 $table->integer('uniacid');
                 $table->integer('member_id')->comment('会员ID');
                 $table->integer('covert_amount')->comment('转化金额');
-                $table->integer('staus')->comment('转化状态');
+                $table->integer('status')->comment('转化状态');
                 $table->string('order_sn', 23)->default('')->comment('订单号');
                 $table->string('remark', 30)->default('')->comment('备注');
                 $table->integer('created_at')->nullable();
