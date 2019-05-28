@@ -83,6 +83,9 @@ class MemberOfficeAccountService extends MemberService
 
             Session::set('member_id', $member_id);
 
+            setcookie('Yz-Toke', time());
+            setcookie('Yz-Uid', $member_id);
+
             Cache::forget($member_id . ':chekAccount');
             Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
         } else {
