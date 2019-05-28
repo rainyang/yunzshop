@@ -132,7 +132,22 @@ class BalanceController extends ApiController
     }
 
 
+    /**
+     * 会员余额转化爱心值
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function conver()
+    {
+        $memberInfo = $this->getMemberInfo();
+        if ($memberInfo) {
+            $result = (new BalanceService())->getBalanceSet();
+            $result['credit2'] = $memberInfo->credit2;
+            $result['rate'] = \Setting::get('finance.balance.love_rate');
+            return $this->successJson('获取数据成功', $result);
+        }
+        return $this->errorJson('未获取到会员数据');
 
+    }
 
 
 
