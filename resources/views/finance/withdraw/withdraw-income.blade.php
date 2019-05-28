@@ -228,11 +228,11 @@
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">劳务税计算方式</label>
         <div class="col-sm-9 col-xs-12">
             <label class='radio-inline'>
-                <input type='radio' name='withdraw[income][service_tax_calculation]' value='1' @if($set['service_tax_calculation'] == 0) checked @endif />
+                <input type='radio' name='withdraw[income][service_tax_calculation]' value='0' @if($set['service_tax_calculation'] == 0) checked @endif />
                 提现金额-手续费
             </label>
             <label class='radio-inline'>
-                <input type='radio' name='withdraw[income][service_tax_calculation]' value='0' @if($set['service_tax_calculation'] == 1) checked @endif />
+                <input type='radio' name='withdraw[income][service_tax_calculation]' value='1' @if($set['service_tax_calculation'] == 1) checked @endif />
                 提现金额
             </label>
         </div>
