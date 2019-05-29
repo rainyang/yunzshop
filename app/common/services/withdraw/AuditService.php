@@ -150,33 +150,33 @@ class AuditService
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
     }
 
-
     /**
      * 审核后最终劳务税
-     *
-     * @return float
+     * @return string
+     * @throws ShopException
      */
     private function getActualServiceTax()
     {
-        $audit_amount = $this->audit_amount;
-        $poundage = $this->getActualPoundage();
+        $withdraw_set = \Setting::get('withdraw.income');
 
-        $amount = bcsub($audit_amount, $poundage, 2);
+        $audit_amount = $this->audit_amount;   //收入总和
+        if(!$withdraw_set['service_tax_calculation']){
+            $poundage = $this->getActualPoundage(); //手续费
+            $audit_amount = bcsub($audit_amount, $poundage, 2); //收入总和减去手续费
+        }
 
-        if($amount < 0 && $amount!=0){
+        if($audit_amount < 0 && audit_amount != 0){
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
+
         //计算劳务税
+//       $rate = $this->withdrawModel->servicetax_rate;
 
-//        $rate = $this->withdrawModel->servicetax_rate;
-
-        $rate  = $this->getLastActualServiceTax($amount);
-
+        $rate  = $this->getLastActualServiceTax($audit_amount,$withdraw_set);
         $this->withdrawModel->servicetax_rate = $rate;
 
-        return bcdiv(bcmul($amount, $rate, 4), 100, 2);
+        return   bcdiv(bcmul($audit_amount, $rate, 4), 100, 2);
     }
-
 
     /**
      * 审核后最终金额
@@ -218,10 +218,8 @@ class AuditService
      * @param $amount
      * @return mixed
      */
-    private function getLastActualServiceTax($amount)
+    private function getLastActualServiceTax($amount ,$withdraw_set)
     {
-        $withdraw_set = \Setting::get('withdraw.income');
-
         $servicetax_rate = $withdraw_set['servicetax_rate'];
         if ($this->withdrawModel->servicetax_rate != $servicetax_rate) {
             return $this->withdrawModel->servicetax_rate;
@@ -238,7 +236,6 @@ class AuditService
                 break;
             }
         }
-
         return $servicetax_rate;
     }
 
