@@ -17,12 +17,9 @@ class LogoutController extends BaseController
 {
     public function index()
     {
-        $cookieid = "__cookie_yun_shop_userid_" . \YunShop::app()->uniacid;
+        setcookie('Yz-Token', time() - 3600);
+        setcookie('Yz-Uid', time() - 3600);
 
-        Cookie::unqueue($cookieid);
-        Cookie::unqueue('member_mobile');
-
-        //Session::clear('member_id');
         session_destroy();
         return $this->successJson('退出成功');
     }

@@ -346,11 +346,8 @@ class MemberService
     {
         Session::set('member_id', $member_info['uid']);
 
-        $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
-
-        setcookie('member_id', $member_info['uid'],'3600 * 24' + time(),'/');
-        Cookie::queue($cookieid, $member_info['uid']);
-        Cookie::queue('member_id', $member_info['uid']);
+        setcookie('Yz-Token', time());
+        setcookie('Yz-Uid', $member_info['uid']);
     }
 
     /**
