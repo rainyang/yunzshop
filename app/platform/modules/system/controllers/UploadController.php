@@ -192,9 +192,11 @@ class UploadController extends BaseController
             'upload_type' => $this->remote['type']
         ]);
 
+        $info = json_encode($info);
+        \Log::info('----------上传附件----------', $info);
         if ($core_attach) {
             $info['state'] = 'SUCCESS';
-            return json_encode($info);
+            return $info;
         } else {
             return $this->errorJson('失败');
         }

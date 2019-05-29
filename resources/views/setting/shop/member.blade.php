@@ -53,6 +53,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情会员折扣</label>
+                            <div class="col-sm-9 col-xs-12">
+
+                                <label class='radio-inline'><input type='radio' name='member[discount]' value='2'
+                                                                   @if ($set['discount'] == 2) checked @endif />否</label>
+                                <label class='radio-inline'><input type='radio' name='member[discount]' value='1'
+                                                                   @if ($set['discount'] == 1 || empty($set['discount'])) checked @endif /> 是</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
@@ -220,7 +231,7 @@
                                     <input type="radio" name="member[invite_page]" value="1"
                                            @if ($set['invite_page'] == 1) checked @endif/> 开启
                                 </label>
-                                <span class="help-block"></span>
+                                <span class="help-block">邀请页面与强制绑定手机页面不能同时启用</span>
                             </div>
                         </div>
 

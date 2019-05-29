@@ -17,14 +17,19 @@ class IndexController extends BaseController
 
         $user = \Auth::guard('admin')->user();
 
-        if (1 == $user->uid) {
+        if (1 == $user['uid']) {
             $role = 1;
         }
 
+        $pattern = "/(\d{3})\d{4}(\d{4})/";
+        $replacement = "\$1****\$2";
+        $mobile = preg_replace($pattern, $replacement, $user['hasOneProfile']['mobile']);
+
         $data = [
-            'username' => $user->username,
+            'username' => $user['username'],
             'role' => $role,
-            'avatar' => $user->hasOneProfile->avatar
+            'avatar' => $user['hasOneProfile']->avatar,
+            'mobile' => $mobile
         ];
 
         return $this->successJson('成功', $data);

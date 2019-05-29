@@ -10,7 +10,7 @@ use app\common\models\BaseModel;
 */
 class GoodsService extends BaseModel
 {
-	
+
 	public $table = 'yz_goods_service';
 
 	public $attributes = [
@@ -26,7 +26,7 @@ class GoodsService extends BaseModel
     {
         return $query->where('goods_id', $goodsId);
     }
-    
+
     /**
      * 初始化方法
      */

@@ -127,6 +127,7 @@ class UserController extends BaseController
             if ($userModel->save()) {
                 $key = 'user.permissions.'.$userModel->uid;
                 \Cache::forget($key);
+                \Cache::forget('menu_list'.$userModel->uid);
                 return $this->message('修改操作员成功.', Url::absoluteWeb('user.user.update', array('id' => $userModel->uid)));
             }
         }

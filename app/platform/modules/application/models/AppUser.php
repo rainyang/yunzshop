@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class AppUser extends BaseModel
 {
-	
 	protected $table = 'yz_app_user';
 	protected $search_fields = [''];
   	protected $guarded = [''];

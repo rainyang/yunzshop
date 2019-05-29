@@ -13,7 +13,7 @@ use app\backend\modules\member\models\Member;
 use app\common\events\MessageEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
-
+use app\common\models\notice\MessageTemp;
 class PointService
 {
     const POINT_INCOME_GET = 1; //获得
@@ -220,8 +220,9 @@ class PointService
             ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
             ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
-
-        event(new MessageEvent($this->member->uid, $template_id, $params, $url=''));
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        event(new MessageEvent($this->member->uid, $template_id, $params, $url=$news_link));
 
     }
 
