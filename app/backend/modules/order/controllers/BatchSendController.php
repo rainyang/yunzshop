@@ -131,6 +131,11 @@ class BatchSendController extends BaseController
                 $this->err_array[] = $order_sn;
                 continue;
             }
+            if ($order_sn == $express_sn){
+                $this->err_array[] = '发货失败,订单号为'.$order_sn.'快递单号不能与订单编号一致';
+//                $this->err_array[] = $order_sn;
+                continue;
+            }
             $order = Order::select('id', 'order_sn', 'status', 'refund_id')->whereStatus(1)->whereOrderSn($order_sn)->first();
             if (!$order) {
                 $this->err_array[] = $order_sn;

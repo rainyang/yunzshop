@@ -339,7 +339,6 @@ class GoodsController extends BaseController
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
-
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
@@ -395,6 +394,14 @@ class GoodsController extends BaseController
         $goods->$field = \YunShop::request()->value;
         $goods->save();
         //$this->error($goods);
+    }
+
+    /**
+     * 商品上下架权限需要独立控制 Yi_190517
+     */
+    public function setPutaway()
+    {
+        return $this->setProperty();
     }
 
     public function setProperty()

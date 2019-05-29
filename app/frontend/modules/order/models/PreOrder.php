@@ -2,12 +2,13 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\order\OrderFee;
+use Illuminate\Http\Request;
 use app\common\models\BaseModel;
 use app\common\models\DispatchType;
 use app\common\models\Member;
 use app\common\models\OrderRequest;
 use app\common\modules\orderGoods\OrderGoodsCollection;
-use app\framework\Http\Request;
 use app\frontend\models\Order;
 use app\frontend\models\order\PreOrderDeduction;
 use app\frontend\modules\deduction\OrderDeductManager;
@@ -32,6 +33,7 @@ use Illuminate\Support\Collection;
  * @package app\frontend\modules\order\services\models
  * @property OrderDeductionCollection orderDeductions
  * @property Collection orderDiscounts
+ * @property Collection orderFees
  * @property Collection orderCoupons
  * @property Collection orderSettings
  * @property int id
@@ -67,7 +69,10 @@ class PreOrder extends Order
     /**
      * @var OrderDiscount 优惠类
      */
-    protected $discount;
+    protected $discount; /**
+     * @var OrderFee 手续费类
+     */
+    protected $orderFeeManager;
     /**
      * @var OrderDeductManager 抵扣类
      */
@@ -136,6 +141,14 @@ class PreOrder extends Order
         $this->initAttributes();
 
         return $this;
+    }
+
+    public function getOrderFeeManager()
+    {
+        if (!isset($this->orderFeeManager)) {
+            $this->orderFeeManager = new OrderFee($this);
+        }
+        return $this->orderFeeManager;
     }
 
     public function getDiscount()
@@ -290,6 +303,7 @@ class PreOrder extends Order
             'goods_price' => $this->getGoodsPrice(),//订单商品原价
             'cost_amount' => $this->getCostPrice(),//订单商品原价
             'discount_price' => $this->getDiscountAmount(),//订单优惠金额
+            'fee_amount' => $this->getFeeAmount(),//订单手续费金额
             'deduction_price' => $this->getDeductionAmount(),//订单抵扣金额
             'dispatch_price' => $this->getDispatchAmount(),//订单运费
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
@@ -368,13 +382,8 @@ class PreOrder extends Order
      */
     protected function getPrice()
     {
-//        if (!array_key_exists('price', $this->attributes)) {
-//            // 外部调用只计算一次,方法内部计算过程中递归调用会返回计算过程中的金额
-        return max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
-//        }
-//
-//        //订单最终价格 = 商品最终价格 - 订单优惠 + 订单运费 - 订单抵扣
-//        return $this->price;
+        $price = max($this->getPriceAfter($this->getPriceNodes()->last()->getKey()), 0);
+        return $price;
     }
 
     /**
@@ -403,7 +412,14 @@ class PreOrder extends Order
     {
         return $this->getDiscount()->getAmount();
     }
-
+    /**
+     * 获取总手续费金额
+     * @return Collection
+     */
+    protected function getFeeAmount()
+    {
+        return $this->getOrderFeeManager()->getAmount();
+    }
     /**
      * 获取订单抵扣金额
      * @return int
@@ -477,7 +493,7 @@ class PreOrder extends Order
     /**
      * @var array 需要批量更新的字段
      */
-    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions'];
+    private $batchSaveRelations = ['orderGoods', 'orderSettings', 'orderCoupons', 'orderDiscounts', 'orderDeductions','orderFees'];
 
     /**
      * 保存关联模型

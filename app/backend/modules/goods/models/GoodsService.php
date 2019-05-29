@@ -21,7 +21,6 @@ class GoodsService extends \app\common\models\goods\GoodsService
         	return false;
         }
         $model = self::getModel($goodsId, $operate);
-
         //判断deleted
         if ($operate == 'deleted') {
             return $model->delete();

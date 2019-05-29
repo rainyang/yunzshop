@@ -12,6 +12,7 @@ use app\common\models\BaseModel;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
 use app\frontend\models\order\PreOrderDiscount;
+use app\frontend\models\order\PreOrderFee;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -37,7 +38,38 @@ class Trade extends BaseModel
         $this->setRelation('dispatch', $this->getDispatch());
         $this->amount_items = $this->getAmountItems();
         $this->discount_amount_items = $this->getDiscountAmountItems();
+        $this->fee_items = $this->getFeeItems();
         $this->total_price = $this->orders->sum('price');
+    }
+
+    private function getFeeItems()
+    {
+        $orderFeesItems = $this->orders->reduce(function (Collection $result, PreOrder $order) {
+            foreach ($order->orderFees as $orderFee) {
+                /**
+                 * @var PreOrderFee $orderFee
+                 */
+                $item = $result->where('code', $orderFee->fee_code)->first();
+                if (!$orderFee->amount) {
+                    continue;
+                }
+                // 删除旧的元素
+                $result = $result->filter(function ($item)use($orderFee) {
+                    return $item->code == $orderFee->fee_code;
+                });
+                // 添加累加后的值
+                $result[] = [
+                    'code' => $orderFee->fee_code,
+                    'name' => $orderFee->name,
+                    'amount' => $item['amount'] + $orderFee->amount,
+                ];
+            }
+            return $result;
+        }, collect())->map(function ($item) {
+            $item['amount'] = sprintf('%.2f', $item['amount']);
+            return $item;
+        })->toArray();
+        return $orderFeesItems;
     }
 
     private function getAmountItems()
@@ -46,14 +78,14 @@ class Trade extends BaseModel
             [
                 'code' => 'total_goods_price',
                 'name' => '订单总金额',
-                'amount' => $this->orders->sum('goods_price'),
+                'amount' => $this->orders->sum('order_goods_price'),
             ], [
                 'code' => 'total_dispatch_price',
                 'name' => '总运费',
                 'amount' => $this->orders->sum('dispatch_price'),
             ]
         ];
-        if($this->orders->sum('deduction_price')){
+        if ($this->orders->sum('deduction_price')) {
             $items[] = [
                 'code' => 'total_deduction_price',
                 'name' => '总抵扣',
@@ -75,20 +107,21 @@ class Trade extends BaseModel
                 /**
                  * @var PreOrderDiscount $orderDiscount
                  */
-                $item = $result->where('code', $orderDiscount->discount_code)->first();
-                if(!$orderDiscount->amount){
+                $old = $result->where('code', $orderDiscount->discount_code)->first();
+
+                if (!$orderDiscount->amount) {
                     continue;
                 }
-                if (isset($item)) {
-
-                    $item['amount'] += $orderDiscount->amount;
-                } else {
-                    $result[] = [
-                        'code' => $orderDiscount->discount_code,
-                        'name' => $orderDiscount->name,
-                        'amount' => $orderDiscount->amount,
-                    ];
-                }
+                // 删除旧的元素
+                $result = $result->filter(function ($item)use($old) {
+                    return $item->code == $old->code;
+                });
+                // 添加累加后的值
+                $result[] = [
+                    'code' => $orderDiscount->discount_code,
+                    'name' => $orderDiscount->name,
+                    'amount' => $old['amount'] + $orderDiscount->amount,
+                ];
             }
             return $result;
         }, collect())->map(function ($item) {

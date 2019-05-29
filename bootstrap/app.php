@@ -24,17 +24,26 @@ $app = new Illuminate\Foundation\Application(
 | incoming requests to this application from both the web and CLI.
 |
 */
+$app->singleton('Log.trace', function (){
+    return new \app\framework\Log\TraceLog();
+});
+$app->singleton('Log.debug', function (){
+    return new \app\framework\Log\DebugLog();
+});
+$app->singleton('Log.error', function (){
+    return new \app\framework\Log\ErrorLog();
+});
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
     App\Http\Kernel::class
 );
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    app\console\Kernel::class
+    App\Console\Kernel::class
 );
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    app\common\exceptions\Handler::class
+    App\common\exceptions\Handler::class
 );
 /*
 |--------------------------------------------------------------------------

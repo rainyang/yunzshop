@@ -28,37 +28,32 @@ class OrderCountIncomeJob implements  ShouldQueue
 {
     use InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $orderId;
+    protected $order;
 
-    public function __construct($orderId)
+    public function __construct($order)
     {
-        $this->orderId = $orderId;
+        $this->order = $order;
     }
 
     public function handle()
     {
-        $incomeData = [];
-        $incomeData['day_time'] = date('Y-m-d');
-        $orderIncome = OrderIncomeCount::uniacid()->where('order_id', $this->orderId)->first();
+        $orderIncome = OrderIncomeCount::uniacid()->where('order_id', $this->order->id)->first();
 
         if ($orderIncome) {
-            $orderModel = Order::find($this->orderId);
-            if ($orderModel->is_plugin == 1 || $orderModel->plugin_id == 92) {
-                $incomeData['supplier'] = SupplierOrder::where('order_id', $this->orderId)->sum('supplier_profit');
-                $orderIncome->supplier = $incomeData['supplier'];
+            if ($this->order->is_plugin == 1 || $this->order->plugin_id == 92) {
+                $supplier = SupplierOrder::where('order_id', $this->order->id)->sum('supplier_profit');
+                $orderIncome->supplier = $supplier;
             }
-            if ($orderModel->plugin_id == 31) {
-                $incomeData['cashier'] = CashierOrder::where('order_id', $this->orderId)->sum('amount');
-                $orderIncome->cashier = $incomeData['cashier'];
-                $orderIncome->cost_price = $incomeData['cashier'];
+            if ($this->order->plugin_id == 31) {
+                $cashier = CashierOrder::where('order_id', $this->order->id)->sum('amount');
+                $orderIncome->cashier = $cashier;
+                $orderIncome->cost_price = $cashier;
             }
-            if ($orderModel->plugin_id == 32) {
-                $incomeData['store'] = StoreOrder::where('order_id', $this->orderId)->sum('amount');
-                $orderIncome->store = $incomeData['store'];
-                $orderIncome->cost_price = $incomeData['store'];
+            if ($this->order->plugin_id == 32) {
+                $store = StoreOrder::where('order_id', $this->order->id)->sum('amount');
+                $orderIncome->store = $store;
+                $orderIncome->cost_price = $store;
             }
-
-            $orderIncome->status = $orderModel->status;
             $orderIncome->save();
             return true;
         }

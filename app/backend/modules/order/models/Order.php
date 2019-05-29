@@ -206,7 +206,7 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->with(['deductions','coupons','discounts','orderPays'=> function ($query) {
+        return self::orders()->with(['deductions','coupons','discounts','orderFees','orderPays'=> function ($query) {
             $query->with('payType');
         },'hasOnePayType'])->find($order_id);
     }
