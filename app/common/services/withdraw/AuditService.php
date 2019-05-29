@@ -165,7 +165,7 @@ class AuditService
             $audit_amount = bcsub($audit_amount, $poundage, 2); //收入总和减去手续费
         }
 
-        if($audit_amount < 0 && audit_amount != 0){
+        if($audit_amount < 0 && $audit_amount != 0){
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
 
