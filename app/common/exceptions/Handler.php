@@ -49,17 +49,17 @@ class Handler extends ExceptionHandler
         if ($this->shouldntReport($exception)) {
             return;
         }
-//        try{
-//            // 记录错误日志
-//            if(!app()->runningInConsole()){
-//                Log::error('http parameters',request()->input());
-//            }
-//            Log::error($exception);
-//        }catch (Exception $ex){
-//            dump($ex);
-//        }
+        try{
+            // 记录错误日志
+            if(!app()->runningInConsole()){
+                Log::error('http parameters',request()->input());
+            }
+            Log::error($exception);
+        }catch (Exception $ex){
+            dump($ex);
+        }
 
-        // 生产环境发送邮件
+         //生产环境发送邮件
 //        if(app()->environment() == 'production'){
 //            Mail::to('shenyang@yunzshop.com')->send(new \App\Mail\ErrorReport('错误',$exception));
 //        }
