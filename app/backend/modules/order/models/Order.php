@@ -51,7 +51,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders(Order $order_builder, $search)
+    public function scopeOrders(Builder $order_builder, $search)
     {
         $order_builder->search($search);
 
@@ -202,7 +202,7 @@ class Order extends \app\common\models\Order
 
     public static function getOrderDetailById($order_id)
     {
-        return self::orders()->with(['deductions','coupons','discounts','orderPays'=> function ($query) {
+        return self::orders()->with(['deductions','coupons','discounts','orderFees','orderPays'=> function ($query) {
             $query->with('payType');
         },'hasOnePayType'])->find($order_id);
     }
