@@ -29,7 +29,6 @@ class GoodsDiscount extends BaseModel
      */
     public function enable()
     {
-        dd($this);
         //设置了折扣方式 并且 设置了折扣值
         return $this->discount_method != 0 && $this->discount_value !== '';
     }
