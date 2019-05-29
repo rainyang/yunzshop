@@ -956,7 +956,7 @@ class HomePageController extends ApiController
         if (!is_null(\Config('customer_service'))) {
             $class    = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
-            $ret      = $class::$function(request()->goods_id);
+            $ret      = $class::$function(request()->id);
             if ($ret) {
                 $shop['cservice'] = $ret;
             }

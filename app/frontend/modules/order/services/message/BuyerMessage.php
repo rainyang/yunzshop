@@ -37,7 +37,7 @@ class BuyerMessage extends Message
         if (empty($this->templateId)) {
             return;
         }
-        $this->notice($this->templateId, $this->msg, $uid);
+        $this->notice($this->templateId, $this->msg, $uid,'',$this->news_link);
     }
 
     protected function miniSendToShops($templateId,$msg)
@@ -56,6 +56,8 @@ class BuyerMessage extends Message
             return;
         }
         $this->templateId = MessageTemp::$template_id;
+        $news_link = MessageTemp::find($temp_id)->news_link;
+        $this->news_link = $news_link ?:'';
         $this->sendToBuyer();
     }
 

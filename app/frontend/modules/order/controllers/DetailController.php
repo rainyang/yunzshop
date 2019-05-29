@@ -28,13 +28,13 @@ class DetailController extends ApiController
      * @throws AppException
      * @throws \app\common\exceptions\ShopException
      */
-    public function index(Request $request)
+    public function index($request)
     {
         $this->validate([
             'order_id' => 'required|integer'
         ]);
         $orderId = $request->query('order_id');
-        $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
+        $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderFees','orderCoupon'])->find($orderId);
 //        if ($order->uid != \YunShop::app()->getMemberId()) {
 //            throw new AppException('(ID:' . $order->id . ')该订单属于其他用户');
 //        }
