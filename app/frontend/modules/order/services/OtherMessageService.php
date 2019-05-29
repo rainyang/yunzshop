@@ -110,7 +110,9 @@ class OtherMessageService
             }
             $miniApp['type'] = \Setting::get('shop.notice.seller_order_pay.type');
             $miniApp['formId'] =  \Setting::get('shop.notice.seller_order_pay.formId');
-            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id,'','',$miniApp);
+            $news_link = MessageTemp::find($template_id)->news_link;
+            $news_link = $news_link ?:'';
+            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id,'',$news_link,$miniApp);
         }
 
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
