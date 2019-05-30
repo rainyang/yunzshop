@@ -84,7 +84,7 @@ class GoodsPosterController extends ApiController
                 $this->shopSet['logo'] = $hotel->thumb;
             }
         }
-        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
+        if ($this->type == 2 && $this->ingress == 'weChatApplet') {
             if (!app('plugins')->isEnabled('min-app')) {
                 return $this->errorJson('未开启小程序插件');
             }
@@ -296,7 +296,7 @@ class GoodsPosterController extends ApiController
     {
         $width = imagesx($img);
         $height = imagesy($img);
-        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
+        if ($this->type == 2 && $this->ingress == 'weChatApplet') {
             imagecopyresized($target, $img, 370, $dst_y, 0, 0, 200, 200, $width, $height);
         } else {
             imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
@@ -371,7 +371,7 @@ class GoodsPosterController extends ApiController
 
     private function generateQr()
     {
-        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
+        if ($this->type == 2 && $this->ingress == 'weChatApplet') {
             //小程序海报生成
             $url = "pages/detail_v2/detail_v2";
             $img = $this->getWxacode($url);
