@@ -974,9 +974,11 @@ class HomePageController extends ApiController
                 foreach ($value['page_type_cast'] as $item){
                     if ($item == 1){
                         $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
-                        $share['title'] = $designer->title;
-                        $share['icon'] = $designer->img;
-                        $share['desc'] = $designer->desc;
+                        if (!empty($share['icon']) && !empty($share['desc'])) {
+                            $share['title'] = $designer->title;
+                            $share['icon'] = $designer->img;
+                            $share['desc'] = $designer->desc;
+                        }
                         break;
                     }
                 }
