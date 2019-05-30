@@ -307,7 +307,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
 //        if (!$upload_type) {
 //            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
 //        }
-        $upload_type = $remote['type'];
+        $upload_type = $setting['remote']['type'];
 
         $addons = '/storage/';
         $attachment = '/static/';
