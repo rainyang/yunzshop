@@ -260,13 +260,13 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = SystemSetting::settingLoad('remote', 'system_remote');
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-            if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
             } else {
-                if ($upload_type == '2') {
+                if ($remote['type'] == '2') {
                     $src = $remote['alioss']['url'] . '/'. $src;
-                } elseif ($upload_type == '4') {
+                } elseif ($remote['type'] == '4') {
                     $src = $remote['cos']['url'] . '/'. $src;
                 }
             }
@@ -304,9 +304,10 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
-        if (!$upload_type) {
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-        }
+//        if (!$upload_type) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+//        }
+        $upload_type = $remote['type'];
 
         $addons = '/storage/';
         $attachment = '/static/';
