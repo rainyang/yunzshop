@@ -27,6 +27,7 @@ class GoodsPosterController extends ApiController
     private $hotel_id;
     private $mid;
     private $type;
+    private $ingress;
     //画布大小
     // private $canvas = [
     //     'width' => 600,
@@ -60,6 +61,7 @@ class GoodsPosterController extends ApiController
         $this->storeid = intval(\YunShop::request()->storeid);
         $this->hotel_id = intval(\YunShop::request()->hotel_id);
         $this->type = intval(\YunShop::request()->type);
+        $this->ingress = \YunShop::request()->ingress ?: '';
         if (!$id) {
             return $this->errorJson('请传入正确参数.');
         }
@@ -82,7 +84,7 @@ class GoodsPosterController extends ApiController
                 $this->shopSet['logo'] = $hotel->thumb;
             }
         }
-        if ($this->type == 2) {
+        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
             if (!app('plugins')->isEnabled('min-app')) {
                 return $this->errorJson('未开启小程序插件');
             }
@@ -294,7 +296,7 @@ class GoodsPosterController extends ApiController
     {
         $width = imagesx($img);
         $height = imagesy($img);
-        if ($this->type == 2) {
+        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
             imagecopyresized($target, $img, 370, $dst_y, 0, 0, 200, 200, $width, $height);
         } else {
             imagecopy($target, $img, $dst_x, $dst_y, 0, 0, $width, $height);
@@ -369,7 +371,7 @@ class GoodsPosterController extends ApiController
 
     private function generateQr()
     {
-        if ($this->type == 2) {
+        if ($this->type == 2 && $this->ingress == 'wechatApplet') {
             //小程序海报生成
             $url = "pages/detail_v2/detail_v2";
             $img = $this->getWxacode($url);
@@ -457,6 +459,7 @@ class GoodsPosterController extends ApiController
     {
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
         $token = $this->getToken();
+        \Log::debug('===========access_token===========',$token);
         $url .= "access_token=" . $token;
         $postdata = [
             "scene" => 'id=' . $this->goodsModel->id . ',mid=' . \YunShop::app()->getMemberId(),
@@ -467,7 +470,13 @@ class GoodsPosterController extends ApiController
             load()->func('file');
             mkdirs($path);
         }
+        \Log::debug('=====地址信息=======',$postdata);
         $res = $this->curl_post($url, json_encode($postdata), $options = array());
+        $erroe = json_decode($res);
+        if(isset($erroe->errcode)){
+            return $this->errorJson('错误码'.$erroe->errcode.';错误信息'.$erroe->errmsg);
+        }
+        \Log::debug('===========生成二维码===========',$res);
         $file = 'mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
         file_put_contents($path . '/' . $file, $res);
         $img = imagecreatefromstring(file_get_contents($path . '/' . $file));
