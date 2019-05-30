@@ -1524,7 +1524,7 @@ class MemberController extends ApiController
                 'url'   => $url
             ];
         });
-        if (app('plugins')->isEnabled('asset')) {
+        if (app('plugins')->isEnabled('asset') && (new \Yunshop\Asset\Common\Services\IncomeDigitizationService)->Memberlevel()) {
             $data[] = [
                 'name'  => 'asset',
                 'title' => PLUGIN_ASSET_NAME,
