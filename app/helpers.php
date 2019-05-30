@@ -2395,11 +2395,12 @@ if (!function_exists('file_remote_delete')) {
             return true;
         }
         if ($upload_type == '2') {
+            $bucket = rtrim(substr($remote['alioss']['bucket'], 0, strrpos($remote['alioss']['bucket'],'@')), '@');
             $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
-            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            $endpoint = 'https://' . $buckets[$bucket]['location'] . '.aliyuncs.com';
             try {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
-                $ossClient->deleteObject($remote['alioss']['bucket'], $file);
+                $ossClient->deleteObject($bucket, $file);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, '删除oss远程文件失败');
             }
