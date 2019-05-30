@@ -115,6 +115,7 @@ class PluginsController extends BaseController
 
     public function getPluginList()
     {
+<<<<<<< HEAD
 
 //        $dividend['name'] = '分润类';
 //        $industry['name'] = '行业类';
@@ -123,8 +124,10 @@ class PluginsController extends BaseController
 //        $recharge['name'] = '生活充值';
 //        $api['name'] = '接口类';
         \Cache::flush();
+=======
         $class = $this->getType();
         $data = [];
+>>>>>>> release
 
         $plugins = Config::get('plugins_menu');//全部插件
         foreach ($plugins as $key => $plugin) {

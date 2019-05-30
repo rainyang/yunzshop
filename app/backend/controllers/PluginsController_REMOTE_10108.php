@@ -115,14 +115,6 @@ class PluginsController extends BaseController
 
     public function getPluginList()
     {
-
-//        $dividend['name'] = '分润类';
-//        $industry['name'] = '行业类';
-//        $marketing['name'] = '营销类';
-//        $tool['name'] = '工具类';
-//        $recharge['name'] = '生活充值';
-//        $api['name'] = '接口类';
-        \Cache::flush();
         $class = $this->getType();
         $data = [];
 
