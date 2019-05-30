@@ -412,7 +412,7 @@ class Withdraw extends BaseModel
                     }]);
             }])
             ->with(['bankCard'=> function($bank){
-                return $bank->select('member_id','bank_card');
+                return $bank->select('member_id','bank_card','member_name','bank_card','bank_province','bank_city','bank_branch','bank_name');
             }])
             ->first();
 

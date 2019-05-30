@@ -260,13 +260,13 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = SystemSetting::settingLoad('remote', 'system_remote');
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-            if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
             } else {
-                if ($upload_type == '2') {
+                if ($remote['type'] == '2') {
                     $src = $remote['alioss']['url'] . '/'. $src;
-                } elseif ($upload_type == '4') {
+                } elseif ($remote['type'] == '4') {
                     $src = $remote['cos']['url'] . '/'. $src;
                 }
             }
@@ -304,9 +304,10 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
-        if (!$upload_type) {
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-        }
+//        if (!$upload_type) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+//        }
+        $upload_type = $setting['remote']['type'];
 
         $addons = '/storage/';
         $attachment = '/static/';
@@ -2395,11 +2396,12 @@ if (!function_exists('file_remote_delete')) {
             return true;
         }
         if ($upload_type == '2') {
+            $bucket = rtrim(substr($remote['alioss']['bucket'], 0, strrpos($remote['alioss']['bucket'],'@')), '@');
             $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
-            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            $endpoint = 'https://' . $buckets[$bucket]['location'] . '.aliyuncs.com';
             try {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
-                $ossClient->deleteObject($remote['alioss']['bucket'], $file);
+                $ossClient->deleteObject($bucket, $file);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, '删除oss远程文件失败');
             }
