@@ -18,6 +18,7 @@ class ChangeDefaultDiscountValueToImsYzGoodsDiscountTable extends Migration
                     if (\Illuminate\Support\Facades\Schema::hasColumn('yz_goods_discount', 'discount_value')) {
                         $table->string('discount_value', 10)->nullable()->change();
                     }
+                    \Illuminate\Support\Facades\DB::table('yz_goods_discount')->where('discount_value',0)->update(['discount_value'=>'']);
                 });
         }
     }
