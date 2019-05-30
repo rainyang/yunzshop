@@ -768,7 +768,7 @@ class MemberController extends ApiController
                 $member_model->password = md5($password . $salt);
                 \Log::info('member_save', $member_model);
 
-                DB::transaction(function ($member_model,$uid,$mobile) {
+                DB::transaction(function () use($member_model,$uid,$mobile) {
                 $memberinfo_model = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
                 //同步绑定已存在的手机号
                 if ($memberinfo_model) {
@@ -778,13 +778,12 @@ class MemberController extends ApiController
                     $credit1 = $member_model->credit1;
                     $credit2 = $member_model->credit2;
                     //同步微信注册的会员的积分 余额 到app web注册的会员表中
-                    $memberinfo_model->credit1 = $credit1;
-                    $memberinfo_model->credit2 = $credit2;
+                    $memberinfo_model->credit1 += $credit1;
+                    $memberinfo_model->credit2 += $credit2;
                     //更新fans表的uid字段
                     $fansinfo = McMappingFans::getFansById($uid);
                     $fansinfo->uid = $mc_uid;
-                    //更新session
-                    Session::set('member_id',$mc_uid);
+
 
                     //保存修改的信息 Synchronized Binder表
                     $bindinfo = [
@@ -796,9 +795,11 @@ class MemberController extends ApiController
                     ];
                     $synchronizedbinder = SynchronizedBinder::create($bindinfo);
 
-                    if ( !$memberinfo_model->save() && !$fansinfo->save() && !$synchronizedbinder) {
+                    if ( !$memberinfo_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
                         return $this->errorJson('手机号码绑定已存在手机号失败');
                     }
+                    //更新session
+                    Session::set('member_id',$mc_uid);
                 }
 
                 });
