@@ -121,6 +121,7 @@ class PluginsController extends BaseController
 //        $tool['name'] = '工具类';
 //        $recharge['name'] = '生活充值';
 //        $api['name'] = '接口类';
+        \Cache::flush();
 
         $plugins = Config::get('plugins_menu');//全部插件
         foreach ($plugins as $key => $plugin) {
