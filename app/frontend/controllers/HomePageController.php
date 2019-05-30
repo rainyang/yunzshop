@@ -171,11 +171,15 @@ class HomePageController extends ApiController
                 }
 
                 if ($page) {
-                    if (empty($pageId) && Cache::has($member_id . '_designer_default_0')) {
-                        $designer = Cache::get($member_id . '_designer_default_0');
-                    } else {
+                    if (!Cache::has("{$member_id}_designer_default_{$page->id}")) {
+
                         $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+
+                        Cache::put("{$member_id}_designer_default_{$page->id}", $designer, 180);
+                    } else {
+                        $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
+
                     if ($is_love){
                         foreach ($designer['data'] as &$data){
                             if ($data['temp']=='goods'){
@@ -192,10 +196,6 @@ class HomePageController extends ApiController
                                 }
                             }
                         }
-                    }
-
-                    if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
-                        Cache::put($member_id . '_designer_default_0', $designer, 180);
                     }
 
                     $result['item'] = $designer;
