@@ -118,9 +118,9 @@ class LoginController extends ApiController
             'token' => $_COOKIE['Yz-Token'],
             'uid'   => $_COOKIE['Yz-Uid']
         ];
-        
-        setcookie('Yz-Token', time() - 3600);
-        setcookie('Yz-Uid', time() - 3600);
+
+        setcookie('Yz-Token', '', time() - 3600);
+        setcookie('Yz-Uid', '',time() - 3600);
 
         return $this->successJson('已登录', $data);
     }

@@ -17,8 +17,8 @@ class LogoutController extends BaseController
 {
     public function index()
     {
-        setcookie('Yz-Token', time() - 3600);
-        setcookie('Yz-Uid', time() - 3600);
+        setcookie('Yz-Token', '', time() - 3600);
+        setcookie('Yz-Uid', '',time() - 3600);
 
         session_destroy();
         return $this->successJson('退出成功');
