@@ -26,7 +26,7 @@ class AnotherPayDetailController extends ApiController
         $order_ids = explode(',', $request->query('order_id'));
 
         foreach ($order_ids as $orderId) {
-            $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon'])->find($orderId);
+            $order = $this->getOrder()->with(['hasManyOrderGoods','orderDeduction','orderDiscount','orderCoupon','orderFees'])->find($orderId);
 
             if (is_null($order)) {
                 return $this->errorJson($msg = '未找到数据', []);

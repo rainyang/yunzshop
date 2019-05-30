@@ -32,27 +32,41 @@
                     <b>提现方式: </b>{{$item['pay_way_name']}}
                 </p>
                 @if($item['pay_way'] == 'manual')
-                        <p>
-                            <b>手动打款方式：</b>
-                            @if($item['manual_type'] == 1 || empty($item['manual_type']))
-                                银行卡
-                        </p>
-                        <p>
-                            <b>银行卡：</b>{{$item['bank_card']['bank_card']}}
-                        </p>
-                            @elseif($item['manual_type'] == 2)
-                                微信
-                        </p>
-                        <p>
-                            <b>微信：</b>{{$item['has_one_member']['yz_member']['wechat']}}
-                        </p>
-                            @elseif($item['manual_type'] == 3)
-                                支付宝
-                        </p>
-                        <p>
-                            <b>支付宝：</b>{{$item['has_one_member']['yz_member']['alipay']}}
-                        </p>
-                            @endif
+                    <p>
+                        <b>手动打款方式：</b>
+                        @if($item['manual_type'] == 1 || empty($item['manual_type']))
+                            银行卡
+                    </p>
+                    <p>
+                        <b>姓名：</b>{{$item['bank_card']['member_name']}}
+                    </p>
+                    <p>
+                        <b>开户行：</b>{{$item['bank_card']['bank_name']}}
+                    </p>
+                    <p>
+                        <b>开户省市：</b>{{$item['bank_card']['bank_province']}} | {{$item['bank_card']['bank_city']}}
+                    </p>
+                    <p>
+                        <b>开户支行：</b>{{$item['bank_card']['bank_branch']}}
+                    </p>
+                    <p>
+                        <b>银行卡：</b>{{$item['bank_card']['bank_card']}}
+                    </p>
+
+                    </p>
+                @elseif($item['manual_type'] == 2)
+                    微信
+                    </p>
+                    <p>
+                        <b>微信：</b>{{$item['has_one_member']['yz_member']['wechat']}}
+                    </p>
+                @elseif($item['manual_type'] == 3)
+                    支付宝
+                    </p>
+                    <p>
+                        <b>支付宝：</b>{{$item['has_one_member']['yz_member']['alipay']}}
+                    </p>
+                @endif
                 @endif
                 <p>
                     <b>状态: </b>{{$item['status_name']}}
@@ -98,32 +112,32 @@
                     <tbody>
 
 
-                        <tr style="background: #eee">
-                            <td>
-                                @if($item['status'] == '0' || $item['status'] == '-1')
-                                    <label class="radio-inline">
-                                        <input type="radio" name="status" value="1" @if($item['status'] == 0 || $item['status'] == 1 )checked="checked"@endif/>
-                                        通过
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="status" value="-1" @if($item['status'] == -1 )checked="checked"@endif/> 无效
-                                    </label>
-                                    <label class="radio-inline">
-                                        <input type="radio" name="status" value="3" @if($item['status'] == 3 )checked="checked"@endif/> 驳回
-                                    </label>
-                                @endif
-                                @if($item['status'] == '1' || $item['status'] == '2')
-                                    {{$row['pay_status_name']}}
-                                @endif
+                    <tr style="background: #eee">
+                        <td>
+                            @if($item['status'] == '0' || $item['status'] == '-1')
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="1" @if($item['status'] == 0 || $item['status'] == 1 )checked="checked"@endif/>
+                                    通过
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="-1" @if($item['status'] == -1 )checked="checked"@endif/> 无效
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="status" value="3" @if($item['status'] == 3 )checked="checked"@endif/> 驳回
+                                </label>
+                            @endif
+                            @if($item['status'] == '1' || $item['status'] == '2')
+                                {{$row['pay_status_name']}}
+                            @endif
 
-                            </td>
-                            <td>{{$item['id']}}</td>
-                            <td>{{$item['type_name']}}</td>
-                            <td>{{$item['amounts']}}</td>
-                            <td>{{$item['status_name']}}</td>
-                            <td>{{$item['created_at']}}</td>
+                        </td>
+                        <td>{{$item['id']}}</td>
+                        <td>{{$item['type_name']}}</td>
+                        <td>{{$item['amounts']}}</td>
+                        <td>{{$item['status_name']}}</td>
+                        <td>{{$item['created_at']}}</td>
 
-                        </tr>
+                    </tr>
 
 
                 </table>
@@ -172,7 +186,7 @@
                 @endif
 
 
-                    <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回" style='margin-left:10px;'/>
+                <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回" style='margin-left:10px;'/>
 
             </div>
         </form>

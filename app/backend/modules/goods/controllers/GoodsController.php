@@ -339,7 +339,6 @@ class GoodsController extends BaseController
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
-
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,

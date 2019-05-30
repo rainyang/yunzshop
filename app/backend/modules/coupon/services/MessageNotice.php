@@ -49,6 +49,9 @@ class MessageNotice extends MessageService
         } elseif ($coupon_scope['type'] == 2) {
             $goods_name = implode(',',Coupon::where('id', '=', $couponDate->id)->value('goods_names'));
             $scope = "".$goods_name."商品可用";
+        } elseif ($coupon_scope['type'] == 4 || $coupon_scope['type'] == 5) {//4 多门店可用  5 单门店可用
+            $goods_name = implode(',',Coupon::where('id', '=', $couponDate->id)->value('storenames'));
+            $scope = "".$goods_name."门店可用";
         }
 
         //结束时间

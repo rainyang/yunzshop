@@ -43,6 +43,8 @@ class AppuserController extends BaseController
             
             } else {
 
+                \Log::info('----------用户角色----------', $user);
+
                 if ($user->save()) {
                     
                     //更新缓存

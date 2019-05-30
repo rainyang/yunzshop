@@ -85,12 +85,10 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
             new GoodsPriceNodeBase($this, 1000)
         ]);
         // 订单优惠的节点
-        $discountNodes = collect([
-            $this->singleEnoughReduce,
-            $this->enoughReduce,
-        ])->map(function (BaseDiscount $discount) {
-            return new OrderGoodsDiscountPriceNode($this, $discount, 2000);
-        });
+        $discountNodes = collect();
+        $discountNodes->push(new OrderGoodsDiscountPriceNode($this,$this->singleEnoughReduce,2010));
+        $discountNodes->push(new OrderGoodsDiscountPriceNode($this, $this->enoughReduce,2020));
+
         $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2100));
         // 订单抵扣节点
         $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction){

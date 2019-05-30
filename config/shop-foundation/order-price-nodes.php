@@ -8,12 +8,18 @@
 return [
     [
         'class' => function (\app\frontend\modules\order\models\PreOrder $order) {
-            return new \app\frontend\modules\order\OrderGoodsPriceNode($order,1000);
+            return new \app\frontend\modules\order\OrderGoodsPriceNode($order, 1000);
         },
-    ],//'orderDiscountPriceNode', 'orderDeductionPriceNode',
+    ],
+
     [
         'class' => function (\app\frontend\modules\order\models\PreOrder $order) {
-            return new \app\frontend\modules\order\OrderDispatchPriceNode($order,3000);
+            return new \app\frontend\modules\order\OrderDispatchPriceNode($order, 3000);
+        },
+    ],
+    [
+        'class' => function (\app\frontend\modules\order\models\PreOrder $order) {
+            return new \app\frontend\modules\order\OrderFeeNode($order, 9200);
         },
     ]
 ];

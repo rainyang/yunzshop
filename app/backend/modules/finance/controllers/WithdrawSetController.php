@@ -37,6 +37,11 @@ class WithdrawSetController extends BaseController
                         (new \app\common\services\operation\BalanceSetLog(['type'=> 'withdraw.balance','old'=>Setting::get('withdraw.'.$key),'new'=>$item], 'update'));
                     } elseif ($key == 'income') {
                         (new \app\common\services\operation\IncomeSetLog(['old'=>Setting::get('withdraw.'.$key),'new'=>$item], 'update'));
+                        //  去空值
+                        foreach($item['servicetax'] as $k=>$v){
+                            $item['servicetax'][$k] = array_filter($v);
+                        }
+                        $item['servicetax'] = array_filter($item['servicetax']);
                     }
 
                     Setting::set('withdraw.' . $key, $item);
