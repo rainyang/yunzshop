@@ -26,7 +26,7 @@ class DivFromController extends ApiController
         $goods_ids = json_decode(request()->input('goods_ids'),true);
 
 
-        if (!$goods_ids) {
+        if (!is_array($goods_ids)) {
             if(is_null($integrated)){
                 return $this->errorJson('未获取到商品ID集');
             }else{
