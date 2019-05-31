@@ -245,7 +245,7 @@ class AdminUserController extends BaseController
 
         $user = \Auth::guard('admin')->user();
 
-        return $this->returnMessage(0, $data, $user);
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -314,6 +314,11 @@ class AdminUserController extends BaseController
         }
 
         $validate = $this->validate($this->rules(), $data, $this->message());
+
+        if ($sign) {
+            $validate = $this->validate($this->rules($user), $data, $this->message());
+        }
+
         if ($validate) {
             return $validate;
         }
