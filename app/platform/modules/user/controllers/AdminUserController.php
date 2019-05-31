@@ -364,7 +364,8 @@ class AdminUserController extends BaseController
             ];
         }else if(request()->path() == "admin/user/edit") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+                'username' => 'required|unique:yz_admin_users,username,'.$user['uid'].',uid',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$user['hasOneProfile']['id'],
             ];
         }
