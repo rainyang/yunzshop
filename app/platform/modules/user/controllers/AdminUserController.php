@@ -74,7 +74,11 @@ class AdminUserController extends BaseController
 
         $user = AdminUser::with('hasOneProfile')->find($uid);
 
-        return $this->returnMessage(1, $data, $user);
+        if ($data) {
+            return $this->returnMessage(1, $data, $user);
+        }
+
+        return $this->successJson('成功', $user);
     }
 
     /**
