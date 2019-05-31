@@ -261,7 +261,7 @@ if (!function_exists("tomedia")) {
         if (env('APP_Framework') == 'platform') {
             $remote = SystemSetting::settingLoad('remote', 'system_remote');
 //            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-            if ($local_path || !$remote['type'] || file_exists(base_path() . '/static/upload/' . $src)) {
+            if (($local_path || !$remote['type']) && file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
             } else {
                 if ($remote['type'] == '2') {
@@ -271,7 +271,7 @@ if (!function_exists("tomedia")) {
                 }
             }
         } else {
-            if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+            if (($local_path || empty(YunShop::app()->setting['remote']['type'])) && file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
             } else {
                 $src = YunShop::app()->attachurl_remote . $src;
@@ -353,13 +353,14 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-    if (!$sign && ($local_path || empty($upload_type) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
+
+    if (!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
-    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type)) && file_exists(base_path('static/upload/').$src)) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         $attach_url_remote = '';
