@@ -138,7 +138,6 @@ class BalanceController extends ApiController
      */
     public function conver()
     {
-        dd($this->balannceSet->$_recharge_set);
         $memberInfo = $this->getMemberInfo();
         if ($memberInfo) {
             $result = (new BalanceService())->getBalanceSet();
