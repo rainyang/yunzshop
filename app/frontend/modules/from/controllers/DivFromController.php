@@ -121,9 +121,9 @@ class DivFromController extends ApiController
     {
         $this->dataIntegrated($this->isinvoice($request, true), 'sinvoice');
         $this->dataIntegrated($this->isDisplay($request, true), 'isDisplay');
-        $this->dataIntegrated($this->getMemberInfo($request, true), 'get-member-info');
+        $this->dataIntegrated($this->getMemberInfo($request, true), 'getMemberInfo');
         $this->dataIntegrated($this->explain($request, true), 'explain');
-        $this->dataIntegrated(\app\frontend\modules\shop\controllers\IndexController::getPayProtocol($request, true),'get_pay_protocol');
+        $this->dataIntegrated(\app\frontend\modules\shop\controllers\IndexController::getPayProtocol($request, true),'getPayProtocol');
         return $this->successJson('', $this->apiData);
     }
 }
