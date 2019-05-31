@@ -770,7 +770,7 @@ class MemberController extends ApiController
                 \Log::info('member_save', $member_model);
                 if( $type = 1 ){
                     DB::transaction(function () use(&$member_model,$uid,$mobile) {
-                        $memberinfo_model = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+                        $memberinfo_model = MemberModel::getMemberinfo(\YunShop::app()->uniacid, $mobile);
                         //同步绑定已存在的手机号
                         if ($memberinfo_model) {
                             //app注册的会员信息id
@@ -778,18 +778,15 @@ class MemberController extends ApiController
                             //微信注册的会员的余额 积分
                             $credit1 = $member_model->credit1;
                             $credit2 = $member_model->credit2;
-                            \Log::debug('---------$member_model--------',$member_model);
+
 
                             //同步微信注册的会员的积分 余额 到app web注册的会员表中
                             $memberinfo_model->credit1 = $memberinfo_model->credit1+$credit1;
                             $memberinfo_model->credit2 = $memberinfo_model->credit2+$credit2;
-                            \Log::debug('---------$memberinfo_model--------',$memberinfo_model);
+
                             //更新fans表的uid字段
                             $fansinfo = McMappingFans::getFansById($uid);
                             $fansinfo->uid = $mc_uid;
-                            \Log::debug('---------$fansinfo--------',$fansinfo);
-                            \Log::debug('---------$fansinfouid--------',$fansinfo->uid);
-
 
                             //保存修改的信息 Synchronized Binder表
                             $bindinfo = [
@@ -799,15 +796,12 @@ class MemberController extends ApiController
                                 'add_credit1' => $credit1,
                                 'add_credit2' => $credit2,
                             ];
-                            \Log::debug('---------$bindinfo--------',$bindinfo);
+
 
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
 
                             if ( !$memberinfo_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
-                                \Log::debug('---------$synchronizedbinder--------',$synchronizedbinder);
-                                \Log::debug('---------$memberinfo_model--------',$memberinfo_model->save());
-                                \Log::debug('---------$synchronizedbinder--------',!$fansinfo->save());
-
+                                \Log::debug('---------手机号码绑定已存在手机号失败--------');
                                 return $this->errorJson('手机号码绑定已存在手机号失败');
                             }
                             $member_model = MemberModel::getMemberById($mc_uid);
