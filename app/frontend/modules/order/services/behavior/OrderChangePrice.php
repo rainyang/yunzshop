@@ -68,7 +68,7 @@ class OrderChangePrice extends OrderOperation
         $orderChangePriceLog->old_price = $this->price;
         $orderChangePriceLog->new_price = $this->price + $orderChangePriceLog->change_price + $this->getChangeDispatchPrice();
 
-        $orderChangePriceLog->username = \Yunshop::app()->user['username'];
+        $orderChangePriceLog->username = \Yunshop::app()->username;
         $orderChangePriceLog->order_id = $this->id;
         //return $orderChangePriceLog;
 
