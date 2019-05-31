@@ -839,7 +839,7 @@ class MemberController extends ApiController
                             //保存修改的信息
                             $bindinfo = [
                                 'uniacid' => \YunShop::app()->uniacid,
-                                'new_uid' => $mc_uid ,
+                                'new_uid' => $uid ,
                                 'old_uid' => $uid,
                                 'old_credit1' => $old_credit1 ,
                                 'old_credit2' => $old_credit2,
