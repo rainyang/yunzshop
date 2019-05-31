@@ -61,7 +61,7 @@ class ConstService
 
     const SOURCE_CONVERT         = 14; //余额转化爱心值
 
-    const SOURCE_CONVERT_CANCEL  = 14; //余额转化爱心值回滚
+    const SOURCE_CONVERT_CANCEL  = 15; //余额转化爱心值回滚
 
 
 
@@ -96,7 +96,8 @@ class ConstService
             self::SOURCE_RECHARGE_CODE         => '充值码充值',
             self::SOURCE_EXCEL_RECHARGE         => 'EXCEL充值',
             self::SOURCE_REJECTED              => static::$title . '提现驳回',
-            self::SOURCE_CONVERT               => static::$title.'转化爱心值'
+            self::SOURCE_CONVERT               => static::$title.'转化爱心值',
+            self::SOURCE_CONVERT_CANCEL        => static::$title.'转化爱心值失败回滚'
         ];
     }
 
