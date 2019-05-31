@@ -138,11 +138,12 @@ class BalanceController extends ApiController
      */
     public function conver()
     {
+        dd($this->balannceSet->$_recharge_set);
         $memberInfo = $this->getMemberInfo();
         if ($memberInfo) {
             $result = (new BalanceService())->getBalanceSet();
             $result['credit2'] = $memberInfo->credit2;
-            $result['rate'] = \Setting::get('finance.balance.love_rate');
+            $result['rate'] = $this->balanceSet->_recharge_set;
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
@@ -301,6 +302,9 @@ class BalanceController extends ApiController
     //余额转换爱心值
     public function convertStart()
     {
+        if(!class_exists('\Yunshop\Love\Common\Services\LoveChangeService')){
+            return $this->errorJson('未开启爱心值插件');
+        }
        if (!$this->getMemberInfo()) {
            return '未获取到会员信息';
        }
@@ -317,11 +321,15 @@ class BalanceController extends ApiController
             return $validator->messages();
         }
 
+        DB::beginTransaction();
+        //todo 待完成余额转化爱心值余额成功爱心值失败
         if ($this->model->save()) {
             //$result = (new BalanceService())->balanceChange($this->getChangeBalanceDataToTransfer());
             $result = (new BalanceChange())->convert($this->getChangeConverData());
             if ($result === true) {
-                $this->awardMemberLove();
+                if($this->awardMemberLove() == true){
+                    (new BalanceChange())->convertCancel($this->getConvertCancel());  //爱心值交易失败，回滚余额
+                }
                 $this->model->status = BalanceConvertLove::CONVERT_STATUS_SUCCES;
                 if ($this->model->save()) {
                     return true;
@@ -357,15 +365,27 @@ class BalanceController extends ApiController
         );
     }
 
+    private function getConvertCancel()
+    {
+        return array(
+            'member_id'     =>  $this->model->member_id,
+            'remark'        => '会员【ID:'.$this->model->member_id.'】余额转化失败【ID：'.$this->model->member_id. '】' . $this->model->covert_amount . '元',
+            'source'        => ConstService::SOURCE_CONVERT,
+            'relation'      => $this->model->order_sn,
+            'operator'      => ConstService::OPERATOR_MEMBER,
+            'operator_id'   => $this->model->member_id,
+            'change_value'  => $this->model->covert_amount,
+        );
+    }
+
 
     private function awardMemberLove()
     {
         //统一走爱心值交易类型接口
-
         $_LoveChangeService = new  \Yunshop\Love\Common\Services\LoveChangeService('usable');
         $data = [
             'member_id'         => $this->model->member_id,
-            'change_value'      => ($this->model->covert_amount * \Setting::get('finance.balance.love_rate')) /100,
+            'change_value'      => ($this->model->covert_amount * ((\Setting::get('finance.balance.love_rate')) ?: 100)) /100,
             'operator'          => ConstService::OPERATOR_MEMBER,
             'operator_id'       => $this->model->member_id,
             'remark'            => '会员【ID:'.$this->model->member_id.'】余额转化爱心值会员【ID：'.$this->model->member_id. '】' . $this->model->covert_amount . '元',
@@ -375,7 +395,7 @@ class BalanceController extends ApiController
         $result = $_LoveChangeService->conver($data);
         if ($result !== true) {
             DB::rollBack();
-            return $this->errorJson('转化失败，请重试');
+            return false;
         }
         DB::commit();
         return true;

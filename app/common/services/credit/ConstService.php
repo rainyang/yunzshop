@@ -61,6 +61,8 @@ class ConstService
 
     const SOURCE_CONVERT         = 14; //余额转化爱心值
 
+    const SOURCE_CONVERT_CANCEL  = 14; //余额转化爱心值回滚
+
 
 
     protected static $title = '余额';

@@ -101,6 +101,12 @@ class BalanceChange extends Credit
         return $result;
     }
 
+    public function convertCancel(array $data)
+    {
+        $result = parent::convertCancel($data);
+        return $result;
+    }
+
     public function deduct(array $data)
     {
         $result = parent::consume($data);
