@@ -787,8 +787,7 @@ class MemberController extends ApiController
                             $memberinfo_model->credit2 += $credit2;
                             $memberinfo_model->nickname = $member_model->nickname;
                             $memberinfo_model->avatar = $member_model->avatar;
-                            $member_model->credit1 = 0;
-                            $member_model->credit2 = 0;
+
 
                             //更新fans表的uid字段
                             $fansinfo = McMappingFans::getFansById($uid);
@@ -816,6 +815,8 @@ class MemberController extends ApiController
                             $member_model->salt = $salt;
                             $member_model->mobile = $mobile;
                             $member_model->password = md5($password . $salt);
+                            $member_model->credit1 = 0;
+                            $member_model->credit2 = 0;
                             //更新session
                             Session::set('member_id',$mc_uid);
                         }elseif (!empty($memberinfo_model) && ($memberinfo_model->createtime > $member_model->createtime)) {
