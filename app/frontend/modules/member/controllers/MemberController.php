@@ -773,7 +773,7 @@ class MemberController extends ApiController
                         $memberinfo_model = MemberModel::getMemberinfo(\YunShop::app()->uniacid, $mobile);
 
                         //同步绑定已存在的手机号
-                        if ($memberinfo_model) {
+                        if ($memberinfo_model->createtime > $member_model->createtime) {
                             //app注册的会员信息id
                             $mc_uid = $memberinfo_model['uid'];
                             //微信注册的会员的余额 积分
@@ -816,8 +816,38 @@ class MemberController extends ApiController
                             $member_model->password = md5($password . $salt);
                             //更新session
                             Session::set('member_id',$mc_uid);
-                        }
+                        }else {
+                            //app注册的会员信息id
+                            $mc_uid = $memberinfo_model['uid'];
+                            //微信注册的会员的余额 积分
+                            $credit1 = $memberinfo_model->credit1;
+                            $credit2 = $memberinfo_model->credit2;
+                            $old_credit1 = $member_model->credit1;
+                            $old_credit2 = $member_model->credit2;
 
+                            //同步微信注册的会员的积分 余额 到app web注册的会员表中
+                            $member_model->credit1 += $credit1;
+                            $member_model->credit2 += $credit2;
+                            $memberinfo_model->mobile = '';
+
+                            //保存修改的信息
+                            $bindinfo = [
+                                'uniacid' => \YunShop::app()->uniacid,
+                                'new_uid' => $mc_uid ,
+                                'old_uid' => $uid,
+                                'old_credit1' => $old_credit1 ,
+                                'old_credit2' => $old_credit2,
+                                'add_credit1' => $credit1,
+                                'add_credit2' => $credit2,
+                                'mobile'      =>$mobile
+                            ];
+                            \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
+                            $synchronizedbinder = SynchronizedBinder::create($bindinfo);
+                            if ( !$memberinfo_model->save() || !$synchronizedbinder) {
+                                \Log::debug('---------手机号码绑定已存在手机号失败--------');
+                                return $this->errorJson('手机号码绑定已存在手机号失败');
+                            }
+                        }
                     });
 
                 }
