@@ -15,7 +15,7 @@ class AddImsYzSettingTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable($this->table)) {
+        if (Schema::hasTable($this->table) && \YunShop::app()->uniacid) {
             // 商城
             $shop = \Setting::get('shop.shop');
             if (!$shop) {
