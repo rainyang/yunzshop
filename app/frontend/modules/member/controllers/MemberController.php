@@ -781,8 +781,8 @@ class MemberController extends ApiController
                             \Log::debug('---------$member_model--------',$member_model);
 
                             //同步微信注册的会员的积分 余额 到app web注册的会员表中
-                            $memberinfo_model->credit1 += $credit1;
-                            $memberinfo_model->credit2 += $credit2;
+                            $memberinfo_model->credit1 = $memberinfo_model->credit1+$credit1;
+                            $memberinfo_model->credit2 = $memberinfo_model->credit2+$credit2;
                             \Log::debug('---------$memberinfo_model--------',$memberinfo_model);
                             //更新fans表的uid字段
                             $fansinfo = McMappingFans::getFansById($uid);
