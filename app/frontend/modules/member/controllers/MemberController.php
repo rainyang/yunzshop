@@ -176,6 +176,14 @@ class MemberController extends ApiController
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
 
+                //配送站
+                if (app('plugins')->isEnabled('delivery-station')) {
+                    $data['is_open_delivery_station'] = Setting::get('plugin.delivery_station.is_open')?1:0;
+                } else {
+                    $data['is_open_delivery_station'] = 0;
+                }
+
+
 //                if ($data['is_open_net_car']) {
 //                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
 //                }
@@ -1485,7 +1493,7 @@ class MemberController extends ApiController
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'delivery_station', 'service_station']
         ];
 
         $data = [];
@@ -1811,6 +1819,33 @@ class MemberController extends ApiController
                     'url'   => 'online_car',
                 ];
             }
+        }
+
+        //配送站
+        if (app('plugins')->isEnabled('delivery-station')) {
+
+            $delivery_station_setting = Setting::get('plugin.delivery_station');
+
+            if ($delivery_station_setting && $delivery_station_setting['is_open']) {
+                $data[] = [
+                    'name'  => 'delivery_station',
+                    'title' => '配送站',
+                    'class' => '',
+                    'url'   => '',
+                ];
+            }
+        }
+
+        //服务站
+        if (app('plugins')->isEnabled('service-station')) {
+
+            $data[] = [
+                'name'  => 'service_station',
+                'title' => '服务站',
+                'class' => '',
+                'url'   => '',
+            ];
+
         }
 
         foreach ($data as $k => $v) {
