@@ -910,6 +910,11 @@ class Order extends BaseModel
         return $this->hasOne(OrderCreatedJob::class, 'order_id');
     }
 
+    public function orderSentJob()
+    {
+        return $this->hasOne(OrderSentJob::class, 'order_id');
+    }
+
     public function orderPaidJob()
     {
         return $this->hasOne(OrderPaidJob::class, 'order_id');
