@@ -172,16 +172,16 @@ class BalanceService
         return $this->_recharge_set['recharge_activity_fetter'];
     }
 
-    //余额转化爱心值开关设置
-    public function withdrawSet()
-    {
-        return $this->_withdraw_set['status'] ? true : false;
-    }
-
-    //余额转化手续费设置
-    public function cov()
-    {
-
-    }
+//    //余额转化爱心值开关设置
+//    public function withdrawSet()
+//    {
+//        return $this->_withdraw_set['status'] ? true : false;
+//    }
+//
+//    //余额转化手续费设置
+//    public function cov()
+//    {
+//
+//    }
 
 }
