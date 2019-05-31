@@ -773,7 +773,7 @@ class MemberController extends ApiController
                         $memberinfo_model = MemberModel::getMemberinfo(\YunShop::app()->uniacid, $mobile);
 
                         //同步绑定已存在的手机号
-                        if ($memberinfo_model->createtime > $member_model->createtime) {
+                        if ($memberinfo_model->createtime < $member_model->createtime) {
                             //app注册的会员信息id
                             $mc_uid = $memberinfo_model['uid'];
                             //微信注册的会员的余额 积分
@@ -787,6 +787,8 @@ class MemberController extends ApiController
                             $memberinfo_model->credit2 += $credit2;
                             $memberinfo_model->nickname = $member_model->nickname;
                             $memberinfo_model->avatar = $member_model->avatar;
+                            $member_model->credit1 = 0;
+                            $member_model->credit2 = 0;
 
                             //更新fans表的uid字段
                             $fansinfo = McMappingFans::getFansById($uid);
@@ -824,7 +826,9 @@ class MemberController extends ApiController
                             $credit2 = $memberinfo_model->credit2;
                             $old_credit1 = $member_model->credit1;
                             $old_credit2 = $member_model->credit2;
-
+                            $memberinfo_model->credit1 = 0;
+                            $memberinfo_model->credit2 = 0;
+                            
                             //同步微信注册的会员的积分 余额 到app web注册的会员表中
                             $member_model->credit1 += $credit1;
                             $member_model->credit2 += $credit2;
