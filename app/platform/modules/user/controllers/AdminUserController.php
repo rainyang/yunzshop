@@ -359,7 +359,8 @@ class AdminUserController extends BaseController
         $rules = [];
         if (request()->path() == "admin/user/create") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'username' => 'required|unique:yz_admin_users',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
             ];
         }else if(request()->path() == "admin/user/edit") {
