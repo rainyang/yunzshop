@@ -781,6 +781,8 @@ class MemberController extends ApiController
                             $credit2 = $member_model->credit2;
                             $old_credit1 = $memberinfo_model->credit1;
                             $old_credit2 = $memberinfo_model->credit2;
+                            $member_model->credit1 = 0;
+                            $member_model->credit2 = 0;
 
                             //同步微信注册的会员的积分 余额 到app web注册的会员表中
                             $memberinfo_model->credit1 += $credit1;
@@ -806,17 +808,17 @@ class MemberController extends ApiController
                             \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
 
-                            if ( !$memberinfo_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
+                            if ( !$memberinfo_model->save() || !$member_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
                                 \Log::debug('---------手机号码绑定已存在手机号失败--------');
                                 return $this->errorJson('手机号码绑定已存在手机号失败');
                             }
+                            //修改现在登录会员的信息
                             $member_model = MemberModel::getMemberById($mc_uid);
                             $salt = Str::random(8);
                             $member_model->salt = $salt;
                             $member_model->mobile = $mobile;
                             $member_model->password = md5($password . $salt);
-                            $member_model->credit1 = 0;
-                            $member_model->credit2 = 0;
+
                             //更新session
                             Session::set('member_id',$mc_uid);
                         }elseif (!empty($memberinfo_model) && ($memberinfo_model->createtime > $member_model->createtime)) {
