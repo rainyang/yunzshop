@@ -53,4 +53,12 @@ class SubMemberModel extends MemberShopInfo
             ->where('member_id', $uid)
             ->update($data);
     }
+
+    public static function getMemberByTokenAndUid($token, $uid)
+    {
+        self::uniacid()
+            ->where('account_token_1', $token)
+            ->where('uid', $uid)
+            ->first();
+    }
 }

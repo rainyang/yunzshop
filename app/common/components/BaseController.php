@@ -95,21 +95,19 @@ class BaseController extends Controller
     protected function setCookie()
     {
         $session_id = '';
-        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+        /*if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
             $pieces     = explode('-', \YunShop::request()->state);
             $session_id = $pieces[1];
             unset($pieces);
-        }
+        }*/
 
         if (isset($_COOKIE[session_name()])) {
             $session_id = $_COOKIE[session_name()];
-            session_id($session_id);
         }
 
         //h5 app
         if (!empty($_REQUEST['uuid'])) {
             $session_id = md5($_REQUEST['uuid']);
-            session_id($session_id);
             setcookie(session_name(), $session_id);
         }
 
@@ -117,11 +115,17 @@ class BaseController extends Controller
             && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
-            session_id($session_id);
             setcookie(session_name(), $session_id);
         }
 
-        Session::factory(\YunShop::app()->uniacid, self::COOKIE_EXPIRE);
+        if (empty($session_id)) {
+            $session_id = md5(\YunShop::app()->uniacid . ':' . random(20));
+            setcookie(session_name(), $session_id);
+        }
+
+        session_id($session_id);
+
+        Session::factory(\YunShop::app()->uniacid);
     }
 
     /**

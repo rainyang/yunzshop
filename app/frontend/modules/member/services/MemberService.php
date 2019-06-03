@@ -71,7 +71,7 @@ class MemberService
      *
      * @return bool
      */
-    public static function isLogged()
+    /*public static function isLogged()
     {
         if (\YunShop::app()->getMemberId()) {
             $del_member = MemberDel::byMemberId(\YunShop::app()->getMemberId())->first();
@@ -81,7 +81,7 @@ class MemberService
             }
         }
         return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
-    }
+    }*/
 
     /**
      * 验证手机号和密码
@@ -469,6 +469,7 @@ class MemberService
             }
 
             $this->updateMemberInfo($member_id, $userinfo);
+            $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
@@ -496,7 +497,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                    $this->addSubMemberInfoV2($uniacid, $member_id, $userinfo);
                 } else {
                     $this->updateSubMemberInfo($member_id, $userinfo['openid']);
                 }
@@ -554,6 +555,7 @@ class MemberService
             \Log::debug('微信登陆更新');
 
             $this->updateMemberInfo($member_id, $userinfo);
+            $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
@@ -579,7 +581,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                    $this->addSubMemberInfoV2($uniacid, $member_id, $userinfo);
                 }
 
                 //生成分销关系链
@@ -698,10 +700,49 @@ class MemberService
         ));
     }
 
+    public function addSubMemberInfoV2($uniacid, $member_id, $userinfo)
+    {
+        //添加yz_member表
+        $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
+
+        if (!empty($default_sub_group_id)) {
+            $default_subgroup_id = $default_sub_group_id->id;
+        } else {
+            $default_subgroup_id = 0;
+        }
+
+        SubMemberModel::insertData(array(
+            'member_id' => $member_id,
+            'uniacid' => $uniacid,
+            'group_id' => $default_subgroup_id,
+            'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
+            'yz_openid' => $userinfo['openid'],
+            'account_token_1' => $userinfo['account_token'],
+            'account_expires_in_1' => time() + $userinfo['expires_in'],
+            'refresh_token_1' => $userinfo['refresh_token'],
+            'refresh_expires_in_1' => time() + (20 * 24 * 3600)
+        ));
+    }
+
     private function updateSubMemberInfo($uid, $userinfo)
     {
         SubMemberModel::updateOpenid(
             $uid, ['yz_openid' => $userinfo['openid']]
+        );
+    }
+
+    private function updateSubMemberInfoV2($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, [
+                'yz_openid' => $userinfo['openid'],
+                'account_token_1' => $userinfo['account_token'],
+                'account_expires_in_1' => time() + $userinfo['expires_in'],
+                'refresh_token_1' => $userinfo['refresh_token'],
+                'refresh_expires_in_1' => time() + (20 * 24 * 3600)
+            ]
         );
     }
 

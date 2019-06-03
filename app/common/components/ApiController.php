@@ -18,6 +18,7 @@ use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\UniAccount;
 use app\common\services\Session;
+use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
 
 class ApiController extends BaseController
@@ -51,7 +52,9 @@ class ApiController extends BaseController
             $type = Client::getType();
         }
 
-        if (!MemberService::isLogged()) {
+        $member = MemberFactory::create($type);
+
+        if (!$member->isLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {

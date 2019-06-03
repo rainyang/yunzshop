@@ -17,6 +17,7 @@ use app\common\models\Member;
 use app\common\services\Session;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -37,6 +38,7 @@ class MemberOfficeAccountService extends MemberService
         }
 
         $code = \YunShop::request()->code;
+        $redirect_url = \YunShop::request()->state;
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
@@ -44,22 +46,12 @@ class MemberOfficeAccountService extends MemberService
 
         $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = 'yz-' . session_id();
+        $state = $this->_setClientRequestUrl_v2();
 
-        if (!Session::get('member_id')) {
-            if ($params['scope'] == 'user_info' || \YunShop::request()->scope == 'user_info') {
-                $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
-            } else {
-                $authurl = $this->_getAuthUrl($appId, $callback, $state);
-            }
-        } else {
-            $authurl = $this->_getAuthUrl($appId, $callback, $state);
-        }
-
-        $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
+        $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
         if (!empty($code)) {
-            $redirect_url = $this->_getClientRequestUrl();
+            $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
@@ -81,13 +73,7 @@ class MemberOfficeAccountService extends MemberService
 
             \YunShop::app()->openid = $userinfo['openid'];
 
-            Session::set('member_id', $member_id);
-
-            setcookie('Yz-Token', time());
-            setcookie('Yz-Uid', $member_id);
-
-            Cache::forget($member_id . ':chekAccount');
-            Cache::put($member_id. ':chekAccount', 1, \Carbon\Carbon::now()->addMinutes(30));
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . ':' . $member_id . ':' . $userinfo['openid']));
         } else {
             $this->_setClientRequestUrl();
 
@@ -131,7 +117,7 @@ class MemberOfficeAccountService extends MemberService
             $user_info['subscribe'] = 0;
         }
 
-        return $user_info;
+        return array_merge($user_info, $token);
     }
 
     /**
@@ -213,6 +199,24 @@ class MemberOfficeAccountService extends MemberService
     }
 
     /**
+     * 验证account_token
+     *
+     * @param $accesstoken
+     * @param $openid
+     *
+     * @return string
+     */
+    private function _tokenAuth($accesstoken, $openid)
+    {
+        return 'https://api.weixin.qq.com/sns/auth?access_token=' . $accesstoken . '&openid=' . $openid;
+    }
+
+    private function _refreshAuth($appid, $refreshtoken)
+    {
+        return 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' . $appid . '&grant_type=refresh_token&refresh_token=' . $refreshtoken;
+    }
+
+    /**
      * 设置客户端请求地址
      *
      * @return string
@@ -235,6 +239,25 @@ class MemberOfficeAccountService extends MemberService
         } else {
             Session::set('client_url', '');
         }
+    }
+
+    private function _setClientRequestUrl_v2()
+    {
+        $redirect_url = '';
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect . '&t=' . time();
+            }
+        }
+
+        return $redirect_url;
     }
 
     /**
@@ -448,5 +471,59 @@ class MemberOfficeAccountService extends MemberService
 
         redirect($redirect_url)->send();
         exit;
+    }
+
+    public function isLogged()
+    {
+         $uniacid  = \YunShop::app()->uniacid;
+         $token = \request()->getPassword();
+         $ids   = \request()->getUser();
+         $ids   = implode('-', $ids);
+
+         if (isset($ids[0]) && isset($ids[1])) {
+             $uid   = $ids[0];
+             $openid = $ids[1];
+
+             $member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
+
+             if (!is_null($member) && !empty($token) && !empty($uid)) {
+                 $auth_url = $this->_tokenAuth($token, $openid);
+
+                 $auth_info = \Curl::to($auth_url)
+                     ->asJsonResponse(true)
+                     ->get();
+
+                 if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
+                     Session::set('member_id', $uid);
+
+                     return true;
+                 } else {
+                     $account = AccountWechats::getAccountByUniacid($uniacid);
+                     $appId = $account->key;
+                     $refreshToken = $member->refresh_token_1;
+
+                     $refresh_url = $this->_refreshAuth($appId, $refreshToken);
+
+                     $refresh_info = \Curl::to($refresh_url)
+                         ->asJsonResponse(true)
+                         ->get();
+
+                     if (!isset($refresh_info['errcode'])) {
+                         if ($token != $refresh_info['access_token']) {
+                             $member->account_token_1 = $refresh_info['access_token'];
+                             $member->account_expires_in_1 = time() + 7200;
+
+                             $member->save();
+                         }
+
+                         Session::set('member_id', $uid);
+
+                         return true;
+                     }
+                 }
+             }
+         }
+
+         return false;
     }
 }

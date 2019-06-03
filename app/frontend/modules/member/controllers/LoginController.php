@@ -15,6 +15,7 @@ use app\common\models\Member;
 use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class LoginController extends ApiController
 {
@@ -115,12 +116,21 @@ class LoginController extends ApiController
     public function checkLogin()
     {
         $data = [
-            'token' => $_COOKIE['Yz-Token'],
-            'uid'   => $_COOKIE['Yz-Uid']
+            'token' => '',
+            'uid'   => ''
         ];
 
-        setcookie('Yz-Token', '', time() - 3600);
-        setcookie('Yz-Uid', '',time() - 3600);
+        try {
+            $decrypt = decrypt($_COOKIE['Yz-Token']);
+            $decrypt = explode(':', $decrypt);
+
+            $data = [
+                'token' => $decrypt[0],
+                'uid'   => $decrypt[1] . '-' . $decrypt[2]
+            ];
+        } catch (DecryptException $e) {
+            return $this->successJson('登录失败', $e->getMessage());
+        }
 
         return $this->successJson('已登录', $data);
     }
