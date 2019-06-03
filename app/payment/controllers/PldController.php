@@ -35,7 +35,7 @@ class PldController extends PaymentController
         }
 
         //PLD币和余额的兑换比例
-        $this->pld_proportion = \Setting::get('plugin.pld_pay.pld_proportion') ?:0;
+        $this->pld_proportion = \Setting::get('plugin.pld_pay.pld_proportion') ?:1;
         $this->balance_proportion = \Setting::get('plugin.pld_pay.balance_proportion') ?:1;
 
     }
