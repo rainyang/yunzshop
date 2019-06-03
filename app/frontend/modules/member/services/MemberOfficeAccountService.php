@@ -166,6 +166,9 @@ class MemberOfficeAccountService extends MemberService
 
     /**
      * 获取用户信息 api
+     *
+     * 无需关注
+     *
      * @param $accesstoken
      * @param $openid
      * @return string
@@ -187,7 +190,7 @@ class MemberOfficeAccountService extends MemberService
     /**
      * 获取用户信息
      *
-     * 是否关注公众号
+     * 需要关注
      *
      * @param $accesstoken
      * @param $openid
