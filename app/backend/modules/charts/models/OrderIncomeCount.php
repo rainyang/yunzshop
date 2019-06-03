@@ -76,6 +76,11 @@ class OrderIncomeCount extends BaseModel
 
     }
 
+    public static function updateByOrderId($order_id, $data)
+    {
+        return self::uniacid()->where('order_id', $order_id)->update($data);
+    }
+
     public function hasOneMember()
     {
         return $this->hasOne('app\common\models\Member', 'uid', 'uid');

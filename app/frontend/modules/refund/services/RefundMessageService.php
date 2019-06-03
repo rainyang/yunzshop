@@ -65,8 +65,9 @@ class RefundMessageService extends MessageService
             'keyword4'=>['value'=>  $refundApply->reason],// 退款原因
             'keyword5'=>['value'=> $refundApply->refund_sn],// 订单编号
         ];
-
-        MessageService::MiniNotice($is_open->template_id,$msg,$refundApply->uid);
+        $news_link = MessageTemp::find($temp_id)->news_link;
+        $news_link = $news_link ?:'';
+        MessageService::MiniNotice($is_open->template_id,$msg,$refundApply->uid.'',$news_link);
     }
 
 }

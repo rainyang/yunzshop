@@ -124,7 +124,7 @@
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12 alert alert-info">
-                            请到 <a href='https://dayu.aliyun.com' taget="_blank">阿里云</a> 去申请开通,短信模板中必须包含number,请参考默认用户注册验证码设置。
+                            请到 <a href='https://dayu.aliyun.com' taget="_blank">阿里云</a> 去申请开通,短信模板中必须包含number；阿里云默认模板为code，将code改为number，请参考默认用户注册验证码设置。
                         </div>
                     </div>
                     <div class="form-group">

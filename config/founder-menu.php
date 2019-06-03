@@ -90,6 +90,32 @@ return [
         'sort'              => '5',
         'item'              => 'supervisor',
         'parents'           => ['system'],
+        'child'          => [
+                'supervisord_supervisord_index' => [
+                'name'       => '队列运行状态',
+                'url'        => 'supervisord.supervisord.index',
+                    'url_params' => '',
+                    'permit'     => 1,
+                    'menu'       => 1,
+                    'icon'       => '',
+                    'sort'       => '2',
+                'item'       => 'supervisord_supervisord_index',
+                'parents'    => ['system','supervisor'],
+                'child'      => []
+            ],
+            'supervisord_supervisord_store' => [
+                'name'       => '服务器设置',
+                'url'        => 'supervisord.supervisord.store',
+                'url_params' => '',
+                'permit'     => 1,
+                'menu'       => 1,
+                'icon'       => '',
+                'sort'       => '2',
+                'item'       => 'supervisord_supervisord_store',
+                'parents'    => ['system','supervisor'],
+                'child'      => []
+            ],
+        ],
     ],
 //    'log_viewer'      => [
 //        'name'              => '系统日志',

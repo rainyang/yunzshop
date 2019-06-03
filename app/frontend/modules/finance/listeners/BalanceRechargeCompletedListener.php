@@ -121,6 +121,9 @@ class BalanceRechargeCompletedListener
         if (!$rechargeModel) {
             throw new ShopException('Balance recharge record do not exist！');
         }
+        if ($rechargeModel->status == BalanceRecharge::PAY_STATUS_SUCCESS) {
+            throw new ShopException('单号已经充值，不能重复充值（BALANCE）');
+        }
         $this->rechargeModel = $rechargeModel;
     }
 

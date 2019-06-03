@@ -116,6 +116,14 @@ class CouponExpireNotice
                 $api_limit = '适用于下列商品: ';
                 $api_limit .= implode(',', $coupon['goods_names']);
                 break;
+            case Coupon::COUPON_STORE_USE:
+                $api_limit = '适用于下列门店: ';
+                $api_limit .= implode(',', $coupon['storenames']);
+                break;
+            case Coupon::COUPON_SINGLE_STORE_USE:
+                $api_limit = '适用于下列门店: ';
+                $api_limit .= implode(',', $coupon['storenames']);
+                break;
         }
         return $api_limit;
     }

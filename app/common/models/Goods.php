@@ -24,6 +24,7 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property string status
  * @property string status_name
  * @property string title
+ * @property int uniacid
  * @property int id
  * @property int stock
  * @property float max_price

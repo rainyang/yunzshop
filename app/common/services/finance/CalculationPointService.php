@@ -58,7 +58,7 @@ class CalculationPointService
         $point_data = [];
         if (isset($point_set['enoughs'])) {
             foreach (collect($point_set['enoughs'])->sortBy('enough') as $enough) {
-                if ($order_model->price >= $enough['enough'] && $enough['give'] > 0) {
+                if ($order_model->price - $order_model->dispatch_price - $order_model->fee_amount  >= $enough['enough'] && $enough['give'] > 0) {
                     $point_data['point'] = $enough['give'];
                     $point_price = $enough['enough'];
                     $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $enough['enough'] . ']元赠送[' . $enough['give'] . ']积分';
@@ -66,7 +66,7 @@ class CalculationPointService
             }
         }
         if (!empty($point_set['enough_money']) && !empty($point_set['enough_point'])) {
-            if ($order_model->price >= $point_set['enough_money'] && $point_set['enough_point'] > 0 && $point_set['enough_money'] > $point_price) {
+            if ($order_model->price - $order_model->dispatch_price - $order_model->fee_amount >= $point_set['enough_money'] && $point_set['enough_point'] > 0 && $point_set['enough_money'] > $point_price) {
                 $point_data['point'] = $point_set['enough_point'];
                 $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $point_set['enough_money'] . ']元赠送[' . $point_data['point'] . ']积分';
             }

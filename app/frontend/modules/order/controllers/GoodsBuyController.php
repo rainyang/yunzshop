@@ -11,7 +11,6 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\frontend\modules\member\services\MemberCartService;
 use app\frontend\modules\memberCart\MemberCartCollection;
-
 class GoodsBuyController extends ApiController
 {
     /**
@@ -25,7 +24,6 @@ class GoodsBuyController extends ApiController
             'total' => request()->input('total'),
             'option_id' => request()->input('option_id'),
         ];
-
         $result = new MemberCartCollection();
         $result->push(MemberCartService::newMemberCart($goods_params));
         return $result;
@@ -56,4 +54,5 @@ class GoodsBuyController extends ApiController
         $trade = $this->getMemberCarts()->getTrade();
         return $this->successJson('成功', $trade);
     }
+
 }

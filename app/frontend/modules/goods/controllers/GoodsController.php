@@ -13,12 +13,14 @@ use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\MemberShopInfo;
 use Illuminate\Support\Facades\DB;
 use Yunshop\Commission\Common\Services\GoodsDetailService;
+use Yunshop\TeamDividend\Common\Services\TeamDividendGoodsDetailService;
 use Yunshop\Commission\models\Agents;
 use Yunshop\Love\Common\Models\GoodsLove;
 use app\frontend\modules\coupon\models\Coupon;
 use app\frontend\modules\coupon\controllers\MemberCouponController;
 use app\common\services\goods\LeaseToyGoods;
 use Yunshop\Supplier\common\models\SupplierGoods;
+use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 use app\common\models\MemberLevel;
 use app\common\models\MemberGroup;
 
@@ -280,7 +282,7 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->where(function($query) {
 //                $query->whereIn('plugin_id', [0,40,92,41]);
-              $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             });
 
         //todo 为什么要取出id, 如id过多超出in的长度如何处理
@@ -446,11 +448,12 @@ class GoodsController extends ApiController
      */
     public function getDiscount(Goods $goodsModel, $memberModel)
     {
-
+        $discount_switch = \ Setting::get('shop.member.discount');
         if ($memberModel->level) {
             $data = [
                 'level_name' => $memberModel->level->level_name,
                 'discount_value' => $goodsModel->vip_price,
+                'discount' => $discount_switch,
             ];
         } else {
             $level = Setting::get('shop.member.level_name');
@@ -462,6 +465,7 @@ class GoodsController extends ApiController
             $data = [
                 'level_name' => $level_name,
                 'discount_value' => $goodsModel->vip_price,
+                'discount' => $discount_switch,
             ];
         }
 
@@ -477,6 +481,8 @@ class GoodsController extends ApiController
 
         //获取商城设置: 判断 积分、余额 是否有自定义名称
         $shopSet = \Setting::get('shop.shop');
+
+        //判断经销商详情活动提成是否开启
 
         if ($goodsModel->hasOneSale->ed_num || $goodsModel->hasOneSale->ed_money) {
             $data['name'] = '包邮';
@@ -605,9 +611,29 @@ class GoodsController extends ApiController
             }
         }
 
+        //经销商提成
+        $exist_team_dividend = app('plugins')->isEnabled('team-dividend');
+        if($exist_team_dividend){
+            //验证是否是经销商及等级
+            $is_agent = $this->isValidateTeamDividend($member);
+            if ($is_agent) {
+                //返回经销商等级奖励比例  商品等级奖励规则
+                $team_dividend_data = (new TeamDividendGoodsDetailService($goodsModel))->getGoodsDetailData();
+                if ($team_dividend_data['team_dividend_show'] == 1) {
+                    $data['name'] = '经销商提成';
+                    $data['key'] = 'team-dividend';
+                    $data['type'] = 'array';
+                    $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'];
+                    array_unshift($sale, $data);
+                    $data = [];
+                }
+            }
+
+        }
         return [
             'sale_count' => count($sale),
-            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
+//            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
+            'first_strip_key' => $sale ? $sale[0] : [],
             'sale' => $sale,
         ];
     }
@@ -615,6 +641,11 @@ class GoodsController extends ApiController
     public function isValidateCommission($member)
     {
         return Agents::getAgentByMemberId($member->member_id)->first();
+    }
+
+    public function isValidateTeamDividend($member)
+    {
+        return TeamDividendAgencyModel::getAgencyByMemberId($member->member_id)->first();
     }
 
     /**
@@ -866,12 +897,12 @@ class GoodsController extends ApiController
         $this->dataIntegrated($this->getGoods($request, true),'get_goods');
         $storeId = $this->apiData['get_goods']->store_goods->store_id;
         if($storeId){
-                if(class_exists('\Yunshop\StoreCashier\frontend\store\GetStoreInfoController')){
-                    $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
-                    $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
-                }else{
-                    return $this->errorJson('门店插件未开启');
-                }
+            if(class_exists('\Yunshop\StoreCashier\frontend\store\GetStoreInfoController')){
+                $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
+                $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
+            }else{
+                return $this->errorJson('门店插件未开启');
+            }
         }
         if($this->apiData['get_goods']->is_hotel){
             if(class_exists('\Yunshop\Hotel\frontend\hotel\GoodsController')){
