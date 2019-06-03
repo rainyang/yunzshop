@@ -1220,6 +1220,7 @@ if (!function_exists('file_remote_upload')) {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
                 $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/' . $filename);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                \Log::info('-----alioss上传失败信息-----', $e->getMessage());
                 return error(1, $e->getMessage());
             }
             if ($auto_delete_local) {
@@ -1233,6 +1234,7 @@ if (!function_exists('file_remote_upload')) {
                 $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
             if ($uploadRet['code'] != 0) {
+                \Log::info('-----cos上传失败信息-----', json_encode($uploadRet));
                 $message = '';
                 switch ($uploadRet['code']) {
                     case -62:
