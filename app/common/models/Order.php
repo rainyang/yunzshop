@@ -101,14 +101,13 @@ class Order extends BaseModel
     public $setting = null;
     private $StatusService;
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'pay_type_name'];
+    protected $appends = ['status_name', 'pay_type_name','rise_type_name'];
     protected $search_fields = ['id', 'order_sn'];
     protected $attributes = [
         'plugin_id' => 0,
         'is_virtual' => 0,
     ];
     static protected $needLog = true;
-
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
     const WAIT_PAY = 0;
@@ -460,7 +459,6 @@ class Order extends BaseModel
 
         return $statusName;
     }
-
 
     /**
      * 支付类型汉字
