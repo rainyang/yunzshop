@@ -673,6 +673,14 @@ class Member extends BackendModel
             ];
         }
 
+
+        //配送站
+        if (app('plugins')->isEnabled('delivery-station')) {
+            $data['is_open_delivery_station'] = Setting::get('plugin.delivery_station.is_open')?1:0;
+        } else {
+            $data['is_open_delivery_station'] = 0;
+        }
+
         return $data;
     }
 

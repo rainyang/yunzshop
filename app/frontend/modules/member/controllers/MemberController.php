@@ -176,12 +176,6 @@ class MemberController extends ApiController
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
 
-                //配送站
-                if (app('plugins')->isEnabled('delivery-station')) {
-                    $data['is_open_delivery_station'] = Setting::get('plugin.delivery_station.is_open')?1:0;
-                } else {
-                    $data['is_open_delivery_station'] = 0;
-                }
 
 
 //                if ($data['is_open_net_car']) {
