@@ -819,11 +819,11 @@ class MemberController extends ApiController
                             $member_model->mobile = $mobile;
                             $member_model->password = md5($password . $salt);
 
-                            //更新session
+
                             Session::set('member_id',$mc_uid);
                         }elseif (!empty($memberinfo_model) && ($memberinfo_model->createtime > $member_model->createtime)) {
                             //app注册的会员信息id
-                            $mc_uid = $memberinfo_model['uid'];
+                            //$mc_uid = $memberinfo_model['uid'];
                             //app注册的会员的余额 积分
                             $credit1 = $memberinfo_model->credit1;
                             $credit2 = $memberinfo_model->credit2;
