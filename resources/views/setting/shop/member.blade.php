@@ -56,10 +56,10 @@
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情会员折扣</label>
                             <div class="col-sm-9 col-xs-12">
 
-                                <label class='radio-inline'><input type='radio' name='member[discount]' value='2'
-                                                                   @if ($set['discount'] == 2) checked @endif />否</label>
                                 <label class='radio-inline'><input type='radio' name='member[discount]' value='1'
-                                                                   @if ($set['discount'] == 1 || empty($set['discount'])) checked @endif /> 是</label>
+                                                                   @if ($set['discount'] == 1 ||empty($set['discount'])) checked @endif />显示</label>
+                                <label class='radio-inline'><input type='radio' name='member[discount]' value='2'
+                                                                   @if ($set['discount'] == 2) checked @endif /> 隐藏</label>
 
                             </div>
                         </div>

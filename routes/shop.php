@@ -104,6 +104,15 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'authShop', 'globalpar
                 // TODO 跳转到平台管理页面
             }
 
+            // 执行迁移文件
+            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
+            $update     = new \app\common\services\AutoUpdate(null, null, 300);
+            \Log::debug('----CLI----');
+            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
+            if (!empty($plugins_dir)) {
+                \Artisan::call('update:version', ['version' => $plugins_dir]);
+            }
+
             //解析商城路由
             if (YunShop::request()->route) {
                 YunShop::parseRoute(YunShop::request()->route);

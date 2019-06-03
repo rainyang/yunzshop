@@ -283,14 +283,12 @@ class PreOrderGoodsDeduction extends OrderGoodsDeduction
         if ($this->getUsableCoin()->getMoney() <= 0) {
             return $this->newCoin();
         }
-        // (订单商品最多可用抵扣的金额 /订单最多可用抵扣的金额) * 订单实际抵扣的金额
+        // 订单商品最低抵扣
         $amount = $this->getMinLimitBuyCoin()->getMoney();
-
+        // 订单所有同类型的剩余抵扣
         $restDeductionAmount = $this->getOrderDeduction()->getMaxOrderGoodsDeduction()->getMoney() - $this->getOrderDeduction()->getMinDeduction()->getMoney();
-        // 没有可用抵扣金额
-        if ($restDeductionAmount <= 0) {
-            return $this->newCoin();
-        }
+
+        // 订单商品的剩余抵扣/      订单所有同类型的剩余抵扣     获取订单商品占用的抵扣金额-d
         $amount += ($this->getUsableCoin()->getMoney() - $this->getMinLimitBuyCoin()->getMoney()) / $restDeductionAmount * ($this->getOrderDeduction()->getOrderGoodsDeductionAmount() - $this->getOrderDeduction()->getMinDeduction()->getMoney());
 
         return $this->newCoin()->setMoney($amount);

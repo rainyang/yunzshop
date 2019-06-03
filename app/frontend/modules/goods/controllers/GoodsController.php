@@ -612,24 +612,24 @@ class GoodsController extends ApiController
         }
 
         //经销商提成
-//        $exist_team_dividend = app('plugins')->isEnabled('team-dividend');
-//        if($exist_team_dividend){
-//            //验证是否是经销商及等级
-//            $is_agent = $this->isValidateTeamDividend($member);
-//            if ($is_agent) {
-//                //返回经销商等级奖励比例  商品等级奖励规则
-//                $team_dividend_data = (new TeamDividendGoodsDetailService($goodsModel))->getGoodsDetailData();
-//                if ($team_dividend_data['team_dividend_show'] == 1) {
-//                    $data['name'] = '经销商提成';
-//                    $data['key'] = 'team-dividend';
-//                    $data['type'] = 'array';
-//                    $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'];
-//                    array_unshift($sale, $data);
-//                    $data = [];
-//                }
-//            }
-//
-//        }
+        $exist_team_dividend = app('plugins')->isEnabled('team-dividend');
+        if($exist_team_dividend){
+            //验证是否是经销商及等级
+            $is_agent = $this->isValidateTeamDividend($member);
+            if ($is_agent) {
+                //返回经销商等级奖励比例  商品等级奖励规则
+                $team_dividend_data = (new TeamDividendGoodsDetailService($goodsModel))->getGoodsDetailData();
+                if ($team_dividend_data['team_dividend_show'] == 1) {
+                    $data['name'] = '经销商提成';
+                    $data['key'] = 'team-dividend';
+                    $data['type'] = 'array';
+                    $data['value'][] = '经销商提成' . $team_dividend_data['team_dividend_royalty'];
+                    array_unshift($sale, $data);
+                    $data = [];
+                }
+            }
+
+        }
         return [
             'sale_count' => count($sale),
 //            'first_strip_key' => $sale ? $sale[rand(0, (count($sale) - 1))] : [],
