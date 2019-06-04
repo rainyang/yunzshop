@@ -11,15 +11,18 @@ use app\common\helpers\Url;
 use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
-use Yunshop\ConvergePay\services\WechatNotifyService;
+use Yunshop\ConvergePay\services\NotifyService;
 
 class ConvergepayController extends PaymentController
 {
     private $attach = [];
+    private $parameter = [];
 
     public function __construct()
     {
         parent::__construct();
+
+        $this->parameter = $_GET;
 
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_GET['r2_OrderNo']);
@@ -30,26 +33,19 @@ class ConvergepayController extends PaymentController
         }
     }
 
-    public function WechatNotifyService()
+    public function notifyUrlWechat()
     {
-        $parameter = $_GET;
-
-        $this->log($parameter);
+        $this->log($this->parameter, '微信支付-HJ');
 
         if($this->getSignResult()) {
             if ($_GET['r6_Status'] == '100') {
                 \Log::debug('------微信支付-HJ 验证成功-----');
-                $data = [
-                    'total_fee'    => floatval($parameter['r3_Amount']),
-                    'out_trade_no' => $this->attach[0],
-                    'trade_no'     => $parameter['r7_TrxNo'],
-                    'unit'         => 'yuan',
-                    'pay_type'     => '微信支付-HJ',
-                    'pay_type_id'     => 28
-                ];
+
+                $data = $this->data('微信支付-HJ', '28');
 
                 $this->payResutl($data);
                 \Log::debug('----微信支付-HJ 结束----');
+
                 echo 'success';
             } else {
                 //其他错误
@@ -76,6 +72,29 @@ class ConvergepayController extends PaymentController
         }
     }
 
+    public function notifyUrlAlipay()
+    {
+        $this->log($this->parameter, '支付宝支付-HJ');
+
+        if($this->getSignResult()) {
+            if ($_GET['r6_Status'] == '100') {
+                \Log::debug('------支付宝支付-HJ 验证成功-----');
+
+                $data = $this->data('支付宝支付', '29');
+                $this->payResutl($data);
+
+                \Log::debug('----支付宝支付-HJ 结束----');
+                echo 'success';
+            } else {
+                //其他错误
+                echo 'fail';
+            }
+        } else {
+            //签名验证失败
+            echo 'fail1';
+        }
+    }
+
     /**
      * 签名验证
      *
@@ -85,7 +104,7 @@ class ConvergepayController extends PaymentController
     {
         $pay = \Setting::get('plugin.convergePay_set');
 
-        $notify = new WechatNotifyService();
+        $notify = new NotifyService();
         $notify->setKey($pay['hmacVal']);
 
         return $notify->verifySign();
@@ -96,12 +115,32 @@ class ConvergepayController extends PaymentController
      *
      * @param $post
      */
-    public function log($data)
+    public function log($data, $sign)
     {
         $orderNo = explode(':', $data['orderNo']);
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($orderNo[0], '微信支付-HJ', json_encode($data));
+        Pay::payResponseDataLog($orderNo[0], $sign, json_encode($data));
+    }
+
+    /**
+     * 支付回调参数
+     *
+     * @param $pay_type_id
+     * @return array
+     */
+    public function data($pay_type, $pay_type_id)
+    {
+        $data = [
+            'total_fee'    => floatval($this->parameter['r3_Amount']),
+            'out_trade_no' => $this->attach[0],
+            'trade_no'     => $this->parameter['r7_TrxNo'],
+            'unit'         => 'yuan',
+            'pay_type'     => $pay_type,
+            'pay_type_id'  => $pay_type_id
+        ];
+
+        return $data;
     }
 }
