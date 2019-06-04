@@ -783,6 +783,7 @@ class MemberController extends ApiController
                             $old_credit2 = $memberinfo_model->credit2;
                             $member_model->credit1 = 0;
                             $member_model->credit2 = 0;
+                            $member_model->mobile = '';
 
                             //同步微信注册的会员的积分 余额 到app web注册的会员表中
                             $memberinfo_model->credit1 += $credit1;
