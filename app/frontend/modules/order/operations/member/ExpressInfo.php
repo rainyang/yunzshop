@@ -32,7 +32,7 @@ class ExpressInfo extends OrderOperation
             return false;
         }
         // 门店自提
-        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
+        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY, DispatchType::DELIVERY_STATION_SELF])) {
             return false;
         }
         return true;
