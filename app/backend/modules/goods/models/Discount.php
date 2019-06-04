@@ -49,7 +49,7 @@ class Discount extends \app\common\models\goods\Discount
                     'level_discount_type' => !empty($data['level_discount_type']) ? $data['level_discount_type'] : '1',
                     'discount_method' => !empty($data['discount_method']) ? $data['discount_method'] : '1',
                     'level_id' => $key,
-                    'discount_value' => !empty($value) ? $value : '0',
+                    'discount_value' => $value,
                     'goods_id' => $goodsId
                 ];
             }
