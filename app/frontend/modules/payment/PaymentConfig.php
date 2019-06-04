@@ -233,7 +233,7 @@ class PaymentConfig
                     }
                 ],
             ],
-            'WechatPayHj' => [
+            'convergePayWechat' => [
                 'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
                     return new WechatPayHjment($orderPay, $payType, $settings);
                 },
@@ -243,7 +243,7 @@ class PaymentConfig
                     }
                 ],
             ],
-            'AlipayPayHj' => [
+            'convergePayAlipay' => [
                 'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
                     return new AlipayPayHjment($orderPay, $payType, $settings);
                 },
