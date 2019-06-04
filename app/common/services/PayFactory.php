@@ -268,7 +268,7 @@ class PayFactory
                     throw new AppException('商城未开启汇聚支付插件中微信支付');
                 }
 
-                $className = new \Yunshop\ConvergePay\services\AlipayService();
+                $className = new \Yunshop\ConvergePay\services\WechatService();
                 break;
             case self::PAY_ALIPAY_HJ:
                 if (!app('plugins')->isEnabled('converge_pay') && \Setting::get('plugin.convergePay_set.alipay') == false) {
@@ -276,7 +276,7 @@ class PayFactory
                     throw new AppException('商城未开启汇聚支付插件中支付宝支付');
                 }
 
-                $className = new \Yunshop\ConvergePay\services\WechatService();
+                $className = new \Yunshop\ConvergePay\services\AlipayService();
                 break;
             default:
                 $className = null;
