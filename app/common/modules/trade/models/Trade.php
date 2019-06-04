@@ -11,7 +11,10 @@ namespace app\common\modules\trade\models;
 use app\common\models\BaseModel;
 use app\common\modules\memberCart\MemberCartCollection;
 use app\common\modules\order\OrderCollection;
+use app\frontend\models\order\PreOrderDiscount;
+use app\frontend\models\order\PreOrderFee;
 use app\frontend\modules\order\models\PreOrder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -33,23 +36,99 @@ class Trade extends BaseModel
         $this->setRelation('orders', $this->getOrderCollection($memberCartCollection));
         $this->setRelation('discount', $this->getDiscount());
         $this->setRelation('dispatch', $this->getDispatch());
-        $this->initAttribute();
-
+        $this->amount_items = $this->getAmountItems();
+        $this->discount_amount_items = $this->getDiscountAmountItems();
+        $this->fee_items = $this->getFeeItems();
+        $this->total_price = $this->orders->sum('price');
     }
 
-    private function initAttribute()
+    private function getFeeItems()
     {
-        $attributes = [
-            'total_price' => $this->orders->sum('price'),
-            'total_goods_price' => $this->orders->sum('order_goods_price'),
-            'total_dispatch_price' => $this->orders->sum('dispatch_price'),
-            'total_discount_price' => $this->orders->sum('discount_price'),
-            'total_deduction_price' => $this->orders->sum('deduction_price'),
-        ];
+        $orderFeesItems = $this->orders->reduce(function (Collection $result, PreOrder $order) {
+            foreach ($order->orderFees as $orderFee) {
+                /**
+                 * @var PreOrderFee $orderFee
+                 */
+                $old = $result->where('code', $orderFee->fee_code)->first();
+                if (!$orderFee->amount) {
+                    continue;
+                }
+                // 删除旧的元素
+                $result = $result->filter(function ($item)use($old) {
+                    return $item->code == $old->code;
+                });
+                // 添加累加后的值
+                $result[] = [
+                    'code' => $orderFee->fee_code,
+                    'name' => $orderFee->name,
+                    'amount' => $old['amount'] + $orderFee->amount,
+                ];
+            }
+            return $result;
+        }, collect())->map(function ($item) {
+            $item['amount'] = sprintf('%.2f', $item['amount']);
+            return $item;
+        })->toArray();
+        return $orderFeesItems;
+    }
 
-        $attributes = array_merge($this->getAttributes(), $attributes);
-        $this->setRawAttributes($attributes);
-        return $this;
+    private function getAmountItems()
+    {
+        $items = [
+            [
+                'code' => 'total_goods_price',
+                'name' => '订单总金额',
+                'amount' => $this->orders->sum('order_goods_price'),
+            ], [
+                'code' => 'total_dispatch_price',
+                'name' => '总运费',
+                'amount' => $this->orders->sum('dispatch_price'),
+            ]
+        ];
+        if ($this->orders->sum('deduction_price')) {
+            $items[] = [
+                'code' => 'total_deduction_price',
+                'name' => '总抵扣',
+                'amount' => $this->orders->sum('deduction_price'),
+            ];
+        }
+
+        return $items;
+    }
+
+    /**
+     * @return mixed
+     */
+    private function getDiscountAmountItems()
+    {
+
+        $orderDiscountsItems = $this->orders->reduce(function (Collection $result, PreOrder $order) {
+            foreach ($order->orderDiscounts as $orderDiscount) {
+                /**
+                 * @var PreOrderDiscount $orderDiscount
+                 */
+                $old = $result->where('code', $orderDiscount->discount_code)->first();
+
+                if (!$orderDiscount->amount) {
+                    continue;
+                }
+                // 删除旧的元素
+                $result = $result->filter(function ($item)use($old) {
+                    return $item->code == $old->code;
+                });
+                // 添加累加后的值
+                $result[] = [
+                    'code' => $orderDiscount->discount_code,
+                    'name' => $orderDiscount->name,
+                    'amount' => $old['amount'] + $orderDiscount->amount,
+                ];
+            }
+            return $result;
+        }, collect())->map(function ($item) {
+            $item['amount'] = sprintf('%.2f', $item['amount']);
+            return $item;
+        })->toArray();
+        return $orderDiscountsItems;
     }
 
     /**

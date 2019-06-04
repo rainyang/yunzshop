@@ -13,6 +13,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
     Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
     Route::any('detail', 'ResetpwdController@detail'); //检查验证码
+    Route::any('auth', 'ResetpwdController@authPassword'); // 管理员修改密码
 
 
     Route::get('/', 'IndexController@index');
@@ -36,7 +37,7 @@ Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\syst
     Route::any('video', 'UploadController@video');       // 音频视频列表
 });
 
-Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap']], function () {
+Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap', 'check']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
 
@@ -80,14 +81,26 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::any('update/index', 'UpdateController@index');
         // 检查更新
         Route::get('update/verifyCheck', 'UpdateController@verifyCheck');
-        // 更新
+        // 后台文件
         Route::any('update/fileDownload', 'UpdateController@fileDownload');
         // 版权
         Route::any('update/pirate', 'UpdateController@pirate');
-        // 初始程序
+        // 前端压缩包下载
         Route::any('update/startDownload', 'UpdateController@startDownload');
+        // 框架压缩包下载
+        Route::any('update/FrameworkDownload', 'UpdateController@startDownloadFramework');
         //短信设置
         Route::any('sms', 'AttachmentController@sms');
+        // 站点注册-显示
+        Route::get('siteRegister/index', 'SiteRegisterController@index');
+        // 站点注册-获取城市
+        Route::post('siteRegister/getcity', 'SiteRegisterController@getcity');
+        // 站点注册-获取地区
+        Route::post('siteRegister/getarea', 'SiteRegisterController@getarea');
+        // 站点注册-获取手机验证码
+        Route::post('siteRegister/sendSms', 'SiteRegisterController@sendSms');
+        // 站点注册-注册
+        Route::post('siteRegister/register', 'SiteRegisterController@register');
     });
 
     // 用户管理
@@ -102,6 +115,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::post('status', 'AdminUserController@status');
         // 用户修改密码
         Route::post('change', 'AdminUserController@change');
+        // 用户信息修改
+        Route::post('modify_user', 'AdminUserController@modifyCurrentUser');
+        // 发送手机验证码
+        Route::post('send_code', 'AdminUserController@sendCode');
+        // 发送新手机号验证码
+        Route::post('send_new_code', 'AdminUserController@sendNewCode');
+        // 修改手机号
+        Route::post('modify_mobile', 'AdminUserController@modifyMobile');
         // 平台列表
         Route::post('app_list', 'AdminUserController@applicationList');
         // 店员用户列表

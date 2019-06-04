@@ -27,7 +27,9 @@ class ShopBootstrap
             $account = AppUser::getAccount(\Auth::guard('admin')->user()->uid);
 
             if (!is_null($account) && in_array($account->role, $this->authRole)) {
+                \YunShop::app()->uniacid = $account->uniacid;
                 $cfg['uniacid'] = $account->uniacid;
+
                 Utils::addUniacid($account->uniacidb);
                 \config::set('app.global', $cfg);
 

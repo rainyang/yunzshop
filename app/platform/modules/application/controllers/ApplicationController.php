@@ -55,7 +55,28 @@ class ApplicationController extends BaseController
                     $list['data'][$key]['validity_time'] = intval($value['validity_time']);
 
                 } else {
-                    
+        
+                    //到期前一周的时间  当前+1 直到 +7 小于等于 $value['validity_time']
+                     $week = date('W');
+
+                     $nowstamp = mktime(0,0,0, date('m'), date('d'), date('Y') );
+
+                     $time_week = date('W', $value['validity_time']);
+
+                     if ((date('W', strtotime('+1 week')) == $time_week) || (date('W') == $time_week && $value['validity_time'] >= $nowstamp)) {
+                        
+                         $list['data'][$key]['is_expire'] = 1;  //到期前一周
+                     }
+
+                     if ($value['validity_time'] != 0 && $value['validity_time'] < $nowstamp) {
+                        
+                         $list['data'][$key]['is_expire'] = 2;  //已经到期
+                     }
+
+                     if($value['validity_time'] === 0 || ( date('W', strtotime('+1 week') - $time_week > 1) && $value['validity_time'] > $nowstamp) ) {
+                         $list['data'][$key]['is_expire'] = 0;
+                     }
+
                     $list['data'][$key]['validity_time'] = date('Y-m-d', $value['validity_time'] );
                 }
             }
@@ -134,6 +155,14 @@ class ApplicationController extends BaseController
         $id = $app->insertGetId($data); 
 
         if ($id) {
+            if ($uid != 1) {
+                // 新框架角色表插入数据
+                AppUser::create([
+                    'role' => 'manager',
+                    'uid' => $uid,
+                    'uniacid' => $id
+                ]);
+            }
             
             $up = UniacidApp::where('id', $id)->update(['uniacid'=>$id]);  
             

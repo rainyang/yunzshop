@@ -5,7 +5,9 @@ namespace app\common\models;
 use app\backend\models\BackendModel;
 use app\common\events\member\BecomeAgent;
 
+use app\common\events\member\PluginCreateRelationEvent;
 use app\common\models\member\MemberChildren;
+use app\common\models\member\MemberParent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\common\modules\memberCart\MemberCartCollection;
@@ -159,6 +161,10 @@ class Member extends BackendModel
     public function hasOneFans()
     {
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'uid');
+    }
+    public function hasOneMiniApp()
+    {
+        return $this->hasOne('app\common\models\MemberMiniAppModel', 'member_id', 'uid');
     }
 
 
@@ -434,12 +440,17 @@ class Member extends BackendModel
      *
      * @param $member_id
      */
-    public static function chkAgent($member_id, $mid)
+    public static function chkAgent($member_id, $mid, $mark = '', $mark_id = '')
     {
         $model = MemberShopInfo::getMemberShopInfo($member_id);
 
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
+
+        if($mark_id && $mark)
+        {
+            event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
+        }
     }
 
     /**
@@ -926,10 +937,10 @@ class Member extends BackendModel
         $is_invite = intval(\Setting::get('shop.member.is_invite'));
         $invite_page = intval(\Setting::get('shop.member.invite_page'));
 
-        //邀请页和邀请码都开启
-        if (1 == $invite_page && 1 == $is_invite) {
-            $is_invite = 0;
-        }
+//        //邀请页和邀请码都开启
+//        if (1 == $invite_page && 1 == $is_invite) {
+//            $is_invite = 0;
+//        }
 
         return $is_invite;
     }

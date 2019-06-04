@@ -450,7 +450,7 @@ class UpdateController extends BaseController
     private function getFrontVersion($updateList)
     {
         rsort($updateList);
-        $version = $updateList[0]['version']->getVersion();
+        $version = $updateList[0]['version'];
 
         return $version;
     }
@@ -480,7 +480,8 @@ class UpdateController extends BaseController
                 'path' => base_path('plugins/store-cashier/migrations'),
                 'ext'  => ['php'],
                 'file' => [
-                    base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php')
+                    base_path('plugins/store-cashier/migrations/2018_11_26_174034_fix_address_store.php'),
+                    base_path('plugins/store-cashier/migrations/2017_08_03_170658_create_ims_yz_cashier_goods_table.php')
                 ]
             ],
             [
@@ -498,6 +499,16 @@ class UpdateController extends BaseController
                 ]
             ]
         ];
+
+        if (env('APP_Framework', 'shop') == 'shop') {
+            array_push($files, [
+                'path' => base_path(),
+                'ext'  => ['php'],
+                'file' => [
+                    base_path('index.php')
+                ]
+            ]);
+        }
 
         foreach ($files as $rows) {
             $scan_file = $filesystem->files($rows['path']);

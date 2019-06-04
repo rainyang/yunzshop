@@ -43,6 +43,14 @@ class PaymentController extends BaseController
 
                     \YunShop::app()->uniacid = (int)substr($batch_no, 17, 5);
                     break;
+                case 'returnUrl':
+                    if (strpos($_GET['out_trade_no'], '_') !== false) {
+                        $data = explode('_', $_GET['out_trade_no']);
+                        \YunShop::app()->uniacid = $data[0];
+                    } else {
+                        \YunShop::app()->uniacid = $this->getUniacid();
+                    }
+                    break;
                 default:
                     \YunShop::app()->uniacid = $this->getUniacid();
                     break;
@@ -62,6 +70,7 @@ class PaymentController extends BaseController
     private function getUniacid()
     {
         $body = !empty($_REQUEST['body']) ? $_REQUEST['body'] : '';
+        \Log::debug('body===========',$body);
         //区分app支付获取
         if ($_REQUEST['sign_type'] == 'MD5') {
             $uniacid = substr($body, strrpos($body, ':')+1);
@@ -131,34 +140,34 @@ class PaymentController extends BaseController
                 }
                 break;
             case "recharge.succeeded":
-                \Log::debug('支付操作', ['recharge.succeeded']);
-                (new BalanceRechargeResultService())->payResult([
-                    'order_sn' => $data['out_trade_no'],
-                    'pay_sn' => $data['trade_no']
-                ]);
+                \Log::debug('支付操作', ['recharge.succeeded', $data['out_trade_no']]);
 
                 //充值成功事件
                 event(new RechargeComplatedEvent([
                     'order_sn' => $data['out_trade_no'],
-                    'pay_sn' => $data['trade_no']
+                    'pay_sn' => $data['trade_no'],
+                    'total_fee' => $data['total_fee'],
+                    'unit' => $data['unit']
                 ]));
 
                 break;
             case "gold_recharge.succeeded":
-                \Log::debug('金币支付操作', ['gold_recharge.succeeded']);
+                \Log::debug('金币支付操作', ['gold_recharge.succeeded', $data['out_trade_no']]);
                 RechargeService::payResult([
                     'order_sn' => $data['out_trade_no'],
-                    'pay_sn' => $data['trade_no']
+                    'pay_sn' => $data['trade_no'],
+                    'total_fee' => $data['total_fee']
                 ]);
 
                 //充值成功事件
                 event(new RechargeComplatedEvent([
                     'order_sn' => $data['out_trade_no'],
-                    'pay_sn' => $data['trade_no']
+                    'pay_sn' => $data['trade_no'],
+                    'total_fee' => $data['total_fee']
                 ]));
                 break;
             case "card_charge.succeeded":
-                \Log::debug('打卡支付操作', ['card_charge.succeeded']);
+                \Log::debug('打卡支付操作', ['card_charge.succeeded', $data['out_trade_no']]);
 
                 $orderPay = ClockPayLogModel::where('order_sn', $data['out_trade_no'])->first();
 
@@ -170,12 +179,13 @@ class PaymentController extends BaseController
                     \Log::debug('更新订单状态');
                     event(new ChargeComplatedEvent([
                         'order_sn' => $data['out_trade_no'],
-                        'pay_sn' => $data['trade_no']
+                        'pay_sn' => $data['trade_no'],
+                        'total_fee' => $data['total_fee']
                     ]));
                 }
                 break;
             case "dashang_charge.succeeded":
-                \Log::debug('打赏支付操作', ['dashang_charge.succeeded']);
+                \Log::debug('打赏支付操作', ['dashang_charge.succeeded', $data['out_trade_no']]);
                 event(new ChargeComplatedEvent([
                     'order_sn' => $data['out_trade_no'],
                     'pay_sn' => '',

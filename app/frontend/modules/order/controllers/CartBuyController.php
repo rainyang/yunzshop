@@ -12,6 +12,7 @@ use app\common\components\ApiController;
 use app\common\exceptions\AppException;
 use app\frontend\modules\memberCart\MemberCartCollection;
 
+
 class CartBuyController extends ApiController
 {
     /**
@@ -23,10 +24,8 @@ class CartBuyController extends ApiController
     {
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
-
         return $this->successJson('成功', $trade);
     }
-
     /**
      * @throws \app\common\exceptions\ShopException
      */
@@ -55,6 +54,7 @@ class CartBuyController extends ApiController
         }
         if (!isset($memberCarts)) {
             $memberCarts = app('OrderManager')->make('MemberCart')->whereIn('id', $cartIds)->get();
+
             $memberCarts = new MemberCartCollection($memberCarts);
             $memberCarts->loadRelations();
         }

@@ -24,6 +24,7 @@ use Yunshop\Diyform\models\DiyformTypeModel;
 use Gregwar\Captcha\CaptchaBuilder;
 use Gregwar\Captcha\PhraseBuilder;
 use app\common\models\PayType;
+use app\common\models\notice\MinAppTemplateMessage;
 class ShopController extends BaseController
 {
     /**
@@ -276,6 +277,32 @@ class ShopController extends BaseController
             'temp_list' => $temp_list
         ])->render();
     }
+    /**
+     * 小程序消息提醒设置
+     * @return mixed
+     */
+    public function miniNotice()
+    {
+        $notice = Setting::get('shop.miniNotice');
+//        $salers = []; //订单通知的商家列表,数据如何取待定?
+        //$new_type = []; //通知方式的数组,数据如何来的待定?
+        $requestModel = \YunShop::request()->yz_notice;
+
+        $temp_list = MessageTemp::getList();
+
+        if (!empty($requestModel)) {
+            if (Setting::set('shop.miniNotice', $requestModel)) {
+                return $this->message(' 消息提醒设置成功', Url::absoluteWeb('setting.shop.notice'));
+            } else {
+                $this->error('消息提醒设置失败');
+            }
+        }
+
+        return view('setting.shop.mini-notice', [
+            'set' => $notice,
+            'temp_list' => $temp_list
+        ])->render();
+    }
 
     /**
      * 交易设置
@@ -420,7 +447,7 @@ class ShopController extends BaseController
                 $originalName = $file->getClientOriginalName(); // 文件原名
                 $ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
-                $i = \YunShop::app()->uniaccount['uniacid'];
+                $i = \YunShop::app()->uniacid;
 
                 $upload_file = $i . '_' . $originalName;
 

@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\facades\Setting;
+use Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener;
 
 
 class TestController extends BaseController
@@ -39,6 +40,29 @@ class TestController extends BaseController
     public function t()
     {
 
+    }
+
+    private $amountItems;
+
+    private function getAmountItems()
+    {
+        if (!isset($this->amountItems)) {
+            $this->amountItems = \app\common\models\Withdraw::select(['member_id', DB::raw('sum(`actual_amounts`) as total_amount')])->
+            where('type', 'Yunshop\Commission\models\CommissionOrder')
+                ->where('status', 2)->groupBy('member_id')
+                ->get();
+        }
+        return $this->amountItems;
+    }
+
+    private function getAmountByMemberId($memberId)
+    {
+        $amountItem = $this->getAmountItems()->where('member_id', $memberId)->first();
+        if($amountItem){
+            dd($amountItem);
+            return $amountItem['total_amount'];
+        }
+        return 0;
     }
 
     public $orderId;
@@ -197,11 +221,12 @@ class TestController extends BaseController
 
         $member_info = Member::getAllMembersInfosByQueue(\YunShop::app()->uniacid);
 
-        $total       = $member_info->distinct()->count();
+        $total = $member_info->distinct()->count();
 
         dd($total);
 
-        $this->chkSynRun(10);exit;
+        $this->chkSynRun(10);
+        exit;
 
         /*$member_relation = new MemberRelation();
 
@@ -219,7 +244,7 @@ class TestController extends BaseController
         //$parentMemberModle->DeletedData();
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
-dd($memberInfo);
+        dd($memberInfo);
         if ($memberInfo->isEmpty()) {
             \Log::debug('----is empty-----');
             return;
@@ -230,11 +255,11 @@ dd($memberInfo);
         }
 
         \Log::debug('--------queue synRun -----');
-dd(1);
+        dd(1);
         foreach ($memberInfo as $key => $val) {
             $attr = [];
             $child_attr = [];
-echo $val->member_id . '<BR>';
+            echo $val->member_id . '<BR>';
             \Log::debug('--------foreach start------', $val->member_id);
             $data = $memberModel->chktNodeParents($uniacid, $val->member_id);
             \Log::debug('--------foreach data------', $data->count());
@@ -244,17 +269,17 @@ echo $val->member_id . '<BR>';
 
                 foreach ($data as $k => $v) {
                     $attr[] = [
-                        'uniacid'   => $uniacid,
-                        'parent_id'  => $k,
-                        'level'     => $v['depth'] + 1,
+                        'uniacid' => $uniacid,
+                        'parent_id' => $k,
+                        'level' => $v['depth'] + 1,
                         'member_id' => $val->member_id,
                         'created_at' => time()
                     ];
 
                     $child_attr[] = [
-                        'uniacid'   => $uniacid,
-                        'parent_id'  => $val->member_id,
-                        'level'     => $v['depth'] + 1,
+                        'uniacid' => $uniacid,
+                        'parent_id' => $val->member_id,
+                        'level' => $v['depth'] + 1,
                         'member_id' => $k,
                         'created_at' => time()
                     ];
@@ -302,7 +327,8 @@ echo $val->member_id . '<BR>';
             $attr = [];
 
             $memberModel->filter = [];
-echo '<pre>';print_r($val->member_id);
+            echo '<pre>';
+            print_r($val->member_id);
             \Log::debug('--------foreach start------', $val->member_id);
             $data = $memberModel->getDescendants($uniacid, $val->member_id);
 
@@ -315,18 +341,19 @@ echo '<pre>';print_r($val->member_id);
                 foreach ($data as $k => $v) {
                     if ($k != $val->member_id) {
                         $attr[] = [
-                            'uniacid'   => $uniacid,
-                            'child_id'  => $k,
-                            'level'     => $v['depth'] + 1,
+                            'uniacid' => $uniacid,
+                            'child_id' => $k,
+                            'level' => $v['depth'] + 1,
                             'member_id' => $val->member_id,
                             'created_at' => time()
                         ];
                     } else {
-                        $e = [$k,$v];
+                        $e = [$k, $v];
                     }
                 }
-echo '<pre>'; print_r($attr);
-              //  $childMemberModel->createData($attr);
+                echo '<pre>';
+                print_r($attr);
+                //  $childMemberModel->createData($attr);
             }
         }
     }
@@ -368,7 +395,6 @@ echo '<pre>'; print_r($attr);
         (new Member())->chkRelationData();
 
 
-
         /*$memberModel->_allNodes = collect([]);
 
         $memberInfo = $memberModel->getTreeAllNodes($uniacid);
@@ -397,22 +423,29 @@ echo '<pre>'; print_r($attr);
     {
 
     }
+
     protected $GoodsGroupTable = 'yz_goods_group_goods';
     protected $DesignerTable = 'yz_designer';
-    public function test(){
-        (new \Yunshop\TripartiteProvider\admin\tripartiteProvider\ListController)->updatePlatform(
-            [
-                "uid" => "21",
-                "nickname" => "[21]贾丰臣",
-                "domain" => "www.wq.cn",
-                "uniacid" => "2",
-                "name" => "敖德萨所多",
-                "realname" => "订单",
-                "mobile" => "12312321333",
-                "platform_domain" => "www.wq.com",
-                "platform_uniacid" => "2"
-]
-        );
+
+    public function test()
+    {
+//        (new \Yunshop\TripartiteProvider\admin\tripartiteProvider\ListController)->updatePlatform(
+//            [
+//                "uid" => "21",
+//                "nickname" => "[21]贾丰臣",
+//                "domain" => "www.wq.cn",
+//                "uniacid" => "2",
+//                "name" => "敖德萨所多",
+//                "realname" => "订单",
+//                "mobile" => "12312321333",
+//                "platform_domain" => "www.wq.com",
+//                "platform_uniacid" => "2"
+//]
+//        );
+//        $this->order = Order::find(1736);
+//        (new \Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener)->withdraw($this->order);
+
+        (new \app\frontend\modules\orderPay\controllers\SuccessfulPaymentController)->paymentJump('PN20181120110651NW');
     }
 
 }

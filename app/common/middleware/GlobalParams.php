@@ -9,20 +9,14 @@
 namespace app\common\middleware;
 
 
+
 use app\platform\modules\system\models\SystemSetting;
 
 class GlobalParams
 {
-    private $remoteServicer = [
-        '2' => 'alioss',
-        '4' => 'cos'
-    ];
-
     public function handle($request, \Closure $next, $guard = null)
     {
-        $base_config = $this->setConfigInfo();
-
-        \config::set('app.global', $base_config);
+        $this->setConfigInfo();
 
         $this->checkClear();
 
@@ -36,27 +30,33 @@ class GlobalParams
      */
     private function setConfigInfo()
     {
-        $cfg = \config::get('app.global');
+        global $_W;
 
         $att = $this->getRemoteServicerInfo();
+        
+        $_W['uid'] = \Auth::guard('admin')->user()->uid;
+        $_W['username'] = \Auth::guard('admin')->user()->username;
+        $_W['attachurl'] = $att['attachurl'];
+        $_W['attachurl_remote'] = $att['attachurl_remote'];
 
-        $params = [
-            'acid'             => $cfg['uniacid'],
-            'openid'           => '',
-            'uid'              => \Auth::guard('admin')->user()->uid,
-            'username'         => \Auth::guard('admin')->user()->username,
-            'siteroot'         => request()->getSchemeAndHttpHost() . '/',
-            'siteurl'          => request()->getUri(),
-            'attachurl'        => $att['attachurl'],
-            'attachurl_local'  => request()->getSchemeAndHttpHost() . '/static/upload/',
-            'attachurl_remote' => $att['attachurl_remote']
-        ];
+        \config::set('app.global.uid', \Auth::guard('admin')->user()->uid);
+        \config::set('app.global.username', \Auth::guard('admin')->user()->username);
+        \config::set('app.global.attachurl', $att['attachurl']);
+        \config::set('app.global.attachurl_remote', $att['attachurl_remote']);
 
-        return array_merge($cfg, $params);
+        \YunShop::app()->uid        = \Auth::guard('admin')->user()->uid;
+        \YunShop::app()->username   = \Auth::guard('admin')->user()->username;
+        \YunShop::app()->attachurl = $att['attachurl'];
+        \YunShop::app()->attachurl_remote = $att['attachurl_remote'];
     }
 
     private function getRemoteServicerInfo()
     {
+        $remoteServicer = [
+            '2' => 'alioss',
+            '4' => 'cos'
+        ];
+
         $systemSetting = new SystemSetting();
 
         if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
@@ -64,7 +64,7 @@ class GlobalParams
         }
 
         if ($setting['remote']['type'] != 0) {
-            $server = $setting['remote'][$this->remoteServicer[$setting['remote']['type']]];
+            $server = $setting['remote'][$remoteServicer[$setting['remote']['type']]];
             $url = isset($server['url']) ? $server['url'] : '';
 
             $data = [
@@ -86,26 +86,12 @@ class GlobalParams
      */
     public function checkClear()
     {
-        if (app('plugins')->isEnabled('supplier')) {
-            include base_path() . '/plugins/supplier/menu.php';
-        }
-
-        if (app('plugins')->isEnabled('store-cashier')) {
-            include base_path() . '/plugins/store-cashier/storeMenu.php';
-        }
-
-        if (app('plugins')->isEnabled('subsidiary')) {
-            include base_path() . '/plugins/subsidiary/subsidiaryMenu.php';
-        }
-
-        if (app('plugins')->isEnabled('hotel')) {
-            include base_path() . '/plugins/hotel/hotelMenu.php';
-//            $hotel = include base_path() . '/plugins/hotel/bootstrap.php';
-//            app()->call($hotel);
-        }
-
-        if (app('plugins')->isEnabled('area-dividend')) {
-            include base_path() . '/plugins/area-dividend/area_admin.php';
+        $installed = app('plugins')->getPlugins();
+        foreach ($installed as $install) {
+            $install = $install->toArray();
+            if (app('plugins')->isEnabled($install['name'])) {
+                include $install['path'].'/menu.php';
+            }
         }
     }
 }

@@ -164,6 +164,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+
                         </div>
 
                         <div class="form-group">
@@ -191,6 +192,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+
                         </div>
 
                         <div class="form-group">
@@ -219,6 +221,7 @@
                                        @endif
                                        onclick="message_default(this.id)"/>
                             </div>
+
                         </div>
 
                         <div class="form-group">
@@ -817,6 +820,9 @@
                             }, function (dat) {
                                 $('#module-menus').html(dat);
                             });
+                        }
+                        function noticeType(tpye) {
+                            $("#type_id").val(tpye);
                         }
                         function select_member(o) {
                             if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {

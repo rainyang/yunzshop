@@ -14,10 +14,6 @@ use app\common\events\MessageEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\finance\PointLog;
 use app\common\models\notice\MessageTemp;
-use app\common\services\MessageService;
-use EasyWeChat\Foundation\Application;
-use EasyWeChat\Message\News;
-
 class PointService
 {
     const POINT_INCOME_GET = 1; //获得
@@ -124,6 +120,12 @@ class PointService
     const POINT_MODE_EXCEL_RECHARGE = 29;
     const POINT_MODE_EXCEL_RECHARGE_ATTACHED = 'EXCEL充值';
 
+    const POINT_MODE_CARD_VISIT_REWARD = 30;
+    const POINT_MODE_CARD_VISIT_REWARD_ATTACHED = '名片访问奖励';
+
+    const POINT_MODE_CARD_REGISTER_REWARD = 31;
+    const POINT_MODE_CARD_REGISTER_REWARD_ATTACHED = '名片新增会员奖励';
+
 
 
     const POINT = 0;
@@ -191,7 +193,9 @@ class PointService
 
     public function addLog()
     {
-        $this->point_data['uniacid'] = \YunShop::app()->uniacid;
+        //$this->point_data['uniacid'] = \YunShop::app()->uniacid;
+        $uniacid = \YunShop::app()->uniacid;
+        $this->point_data['uniacid'] = !empty($uniacid) ? $uniacid : $this->point_data['uniacid'];
         $point_model = PointLog::create($this->point_data);
         if (!isset($point_model)) {
             return false;
@@ -216,8 +220,9 @@ class PointService
             ['name' => '积分变动类型', 'value' => $this->getModeAttribute($this->point_data['point_mode'])],
             ['name' => '变动后积分数值', 'value' => $this->point_data['after_point']]
         ];
-
-        event(new MessageEvent($this->member->uid, $template_id, $params, $url=''));
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        event(new MessageEvent($this->member->uid, $template_id, $params, $url=$news_link));
 
     }
 
@@ -333,6 +338,12 @@ class PointService
                 break;
             case (94):
                 $mode_attribute = self::POINT_MODE_HOTEL_ATTACHED;
+                break;
+            case (30):
+                $mode_attribute = self::POINT_MODE_CARD_VISIT_REWARD_ATTACHED;
+                break;
+            case (31):
+                $mode_attribute = self::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
                 break;
 
         }

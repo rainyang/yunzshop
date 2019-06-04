@@ -22,10 +22,6 @@ class GoodsDiscount extends BaseModel
     const MONEY_OFF = 1;//立减
     const DISCOUNT = 2;//折扣
     public $amount;
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-    }
 
     /**
      * 开启商品独立优惠
@@ -34,7 +30,7 @@ class GoodsDiscount extends BaseModel
     public function enable()
     {
         //设置了折扣方式 并且 设置了折扣值
-        return $this->discount_method != 0 && $this->discount_value != 0;
+        return $this->discount_method != 0 && $this->discount_value !== '';
     }
 
     /**

@@ -14,7 +14,7 @@ use app\backend\modules\point\models\RechargeModel;
 use app\common\components\BaseController;
 use app\common\exceptions\ShopException;
 use app\common\helpers\Url;
-
+use app\common\models\notice\MessageTemp;
 class RechargeController extends BaseController
 {
     /**
@@ -64,7 +64,9 @@ class RechargeController extends BaseController
 
             $msg = \app\common\models\notice\MessageTemp::getSendMsg($temp_id, $params);
 
-            \app\common\services\MessageService::notice($temp_id, $msg, $this->memberModel->uid, \YunShop::app()->uniacid);
+            $news_link = MessageTemp::find($temp_id)->news_link;
+            $news_link = $news_link ?:'';
+            \app\common\services\MessageService::notice($temp_id, $msg, $this->memberModel->uid, \YunShop::app()->uniacid,$news_link);
 
             return $this->message('积分充值成功', $this->successUrl());
         }

@@ -92,6 +92,23 @@ class Order extends \app\common\models\Order
                 'hasManyOrderGoods' => self::orderGoodsBuilder($status)
             ])->where('status', 3)->orderBy('id', 'desc')->get();
     }
+    public static function getMyCommentListPaginate($status,$page,$pageSize)
+    {
+        $operator = [];
+        if ($status == 0) {
+            $operator['operator'] = '=';
+            $operator['status'] = 0;
+        } else {
+            $operator['operator'] = '>';
+            $operator['status'] = 0;
+        }
+        return self::whereHas('hasManyOrderGoods', function($query) use ($operator){
+            return $query->where('comment_status', $operator['operator'], $operator['status']);
+        })
+            ->with([
+                'hasManyOrderGoods' => self::orderGoodsBuilder($status)
+            ])->where('status', 3)->orderBy('id', 'desc')->paginate($pageSize,['*'],'page',$page);
+    }
 
     /**
      * 关系链 指定商品

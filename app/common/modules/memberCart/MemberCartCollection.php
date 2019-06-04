@@ -130,7 +130,7 @@ class MemberCartCollection extends Collection
 
         $order = $app->make('OrderManager')->make('PreOrder');
 
-        $order->init($member, $orderGoodsCollection);
+        $order->init($member, $orderGoodsCollection,request());
 
         return $order;
     }

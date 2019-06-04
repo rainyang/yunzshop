@@ -50,19 +50,7 @@ class AttachmentController extends BaseController
             }
         }
 
-        $config['image_extentions'] = ['0' => 'gif', '1' => 'jpg', '2' => 'jpeg', '3' => 'png'];
-        $config['image_limit'] = 5000;
-        $config['audio_extentions'] = ['0' => 'mp3'];
-        $config['audio_limit'] = 5000;
-
-        if (!$global) {
-            $global = $config;
-        }
-
         $global['thumb_width'] = intval($global['thumb_width']);
-        if (!$global['thumb_width']) {
-            $global['thumb_width'] = 800;
-        }
 
         if ($global['image_extentions']['0']) {
             $global['image_extentions'] = implode("\n", $global['image_extentions']);
@@ -70,10 +58,6 @@ class AttachmentController extends BaseController
 
         if ($global['audio_extentions']['0']) {
             $global['audio_extentions'] = implode("\n", $global['audio_extentions']);
-        }
-
-        if (!$global['zip_percentage']) {
-            $global['zip_percentage'] = 100;
         }
 
         return $this->successJson('成功', [
@@ -86,7 +70,7 @@ class AttachmentController extends BaseController
     /**
      * 保存及显示远程设置
      *
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \app\common\exceptions\AppException
      */
     public function remote()
@@ -95,7 +79,7 @@ class AttachmentController extends BaseController
         $cos = request()->cos;
 
         if ($alioss || $cos) {
-            if ($alioss) {
+            if ($alioss['key']) {
                 $validate  = $this->validate($this->rules(1), $alioss, $this->message());
             } else {
                 $validate  = $this->validate($this->rules(2), $cos, $this->message());
@@ -113,7 +97,7 @@ class AttachmentController extends BaseController
             }
         }
 
-        $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']);
+        $this->remote['alioss']['internal'] ? $this->remote['alioss']['internal'] = intval($this->remote['alioss']['internal']) : null;
 
         switch($this->remote['cos']['local']) {
             case 'tj':
@@ -155,7 +139,7 @@ class AttachmentController extends BaseController
      * @param \Request|null $request
      * @param array $messages
      * @param array $customAttributes
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
     {
@@ -279,7 +263,7 @@ class AttachmentController extends BaseController
         } else {
             $url = 'http://'.$bucket.'.'.$buckets[$bucket]['location'].'.aliyuncs.com/';
         }
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         $response = \Curl::to($url. '/'.$filename)->get();
         if (!$response) {
             return $this->errorJson('配置失败，阿里云访问url错误');
@@ -342,7 +326,7 @@ class AttachmentController extends BaseController
         if (is_error($auth)) {
             return $this->errorJson('配置失败，请检查配置' . $auth['message']);
         }
-        $filename = 'MicroEngine.ico';
+        $filename = 'logo.png';
         $response = \Curl::to($cos['url']. '/'. $filename)->get();
         if (!$response) {
             return $this->errorJson('配置失败，腾讯cos访问url错误');

@@ -181,7 +181,7 @@ class MergePayController extends ApiController
         $redirect = '';
 
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
-            $redirect = $trade['redirect_url'];
+            $redirect = $trade['redirect_url'].'&outtradeno='.request()->input('order_pay_id');
         }
 
         $data['redirect'] = $redirect;
@@ -207,6 +207,9 @@ class MergePayController extends ApiController
          */
         $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
         $data = $orderPay->getPayResult(PayFactory::PAY_ALIPAY);
+
+
+
         return $this->successJson('成功', $data);
     }
 
@@ -478,6 +481,7 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
     /**
      * 店帮支付
      *
@@ -507,6 +511,24 @@ class MergePayController extends ApiController
         $data = $orderPay->getPayResult(PayFactory::YOP);
 
         return $this->successJson('成功', $data);
+    }
 
+    /**
+     * Usdt支付
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function usdtPay(\Request $request)
+    {
+        if (\Setting::get('plugin.usdtpay_set') == false) {
+            throw new AppException('商城未开启Usdt支付');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_Usdt);
+
+        return $this->successJson('成功', $data);
     }
 }

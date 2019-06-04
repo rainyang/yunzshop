@@ -51,6 +51,7 @@ class ExportService
         $order['pay_sn'] = $order['has_one_order_pay']['pay_sn'];
 
         $order['remark'] = $order['has_one_order_remark']['remark'];
+//        $order['note'] = $order['note'];
         $order['express_company_name'] = $order['express']['express_company_name'];
         $order['express_sn'] = $order['express']['express_sn'];
         if (empty(strtotime($order['finish_time']))) {
@@ -216,7 +217,12 @@ class ExportService
                 "title" => "订单备注",
                 "field" => "remark",
                 "width" => 36
-            ]
+            ],
+            [
+                "title" => "用户备注",
+                "field" => "note",
+                "width" => 36
+            ],
         ];
     }
 }

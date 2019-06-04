@@ -14,7 +14,9 @@ use app\common\models\finance\Balance;
 use app\common\models\Member;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
-
+use app\common\models\notice\MinAppTemplateMessage;
+use app\common\services\MessageService as MsgService;
+use app\common\models\notice\MessageTemp;
 class BalanceChange extends Credit
 {
 
@@ -166,8 +168,32 @@ class BalanceChange extends Credit
             ['name' => '余额变动类型', 'value' => (new ConstService(''))->sourceComment()[$this->source]],
             ['name' => '变动后余额数值', 'value' => $this->new_value]
         ];
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=$news_link));
 
-        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=''));
+        //小程序消息通知
+        $is_open = MinAppTemplateMessage::getTitle('账户余额提醒');
+        if (!$is_open->is_open){
+            return;
+        }
+        $miniParams = [
+            'keyword1'=>['value'=> $this->memberModel->nickname],// 会员昵称
+            'keyword2'=>['value'=>  date('Y-m-d H:i', time())],//变动时间
+            'keyword3'=>['value'=> $this->change_value],// 变动金额
+            'keyword4'=>['value'=> $this->new_value],//  当前余额
+            'keyword5'=>['value'=> (new ConstService(''))->sourceComment()[$this->source]],// 变动类型
+        ];
+        $this->miniSendToShops($is_open->template_id,$miniParams,$this->memberModel->uid);
+    }
+    protected function miniSendToShops($templateId,$msg,$uid)
+    {
+        if (empty($templateId)) {
+            return;
+        }
+
+        \Log::debug('===============',[$templateId]);
+        MsgService::MiniNotice($templateId, $msg, $uid);
     }
 
 

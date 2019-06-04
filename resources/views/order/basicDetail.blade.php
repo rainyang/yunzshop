@@ -43,6 +43,11 @@
                         ￥{{number_format( $order['order_goods_price'] ,2)}}</td>
                 </tr>
                 <tr>
+                    <td style='border:none;text-align:right;'>手续费：</td>
+                    <td style='border:none;text-align:right;'>
+                        ￥{{number_format( $order['fee_amount'] ,2)}}</td>
+                </tr>
+                <tr>
                     <td style='border:none;text-align:right;'>优惠：</td>
                     <td style='border:none;text-align:right;'>
                         ￥{{number_format( $order['discount_price'] ,2)}}</td>
@@ -164,7 +169,7 @@
 @if (!empty($order['has_one_refund_apply']))
     @include('refund.index')
 @endif
-@if(!empty($order['call']))
+@if(!empty($order['collect_name']))
     @include('invoice.display')
 @endif
 @if (count($order['discounts']))
@@ -184,6 +189,30 @@
                     <tr>
                         <td>{{$discount['name']}}</td>
                         <td>¥{{$discount['amount']}}</td>
+                    </tr>
+
+                @endforeach
+            </table>
+        </div>
+    </div>
+@endif
+@if (count($order['order_fees']))
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            手续费信息
+        </div>
+        <div class="panel-body table-responsive">
+            <table class="table table-hover">
+                <thead class="navbar-inner">
+                <tr>
+                    <th class="col-md-5 col-lg-3">手续费名称</th>
+                    <th class="col-md-5 col-lg-3">手续费金额</th>
+                </tr>
+                </thead>
+                @foreach ($order['order_fees'] as $orderFee)
+                    <tr>
+                        <td>{{$orderFee['name']}}</td>
+                        <td>¥{{$orderFee['amount']}}</td>
                     </tr>
 
                 @endforeach

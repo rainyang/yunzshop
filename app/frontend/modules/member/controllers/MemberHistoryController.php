@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\components\BaseController;
+use app\common\events\member\MemberGoodsHistoryEvent;
 use app\frontend\modules\member\models\MemberFavorite;
 use app\frontend\modules\member\models\MemberHistory;
 
@@ -28,13 +29,28 @@ class MemberHistoryController extends ApiController
         return $this->successJson('获取列表成功', $historyList);
     }
 
-    public function store()
+    public function store($request, $integrated = null)
     {
+
         $memberId = \YunShop::app()->getMemberId();
-        $goodsId = \YunShop::request()->goods_id;
+        if( \YunShop::request()->id){
+            $goodsId = \YunShop::request()->id ;
+        }else{
+            $goodsId = \YunShop::request()->goods_id ;
+        }
+
         $owner_id = intval(request()->owner_id);
         if (!$goodsId) {
-            return $this->errorJson('未获取到商品ID，添加失败！');
+            if(is_null($integrated)){
+                return $this->errorJson('未获取到商品ID，添加失败！');
+            }else{
+                return show_json(0,'未获取到商品ID，添加失败！');
+            }
+        }
+
+        if(\YunShop::request()->mark && \YunShop::request()->mark_id)
+        {
+            event(new MemberGoodsHistoryEvent($goodsId,\YunShop::request()->mark,\YunShop::request()->mark_id));
         }
 
         $historyModel = MemberHistory::getHistoryByGoodsId($memberId, $goodsId) ?: new MemberHistory();
@@ -44,7 +60,11 @@ class MemberHistoryController extends ApiController
         $historyModel->uniacid = \YunShop::app()->uniacid;
         $historyModel->owner_id = $owner_id;
         if ($historyModel->save()) {
-            return $this->successJson('更新足迹成功');
+            if(is_null($integrated)){
+                return $this->successJson('更新足迹成功');
+            }else{
+                return show_json(1,'更新足迹成功');
+            }
         }
     }
 

@@ -11,6 +11,7 @@ namespace app\frontend\modules\order\controllers;
 use app\common\components\ApiController;
 use app\common\models\Order;
 use app\frontend\modules\order\services\OrderService;
+use app\frontend\modules\order\services\MiniMessageService;
 
 class OperationController extends ApiController
 {
@@ -102,6 +103,12 @@ class OperationController extends ApiController
     public function Close()
     {
         OrderService::orderClose($this->params);
+        $ingress = \Yunshop::request()->ingress;
+        $type = \Yunshop::request()->type;
+//        if ($ingress == 'weChatApplet' && $type == 2){
+//            $order = Order::find(\Yunshop::request()->orderId);
+//            (new MiniMessageService($order,'',2,'订单取消通知'))->received();
+//        }
         return $this->successJson();
     }
 }

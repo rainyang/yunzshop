@@ -21,7 +21,7 @@ class MemberCartController extends ApiController
      * @return \Illuminate\Http\JsonResponse
      * @throws AppException
      */
-    public function index()
+    public function index($request, $integrated = null)
     {
         $cartList = app('OrderManager')->make('MemberCart')->carts()->where('member_id', Member::current()->uid)
             ->pluginId()
@@ -49,7 +49,12 @@ class MemberCartController extends ApiController
             }
             //unset ($cartList[$key]['goods_option']);
         }
-        return $this->successJson('获取列表成功', $cartList);
+        if(is_null($integrated)){
+            return $this->successJson('获取列表成功', $cartList);
+        }else{
+            return show_json(1,$cartList);
+        }
+
     }
 
     /**
@@ -90,10 +95,12 @@ class MemberCartController extends ApiController
         }
 
         $validator = $cartModel->validator($cartModel->getAttributes());
+        event(new \app\common\events\cart\AddCartEvent($cartModel->getAttributes()));
         if ($validator->fails()) {
             return $this->errorJson("数据验证失败，添加购物车失败！！！");
         } else {
             if ($cartModel->save()) {
+                event(new \app\common\events\cart\AddCartEvent($cartModel));
                 return $this->successJson("添加购物车成功");
             } else {
                 return $this->errorJson("写入出错，添加购物车失败！！！");
@@ -179,8 +186,8 @@ class MemberCartController extends ApiController
         if (is_null(request()->input('ids'))) {
             $ids = $this->getMemberCarId();
         }
-
         $result = MemberCartService::clearCartByIds($ids);
+
         if ($result) {
             return $this->successJson('移除购物车成功。');
         }

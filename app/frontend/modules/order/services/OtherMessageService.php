@@ -20,11 +20,17 @@ class OtherMessageService
 
     private $memberModel;
 
+    protected $formId;
 
-    function __construct($orderModel)
+    protected $noticeType;
+
+
+    function __construct($orderModel,$formId = '',$type = 1)
     {
         $this->orderModel = $orderModel;
         $this->memberModel = $this->getMemberModel();
+        $this->formId = $formId;
+        $this->noticeType = $type;
     }
 
     public function created()
@@ -102,8 +108,11 @@ class OtherMessageService
             if (!$msg) {
                 return;
             }
-
-            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id);
+            $miniApp['type'] = \Setting::get('shop.notice.seller_order_pay.type');
+            $miniApp['formId'] =  \Setting::get('shop.notice.seller_order_pay.formId');
+            $news_link = MessageTemp::find($template_id)->news_link;
+            $news_link = $news_link ?:'';
+            Notice::notice(MessageTemp::$template_id,$msg,$this->memberModel->yzMember->parent_id,'',$news_link,$miniApp);
         }
 
         $twoSuperior = $this->getMemberModel($this->memberModel->yzMember->parent_id);
