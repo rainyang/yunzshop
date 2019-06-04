@@ -100,7 +100,7 @@ return [
                     'icon'       => '',
                     'sort'       => '2',
                 'item'       => 'supervisord_supervisord_index',
-                'parents'    => ['system','supervisor'],
+                'parents'    => ['system','supervisor','supervisord_supervisord_index'],
                 'child'      => []
             ],
             'supervisord_supervisord_store' => [
@@ -112,7 +112,7 @@ return [
                 'icon'       => '',
                 'sort'       => '2',
                 'item'       => 'supervisord_supervisord_store',
-                'parents'    => ['system','supervisor'],
+                'parents'    => ['system','supervisor','supervisord_supervisord_store'],
                 'child'      => []
             ],
         ],
