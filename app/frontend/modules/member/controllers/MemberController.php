@@ -55,6 +55,7 @@ use app\frontend\models\MembershipInformationLog;
 use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
 use app\common\models\SynchronizedBinder;
 
+
 class MemberController extends ApiController
 {
     protected $publicAction = [
@@ -807,6 +808,7 @@ class MemberController extends ApiController
                                 'add_credit2' => $credit2,
                             ];
                             \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
+                            MemberShopInfo::deleteMemberInfo($uid);
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
 
                             if ( !$memberinfo_model->save() || !$member_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
@@ -824,7 +826,7 @@ class MemberController extends ApiController
                             Session::set('member_id',$mc_uid);
                         }elseif (!empty($memberinfo_model) && ($memberinfo_model->createtime > $member_model->createtime)) {
                             //app注册的会员信息id
-                            //$mc_uid = $memberinfo_model['uid'];
+                            $mc_uid = $memberinfo_model['uid'];
                             //app注册的会员的余额 积分
                             $credit1 = $memberinfo_model->credit1;
                             $credit2 = $memberinfo_model->credit2;
@@ -852,6 +854,7 @@ class MemberController extends ApiController
                                 'new_mobile'  =>$mobile
                             ];
                             \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
+                            MemberShopInfo::deleteMemberInfo($mc_uid);
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
                             if ( !$memberinfo_model->save() || !$synchronizedbinder) {
                                 \Log::debug('---------手机号码绑定已存在手机号失败--------');
