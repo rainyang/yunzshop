@@ -1,0 +1,36 @@
+推广接口 ：  获取后台设置的商品列表信息 (become_goods、become_selfmoney、become_term、become_goods_id) 及 与 或 对应的 提示字符，  展示消费的  最低次数(become_ordercount) 及 最低价格(become_moneycount)	
+分销佣金不统一： 佣金优先级  商品佣金 >  分销商等级 > 分销设置  ，以点击分享链接区分 用户级数,  优先查看前端接口 goods.goods.get-goods的内容，然后进入后台查看对应控制器，现价-成本价
+
+共享链 bug：添加队列详情数据信： 
+		
+randomBack  /  randomCreate
+1：       $this->queue->exchange_code = 1;
+            $this->queue->status = 2;
+            $this->queue->amount_surplus = 0;
+            $this->queue->amount_finish = $this->queue->amount_surplus;
+            $this->queue->exchange_count = $point_count;
+            $this->queue->exchange_amount = $this->queue->amount_surplus;
+            $this->queue->save();
+
+
+2：	修改了状态  0使用中  1已使用或已完成
+
+ReturnQueue /  handle  
+3: 修改完成返现字段数据
+	  
+        //////完成返现数据修改///////////////////////////
+            // if ($data->finish_cash_total + 1 > $data->cash_total) {
+            //      $return::updateData(['status' => 1], $data->id);
+            //     return false;
+            // }
+            // //修改实现返现数量数据
+            //  $return::updateData(['finish_cash_total' => $data->finish_cash_total + 1 ], $data->id);
+
+            //  $randomBack::addLog($random);
+        ///////修改结束////////////////////
+
+收银台门店插件： 同一门店的订单，收银台收益却不一样
+
+
+快递助手电子面单： 
+          1.中铁快运电子面单生成失败
