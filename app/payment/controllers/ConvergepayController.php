@@ -49,10 +49,12 @@ class ConvergepayController extends PaymentController
                 echo 'success';
             } else {
                 //其他错误
+                \Log::debug('------微信支付-HJ 其他错误-----');
                 echo 'fail';
             }
         } else {
             //签名验证失败
+            \Log::debug('------微信支付-HJ 签名验证失败-----');
             echo 'fail1';
         }
     }
@@ -87,10 +89,12 @@ class ConvergepayController extends PaymentController
                 echo 'success';
             } else {
                 //其他错误
+                \Log::debug('------支付宝支付-HJ 其他错误-----');
                 echo 'fail';
             }
         } else {
             //签名验证失败
+            \Log::debug('------支付宝支付-HJ 签名验证失败-----');
             echo 'fail1';
         }
     }
