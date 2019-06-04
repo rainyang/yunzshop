@@ -808,7 +808,9 @@ class MemberController extends ApiController
                                 'add_credit2' => $credit2,
                             ];
                             \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
-                            MemberShopInfo::deleteMemberInfo($uid);
+
+                            \app\backend\modules\member\models\MemberShopInfo::deleteMemberInfo($uid);
+
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
 
                             if ( !$memberinfo_model->save() || !$member_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
@@ -854,7 +856,8 @@ class MemberController extends ApiController
                                 'new_mobile'  =>$mobile
                             ];
                             \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
-                            MemberShopInfo::deleteMemberInfo($mc_uid);
+                            \app\backend\modules\member\models\MemberShopInfo::deleteMemberInfo($mc_uid);
+
                             $synchronizedbinder = SynchronizedBinder::create($bindinfo);
                             if ( !$memberinfo_model->save() || !$synchronizedbinder) {
                                 \Log::debug('---------手机号码绑定已存在手机号失败--------');
