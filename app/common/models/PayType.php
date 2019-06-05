@@ -41,6 +41,9 @@ class PayType extends BaseModel
     const HXQUICK = 18;//环迅快捷支付
     const HXWECHAT = 22;//环迅微商支付
     const YOP = 26;//易宝支付
+    const USDTPAY = 27;//USDT支付
+    const WECHAT_HJ_PAY = 28;//微信支付-HJ(汇聚)
+    const ALIPAY_HJ_PAY = 29;//支付宝支付-HJ(汇聚)
 
     /**
      * 查询所有分类类型
