@@ -1846,7 +1846,7 @@ class MemberController extends ApiController
                 'name'  => 'service_station',
                 'title' => '服务站',
                 'class' => 'icon-service_station',
-                'url'   => 'ServiceStation',
+                'url'   => 'serviceStation',
             ];
 
         }
