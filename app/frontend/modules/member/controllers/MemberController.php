@@ -1833,8 +1833,8 @@ class MemberController extends ApiController
                 $data[] = [
                     'name'  => 'delivery_station',
                     'title' => '配送站',
-                    'class' => '',
-                    'url'   => '',
+                    'class' => 'icon-delivery_order',
+                    'url'   => 'deliveryStation',
                 ];
             }
         }
@@ -1845,8 +1845,8 @@ class MemberController extends ApiController
             $data[] = [
                 'name'  => 'service_station',
                 'title' => '服务站',
-                'class' => '',
-                'url'   => '',
+                'class' => 'icon-service_station',
+                'url'   => 'ServiceStation',
             ];
 
         }
