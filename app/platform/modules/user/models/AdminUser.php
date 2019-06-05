@@ -130,7 +130,7 @@ class AdminUser extends Authenticatable
 
         if (request()->path() == "admin/user/change" || (request()->path() == "admin/user/modify_user" && $data['password'])) {
             $data['old_password'] = trim($data['old_password']);
-            if (!Hash::check($data['old_password'], $user_model['password'])) {
+            if (request()->path() != "admin/user/change" && (!Hash::check($data['old_password'], $user_model['password']))) {
                 return self::returnData(0, self::ORIGINAL);
             } elseif (Hash::check($data['password'], $user_model['password'])) {
                 return self::returnData(0, self::NEW_AND_ORIGINAL);
