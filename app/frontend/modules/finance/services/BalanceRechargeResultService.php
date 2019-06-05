@@ -10,83 +10,78 @@
 namespace app\frontend\modules\finance\services;
 
 
+use app\common\exceptions\ShopException;
 use app\common\models\finance\BalanceRechargeActivity;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
-use app\frontend\modules\finance\models\BalanceRecharge;
+use \app\common\models\finance\BalanceRecharge;
 use EasyWeChat\Support\Log;
 use Illuminate\Support\Facades\DB;
 
 class BalanceRechargeResultService
 {
-    private $array;
+    /**
+     * @var BalanceService
+     */
+    private $balanceSet;
 
+    /**
+     * @var BalanceRecharge
+     */
     private $rechargeModel;
+
+
+    private $array;
 
     private $enough;
 
     private $give;
 
-    private $balance_set;
 
-
-    public function __construct()
+    public function __construct(BalanceRecharge $balanceRecharge)
     {
-        $this->balance_set = new BalanceService();
-
+        $this->balanceSet = new BalanceService();
+        $this->rechargeModel = $balanceRecharge;
     }
 
-    /**
-     * 余额充值支付回调
-     * @param array $array
-     * @return bool|string
-     */
-    public function payResult(array $array)
+    public function confirm()
     {
-        $this->array = $array;
-        //调试使用
-        if (!$array['order_sn']) {
-            return '没有获取到订单号';
-        }
+        DB::transaction(function () {
+            $this->_confirm();
+        });
+    }
 
-        DB::beginTransaction();
+    private function _confirm()
+    {
+        $this->updateRechargeStatus();
+        $this->updateMemberBalance();
+        $this->rechargeActivity();
+        $this->rechargeEnoughGive();
+    }
 
-        $result = $this->updateRechargeStatus();
-        if ($result !== true) {
-            Log::debug('余额充值：订单号'. $array['order_sn']."修改充值状态失败");
-            DB::rollBack();
-            return true;
-        }
-        $result = $this->updateMemberBalance();
-        if ($result !== true) {
-            Log::debug('余额充值：订单号'. $array['order_sn']."修改会员余额失败");
-            DB::rollBack();
-            return true;
-        }
-
+    private function rechargeActivity()
+    {
         //是否增加充值活动限制
-        if ($this->balance_set->rechargeActivityStatus()) {
+        if ($this->balanceSet->rechargeActivityStatus()) {
 
             //是否在活动时间
-            $start_time = $this->balance_set->rechargeActivityStartTime();
-            $end_time = $this->balance_set->rechargeActivityEndTime();
+            $start_time = $this->balanceSet->rechargeActivityStartTime();
+            $end_time = $this->balanceSet->rechargeActivityEndTime();
             $recharge_time = $this->rechargeModel->created_at->timestamp;
 
             if (!($start_time <= $recharge_time) || !($end_time >= $recharge_time)) {
-                Log::debug('余额充值：订单号'. $array['order_sn']."充值时间未在充值活动时间之内，取消赠送");
-                DB::commit();
+                Log::debug("余额充值：订单号{$this->rechargeModel->ordersn}充值时间未在充值活动时间之内，取消赠送");
                 return true;
             }
 
             //参与次数检测
             $rechargeActivity = BalanceRechargeActivity::where('member_id', $this->rechargeModel->member_id)
-                ->where('activity_id',$this->balance_set->rechargeActivityCount())
+                ->where('activity_id', $this->balanceSet->rechargeActivityCount())
                 ->first();
 
-            $fetter = $this->balance_set->rechargeActivityFetter();
+            $fetter = $this->balanceSet->rechargeActivityFetter();
             if ($fetter && $fetter >= 1 && $rechargeActivity && $rechargeActivity->partake_count >= $fetter) {
-                Log::debug('余额充值：订单号'. $array['order_sn']."会员参与次数已达到上限");
-                DB::commit();
+                Log::debug("余额充值：订单号{$this->rechargeModel->ordersn}会员参与次数已达到上限");
                 return true;
             }
 
@@ -99,44 +94,52 @@ class BalanceRechargeResultService
                 $rechargeActivity->uniacid = $this->rechargeModel->uniacid;
                 $rechargeActivity->member_id = $this->rechargeModel->member_id;
                 $rechargeActivity->partake_count += 1;
-                $rechargeActivity->activity_id = $this->balance_set->rechargeActivityCount();
+                $rechargeActivity->activity_id = $this->balanceSet->rechargeActivityCount();
             }
             $rechargeActivity->save();
         }
-
-
-        $result = $this->rechargeEnoughGive();
-        if ($result !== true) {
-            Log::debug('余额充值：订单号'. $array['order_sn']."充值满奖失败");
-            DB::rollBack();
-            return true;
-        }
-        DB::commit();
         return true;
     }
 
     /**
+     * 余额充值支付回调
+     *
+     * @throws ShopException
+     */
+    public function rechargeEnoughGive()
+    {
+        $result = $this->_rechargeEnoughGive();
+        if ($result !== true) {
+            throw new ShopException("余额充值：订单号{$this->rechargeModel->ordersn}充值满奖失败");
+        }
+    }
+
+    /**
      * 修改充值状态
-     * @return mixed
+     *
+     * @throws ShopException
      */
     private function updateRechargeStatus()
     {
-        $this->rechargeModel = BalanceRecharge::withoutGlobalScope('member_id')->ofOrderSn($this->array['order_sn'])->first();
+        $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
 
-        if ($this->rechargeModel) {
-            $this->rechargeModel->status = ConstService::STATUS_SUCCESS;
-            return $this->rechargeModel->save();
+        $result = $this->rechargeModel->save();
+        if (!$result) {
+            throw new ShopException("余额充值：订单号{$this->rechargeModel->ordersn}修改充值状态失败");
         }
-        return false;
     }
 
     /**
      * 修改会员余额
-     * @return bool|string
+     *
+     * @throws ShopException
      */
     private function updateMemberBalance()
     {
-        return (new BalanceChange())->recharge($this->getBalanceChangeData());
+        $result = (new BalanceChange())->recharge($this->getBalanceChangeData());
+        if (!$result) {
+            throw new ShopException("余额充值：订单号{$this->rechargeModel->ordersn}修改会员余额失败");
+        }
     }
 
     /**
@@ -146,13 +149,13 @@ class BalanceRechargeResultService
     private function getBalanceChangeData()
     {
         return [
-            'member_id'     => $this->rechargeModel->member_id,
-            'remark'        => '会员充值'.$this->rechargeModel->money . '元，支付单号：' . $this->array['pay_sn'],
-            'source'        => ConstService::SOURCE_RECHARGE,
-            'relation'      => $this->rechargeModel->ordersn,
-            'operator'      => ConstService::OPERATOR_MEMBER,
-            'operator_id'   => $this->rechargeModel->member_id,
-            'change_value'  => $this->rechargeModel->money,
+            'member_id'    => $this->rechargeModel->member_id,
+            'remark'       => '会员充值' . $this->rechargeModel->money . '元，支付单号：' . $this->array['pay_sn'],
+            'source'       => ConstService::SOURCE_RECHARGE,
+            'relation'     => $this->rechargeModel->ordersn,
+            'operator'     => ConstService::OPERATOR_MEMBER,
+            'operator_id'  => $this->rechargeModel->member_id,
+            'change_value' => $this->rechargeModel->money,
         ];
     }
 
@@ -160,7 +163,7 @@ class BalanceRechargeResultService
      * 余额充值奖励
      * @return bool|string
      */
-    private function rechargeEnoughGive()
+    private function _rechargeEnoughGive()
     {
         if ($this->getGiveMoney()) {
             return (new BalanceChange())->award($this->getBalanceAwardData());
@@ -183,14 +186,14 @@ class BalanceRechargeResultService
             if (empty($key['enough']) || empty($key['give'])) {
                 continue;
             }
-            if (bccomp($money,$key['enough'],2) != -1) {
+            if (bccomp($money, $key['enough'], 2) != -1) {
                 if ($this->getProportionStatus()) {
-                    $result = bcdiv(bcmul($money,$key['give'],2),100,2);
+                    $result = bcdiv(bcmul($money, $key['give'], 2), 100, 2);
                 } else {
-                    $result = bcmul($key['give'],1,2);
+                    $result = bcmul($key['give'], 1, 2);
                 }
-                $this->enough   = floatval($key['enough']);
-                $this->give     = $key['give'];
+                $this->enough = floatval($key['enough']);
+                $this->give = $key['give'];
                 break;
             }
         }
@@ -203,7 +206,7 @@ class BalanceRechargeResultService
      */
     private function getRechargeSale()
     {
-        $sale = $this->balance_set->rechargeSale();
+        $sale = $this->balanceSet->rechargeSale();
 
         $sale = array_values(array_sort($sale, function ($value) {
             return $value['enough'];
@@ -218,13 +221,13 @@ class BalanceRechargeResultService
     private function getBalanceAwardData()
     {
         return [
-            'member_id'     => $this->rechargeModel->member_id,
-            'remark'        => $this->getBalanceAwardRemark(),
-            'source'        => ConstService::SOURCE_AWARD,
-            'relation'      => $this->array['order_sn'],
-            'operator'      => ConstService::OPERATOR_MEMBER,
-            'operator_id'   => $this->rechargeModel->member_id,
-            'change_value'  => $this->getGiveMoney(),
+            'member_id'    => $this->rechargeModel->member_id,
+            'remark'       => $this->getBalanceAwardRemark(),
+            'source'       => ConstService::SOURCE_AWARD,
+            'relation'     => $this->array['order_sn'],
+            'operator'     => ConstService::OPERATOR_MEMBER,
+            'operator_id'  => $this->rechargeModel->member_id,
+            'change_value' => $this->getGiveMoney(),
         ];
     }
 
@@ -235,9 +238,9 @@ class BalanceRechargeResultService
     private function getBalanceAwardRemark()
     {
         if ($this->getProportionStatus()) {
-            return '充值满' . $this->enough . '元赠送'.$this->give.'%,(充值金额:' . $this->rechargeModel->money . '元)';
+            return '充值满' . $this->enough . '元赠送' . $this->give . '%,(充值金额:' . $this->rechargeModel->money . '元)';
         }
-        return '充值满' . $this->enough . '元赠送'.$this->give.'元,(充值金额:' . $this->rechargeModel->money . '元)';
+        return '充值满' . $this->enough . '元赠送' . $this->give . '元,(充值金额:' . $this->rechargeModel->money . '元)';
     }
 
     /**
@@ -246,10 +249,8 @@ class BalanceRechargeResultService
      */
     private function getProportionStatus()
     {
-        return $this->balance_set->proportionStatus();
+        return $this->balanceSet->proportionStatus();
     }
-
-
 
 
 }

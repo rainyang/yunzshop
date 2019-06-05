@@ -15,7 +15,8 @@ use app\common\models\Member;
 use app\common\services\credit\ConstService;
 use app\common\services\credit\Credit;
 use app\common\models\notice\MinAppTemplateMessage;
-use app\common\services\MessageService;
+use app\common\services\MessageService as MsgService;
+use app\common\models\notice\MessageTemp;
 class BalanceChange extends Credit
 {
 
@@ -167,8 +168,9 @@ class BalanceChange extends Credit
             ['name' => '余额变动类型', 'value' => (new ConstService(''))->sourceComment()[$this->source]],
             ['name' => '变动后余额数值', 'value' => $this->new_value]
         ];
-
-        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=''));
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        event(new MessageEvent($this->memberModel->uid, $template_id, $params, $url=$news_link));
 
         //小程序消息通知
         $is_open = MinAppTemplateMessage::getTitle('账户余额提醒');
@@ -191,7 +193,7 @@ class BalanceChange extends Credit
         }
 
         \Log::debug('===============',[$templateId]);
-        MessageService::MiniNotice($templateId, $msg, $uid);
+        MsgService::MiniNotice($templateId, $msg, $uid);
     }
 
 

@@ -108,10 +108,10 @@ class OperationController extends ApiController
         OrderService::orderClose($this->params);
         $ingress = \Yunshop::request()->ingress;
         $type = \Yunshop::request()->type;
-        if ($ingress == 'weChatApplet' && $type == 2){
-            $order = Order::find(\Yunshop::request()->orderId);
-            (new MiniMessageService($order,'',2,'订单取消通知'))->received();
-        }
+//        if ($ingress == 'weChatApplet' && $type == 2){
+//            $order = Order::find(\Yunshop::request()->orderId);
+//            (new MiniMessageService($order,'',2,'订单取消通知'))->received();
+//        }
         return $this->successJson();
     }
 }

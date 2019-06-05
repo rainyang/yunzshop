@@ -32,6 +32,7 @@ class IndexController extends BaseController
 
     public function index()
     {
+        \Log::debug('----------公众号消息---------',$_GET);
         // 接入判断
         if ( isset( $_GET["signature"] ) && isset( $_GET["timestamp"] ) && isset( $_GET["nonce"] ) && isset( $_GET["echostr"] ) ) {
             $signature = $_GET["signature"];
@@ -45,6 +46,7 @@ class IndexController extends BaseController
             if ( $tmpStr == $signature ) {
                 \Log::debug('----------公众号接入成功---------',$_GET);
                 \Setting::set('plugin.wechat.status', 1);
+                \Log::debug('----------公众号接入成功状态---------',\Setting::get('plugin.wechat.status'));
                 return $_GET["echostr"];
             } else {
                 \Log::debug('----------公众号接入失败---------',$_GET);

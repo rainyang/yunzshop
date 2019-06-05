@@ -71,7 +71,7 @@ class Setting extends BaseModel
             $value = unserialize($value);
         }
 
-        app('SettingCache')->put($key, $value, Carbon::now()->addSeconds(3600));
+        app('SettingCache')->put($key, $value, 600);
 
         //\Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;

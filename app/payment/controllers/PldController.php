@@ -20,6 +20,7 @@ class PldController extends PaymentController
 
     private $pld_proportion = 0;
 
+    private $balance_proportion = 0;
     public function preAction()
     {
         parent::preAction();
@@ -33,7 +34,8 @@ class PldController extends PaymentController
         }
 
         //PLD币和余额的兑换比例
-        $this->pld_proportion = \Setting::get('plugin.pld_pay.pld_proportion1') ?:0;
+        $this->pld_proportion = \Setting::get('plugin.pld_pay.pld_proportion') ?:1;
+        $this->balance_proportion = \Setting::get('plugin.pld_pay.balance_proportion') ?:1;
 
     }
 
@@ -51,7 +53,7 @@ class PldController extends PaymentController
                     $this->log($parameter);
                     \Log::info('------PLD验证成功-----');
                     $data = [
-                        'total_fee'    => floatval($parameter['Amount']),
+                        'total_fee'    =>  $this->proportionPrice($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
                         'trade_no'     => 'pld',
                         'unit'         => 'yuan',
@@ -89,7 +91,7 @@ class PldController extends PaymentController
                 if ($recharge_log && $recharge_log->status != 1) {
                     \Log::info('------PLD验证成功-----');
                     $data = [
-                        'total_fee'    => floatval($parameter['Amount']),
+                        'total_fee'    => $this->proportionPrice($parameter['Amount']),
                         'out_trade_no' => $this->attach[1],
                         'trade_no'     => 'pld',
                         'unit'         => 'yuan',
@@ -116,6 +118,18 @@ class PldController extends PaymentController
             \Log::debug('----参数为空----');
         }
         redirect(Url::absoluteApp('home'))->send();
+    }
+
+    /**
+     * 反转充值比例，用于做余额充值金额验证
+     * @param $amount int 第三方返回金额
+     * @return float
+     */
+    protected function proportionPrice($amount)
+    {
+        $amount = ($amount / $this->pld_proportion) * $this->balance_proportion;
+
+        return floatval($amount);
     }
 
 

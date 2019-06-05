@@ -30,8 +30,9 @@ class ShopMessage extends Message
             return;
         }
         //客服发送消息通知
-        foreach (\Setting::get('shop.miniNotice.salers') as $saler) {
-                $this->notice($this->templateId, $this->msg, $saler['uid']);
+
+        foreach (\Setting::get('shop.notice.salers') as $saler) {
+                $this->notice($this->templateId, $this->msg, $saler['uid'],'',$this->news_link);
         }
     }
     protected function miniSendToShops($templateId,$msg)
@@ -51,6 +52,10 @@ class ShopMessage extends Message
         if (!$this->msg) {
             return;
         }
+
+        $news_link = MessageTemp::find($temp_id)->news_link;
+        $this->news_link = $news_link ?:'';
+
         $this->templateId = MessageTemp::$template_id;
         $this->sendToShops();
     }
@@ -70,6 +75,7 @@ class ShopMessage extends Message
             ['name' => '运费', 'value' => $this->order['dispatch_price']],
             ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
         ];
+
         $this->transfer($temp_id, $params);
 
         //小程序消息通知
@@ -195,8 +201,10 @@ class ShopMessage extends Message
             if (!$msg) {
                 continue;
             }
+            $news_link = MessageTemp::find($temp_id)->news_link;
+            $news_link = $news_link ?:'';
             $template_id = MessageTemp::$template_id;
-            $this->notice($template_id, $msg, $goods_notice->uid);
+            $this->notice($template_id, $msg, $goods_notice->uid,'',$news_link);
 
             //小程序消息通知
             $is_open = MinAppTemplateMessage::getTitle('购买成功通知');

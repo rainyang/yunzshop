@@ -52,7 +52,9 @@ class RefundMessageService extends MessageService
         if (!$msg) {
             return false;
         }
-        MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
+        $news_link = MessageTemp::find($temp_id)->news_link;
+        $news_link = $news_link ?:'';
+        MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid,$news_link);
 
         //小程序消息
         $is_open = MinAppTemplateMessage::getTitle('退款拒绝通知');
@@ -102,7 +104,9 @@ class RefundMessageService extends MessageService
         if (!$msg) {
             return false;
         }
-        MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
+        $news_link = MessageTemp::find($temp_id)->news_link;
+        $news_link = $news_link ?:'';
+        MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid,$news_link);
 
         //小程序消息
         $is_open = MinAppTemplateMessage::getTitle('退款成功通知');

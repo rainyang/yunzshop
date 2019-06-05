@@ -1485,7 +1485,7 @@ class MemberController extends ApiController
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center']
         ];
 
         $data = [];
@@ -1524,11 +1524,11 @@ class MemberController extends ApiController
                 'url'   => $url
             ];
         });
-        if (app('plugins')->isEnabled('asset')) {
+        if (app('plugins')->isEnabled('asset') && (new \Yunshop\Asset\Common\Services\IncomeDigitizationService)->memberPermission()) {
             $data[] = [
                 'name'  => 'asset',
                 'title' => PLUGIN_ASSET_NAME,
-                'class' => 'icon-member-credit01',
+                'class' => 'icon-number_assets',
                 'url'   => 'TransHome'
             ];
         }
@@ -1543,6 +1543,15 @@ class MemberController extends ApiController
                     'url'   => 'CardCenter'
                 ];
             }
+        }
+
+        if (app('plugins')->isEnabled('material-center')) {
+            $data[] = [
+                'name'  => 'material-center',
+                'title' => '素材中心',
+                'class' => 'icon-member_material',
+                'url'   => 'materialCenter'
+            ];
         }
 
         if (app('plugins')->isEnabled('credit')) {

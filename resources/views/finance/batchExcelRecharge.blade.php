@@ -24,9 +24,18 @@
             <div class="form-group">
                 <label class="col-sm-2 control-label must">充值类型</label>
                 <div class="col-sm-5 goodsname"  style="padding-right:0;" >
-                    <select class="form-control" name="batch_type">
+                    <select class="form-control batch_type" name="batch_type">
                         <option value="balance" data-name="充值余额">充值余额</option>
                         <option value="point" data-name="充值积分">充值积分</option>
+                        @if($love_open)
+                        <option value="love" data-name="充值爱心值">充值{{ $love_name }}</option>
+                        @endif
+                    </select>
+                </div>
+                <div class="col-sm-1 love_type" style="padding-right:0;display:none;width: 75px" >
+                    <select class="form-control" name="love_type">
+                        <option value="usable" data-name="可用">可用</option>
+                        <option value="froze" data-name="冻结">冻结</option>
                     </select>
                 </div>
             </div>
@@ -52,4 +61,16 @@
         </div>
         </div>
     </form>
+
+    <script language="javascript">
+        $('.batch_type').change(function () {
+            var type = $(this).children('option:selected').val();
+            if (type == 'love') {
+                $('.love_type').show();
+            } else {
+                $('.love_type').hide();
+            }
+        });
+    </script>
+
 @endsection('content')

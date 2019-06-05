@@ -184,7 +184,7 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
-            $orders = $orders->with(['discounts'])->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
+            $orders = $orders->with(['discounts', 'deductions'])->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
             $export_model = new ExportService($orders, $export_page);
             if (!$export_model->builder_model->isEmpty()) {
                 $file_name = date('Ymdhis', time()) . '订单导出';//返现记录导出
@@ -239,13 +239,14 @@ class ListController extends BaseController
             $export_page = request()->export_page ? request()->export_page : 1;
             $orders = $orders->with([
                 'discounts',
+                'deductions',
                 'hasManyParentTeam' => function($q) {
                     $q->whereHas('hasOneTeamDividend')
                         ->with(['hasOneTeamDividend' => function($q) {
                             $q->with(['hasOneLevel']);
                         }])
                         ->with('hasOneMember')
-                        ->orderBy('id', 'desc')
+//                        ->orderBy('id', 'desc')
                         ->orderBy('level', 'asc');
                 },
             ]);
@@ -315,6 +316,7 @@ class ListController extends BaseController
         $data = [];
         foreach ($levelId as $k => $value) {
             foreach ($member['has_many_parent_team'] as $key => $parent) {
+
                 if ($parent['has_one_team_dividend']['has_one_level']['id'] == $value) {
                     $data[$k] = $parent['has_one_member']['nickname'].' '.$parent['has_one_member']['realname'].' '.$parent['has_one_member']['mobile'];
                     break;
@@ -343,7 +345,16 @@ class ListController extends BaseController
         foreach ($order['discounts'] as $discount) {
 
             if ($discount['discount_code'] == $key) {
+
                 $export_discount[$key] = $discount['amount'];
+            }
+        }
+        
+        if (!$export_discount['deduction']) {
+
+            foreach ($order['deductions'] as $k => $v) {
+                
+                $export_discount['deduction'] += $v['amount'];
             }
         }
 

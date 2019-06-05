@@ -22,6 +22,7 @@ use app\common\models\order\OrderChangePriceLog;
 use app\common\models\order\OrderCoupon;
 use app\common\models\order\OrderDeduction;
 use app\common\models\order\OrderDiscount;
+use app\common\models\order\OrderFee;
 use app\common\models\order\OrderSetting;
 use app\common\models\order\Plugin;
 use app\common\models\order\Remark;
@@ -71,6 +72,7 @@ use Illuminate\Support\Facades\DB;
  * @property float change_price
  * @property float cost_amount
  * @property float change_dispatch_price
+ * @property float fee_amount
  * @property int plugin_id
  * @property int is_plugin
  * @property Collection orderGoods
@@ -101,7 +103,7 @@ class Order extends BaseModel
     public $setting = null;
     private $StatusService;
     protected $guarded = ['id'];
-    protected $appends = ['status_name', 'pay_type_name','rise_type_name'];
+    protected $appends = ['status_name', 'pay_type_name'];
     protected $search_fields = ['id', 'order_sn'];
     protected $attributes = [
         'plugin_id' => 0,
@@ -500,6 +502,7 @@ class Order extends BaseModel
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
             ->whereIn('status', $status)->where('plugin_id', '<', 900)
+            ->HidePluginIds()
             ->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])
             ->toArray();
         if (in_array(Order::REFUND, $status)) {
@@ -613,7 +616,10 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
-
+    public function orderFees()
+    {
+        return $this->hasMany(OrderFee::class, 'order_id', 'id');
+    }
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -901,6 +907,11 @@ class Order extends BaseModel
     public function orderCreatedJob()
     {
         return $this->hasOne(OrderCreatedJob::class, 'order_id');
+    }
+
+    public function orderSentJob()
+    {
+        return $this->hasOne(OrderSentJob::class, 'order_id');
     }
 
     public function orderPaidJob()

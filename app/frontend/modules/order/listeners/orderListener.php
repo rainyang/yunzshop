@@ -78,7 +78,7 @@ class orderListener
             // 虚拟订单修复
             \Log::info("--虚拟订单修复--");
             \Cron::add("VirtualOrderFix", '*/60 * * * * *', function () {
-                $orders = DB::table('yz_order')->whereIn('status', [1, 2])->where('is_virtual', 1)->get();
+                $orders = DB::table('yz_order')->whereIn('status', [1, 2])->where('is_virtual', 1)->where('refund_id',0)->where('is_pending',0)->get();
                 // 所有超时未收货的订单,遍历执行收货
                 $orders->each(function ($order) {
                     OrderService::fixVirtualOrder($order);

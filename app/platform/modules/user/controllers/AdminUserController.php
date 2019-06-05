@@ -11,7 +11,6 @@ namespace app\platform\modules\user\controllers;
 
 use app\common\events\UserActionEvent;
 use app\platform\controllers\BaseController;
-use app\platform\modules\user\models\AdminUser as User;
 use app\platform\modules\user\models\AdminUser;
 use app\platform\modules\user\models\Role;
 use app\platform\modules\user\requests\AdminUserCreateRequest;
@@ -19,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 use app\platform\modules\application\models\AppUser;
+use app\platform\controllers\ResetpwdController;
 
 class AdminUserController extends BaseController
 {
@@ -35,71 +35,61 @@ class AdminUserController extends BaseController
      */
     public function index()
     {
-        $parames = request();
-        $users = User::getList($parames);
+        $param = request();
+        $users = AdminUser::getList($param);
 
         return $this->successJson('成功', $users);
     }
 
     /**
      * Show the form for creating a new resource And Store a newly created resource in storage.(添加用户)
-     * @return \Illuminate\Http\JsonResponse|void
+     *
+     * @return \Illuminate\Http\JsonResponse
      * @throws \app\common\exceptions\AppException
      */
     public function create()
     {
-        $user = request()->user;
-        if ($user) {
-            $validate = $this->validate($this->rules(), $user, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(User::saveData($user, $user_model = ''));
+        $data = request()->user;
+        if (!$data) {
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
+
+        return $this->returnMessage(0, $data);
     }
 
     /**
      * Show the form for editing the specified resource And Update the specified resource in storage.(修改用户)
      *
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \app\common\exceptions\AppException
      */
     public function edit()
     {
         $uid = request()->uid;
-        if (!$uid) {
-            return $this->check(5);
-        }
-        $user = AdminUser::with('hasOneProfile')->find($uid);
-        if (!$user) {
-            return $this->check(6);
-        }
         $data = request()->user;
 
-        if($data) {
-            $validate  = $this->validate($this->rules($uid, $user['hasOneProfile']['id']), $data, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($data, $user));
+        if (!$uid) {
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
 
-        if ($user) {
-            return $this->successJson('成功', $user);
-        } else {
-            return $this->check(0);
+        $user = AdminUser::with('hasOneProfile')->find($uid);
+
+        if ($data) {
+            return $this->returnMessage(1, $data, $user);
         }
+
+        return $this->successJson('成功', $user);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param $uid
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($uid)
     {
-        $tag = User::find((int)$uid);
+        $tag = AdminUser::find((int)$uid);
         foreach ($tag->roles as $v) {
             $tag->roles()->detach($v);
         }
@@ -114,56 +104,6 @@ class AdminUserController extends BaseController
             ->withSuccess("删除成功");
     }
 
-    public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
-    {
-        if (!isset($request)) {
-            $request = request();
-        }
-        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
-
-        if ($validator->fails()) {
-            return $this->errorJson($validator->errors()->all());
-        }
-    }
-
-    public function rules($u_id, $p_id)
-    {
-        $rules = [];
-        if (request()->path() == "admin/user/create") {
-            $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
-                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
-            ];
-        }
-
-        if (request()->path() == "admin/user/edit") {
-            $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$u_id.',uid',
-                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$p_id,
-            ];
-        }
-
-        if (request()->path() != "admin/user/edit") {
-            $rules['password'] = 'required';
-            $rules['re_password'] = 'same:password';
-        }
-        return $rules;
-    }
-
-    public function message()
-    {
-        return [
-            'username.required' => '用户名不能为空',
-            'username.regex' => '用户名格式不正确',
-            'username.unique' => '用户名已存在',
-            'mobile.required' => '手机号已存在',
-            'mobile.regex' => '手机号格式不正确',
-            'mobile.unique' => '手机号已存在',
-            'password.required' => '密码不能为空',
-            're_password.same' => '两次密码不一致',
-        ];
-    }
-
     /**
      * 修改状态
      *
@@ -174,20 +114,23 @@ class AdminUserController extends BaseController
         $uid = request()->uid;
         $status = request()->status;
         if (!$uid || !$status) {
-            return $this->check(5);
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
         $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
+        $status == '2' ? $state = '有效' : $state = '无效' ;
+
         if ($result) {
-            return $this->check(1);
+            \Log::info('状态修改成功，现状态'.$state);
+            return $this->check(AdminUser::returnData('1'));
         } else {
-            return $this->check(0);
+            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
         }
     }
 
     /**
      * 修改密码
      *
-     * @return \Illuminate\Http\JsonResponse|void
+     * @return \Illuminate\Http\JsonResponse
      * @throws \app\common\exceptions\AppException
      */
     public function change()
@@ -195,51 +138,12 @@ class AdminUserController extends BaseController
         $uid = request()->uid;
         $data = request()->user;
         if (!$uid || !$data) {
-            return $this->check(5);
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
-        if ($data){
-            $user = AdminUser::getData($uid);
-            if (!$user) {
-                return $this->check(6);
-            }
-            $validate  = $this->validate($this->rules(), $data, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($data, $user));
-        }
-    }
 
-    /**
-     * 返回 json 信息
-     *
-     * @param $user
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function check($user)
-    {
-        switch ($user) {
-            case 1:
-                return $this->successJson('成功');
-                break;
-            case 2:
-                return $this->errorJson(['原密码错误']);
-                break;
-            case 3:
-                return $this->errorJson(['新密码与原密码一致']);
-                break;
-            case 4:
-                return $this->errorJson(['存储相关信息表失败']);
-                break;
-            case 5:
-                return $this->errorJson(['参数错误']);
-                break;
-            case 6:
-                return $this->errorJson(['未获取到数据']);
-                break;
-            default:
-                return $this->errorJson(['失败']);
-        }
+        $user = AdminUser::getData($uid);
+
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -309,22 +213,206 @@ class AdminUserController extends BaseController
 
     /**
      * 店员列表
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function clerkList()
     {
         $parames = request();
         $user = AdminUser::where('type', 3)->searchUsers($parames)->with(['hasOneProfile'])->paginate();
         foreach ($user as &$item) {
-            if ($item['status'] == 2) {
-                $item['state'] = '有效';
-            } elseif ($item['status'] == 3) {
-                $item['state'] = '已禁用';
-            }
+            $item['status'] == 2 ? $item['state'] = '有效' : null;
+            $item['status'] == 3 ? $item['state'] = '已禁用' : null;
             $item['create_at'] = $item['created_at']->format('Y年m月d日');
             $item->hasOneAppUser['app_name'] = $item->hasOneAppUser->hasOneApp->name;
         }
 
         return $this->successJson('成功', $user);
     }
-}
 
+    /**
+     * 修改当前用户信息
+     *
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
+    public function modifyCurrentUser()
+    {
+        $data = request()->user;
+        if (!$data) {
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
+        }
+
+        $user = \Auth::guard('admin')->user();
+
+        return $this->returnMessage(1, $data, $user);
+    }
+
+    /**
+     * 发送手机验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendCode()
+    {
+        $user = \Auth::guard('admin')->user();
+        if (request()->mobile != $user['hasOneProfile']['mobile']) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        return (new ResetpwdController)->SendCode();
+    }
+
+    /**
+     * 修改手机号
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifyMobile()
+    {
+        $data = request()->data;
+        $user = \Auth::guard('admin')->user();
+
+        if (request()->data['old_mobile'] != $user['hasOneProfile']['mobile']) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        $data['avatar'] = $user['hasOneProfile']['avatar'];
+
+        if (AdminUser::saveProfile($data, $user)) {
+            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
+        } else {
+            return $this->check(AdminUser::returnData('1'));
+        }
+    }
+
+    /**
+     * 发送新手机号验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendNewCode()
+    {
+        $mobile = request()->mobile;
+        $state = \YunShop::request()->state ? : '86';
+
+        return (new ResetpwdController)->send($mobile, $state);
+    }
+
+    /**
+     * 返回消息
+     *
+     * @param $sign 1: 修改, 0: 添加
+     * @param null $data 参数
+     * @param array $user 用户信息
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function returnMessage($sign, $data = null, $user = [])
+    {
+        if ($sign && !$user) {
+            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
+        }
+
+        $validate = $this->validate($this->rules(), $data, $this->message());
+
+        if ($sign) {
+            $validate = $this->validate($this->rules($user), $data, $this->message());
+        }
+
+        if ($validate) {
+            return $validate;
+        }
+
+        return $this->check(AdminUser::saveData($data, $user));
+    }
+
+    /**
+     * 处理表单验证
+     *
+     * @param array $rules
+     * @param \Request|null $request
+     * @param array $messages
+     * @param array $customAttributes
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
+    {
+        if (!isset($request)) {
+            $request = request();
+        }
+        $validator = $this->getValidationFactory()->make($request, $rules, $messages, $customAttributes);
+
+        if ($validator->fails()) {
+            return $this->errorJson($validator->errors()->all());
+        }
+    }
+
+    /**
+     * 表单验证规则
+     *
+     * @param $user
+     * @param $data
+     * @return array
+     */
+    public function rules($user = [], $data = [])
+    {
+        $rules = [];
+        if (request()->path() == "admin/user/create") {
+            $rules = [
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'username' => 'required|unique:yz_admin_users',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
+            ];
+        }else if(request()->path() == "admin/user/edit") {
+            $rules = [
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+                'username' => 'required|unique:yz_admin_users,username,'.$user['uid'].',uid',
+                'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$user['hasOneProfile']['id'],
+            ];
+        }
+
+        if (request()->path() != "admin/user/edit") {
+            if (request()->path() == "admin/user/modify_user" && !$data['password']) {
+                return $rules;
+            }
+            $rules['password'] = 'required';
+            $rules['re_password'] = 'same:password';
+        }
+        return $rules;
+    }
+
+    /**
+     * 表单验证自定义错误消息
+     *
+     * @return array
+     */
+    public function message()
+    {
+        return [
+            'username.required' => '用户名不能为空',
+            'username.regex' => '用户名格式不正确',
+            'username.unique' => '用户名已存在',
+            'mobile.required' => '手机号不能为空',
+            'mobile.regex' => '手机号格式不正确',
+            'mobile.unique' => '手机号已存在',
+            'password.required' => '密码不能为空',
+            're_password.same' => '两次密码不一致',
+        ];
+    }
+
+
+    /**
+     * 返回 json 信息
+     *
+     * @param $param
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function check($param)
+    {
+        if ($param['sign'] == 1) {
+            return $this->successJson('成功');
+        } else {
+            return $this->errorJson([$param['message']]);
+        }
+    }
+}

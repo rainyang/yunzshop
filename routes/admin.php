@@ -13,6 +13,7 @@ Route::group(['namespace' => 'platform\controllers'], function () {
     Route::any('getCaptcha', 'ResetpwdController@getCaptcha'); //发送图形验证码
     Route::any('checkCode', 'ResetpwdController@checkCode'); //检查验证码
     Route::any('detail', 'ResetpwdController@detail'); //检查验证码
+    Route::any('auth', 'ResetpwdController@authPassword'); // 管理员修改密码
 
 
     Route::get('/', 'IndexController@index');
@@ -114,6 +115,14 @@ Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopb
         Route::post('status', 'AdminUserController@status');
         // 用户修改密码
         Route::post('change', 'AdminUserController@change');
+        // 用户信息修改
+        Route::post('modify_user', 'AdminUserController@modifyCurrentUser');
+        // 发送手机验证码
+        Route::post('send_code', 'AdminUserController@sendCode');
+        // 发送新手机号验证码
+        Route::post('send_new_code', 'AdminUserController@sendNewCode');
+        // 修改手机号
+        Route::post('modify_mobile', 'AdminUserController@modifyMobile');
         // 平台列表
         Route::post('app_list', 'AdminUserController@applicationList');
         // 店员用户列表
