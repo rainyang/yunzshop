@@ -170,8 +170,8 @@ class PointTransferController extends ApiController
     {
         $this->request_point = trim(\YunShop::request()->transfer_point);
         if ($this->getRateSet() > 0) {
-            $point = intval($this->request_point - $this->request_point * $this->getRateSet());
-            $this->poundage = intval($this->request_point * $this->getRateSet());
+            $point = round($this->request_point - $this->request_point * $this->getRateSet(), 2);
+            $this->poundage = round($this->request_point * $this->getRateSet(), 2);
             return $point;
         }else{
             return $this->request_point;
@@ -185,7 +185,7 @@ class PointTransferController extends ApiController
 
     public function getRateSet()
     {
-        return intval(Setting::get('point.set.point_transfer_poundage'))/100 ?: 0;
+        return round(Setting::get('point.set.point_transfer_poundage')/100, 4) ?: 0;
     }
 
 }
