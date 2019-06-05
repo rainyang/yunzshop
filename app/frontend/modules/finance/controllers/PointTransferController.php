@@ -25,6 +25,8 @@ class PointTransferController extends ApiController
     private $transferModel;
 
     private $poundage;
+
+    private $request_point;
     /**
      * 积分转让接口
      * @return \Illuminate\Http\JsonResponse
@@ -139,8 +141,8 @@ class PointTransferController extends ApiController
             'point_income_type' => PointService::POINT_INCOME_LOSE,
             'point_mode'        => PointService::POINT_MODE_TRANSFER,
             'member_id'         => $this->transferModel->transferor,
-            'point'             => -$this->transferModel->value,
-            'remark'            => '积分转让-转出：' . -$this->transferModel->value,
+            'point'             => -$this->request_point,
+            'remark'            => '积分转让-转出：' . -$this->request_point,
         ];
     }
     private function getRecipientRecordData()
@@ -166,12 +168,13 @@ class PointTransferController extends ApiController
 
     private function getPostTransferPoint()
     {
+        $this->request_point = trim(\YunShop::request()->transfer_point);
         if ($this->getRateSet() > 0) {
-            $point = intval(trim(\YunShop::request()->transfer_point) - trim(\YunShop::request()->transfer_point) * $this->getRateSet());
-            $this->poundage = intval(trim(\YunShop::request()->transfer_point) * $this->getRateSet());
+            $point = intval($this->request_point - $this->request_point * $this->getRateSet());
+            $this->poundage = intval($this->request_point * $this->getRateSet());
             return $point;
         }else{
-            return trim(\YunShop::request()->transfer_point);
+            return $this->request_point;
         }
     }
 
