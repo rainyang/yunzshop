@@ -93,7 +93,6 @@ class PointListener
     public function byGoodsGivePoint($orderModel)
     {
 
-        $point = 0;
         // 验证订单商品是立即赠送还是每月赠送
         foreach ($orderModel->hasManyOrderGoods as $orderGoods) {
             // 商品营销数据
@@ -105,13 +104,25 @@ class PointListener
                 PointQueue::handle($this->orderModel, $goodsSale, $point_data['point']);
             } else {
                 // 订单完成立即赠送[ps:原业务逻辑]
-                $point += $point_data['point'];
                 self::addPointLog($point_data);
             }
         }
+    }
 
+
+    public function byGoodsGivePointPay($orderModel)
+    {
+        $point = 0;
+        // 验证订单商品是立即赠送还是每月赠送
+        foreach ($orderModel->hasManyOrderGoods as $orderGoods) {
+            // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
+            $point_data = self::getPointDataByGoods($orderGoods);
+            $point += $point_data['point'];
+            // 每月赠送
+        }
         return $point;
     }
+
 
 //    private function byGoodsGivePoint()
 //    {

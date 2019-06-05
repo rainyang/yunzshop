@@ -25,7 +25,7 @@ class SuccessfulPaymentController extends ApiController
      */
     public function paymentJump($outtradeno)
     {
-//        $outtradeno = \YunShop::request()->outtradeno;
+        $outtradeno = \YunShop::request()->outtradeno;
         $data = [];
         $data['app_links'] = '';
         $data['integral'] = '';
@@ -49,7 +49,8 @@ class SuccessfulPaymentController extends ApiController
 
             $order_integral = PointListener::getPointDateByOrder($orders);//point
 
-            $integral = PointListener::byGoodsGivePoint($orders);
+            $integral = PointListener::byGoodsGivePointPay($orders);
+            
 
 //
 //            foreach ($orders as $itme){
