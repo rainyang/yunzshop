@@ -38,7 +38,6 @@ class MemberOfficeAccountService extends MemberService
         }
 
         $code = \YunShop::request()->code;
-        $redirect_url = \YunShop::request()->state;
 
         $account = AccountWechats::getAccountByUniacid($uniacid);
         $appId = $account->key;
@@ -46,11 +45,13 @@ class MemberOfficeAccountService extends MemberService
 
         $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = $this->_setClientRequestUrl_v2();
+        $state = 'yz';
 
         $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
         if (!empty($code)) {
+            $redirect_url = $this->_getClientRequestUrl();
+
             $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
             $token = \Curl::to($tokenurl)
