@@ -1786,7 +1786,7 @@ return [
                         'parents'    => ['Member', 'member_invited',],
                     ],
                     'member_invited_export' => [
-                        'name'       => '查看',
+                        'name'       => '导出',
                         'url'        => 'member.member_invited.export',
                         'url_params' => '',
                         'permit'     => 1,
