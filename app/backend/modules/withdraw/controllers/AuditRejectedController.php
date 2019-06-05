@@ -35,7 +35,7 @@ class AuditRejectedController extends PreController
 
     public function validatorWithdrawModel($withdrawModel)
     {
-        if ($withdrawModel->status != Withdraw::STATUS_INITIAL) {
+        if (!in_array($withdrawModel->status, [Withdraw::STATUS_INITIAL, Withdraw::STATUS_INVALID])) {
             throw new ShopException('状态错误，不符合驳回规则！');
         }
     }
