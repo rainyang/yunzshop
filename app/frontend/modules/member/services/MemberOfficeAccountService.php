@@ -260,7 +260,7 @@ class MemberOfficeAccountService extends MemberService
             }
         }
 
-        return $redirect_url;
+        return urlencode($redirect_url);
     }
 
     /**
@@ -482,6 +482,17 @@ class MemberOfficeAccountService extends MemberService
          $token = \request()->getPassword();
          $ids   = \request()->getUser();
          $ids   = implode('-', $ids);
+
+         if ((is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null') && isset($_COOKIE['Yz-Token'])) {
+             $yz_token = decrypt($_COOKIE['Yz-Token']);
+             $yz_token = explode(':', $yz_token);
+
+             $token = $yz_token[0];
+             $ids   =  [
+                 $yz_token[1],
+                 $yz_token[2]
+             ];
+         }
 
          if (isset($ids[0]) && isset($ids[1])) {
              $uid   = $ids[0];

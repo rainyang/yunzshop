@@ -738,8 +738,8 @@ class MemberService
         SubMemberModel::updateOpenid(
             $uid, [
                 'yz_openid' => $userinfo['openid'],
-                'account_token_1' => $userinfo['account_token'],
-                'account_expires_in_1' => time() + $userinfo['expires_in'],
+                'access_token_1' => $userinfo['access_token'],
+                'access_expires_in_1' => time() + $userinfo['expires_in'],
                 'refresh_token_1' => $userinfo['refresh_token'],
                 'refresh_expires_in_1' => time() + (20 * 24 * 3600)
             ]

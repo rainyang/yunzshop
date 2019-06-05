@@ -74,11 +74,20 @@ class MemberMiniAppService extends MemberService
             $json_user['headimgurl'] = $json_user['avatarUrl'];
             $json_user['sex']        = $json_user['gender'];
 
+            $token_url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $min_set['key'] . '&secret=' . $min_set['secret'];
+
+            $token_info = \Curl::to($token_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            $token_info['refresh_token'] = '';
+
+            $json_user = array_merge($json_user, $token_info);
+
             //Login
             $member_id = $this->memberLogin($json_user);
-            //$this->createMiniMember($json_user, ['uniacid'=>$uniacid, 'member_id'=>$member_id]);
 
-            Session::set('member_id', $member_id);
+            setcookie('Yz-Token', encrypt($json_user['access_token'] . ':' . $member_id . ':' . $json_user['openid']));
 
             $random = $this->wx_app_session($user_info);
 

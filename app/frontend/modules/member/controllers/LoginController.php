@@ -37,18 +37,6 @@ class LoginController extends ApiController
             $type = Client::getType();
         }
 
-        if (1 == $type && MemberService::isLogged()) {
-            $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
-
-            if (Session::get('client_url')) {
-                $url = Session::get('client_url');
-            }
-
-            //return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
-            redirect($url)->send();
-        }
-
-
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
