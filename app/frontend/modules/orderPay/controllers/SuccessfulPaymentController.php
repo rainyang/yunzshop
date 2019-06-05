@@ -50,7 +50,7 @@ class SuccessfulPaymentController extends ApiController
             $order_integral = PointListener::getPointDateByOrder($orders);//point
 
             $integral = PointListener::byGoodsGivePointPay($orders);
-            
+
 
 //
 //            foreach ($orders as $itme){
