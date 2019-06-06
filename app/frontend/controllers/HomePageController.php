@@ -39,7 +39,6 @@ class HomePageController extends ApiController
         'getParams'
     ];
     protected $ignoreAction = [
-        'index',
         'defaultDesign',
         'defaultMenu',
         'defaultMenuStyle',
@@ -47,7 +46,6 @@ class HomePageController extends ApiController
         'wxapp',
         'isCloseSite',
         'designerShare',
-        'getParams'
     ];
     private $pageSize = 16;
 
