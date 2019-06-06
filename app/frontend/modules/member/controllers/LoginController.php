@@ -114,7 +114,7 @@ class LoginController extends ApiController
 
             $data = [
                 'token' => $decrypt[0],
-                'uid'   => $decrypt[1] . '-' . $decrypt[2]
+                'uid'   => $decrypt[1] . '=' . $decrypt[2]
             ];
         } catch (DecryptException $e) {
             return $this->successJson('登录失败', $e->getMessage());

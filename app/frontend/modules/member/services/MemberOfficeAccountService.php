@@ -482,7 +482,7 @@ class MemberOfficeAccountService extends MemberService
          $uniacid  = \YunShop::app()->uniacid;
          $token = \request()->getPassword();
          $ids   = \request()->getUser();
-         $ids   = implode('-', $ids);
+         $ids   = explode('=', $ids);
 
          if ((is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null') && isset($_COOKIE['Yz-Token'])) {
              $yz_token = decrypt($_COOKIE['Yz-Token']);
