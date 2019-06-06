@@ -525,8 +525,8 @@ class MemberOfficeAccountService extends MemberService
 
                      if (!isset($refresh_info['errcode'])) {
                          if ($token != $refresh_info['access_token']) {
-                             $member->account_token_1 = $refresh_info['access_token'];
-                             $member->account_expires_in_1 = time() + 7200;
+                             $member->access_token_1 = $refresh_info['access_token'];
+                             $member->access_expires_in_1 = time() + 7200;
 
                              $member->save();
                          }
