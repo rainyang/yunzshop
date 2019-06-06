@@ -77,7 +77,7 @@ class Trade extends BaseModel
         $items = [
             [
                 'code' => 'total_goods_price',
-                'name' => '订单总金额',
+                'name' => '商品合计',
                 'amount' => $this->orders->sum('order_goods_price'),
             ], [
                 'code' => 'total_dispatch_price',
