@@ -605,7 +605,7 @@
                             });
                         }
                         function select_member(o) {
-                            if(typeof o.has_one_mini_app.openid == "undefined"){
+                            if ( !o.has_one_mini_app) {
                                 alert(" 该会员没有进行小程序授权");
                                 return;
                             }
