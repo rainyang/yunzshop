@@ -605,13 +605,17 @@
                             });
                         }
                         function select_member(o) {
-                            if ($('.multi-item[openid="' + o.has_one_fans.openid + '"]').length > 0) {
+                            if(typeof o.has_one_mini_app.openid == "undefined"){
+                                alert(" 该会员没有进行小程序授权");
                                 return;
                             }
-                            var html = '<div class="multi-item" openid="' + o.has_one_fans.openid + '">';
+                            if ($('.multi-item[openid="' + o.has_one_mini_app.openid + '"]').length > 0) {
+                                return;
+                            }
+                            var html = '<div class="multi-item" openid="' + o.has_one_mini_app.openid + '">';
                             html += '<img class="img-responsive img-thumbnail" src="' + o.avatar + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
                             html += '<div class="img-nickname">' + o.nickname + '</div>';
-                            html += '<input type="hidden" value="' + o.has_one_fans.openid + '" name="yz_notice[salers][' + o.uid + '][openid]">';
+                            html += '<input type="hidden" value="' + o.has_one_mini_app.openid + '" name="yz_notice[salers][' + o.uid + '][openid]">';
                             html += '<input type="hidden" value="' + o.nickname + '" name="yz_notice[salers][' + o.uid + '][nickname]">';
                             html += '<input type="hidden" value="' + o.avatar + '" name="yz_notice[salers][' + o.uid + '][avatar]">';
                             html += '<input type="hidden" value="' + o.uid + '" name="yz_notice[salers][' + o.uid + '][uid]">';
