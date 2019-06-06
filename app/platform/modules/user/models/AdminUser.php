@@ -125,12 +125,12 @@ class AdminUser extends Authenticatable
     {
         $data['username'] ? $data['username'] = trim($data['username']) : null;
         $data['password'] ? $data['password'] = trim($data['password']) : null;
-        $data['application_number'] == 0 ? $data['application_number'] = '' : null ;
-        $data['endtime'] == 0 ? $data['endtime'] = '' : null ;
+        $data['application_number'] == 0 && !$user_model['application_number'] ? $data['application_number'] = '' : $user_model['application_number'];
+        $data['endtime'] == 0 && !$user_model['application_number'] ? $data['endtime'] = '' : $user_model['endtime'];
 
         if (request()->path() == "admin/user/change" || (request()->path() == "admin/user/modify_user" && $data['password'])) {
             $data['old_password'] = trim($data['old_password']);
-            if (request()->path() != "admin/user/change" && (!Hash::check($data['old_password'], $user_model['password']))) {
+            if (!Hash::check($data['old_password'], $user_model['password'])) {
                 return self::returnData(0, self::ORIGINAL);
             } elseif (Hash::check($data['password'], $user_model['password'])) {
                 return self::returnData(0, self::NEW_AND_ORIGINAL);
