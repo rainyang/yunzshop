@@ -192,6 +192,7 @@ class ListController extends BaseController
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
 
                     $address = explode(' ', $item['address']['address']);
+                    $fistOrder = $item['has_one_first_order'] ? '首单' : '';
 
                     $export_data[$key + 1] = [
                         $item['id'],
@@ -225,7 +226,8 @@ class ListController extends BaseController
                         $item['express']['express_company_name'],
                         '[' . $item['express']['express_sn'] . ']',
                         $item['has_one_order_remark']['remark'],
-                        $item['note']
+                        $item['note'],
+                        $fistOrder
                     ];
                 }
                 $export_model->export($file_name, $export_data, 'order.list.index');
@@ -330,7 +332,7 @@ class ListController extends BaseController
 
     private function getColumns()
     {
-        return ["订单id","订单编号", "支付单号", "会员ID", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注", "用户备注"];
+        return ["订单id","订单编号", "支付单号", "会员ID", "粉丝昵称", "会员姓名", "联系电话", '省', '市', '区', "收货地址", "商品名称", "商品编码", "商品数量", "支付方式", '抵扣金额', '优惠券优惠', '全场满减优惠', '单品满减优惠', "商品小计", "运费", "应收款", "成本价", "状态", "下单时间", "付款时间", "发货时间", "完成时间", "快递公司", "快递单号", "订单备注", "用户备注", "首单"];
     }
 
     protected function getExportDiscount($order, $key)
