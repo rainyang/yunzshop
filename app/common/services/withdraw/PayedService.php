@@ -193,6 +193,9 @@ class PayedService
             case Withdraw::WITHDRAW_WITH_YOP:
                 $result = $this->yopWithdrawPay();
                 break;
+            case Withdraw::WITHDRAW_WITH_CONVERGE_PAY:
+                $result = $this->convergePayWithdrawPay();
+                break;
             default:
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
         }
@@ -318,6 +321,21 @@ class PayedService
         }
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+    }
+
+    private function convergePayWithdrawPay()
+    {
+        $member_id = $this->withdrawModel->member_id;
+        $sn = $this->withdrawModel->withdraw_sn;
+        $amount = $this->withdrawModel->actual_amounts;
+        $remark = 'withdraw';
+
+        $result = PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($member_id, $sn, $amount, $remark);
+        if ($result['data']['errorCode'] || !$result['hmac']) {
+            return false;
+        }
+
+        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，汇聚提现失败：{$result['data']['errorDesc']}");
     }
 
 

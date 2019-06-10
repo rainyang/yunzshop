@@ -106,7 +106,6 @@ class Withdraw extends BaseModel
     const WITHDRAW_WITH_SEPARATE_UNION_PAY = 'separate';
 
     /**
-     * @author blank
      * 提现打款方式：打款到汇聚
      */
     const WITHDRAW_WITH_CONVERGE_PAY  = 'converge_pay';

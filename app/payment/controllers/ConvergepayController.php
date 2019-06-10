@@ -12,6 +12,7 @@ use app\common\models\AccountWechats;
 use app\common\services\Pay;
 use app\payment\PaymentController;
 use Yunshop\ConvergePay\services\NotifyService;
+use app\common\events\withdraw\WithdrawSuccessEvent;
 
 class ConvergepayController extends PaymentController
 {
@@ -117,7 +118,8 @@ class ConvergepayController extends PaymentController
     /**
      * 支付日志
      *
-     * @param $post
+     * @param $data
+     * @param $sign
      */
     public function log($data, $sign)
     {
@@ -146,5 +148,64 @@ class ConvergepayController extends PaymentController
         ];
 
         return $data;
+    }
+
+    /**
+     * 提现回调
+     *
+     */
+    public function notifyUrlWithdraw()
+    {
+        $parameter = $_POST;
+
+        $this->log($parameter, '汇聚提现');
+
+        if($this->checkWithdrawHmac($parameter)) {
+            if ($parameter['status'] == '205') {
+                \Log::debug('------汇聚打款 成功-----');
+
+                event(new WithdrawSuccessEvent($parameter['merBillNo']));
+
+                \Log::debug('----汇聚打款 结束----');
+
+                return [
+                    'statusCode' => 2001,
+                    'message' => "成功"
+                ];
+            } else {
+                //其他错误
+                \Log::debug('------汇聚打款 '.$parameter['errorCodeDesc'].'-----');
+                return [
+                    'statusCode' => 2002,
+                    'message'    => "受理失败",
+                    'errorCode'  => $parameter['errorCode'],
+                    'errorDesc'  => $parameter['errorCodeDesc']
+                ];
+            }
+        } else {
+            //签名验证失败
+            \Log::debug('------汇聚打款 签名验签失败-----');
+            return [
+                'statusCode' => 2002,
+                'message'    => "受理失败",
+                'errorCode'  => '300002017',
+                'errorDesc'  => '签名验签失败'
+            ];
+        }
+    }
+
+    /**
+     * 验证提现签名
+     *
+     * @param $parameter
+     * @return bool
+     */
+    public function checkWithdrawHmac($parameter)
+    {
+        $setting = \Setting::get('plugin.convergePay_set');
+
+        return $parameter['hmac'] == md5($parameter['status'] . $parameter['errorCode'] . $parameter['errorCodeDesc'] . $parameter['userNo']
+            . $parameter['merchantOrderNo'] . $parameter['platformSerialNo'] . $parameter['receiverAccountNoEnc']
+            . $parameter['receiverNameEnc'] . $parameter['paidAmount'] . $parameter['fee'] . $setting['hmacVal']);
     }
 }
