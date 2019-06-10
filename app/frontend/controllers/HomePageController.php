@@ -177,9 +177,13 @@ class HomePageController extends ApiController
                     } else {
                         $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
-
+                    $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
                     if ($is_love){
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
@@ -188,6 +192,12 @@ class HomePageController extends ApiController
                         }
                     }else{
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                foreach ($data['params'] as &$award_content){
+                                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                                }
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = 0;
