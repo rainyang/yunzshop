@@ -202,23 +202,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <div class="wrapper">
 
     <!-- Main Header -->
-    @php
-        global $_W;
-        $menu_list = \app\common\helpers\Cache::get('menu_list'.$_W['uid']);
-    @endphp
-    @if (!\app\common\helpers\Cache::has('menu_list'.$_W['uid']))
-        @php \Log::debug('----缓存顶端和左端 menu----'); ob_start(); @endphp
+    {{--@php--}}
+        {{--global $_W;--}}
+        {{--$menu_list = \app\common\helpers\Cache::get('menu_list'.$_W['uid']);--}}
+    {{--@endphp--}}
+    {{--@if (!\app\common\helpers\Cache::has('menu_list'.$_W['uid']))--}}
+        {{--@php \Log::debug('----缓存顶端和左端 menu----'); ob_start(); @endphp--}}
     @include('layouts.mainMenu')
     @include('layouts.mainSidebar')
-    @php
-        $cache['menu'] = ob_get_contents();
-        $cache['uid'] = $_W['uid'];
-        \app\common\helpers\Cache::forever('menu_list'.$_W['uid'], $cache);
-        ob_implicit_flush(false);
-    @endphp
-    @else
-        @php \Log::debug('----读取顶端和左端 menu----'); echo $menu_list['menu']; @endphp
-    @endif
+    {{--@php--}}
+        {{--$cache['menu'] = ob_get_contents();--}}
+        {{--$cache['uid'] = $_W['uid'];--}}
+        {{--\app\common\helpers\Cache::forever('menu_list'.$_W['uid'], $cache);--}}
+        {{--ob_implicit_flush(false);--}}
+    {{--@endphp--}}
+    {{--@else--}}
+        {{--@php \Log::debug('----读取顶端和左端 menu----'); echo $menu_list['menu']; @endphp--}}
+    {{--@endif--}}
 
     @if (Yunshop::isShowSecondMenu())
         @include('layouts.secondSidebar')

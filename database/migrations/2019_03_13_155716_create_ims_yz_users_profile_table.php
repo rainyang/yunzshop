@@ -19,7 +19,7 @@ class CreateImsYzUsersProfileTable extends Migration
                 $table->integer('uid')->comment('用户id');
                 $table->string('realname', 100)->comment('姓名');
                 $table->string('avatar')->comment('头像');
-                $table->string('mobile', 11)->comment('手机号')->unique();
+                $table->string('mobile', 11)->comment('手机号');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
                 $table->integer('deleted_at')->nullable();

@@ -271,18 +271,18 @@ class InstallController
             }
         }
 
-        $result = file_put_contents($filename, $env);
-
-        if (!$result) {
-            return $this->errorJson('保存mysql配置数据有误');
-        }
-
         try{
             $link = new \PDO("mysql:host=".$set['DB_HOST'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
             $link->exec("CREATE DATABASE IF NOT EXISTS `{$set['DB_DATABASE']}` DEFAULT CHARACTER SET utf8");
             new \PDO("mysql:host=".$set['DB_HOST'].";dbname=".$set['DB_DATABASE'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
         } catch (\Exception $e){
             return $this->errorJson($e->getMessage());
+        }
+
+        $result = file_put_contents($filename, $env);
+
+        if (!$result) {
+            return $this->errorJson('保存mysql配置数据有误');
         }
 
         fopen($this->user_txt, 'w+');

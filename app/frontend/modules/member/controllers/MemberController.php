@@ -1528,7 +1528,7 @@ class MemberController extends ApiController
             $data[] = [
                 'name'  => 'asset',
                 'title' => PLUGIN_ASSET_NAME,
-                'class' => 'icon-member-credit01',
+                'class' => 'icon-number_assets',
                 'url'   => 'TransHome'
             ];
         }

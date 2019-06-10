@@ -74,7 +74,11 @@ class AdminUserController extends BaseController
 
         $user = AdminUser::with('hasOneProfile')->find($uid);
 
-        return $this->returnMessage(1, $data, $user);
+        if ($data) {
+            return $this->returnMessage(1, $data, $user);
+        }
+
+        return $this->successJson('成功', $user);
     }
 
     /**
@@ -241,7 +245,7 @@ class AdminUserController extends BaseController
 
         $user = \Auth::guard('admin')->user();
 
-        return $this->returnMessage(0, $data, $user);
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -310,6 +314,11 @@ class AdminUserController extends BaseController
         }
 
         $validate = $this->validate($this->rules(), $data, $this->message());
+
+        if ($sign) {
+            $validate = $this->validate($this->rules($user), $data, $this->message());
+        }
+
         if ($validate) {
             return $validate;
         }
@@ -350,12 +359,14 @@ class AdminUserController extends BaseController
         $rules = [];
         if (request()->path() == "admin/user/create") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'username' => 'required|unique:yz_admin_users',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
             ];
         }else if(request()->path() == "admin/user/edit") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+                'username' => 'required|unique:yz_admin_users,username,'.$user['uid'].',uid',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$user['hasOneProfile']['id'],
             ];
         }
