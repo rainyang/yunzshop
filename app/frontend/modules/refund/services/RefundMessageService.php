@@ -123,5 +123,5 @@ class RefundMessageService extends MessageService
         } else {
             return false;
         }
-    }                                                                                          53,5          76%
+    }
 }
