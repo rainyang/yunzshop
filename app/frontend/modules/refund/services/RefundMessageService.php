@@ -103,7 +103,7 @@ class RefundMessageService extends MessageService
                     ['name' => '退款单号', 'value' => $refundApply->refund_sn],
                     ['name' => '退款申请时间', 'value' => $refundApply->create_time],
                     ['name' => '退款类型', 'value' => $refundApply->refund_type_name],
-                    ['name' => '退方式', 'value' => $orderDate->pay_type_name],
+                    ['name' => '退款方式', 'value' => $orderDate->pay_type_name],
                     ['name' => '退款原因', 'value' => $refundApply->reason],
                     ['name' => '订单编号', 'value' => $ordersn],
                     ['name' => '退款金额', 'value' => $refundApply->price],
