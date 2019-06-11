@@ -8,14 +8,14 @@
 namespace app\common\listeners\order;
 
 
-use app\common\listeners\member\AfterOrderCreatedListener;
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\models\Order;
 use app\common\facades\Setting;
 use app\common\models\order\FirstOrder;
 
 class FirstOrderListener
 {
-    public function handle(AfterOrderCreatedListener $event)
+    public function handle(AfterOrderCreatedEvent $event)
     {
         dd(11111);
         exit;
