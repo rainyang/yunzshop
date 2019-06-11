@@ -18,6 +18,7 @@ use app\common\services\Session;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -484,16 +485,30 @@ class MemberOfficeAccountService extends MemberService
          $ids   = \request()->getUser();
          $ids   = explode('=', $ids);
 
-         if (isset($_COOKIE['Yz-Token']) && (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
-                 || ($token != $_COOKIE['Yz-Token']))) {
-             $yz_token = decrypt($_COOKIE['Yz-Token']);
-             $yz_token = explode(':', $yz_token);
+         if (isset($_COOKIE['Yz-Token'])) {
+             try {
+                 $decrypt = decrypt($_COOKIE['Yz-Token']);
+                 $decrypt = explode(':', $decrypt);
 
-             $token = $yz_token[0];
-             $ids   =  [
-                 $yz_token[1],
-                 $yz_token[2]
-             ];
+                 $data = [
+                     'token' => $decrypt[0],
+                     'uid'   => $decrypt[1] . '=' . $decrypt[2]
+                 ];
+             } catch (DecryptException $e) {
+                 return $this->successJson('登录失败', $e->getMessage());
+             }
+
+             if ((is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
+                 || ($token != $data['token']))) {
+                     $yz_token = decrypt($_COOKIE['Yz-Token']);
+                     $yz_token = explode(':', $yz_token);
+
+                     $token = $yz_token[0];
+                     $ids   =  [
+                         $yz_token[1],
+                         $yz_token[2]
+                     ];
+             }
          }
 
          if (isset($ids[0]) && isset($ids[1])) {
