@@ -142,7 +142,7 @@ class WithdrawController extends ApiController
         if ($data['data']){
             return $this->successJson('查询成功',$data);
         }
-        return $this->errorJson('查询失败');
+        return $this->errorJson('查询失败',[]);
     }
 
 
@@ -187,7 +187,7 @@ class WithdrawController extends ApiController
         if ($data['data']){
             return $this->successJson('查询成功',$data);
         }
-        return $this->errorJson('查询失败');
+        return $this->errorJson('查询失败',[]);
     }
 
 
@@ -231,7 +231,7 @@ class WithdrawController extends ApiController
         if ($data['data']){
             return $this->successJson('查询成功',$data);
         }
-        return $this->errorJson('查询失败');
+        return $this->errorJson('查询失败',[]);
     }
 
 
@@ -275,6 +275,6 @@ class WithdrawController extends ApiController
         if ($data['data']){
             return $this->successJson('查询成功',$data);
         }
-        return $this->errorJson('查询失败');
+        return $this->errorJson('查询失败',[]);
     }
 }
