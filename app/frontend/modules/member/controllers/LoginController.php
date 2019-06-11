@@ -120,6 +120,8 @@ class LoginController extends ApiController
             return $this->successJson('登录失败', $e->getMessage());
         }
 
+        unset($_COOKIE['Yz-Token']);
+
         return $this->successJson('已登录', $data);
     }
 }

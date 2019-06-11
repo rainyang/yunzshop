@@ -484,7 +484,8 @@ class MemberOfficeAccountService extends MemberService
          $ids   = \request()->getUser();
          $ids   = explode('=', $ids);
 
-         if ((is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null') && isset($_COOKIE['Yz-Token'])) {
+         if (isset($_COOKIE['Yz-Token']) && (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
+                 || ($token != $_COOKIE['Yz-Token']))) {
              $yz_token = decrypt($_COOKIE['Yz-Token']);
              $yz_token = explode(':', $yz_token);
 
