@@ -69,7 +69,7 @@
                                         <div class="multi-item saler-item" style="height: 220px" openid="{{ $item['id'] }}">
                                             <img class="img-responsive img-thumbnail" src='{{ tomedia($item['thumb']) }}'
                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
-                                            <div class='img-nickname-store'>
+                                            <div class='img-nickname'>
                                                 {{ $item['title'] }}
                                             </div>
                                             <input type="hidden" value="{{ $item['id'] }}"
