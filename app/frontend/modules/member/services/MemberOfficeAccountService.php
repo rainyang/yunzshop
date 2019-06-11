@@ -498,8 +498,8 @@ class MemberOfficeAccountService extends MemberService
                  return $this->successJson('登录失败', $e->getMessage());
              }
 
-             if ((is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
-                 || ($token != $data['token']))) {
+             if (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
+                 || ($token != $data['token'])) {
                      $yz_token = decrypt($_COOKIE['Yz-Token']);
                      $yz_token = explode(':', $yz_token);
 

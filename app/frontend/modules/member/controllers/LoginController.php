@@ -108,19 +108,31 @@ class LoginController extends ApiController
             'uid'   => ''
         ];
 
-        try {
-            $decrypt = decrypt($_COOKIE['Yz-Token']);
-            $decrypt = explode(':', $decrypt);
+        $token = \request()->getPassword();
+        $ids   = \request()->getUser();
 
+        if ($_COOKIE['Yz-Token']) {
+            try {
+                $decrypt = decrypt($_COOKIE['Yz-Token']);
+                $decrypt = explode(':', $decrypt);
+
+                $data = [
+                    'token' => $decrypt[0],
+                    'uid'   => $decrypt[1] . '=' . $decrypt[2]
+                ];
+            } catch (DecryptException $e) {
+                return $this->successJson('登录失败', $e->getMessage());
+            }
+
+            setcookie('Yz-Token', '', time() - 3600);
+        } elseif (!is_null($token) || !is_null($ids) || $ids != 'null' || $token != 'null') {
             $data = [
-                'token' => $decrypt[0],
-                'uid'   => $decrypt[1] . '=' . $decrypt[2]
+                'token' => $token,
+                'uid'   => $ids
             ];
-        } catch (DecryptException $e) {
-            return $this->successJson('登录失败', $e->getMessage());
+        } else {
+            return $this->errorJson('登录失败');
         }
-
-        setcookie('Yz-Token', '', time() - 3600);
 
         return $this->successJson('已登录', $data);
     }
