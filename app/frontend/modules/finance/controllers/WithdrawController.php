@@ -110,7 +110,8 @@ class WithdrawController extends ApiController
         $data = [];
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_order = StoreOrder::builder()->where('store_id',$store['id']);
-        if (!is_null($status)){
+
+        if (!empty($status)){
             $store_order->where('has_settlement',$status);
         }
 
@@ -155,7 +156,7 @@ class WithdrawController extends ApiController
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_cashier = \Yunshop\StoreCashier\common\models\CashierOrder::with('order')->where('cashier_id',$store['cashier_id']);
 
-        if (!is_null($status)){
+        if (!empty($status)){
             $store_cashier->where('has_settlement',$status);
         }
 
@@ -199,7 +200,7 @@ class WithdrawController extends ApiController
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = HotelOrder::with('hasOneOrder')->where('hotel_id',$hotel['id']);
 
-        if (!is_null($status)){
+        if (!empty($status)){
             $hotel_order->where('has_settlement',$status);
         }
 
@@ -243,7 +244,7 @@ class WithdrawController extends ApiController
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = CashierOrder::with('hasOneOrder')->where('cashier_id',$hotel['cashier_id']);
 
-        if (!is_null($status)){
+        if (!empty($status)){
             $hotel_order->where('has_settlement',$status);
         }
 
