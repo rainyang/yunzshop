@@ -69,7 +69,7 @@ class orderListener
         $events->listen(AfterOrderCreatedEvent::class, self::class . '@onCreated');
 
         // 首单
-        $events->listen(AfterOrderCreatedEvent::class, FirstOrderListener::class . '@onCreated');
+        $events->listen(AfterOrderCreatedEvent::class, FirstOrderListener::class . '@handle');
 
         $events->listen(AfterOrderPaidEvent::class, self::class . '@onPaid');
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
