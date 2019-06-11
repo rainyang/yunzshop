@@ -42,8 +42,7 @@ class IncomePageController extends ApiController
     public function index()
     {
         $member_id = \YunShop::app()->getMemberId();
-        $memberService = app(MemberService::class);
-        $memberService->chkAccount($member_id);
+
         list($available, $unavailable) = $this->getIncomeInfo();
 
         //添加跳转链接
