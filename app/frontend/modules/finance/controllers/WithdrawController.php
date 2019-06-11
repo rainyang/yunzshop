@@ -111,7 +111,7 @@ class WithdrawController extends ApiController
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_order = StoreOrder::builder()->where('store_id',$store['id']);
 
-        $data = $store_order->paginate(3)
+        $data = $store_order->paginate(15)
             ->toArray();
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
@@ -148,7 +148,7 @@ class WithdrawController extends ApiController
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_cashier = \Yunshop\StoreCashier\common\models\CashierOrder::with('order')->where('cashier_id',$store['cashier_id']);
 
-        $data = $store_cashier->paginate(3)
+        $data = $store_cashier->paginate(15)
             ->toArray();
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
@@ -184,7 +184,7 @@ class WithdrawController extends ApiController
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = HotelOrder::with('hasOneOrder')->where('hotel_id',$hotel['id']);
 
-        $data = $hotel_order->paginate(3)
+        $data = $hotel_order->paginate(15)
             ->toArray();
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
@@ -220,7 +220,7 @@ class WithdrawController extends ApiController
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = CashierOrder::with('hasOneOrder')->where('cashier_id',$hotel['cashier_id']);
 
-        $data = $hotel_order->paginate(3)
+        $data = $hotel_order->paginate(15)
             ->toArray();
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
