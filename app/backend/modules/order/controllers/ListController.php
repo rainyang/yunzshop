@@ -26,8 +26,6 @@ class ListController extends BaseController
     public function fix()
     {
         new AfterOrderCreatedEvent(Order::find(2217));
-        dd('ok');
-        exit;
     }
 
     /**
