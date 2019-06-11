@@ -61,16 +61,6 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
-                Session::clear('member_id');
-
-                if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
-                    || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
-                ) {
-                    $this->jumpUrl($type, $mid);
-                }
-            }
-
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
