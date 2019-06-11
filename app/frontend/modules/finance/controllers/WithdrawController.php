@@ -49,7 +49,7 @@ class WithdrawController extends ApiController
     public function withdrawList()
     {
         $status = \YunShop::request()->status;
-        $type = \YunShop::request()->type;
+        $type = \YunShop::request()->withdrawal_type;
 
         $date = $this->timeData();
 
@@ -129,7 +129,7 @@ class WithdrawController extends ApiController
                 case -1 : $datas[$key]['settlement'] = '已失效'; break;
             }
         }
-        $data['data'] = $datas;
+        $data['data'] = $datas ?: [];
         //获取一月的提成
         $data['thismonth'] = $store_order->whereBetween('created_at',[ $date['begin_thismonth'] , $date['end_thismonth'] ])->sum('amount');
         //获取一周的提成
@@ -174,7 +174,7 @@ class WithdrawController extends ApiController
                 case -1 : $datas[$key]['settlement'] = '已失效'; break;
             }
         }
-        $data['data'] = $datas;
+        $data['data'] = $datas ?: [];
         //获取一月的提成
         $data['thismonth'] = $store_cashier->whereBetween('created_at',[ $date['begin_thismonth'] , $date['end_thismonth'] ])->sum('amount');
         //获取一周的提成
@@ -218,7 +218,7 @@ class WithdrawController extends ApiController
                 case -1 : $datas[$key]['settlement'] = '已失效'; break;
             }
         }
-        $data['data'] = $datas;
+        $data['data'] = $datas ?: [];
         //获取一月的提成
         $data['thismonth'] = $hotel_order->whereBetween('created_at',[ $date['begin_thismonth'] , $date['end_thismonth'] ])->sum('amount');
         //获取一周的提成
@@ -262,7 +262,7 @@ class WithdrawController extends ApiController
                 case -1 : $datas[$key]['settlement'] = '已失效'; break;
             }
         }
-        $data['data'] = $datas;
+        $data['data'] = $datas ?: [];
         //获取一月的提成
         $data['thismonth'] = $hotel_order->whereBetween('created_at',[ $date['begin_thismonth'] , $date['end_thismonth'] ])->sum('amount');
         //获取一周的提成
