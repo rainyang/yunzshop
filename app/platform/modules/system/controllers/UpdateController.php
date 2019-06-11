@@ -180,7 +180,7 @@ class UpdateController extends BaseController
                         }
 
                         //忽略前端版本号记录文件
-                        if ($file['path'] == 'config/front-version.php' && is_file(base_path() . '/' . $file['path'])) {
+                        if (($file['path'] == 'config/front-version.php' || $file['path'] == 'config/backend_version.php') && is_file(base_path() . '/' . $file['path'])) {
                             continue;
                         }
 
@@ -462,6 +462,11 @@ class UpdateController extends BaseController
             $result = $update->update(2);
 
             if ($result === true) {
+                $list = $update->getUpdates();
+                if (!empty($list)) {
+                    $this->setSystemVersion($list, 2);
+                }
+
                 $resultArr['status'] = 1;
                 $resultArr['msg'] = '-----------后台框架更新成功---------';
                 \Log::debug($resultArr['msg']);
@@ -484,13 +489,21 @@ class UpdateController extends BaseController
      *
      * @param $updateList
      */
-    private function setSystemVersion($updateList)
+    private function setSystemVersion($updateList, $type =1)
     {
         $version = $this->getFrontVersion($updateList);
 
         $str = file_get_contents(base_path('config/') . 'front-version.php');
         $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
-        file_put_contents(base_path('config/') . 'front-version.php', $str);
+
+        switch ($type) {
+            case 1:
+                file_put_contents(base_path('config/') . 'front-version.php', $str);
+                break;
+            case 2:
+                file_put_contents(base_path('config/') . 'backend_version.php', $str);
+                break;
+        }
     }
 
     /**
