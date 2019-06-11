@@ -116,7 +116,7 @@ class WithdrawController extends ApiController
             $store_order->where('has_settlement',$status);
         }
 
-        $data = $store_order->paginate(5)
+        $data = $store_order->paginate(15)
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
