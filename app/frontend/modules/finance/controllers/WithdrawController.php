@@ -16,6 +16,7 @@ use Yunshop\Hotel\common\models\CashierOrder;
 use Yunshop\Hotel\common\models\Hotel;
 use Yunshop\Hotel\common\models\HotelOrder;
 use Yunshop\StoreCashier\common\models\StoreOrder;
+use app\common\helpers\PaginationHelper;
 
 class WithdrawController extends ApiController
 {
@@ -117,6 +118,7 @@ class WithdrawController extends ApiController
 
         $data = $store_order->paginate(15)
             ->toArray();
+        $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
             $datas[$key]['order_sn'] = $itme['has_one_order']['order_sn'];
@@ -162,6 +164,7 @@ class WithdrawController extends ApiController
 
         $data = $store_cashier->paginate(15)
             ->toArray();
+        $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
             $datas[$key]['order_sn'] = $itme['has_one_order']['order_sn'];
@@ -206,6 +209,7 @@ class WithdrawController extends ApiController
 
         $data = $hotel_order->paginate(15)
             ->toArray();
+        $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
             $datas[$key]['order_sn'] = $itme['has_one_order']['order_sn'];
@@ -250,6 +254,7 @@ class WithdrawController extends ApiController
 
         $data = $hotel_order->paginate(15)
             ->toArray();
+        $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
 //            dd($itme);
             $datas[$key]['order_sn'] = $itme['has_one_order']['order_sn'];
