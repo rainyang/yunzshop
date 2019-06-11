@@ -634,6 +634,7 @@ class MemberController extends BaseController
 
         $list = MemberParent::children($request)
             ->orderBy('level','asc')
+            ->orderBy('id','asc')
             ->paginate($this->pageSize)
             ->toArray();
 
