@@ -21,8 +21,10 @@ class CreditPay extends BasePayType
     {
         $uid = \YunShop::request()->pid;
 
-        if (!isset($uid) || isset($uid) && $uid == "null") {
+        if (!isset($uid) || (isset($uid) && $uid == "null")) {
             $uid = $this->orderPay->orders->first()->uid;
+        } else {
+            $uid = \YunShop::app()->getMemberId();
         }
 
         $result = [
