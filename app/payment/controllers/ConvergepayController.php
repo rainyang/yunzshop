@@ -123,7 +123,7 @@ class ConvergepayController extends PaymentController
      */
     public function log($data, $sign)
     {
-        $orderNo = explode(':', $data['orderNo']);
+        $orderNo = explode('HJ', $data['orderNo']);
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
