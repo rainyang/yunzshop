@@ -15,6 +15,7 @@ use app\backend\modules\order\models\OrderGoods;
 use app\backend\modules\order\models\OrderJoinOrderGoods;
 use app\common\components\BaseController;
 
+use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\helpers\PaginationHelper;
 use app\common\services\ExportService;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +23,13 @@ use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 
 class ListController extends BaseController
 {
+    public function fix()
+    {
+        new AfterOrderCreatedEvent(Order::find(2217));
+        dd('ok');
+        exit;
+    }
+
     /**
      * 页码
      */

@@ -17,6 +17,8 @@ class FirstOrderListener
 {
     public function handle(AfterOrderCreatedListener $event)
     {
+        dd(11111);
+        exit;
         $order = Order::find($event->getOrderModel()->id);
         $shopOrderSet = Setting::get('shop.order');
         if (!$shopOrderSet['goods']) {
