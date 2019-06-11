@@ -331,11 +331,11 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($member_id, $sn, $amount, $remark);
-        if ($result['data']['errorCode'] || !$result['hmac']) {
-            \Log::debug("-----收入提现ID：{$this->withdrawModel->id}-----.-----汇聚提现失败：{$result['data']['errorDesc']}-----");
+        if (!$result['data']['errorCode'] || $result['hmac']) {
             return false;
         }
 
+        \Log::debug("-----收入提现ID：{$this->withdrawModel->id}-----.-----汇聚提现失败：{$result['data']['errorDesc']}-----");
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，汇聚提现失败：{$result['data']['errorDesc']}");
     }
 
