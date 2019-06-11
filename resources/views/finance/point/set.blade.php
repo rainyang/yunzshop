@@ -28,6 +28,20 @@
                             </label>
                             <span class='help-block'>积分转让： 会员之间可以进行积分转让</span>
                         </div>
+                        @if($set['point_transfer'] == 1)
+                        <div id='point_transfer_poundage' class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-3">
+                                <div class='input-group'>
+                                    <span class='input-group-addon'>手续费</span>
+                                    <input type="text" name="set[point_transfer_poundage]" value="{{$set['point_transfer_poundage']}}"
+                                           class="form-control"/>
+                                    <span class='input-group-addon'>%</span>
+                                </div>
+                                <span class='help-block'></span>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
@@ -275,6 +289,14 @@
                 }
                 else {
                     $("#transfer_love").hide();
+                }
+            });
+            $(":radio[name='set[point_transfer]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#point_transfer_poundage").show();
+                }
+                else {
+                    $("#point_transfer_poundage").hide();
                 }
             });
         })
