@@ -158,13 +158,17 @@ class ConvergepayController extends PaymentController
     {
         $parameter = $_POST;
 
-        $this->log($parameter, '汇聚提现');
+        $orderNo = explode(':', $parameter['merchantOrderNo']);
+        //访问记录
+        Pay::payAccessLog();
+        //保存响应数据
+        Pay::payResponseDataLog($orderNo[0], '汇聚提现', json_encode($parameter));
 
         if($this->checkWithdrawHmac($parameter)) {
             if ($parameter['status'] == '205') {
                 \Log::debug('------汇聚打款 成功-----');
 
-                event(new WithdrawSuccessEvent($parameter['merBillNo']));
+                event(new WithdrawSuccessEvent($orderNo[1]));
 
                 \Log::debug('----汇聚打款 结束----');
 
