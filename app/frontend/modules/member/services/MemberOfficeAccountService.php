@@ -486,7 +486,9 @@ class MemberOfficeAccountService extends MemberService
          $ids   = explode('=', $ids);
 
          if ($_COOKIE['access'] && (!is_null($ids) || $ids != 'null')) {
-             return true;
+             if (SubMemberModel::getMemberByTokenAndUid($token, $ids[0])) {
+                 return true;
+             }
          }
 
          if (isset($_COOKIE['Yz-Token'])) {
