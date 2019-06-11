@@ -123,7 +123,7 @@ class ConvergepayController extends PaymentController
      */
     public function log($data, $sign)
     {
-        $orderNo = explode('HJ', $data['orderNo']);
+        $orderNo = explode(':', $data['orderNo']);
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
@@ -158,17 +158,16 @@ class ConvergepayController extends PaymentController
     {
         $parameter = $_POST;
 
-        $orderNo = explode(':', $parameter['merchantOrderNo']);
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($orderNo[0], '汇聚提现', json_encode($parameter));
+        Pay::payResponseDataLog($parameter['merchantOrderNo'], '汇聚提现', json_encode($parameter));
 
         if($this->checkWithdrawHmac($parameter)) {
             if ($parameter['status'] == '205') {
                 \Log::debug('------汇聚打款 成功-----');
 
-                event(new WithdrawSuccessEvent($orderNo[1]));
+                event(new WithdrawSuccessEvent($parameter['merchantOrderNo']));
 
                 \Log::debug('----汇聚打款 结束----');
 
