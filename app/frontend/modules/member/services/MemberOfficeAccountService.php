@@ -485,6 +485,10 @@ class MemberOfficeAccountService extends MemberService
          $ids   = \request()->getUser();
          $ids   = explode('=', $ids);
 
+         if ($_COOKIE['access'] && (!is_null($ids) || $ids != 'null')) {
+             return true;
+         }
+
          if (isset($_COOKIE['Yz-Token'])) {
              try {
                  $decrypt = decrypt($_COOKIE['Yz-Token']);
@@ -525,7 +529,7 @@ class MemberOfficeAccountService extends MemberService
                      ->get();
 
                  if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
-                     Session::set('member_id', $uid);
+                     setcookie('access', 'login', time() + 7000);
 
                      return true;
                  } else {
@@ -546,8 +550,8 @@ class MemberOfficeAccountService extends MemberService
 
                              $member->save();
                          }
-
-                         Session::set('member_id', $uid);
+                         
+                         setcookie('access', 'login', time() + 7000);
 
                          return true;
                      }
