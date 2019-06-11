@@ -96,13 +96,6 @@ class ApiController extends BaseController
             }
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
-        } else {
-            if (5 == $type || 7 == $type) {
-                throw new MemberNotLoginException('请登录',
-                    ['login_status' => 1, 'login_url' => '', 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
-            }
-
-            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => '', 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
         }
     }
 }

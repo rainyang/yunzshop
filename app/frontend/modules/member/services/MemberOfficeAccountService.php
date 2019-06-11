@@ -531,7 +531,7 @@ class MemberOfficeAccountService extends MemberService
                      ->get();
 
                  if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
-                     setcookie('access', 'login', time() + 7000);
+                     setcookie('access', true, time() + 7000);
 
                      return true;
                  } else {
@@ -553,7 +553,7 @@ class MemberOfficeAccountService extends MemberService
                              $member->save();
                          }
                          
-                         setcookie('access', 'login', time() + 7000);
+                         setcookie('access', true, time() + 7000);
 
                          return true;
                      }
