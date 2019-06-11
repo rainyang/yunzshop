@@ -56,22 +56,22 @@ class WithdrawController extends ApiController
         switch ($type){
             case 'store' :
                 if (app('plugins')->isEnabled('store-cashier')) {
-                    return $this->storeData($date);
+                    return $this->storeData($date,$status);
                 }
             break;
             case 'store_cashier' :
                 if (app('plugins')->isEnabled('store-cashier')) {
-                    return $this->storeCashier($date);
+                    return $this->storeCashier($date,$status);
                 }
             break;
             case 'hotel' :
                 if (app('plugins')->isEnabled('hotel')) {
-                    return $this->hotel($date);
+                    return $this->hotel($date,$status);
                 }
             break;
             case 'hotel_cashier' :
                 if (app('plugins')->isEnabled('hotel')) {
-                    return $this->hotelashier($date);
+                    return $this->hotelashier($date,$status);
                 }
             break;
         }
@@ -105,11 +105,15 @@ class WithdrawController extends ApiController
     /**
      * 门店数据
      */
-    public function storeData($date)
+    public function storeData($date,$status)
     {
         $data = [];
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_order = StoreOrder::builder()->where('store_id',$store['id']);
+
+        if (!empty($status)){
+            $store_order->where('has_withdraw',$status);
+        }
 
         $data = $store_order->paginate(15)
             ->toArray();
@@ -119,7 +123,11 @@ class WithdrawController extends ApiController
             $datas[$key]['created_at'] = $itme['created_at'];
             $datas[$key]['amount'] = $itme['amount'];
             $datas[$key]['status'] = $itme['has_settlement'];
-
+            switch ($itme['has_settlement']){
+                case 0 : $datas[$key]['settlement'] = '未结算'; break;
+                case 1 : $datas[$key]['settlement'] = '已结算'; break;
+                case -1 : $datas[$key]['settlement'] = '已失效'; break;
+            }
         }
         $data['data'] = $datas;
         //获取一月的提成
@@ -141,12 +149,16 @@ class WithdrawController extends ApiController
     /**
      * 收银台数据
      */
-    public function storeCashier($date)
+    public function storeCashier($date,$status)
     {
 
         $data = [];
         $store = Store::where('uid',\YunShop::app()->getMemberId())->first();
         $store_cashier = \Yunshop\StoreCashier\common\models\CashierOrder::with('order')->where('cashier_id',$store['cashier_id']);
+
+        if (!empty($status)){
+            $store_cashier->where('has_withdraw',$status);
+        }
 
         $data = $store_cashier->paginate(15)
             ->toArray();
@@ -156,7 +168,11 @@ class WithdrawController extends ApiController
             $datas[$key]['created_at'] = $itme['created_at'];
             $datas[$key]['amount'] = $itme['amount'];
             $datas[$key]['status'] = $itme['has_settlement'];
-
+            switch ($itme['has_settlement']){
+                case 0 : $datas[$key]['settlement'] = '未结算'; break;
+                case 1 : $datas[$key]['settlement'] = '已结算'; break;
+                case -1 : $datas[$key]['settlement'] = '已失效'; break;
+            }
         }
         $data['data'] = $datas;
         //获取一月的提成
@@ -178,11 +194,15 @@ class WithdrawController extends ApiController
     /**
      * j酒店数据
      */
-    public function hotel($date)
+    public function hotel($date,$status)
     {
         $data = [];
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = HotelOrder::with('hasOneOrder')->where('hotel_id',$hotel['id']);
+
+        if (!empty($status)){
+            $hotel_order->where('has_withdraw',$status);
+        }
 
         $data = $hotel_order->paginate(15)
             ->toArray();
@@ -192,7 +212,11 @@ class WithdrawController extends ApiController
             $datas[$key]['created_at'] = $itme['created_at'];
             $datas[$key]['amount'] = $itme['amount'];
             $datas[$key]['status'] = $itme['has_settlement'];
-
+            switch ($itme['has_settlement']){
+                case 0 : $datas[$key]['settlement'] = '未结算'; break;
+                case 1 : $datas[$key]['settlement'] = '已结算'; break;
+                case -1 : $datas[$key]['settlement'] = '已失效'; break;
+            }
         }
         $data['data'] = $datas;
         //获取一月的提成
@@ -214,11 +238,15 @@ class WithdrawController extends ApiController
     /**
      * 酒店收银台数据
      */
-    public function hotelashier($date)
+    public function hotelashier($date,$status)
     {
         $data = [];
         $hotel = Hotel::where('uid',\YunShop::app()->getMemberId())->first();
         $hotel_order = CashierOrder::with('hasOneOrder')->where('cashier_id',$hotel['cashier_id']);
+
+        if (!empty($status)){
+            $hotel_order->where('has_withdraw',$status);
+        }
 
         $data = $hotel_order->paginate(15)
             ->toArray();
@@ -228,7 +256,11 @@ class WithdrawController extends ApiController
             $datas[$key]['created_at'] = $itme['created_at'];
             $datas[$key]['amount'] = $itme['amount'];
             $datas[$key]['status'] = $itme['has_settlement'];
-
+            switch ($itme['has_settlement']){
+                case 0 : $datas[$key]['settlement'] = '未结算'; break;
+                case 1 : $datas[$key]['settlement'] = '已结算'; break;
+                case -1 : $datas[$key]['settlement'] = '已失效'; break;
+            }
         }
         $data['data'] = $datas;
         //获取一月的提成
