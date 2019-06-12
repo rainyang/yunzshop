@@ -73,7 +73,7 @@
                                                 {{ $item['title'] }}
                                             </div>
                                             <input type="hidden" value="{{ $item['id'] }}"
-                                                   name="queue[order][{{ $item['id'] }}]">
+                                                   name="order[goods][{{ $item['id'] }}]">
                                             <em onclick="remove_goods(this)" class="close">×</em>
                                         </div>
                                     @endforeach
