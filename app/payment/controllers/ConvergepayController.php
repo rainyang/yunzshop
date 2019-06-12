@@ -156,17 +156,16 @@ class ConvergepayController extends PaymentController
      */
     public function notifyUrlWithdraw()
     {
+        $parameter = request();
+        \Log::debug('--汇聚提现参数--', $parameter);
+
         if (empty(\YunShop::app()->uniacid)) {
-            $orderNo = explode('H', $_POST['merchantOrderNo']);
+            $orderNo = explode('H', $parameter['merchantOrderNo']);
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $orderNo[1];
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
-
-        $parameter = $_POST;
-
-        \Log::debug('--Lyf--', json_encode($parameter).'1-----'.json_encode($_GET).'2-----');
 
         //访问记录
         Pay::payAccessLog();
@@ -198,12 +197,12 @@ class ConvergepayController extends PaymentController
         } else {
             //签名验证失败
             \Log::debug('------汇聚打款 签名验签失败-----');
-            return json_encode([
+            return [
                 'statusCode' => 2002,
                 'message'    => "受理失败",
                 'errorCode'  => '300002017',
                 'errorDesc'  => '签名验签失败'
-            ]);
+            ];
         }
     }
 
