@@ -331,7 +331,7 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($member_id, $sn, $amount, $remark);
-        if (!$result['data']['errorCode'] || $result['hmac']) {
+        if (!$result['data']['errorCode'] && $result['hmac']) {
             return false;
         }
 

@@ -181,29 +181,29 @@ class ConvergepayController extends PaymentController
 
                 \Log::debug('----汇聚打款 结束----');
 
-                return [
+                return json_encode([
                     'statusCode' => 2001,
                     'message' => "成功"
-                ];
+                ]);
             } else {
                 //其他错误
                 \Log::debug('------汇聚打款 '.$parameter['errorCodeDesc'].'-----');
-                return [
+                return json_encode([
                     'statusCode' => 2002,
                     'message'    => "受理失败",
                     'errorCode'  => $parameter['errorCode'],
                     'errorDesc'  => $parameter['errorCodeDesc']
-                ];
+                ]);
             }
         } else {
             //签名验证失败
             \Log::debug('------汇聚打款 签名验签失败-----');
-            return [
+            return json_encode([
                 'statusCode' => 2002,
                 'message'    => "受理失败",
                 'errorCode'  => '300002017',
                 'errorDesc'  => '签名验签失败'
-            ];
+            ]);
         }
     }
 
