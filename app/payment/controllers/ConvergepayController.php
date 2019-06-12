@@ -160,7 +160,7 @@ class ConvergepayController extends PaymentController
         \Log::debug('--汇聚提现参数--', $parameter);
 
         if (empty(\YunShop::app()->uniacid)) {
-            $orderNo = explode('H', $parameter['merchantOrderNo']);
+            $orderNo = explode('H', $parameter->merchantOrderNo);
 
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $orderNo[1];
 
@@ -170,10 +170,10 @@ class ConvergepayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($orderNo[0], '汇聚提现', json_encode($parameter));
+        Pay::payResponseDataLog($orderNo[0], '汇聚提现', $parameter);
 
         if($this->checkWithdrawHmac($parameter)) {
-            if ($parameter['status'] == '205') {
+            if ($parameter->status == '205') {
                 \Log::debug('------汇聚打款 成功-----');
 
                 event(new WithdrawSuccessEvent($orderNo[0]));
@@ -186,23 +186,23 @@ class ConvergepayController extends PaymentController
                 ]);
             } else {
                 //其他错误
-                \Log::debug('------汇聚打款 '.$parameter['errorCodeDesc'].'-----');
+                \Log::debug('------汇聚打款 '.$parameter->errorCodeDesc.'-----');
                 echo json_encode([
                     'statusCode' => 2002,
                     'message'    => "受理失败",
-                    'errorCode'  => $parameter['errorCode'],
-                    'errorDesc'  => $parameter['errorCodeDesc']
+                    'errorCode'  => $parameter->errorCode,
+                    'errorDesc'  => $parameter->errorCodeDesc
                 ]);
             }
         } else {
             //签名验证失败
             \Log::debug('------汇聚打款 签名验签失败-----');
-            echo [
+            echo json_encode([
                 'statusCode' => 2002,
                 'message'    => "受理失败",
                 'errorCode'  => '300002017',
                 'errorDesc'  => '签名验签失败'
-            ];
+            ]);
         }
     }
 
@@ -216,12 +216,12 @@ class ConvergepayController extends PaymentController
     {
         $setting = \Setting::get('plugin.convergePay_set');
 
-        dd($parameter['hmac'], md5($parameter['status'] . $parameter['errorCode'] . $parameter['errorCodeDesc'] . $parameter['userNo']
-            . $parameter['merchantOrderNo'] . $parameter['platformSerialNo'] . $parameter['receiverAccountNoEnc']
-            . $parameter['receiverNameEnc'] . $parameter['paidAmount'] . $parameter['fee'] . $setting['hmacVal']), $setting['hmacVal']);
+        \Log::debug('--汇聚签名验证参数--'. $parameter->status . $parameter->errorCode . $parameter->errorCodeDesc . $parameter->userNo
+            . $parameter->merchantOrderNo . $parameter->platformSerialNo . $parameter->receiverAccountNoEnc
+            . $parameter->receiverNameEnc . $parameter->paidAmount . $parameter->fee .$setting['hmacVal']);
 
-        return $parameter['hmac'] == md5($parameter['status'] . $parameter['errorCode'] . $parameter['errorCodeDesc'] . $parameter['userNo']
-            . $parameter['merchantOrderNo'] . $parameter['platformSerialNo'] . $parameter['receiverAccountNoEnc']
-            . $parameter['receiverNameEnc'] . $parameter['paidAmount'] . $parameter['fee'] . $setting['hmacVal']);
+        return $parameter->hmac == md5($parameter->status . $parameter->errorCode . $parameter->errorCodeDesc . $parameter->userNo
+            . $parameter->merchantOrderNo . $parameter->platformSerialNo . $parameter->receiverAccountNoEnc
+            . $parameter->receiverNameEnc . $parameter->paidAmount . sprintf("%.2f", $parameter->fee) . $setting['hmacVal']);
     }
 }
