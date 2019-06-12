@@ -57,7 +57,7 @@
                                     <input type='text'
                                            class='form-control'
                                            id="many_good"
-                                           value="@foreach($goods as $item){{$item['title']}}@endforeach"
+                                           value="@foreach($goods as $item){{$item['title']}};@endforeach"
                                            readonly/
                                     >
                                     <div class="input-group-btn">
