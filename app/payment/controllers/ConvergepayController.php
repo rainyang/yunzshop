@@ -180,14 +180,14 @@ class ConvergepayController extends PaymentController
 
                 \Log::debug('----汇聚打款 结束----');
 
-                return json_encode([
+                echo json_encode([
                     'statusCode' => 2001,
                     'message' => "成功"
                 ]);
             } else {
                 //其他错误
                 \Log::debug('------汇聚打款 '.$parameter['errorCodeDesc'].'-----');
-                return json_encode([
+                echo json_encode([
                     'statusCode' => 2002,
                     'message'    => "受理失败",
                     'errorCode'  => $parameter['errorCode'],
@@ -197,7 +197,7 @@ class ConvergepayController extends PaymentController
         } else {
             //签名验证失败
             \Log::debug('------汇聚打款 签名验签失败-----');
-            return [
+            echo [
                 'statusCode' => 2002,
                 'message'    => "受理失败",
                 'errorCode'  => '300002017',
@@ -215,6 +215,10 @@ class ConvergepayController extends PaymentController
     public function checkWithdrawHmac($parameter)
     {
         $setting = \Setting::get('plugin.convergePay_set');
+
+        dd($parameter['hmac'], md5($parameter['status'] . $parameter['errorCode'] . $parameter['errorCodeDesc'] . $parameter['userNo']
+            . $parameter['merchantOrderNo'] . $parameter['platformSerialNo'] . $parameter['receiverAccountNoEnc']
+            . $parameter['receiverNameEnc'] . $parameter['paidAmount'] . $parameter['fee'] . $setting['hmacVal']), $setting['hmacVal']);
 
         return $parameter['hmac'] == md5($parameter['status'] . $parameter['errorCode'] . $parameter['errorCodeDesc'] . $parameter['userNo']
             . $parameter['merchantOrderNo'] . $parameter['platformSerialNo'] . $parameter['receiverAccountNoEnc']
