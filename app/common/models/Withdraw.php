@@ -167,7 +167,7 @@ class Withdraw extends BaseModel
         self::WITHDRAW_WITH_EUP_PAY                => '提现EUP',
         self::WITHDRAW_WITH_YOP                    => '提现易宝',
         self::WITHDRAW_WITH_SEPARATE_UNION_PAY     => '提现银联',
-        self::WITHDRAW_WITH_CONVERGE_PAY           => '提现到汇聚',
+        self::WITHDRAW_WITH_CONVERGE_PAY           => '提现到银行卡-HJ',
     ];
 
 

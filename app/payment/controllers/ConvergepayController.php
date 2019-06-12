@@ -156,18 +156,28 @@ class ConvergepayController extends PaymentController
      */
     public function notifyUrlWithdraw()
     {
+        if (empty(\YunShop::app()->uniacid)) {
+            $orderNo = explode('H', $_POST['merchantOrderNo']);
+
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $orderNo[1];
+
+            AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
+        }
+
         $parameter = $_POST;
+
+        \Log::debug('--Lyf--', json_encode($parameter).'1-----'.json_encode($_GET).'2-----');
 
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($parameter['merchantOrderNo'], '汇聚提现', json_encode($parameter));
+        Pay::payResponseDataLog($orderNo[0], '汇聚提现', json_encode($parameter));
 
         if($this->checkWithdrawHmac($parameter)) {
             if ($parameter['status'] == '205') {
                 \Log::debug('------汇聚打款 成功-----');
 
-                event(new WithdrawSuccessEvent($parameter['merchantOrderNo']));
+                event(new WithdrawSuccessEvent($orderNo[0]));
 
                 \Log::debug('----汇聚打款 结束----');
 

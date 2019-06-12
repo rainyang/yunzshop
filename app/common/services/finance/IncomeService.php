@@ -57,7 +57,7 @@ class IncomeService
                 return '提现到易宝';
                 break;
             case 'converge_pay':
-                return '提现到汇聚';
+                return '提现到银行卡-HJ';
                 break;
         }
     }
