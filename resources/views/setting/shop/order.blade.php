@@ -70,7 +70,7 @@
                                             <img class="img-responsive img-thumbnail" src='{{ tomedia($item['thumb']) }}'
                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                             <div class='img-nickname'>
-                                                {{ $item['title'] }}
+                                                {{ $item['title'] }}[ID:{{$item['id']}}]
                                             </div>
                                             <input type="hidden" value="{{ $item['id'] }}"
                                                    name="order[goods][{{ $item['id'] }}]">
@@ -136,7 +136,7 @@
         function select_good(o) {
             var html = '<div class="multi-item" style="height: 220px" openid="' + o.id + '">';
             html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
-            html += '<div class="img-nickname" style="max-height: 58px;overflow: hidden">' + o.title + '</div>';
+            html += '<div class="img-nickname" style="max-height: 58px;overflow: hidden">' + o.title + "[ID:"+ o.id +"]" + '</div>';
             html += '<input type="hidden" value="' + o.id + '" name="order[goods][' + o.id + ']">';
             html += '<em onclick="remove_goods(this)"  class="close">×</em>';
             html += '</div>';
