@@ -24,6 +24,7 @@ use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Love\Common\Models\GoodsLove;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
+use app\common\models\Goods;
 
 class HomePageController extends ApiController
 {
@@ -189,6 +190,7 @@ class HomePageController extends ApiController
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                                    $goode_award['stock'] = $this ->getGoodsStock($goode_award['goodid']);
                                 }
                             }
                         }
@@ -441,6 +443,13 @@ class HomePageController extends ApiController
         $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
+    }
+    
+    private function getGoodsStock($goods_id)
+    {
+        $goodsModel = Goods::select('stock')->where('uniacid',\Yunshop::app()->uniacid)->where('id',$goods_id)->first();
+        $stock = $goodsModel ? $goodsModel->stock : 0;
+        return $stock;
     }
     /*
      * 获取分页数据

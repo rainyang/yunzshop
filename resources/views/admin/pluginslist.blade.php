@@ -17,35 +17,37 @@
 
         <div class="row">
             @foreach( $class as $key1 => $value)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">{{ $value['name'] }}</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($data[$key1] as $key => $plugin)
-                        @if(can($key))
-                        <div class="col-md-2">
-                            <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                <div class="plugin-i-div">
-                                    <i class="plugin-i" style="background-color: {{$value['color']}}; background-image: url({{ $plugin['icon_url'] }})"></i>
-                                </div>
-                                <span class="plugin-span">{{$plugin['name']}}</span>
-                                <object>
-                                    <a class="top_show"
-                                       style="display: none;"
-                                       href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                        <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                        data-toggle="tooltip"  data-placement="top"
-                                           @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                    </a>
-                                </object>
-                                {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                            </a>
+                @if(is_array($data[$key1]))
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background-color: #f6f6f6">
+                            <h3 class="panel-title">{{ $value['name'] }}</h3>
                         </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
+                        <div class="panel-body">
+                            @foreach($data[$key1] as $key => $plugin)
+                                @if(can($key))
+                                <div class="col-md-2">
+                                    <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
+                                        <div class="plugin-i-div">
+                                            <i class="plugin-i" style="background-color: {{$value['color']}}; background-image: url({{ $plugin['icon_url'] }})"></i>
+                                        </div>
+                                        <span class="plugin-span">{{$plugin['name']}}</span>
+                                        <object>
+                                            <a class="top_show"
+                                               style="display: none;"
+                                               href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                                <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                                data-toggle="tooltip"  data-placement="top"
+                                                   @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                            </a>
+                                        </object>
+                                        {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
+                                    </a>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             @endforeach
          <div>
     </div>

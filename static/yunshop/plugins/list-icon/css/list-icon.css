@@ -249,6 +249,10 @@
     background-image: url('../img/marketing/business_card.png');
 }
 
+.business_activity {
+    background-image: url('../img/marketing/business_activity.png');
+}
+
 .my-friend {
     background-image: url('../img/marketing/my-friend.png');
 }
