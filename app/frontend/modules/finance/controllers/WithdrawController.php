@@ -166,8 +166,7 @@ class WithdrawController extends ApiController
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
-//            dd($itme);
-            $datas[$key]['order_sn'] = $itme['has_one_order']['order_sn'];
+            $datas[$key]['order_sn'] = $itme['order']['order_sn'];
             $datas[$key]['created_at'] = $itme['created_at'];
             $datas[$key]['amount'] = $itme['amount'];
             $datas[$key]['status'] = $itme['has_settlement'];
