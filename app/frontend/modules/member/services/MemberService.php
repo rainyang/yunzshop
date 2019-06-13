@@ -661,14 +661,6 @@ class MemberService
             'groupid' => $default_group->groupid
         ));
 
-        //添加mapping_fans表
-        /*McMappingFansModel::insertData($userinfo, array(
-            'uid' => $uid,
-            'acid' => $uniacid,
-            'uniacid' => $uniacid,
-            'salt' => Client::random(8),
-        ));*/
-
         return $uid;
     }
 
@@ -782,16 +774,6 @@ class MemberService
         );
 
         MemberModel::updataData($member_id, $mc_data);
-
-        //更新mapping_fans
-        /*$record = array(
-            'openid' => $userinfo['openid'],
-            'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
-            'tag' => base64_encode(serialize($userinfo))
-        );
-
-        McMappingFansModel::updateData($member_id, $record);*/
     }
 
     /**

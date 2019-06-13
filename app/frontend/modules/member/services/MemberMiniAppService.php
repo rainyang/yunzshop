@@ -8,11 +8,15 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
+use app\common\models\MemberGroup;
 use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class MemberMiniAppService extends MemberService
 {
@@ -154,62 +158,6 @@ class MemberMiniAppService extends MemberService
         return $member_id;
     }
 
-    /**
-     * 小程序平台授权登陆
-     *
-     * @param $uniacid
-     * @param $userinfo
-     * @return array|int|mixed
-     */
-    /*public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
-    {
-        $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
-        $fans_mode = MemberMiniAppModel::getUId($userinfo['openid']);
-
-        if ($fans_mode) {
-            $member_model = Member::getMemberById($fans_mode->uid);
-            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
-
-            $member_id = $fans_mode->uid;
-        }
-
-        if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
-            \Log::debug('小程序登陆更新');
-
-            $this->updateMemberInfo($member_id, $userinfo);
-        } else {
-            \Log::debug('添加新会员');
-
-            if (empty($member_model) && empty($fans_mode)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
-
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
-                }
-            } elseif ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
-
-                $this->updateMemberInfo($member_id, $userinfo);
-            }
-
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
-
-            //生成分销关系链
-            if ($upperMemberId) {
-                \Log::debug('分销关系链-海报');
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                \Log::debug('分销关系链-链接');
-                Member::createRealtion($member_id);
-            }
-        }
-
-        return $member_id;
-    }*/
-
     public function updateMemberInfo($member_id, $userinfo)
     {
         parent::updateMemberInfo($member_id, $userinfo);
@@ -280,5 +228,142 @@ class MemberMiniAppService extends MemberService
             'member_id' => $member_id,
             'type' => self::LOGIN_TYPE
         ));
+    }
+
+    /**
+     * 商城会员
+     *
+     * @param $uniacid
+     * @param $member_id
+     * @param $userinfo
+     */
+    public function addSubMemberInfoV2($uniacid, $member_id, $userinfo)
+    {
+        //添加yz_member表
+        $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
+
+        if (!empty($default_sub_group_id)) {
+            $default_subgroup_id = $default_sub_group_id->id;
+        } else {
+            $default_subgroup_id = 0;
+        }
+
+        SubMemberModel::insertData(array(
+            'member_id' => $member_id,
+            'uniacid' => $uniacid,
+            'group_id' => $default_subgroup_id,
+            'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
+            'yz_openid' => $userinfo['openid'],
+        ));
+    }
+
+    /**
+     * 更新会员
+     *
+     * @param $uid
+     * @param $userinfo
+     */
+    private function updateSubMemberInfoV2($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, ['yz_openid' => $userinfo['openid']]
+        );
+    }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function isLogged()
+    {
+        $uniacid  = \YunShop::app()->uniacid;
+        $token = \request()->getPassword();
+        $ids   = \request()->getUser();
+        $ids   = explode('=', $ids);
+
+        if ($_COOKIE['access'] && (!is_null($ids) || $ids != 'null')) {
+            if (MemberMiniAppModel::getMemberByTokenAndUid($token, $ids[0])) {
+                return true;
+            }
+        }
+
+        if (isset($_COOKIE['Yz-Token'])) {
+            try {
+                $decrypt = decrypt($_COOKIE['Yz-Token']);
+                $decrypt = explode(':', $decrypt);
+
+                $data = [
+                    'token' => $decrypt[0],
+                    'uid'   => $decrypt[1] . '=' . $decrypt[2]
+                ];
+            } catch (DecryptException $e) {
+                return $this->successJson('登录失败', $e->getMessage());
+            }
+
+            if (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
+                || ($token != $data['token'])) {
+                $yz_token = decrypt($_COOKIE['Yz-Token']);
+                $yz_token = explode(':', $yz_token);
+
+                $token = $yz_token[0];
+                $ids   =  [
+                    $yz_token[1],
+                    $yz_token[2]
+                ];
+            }
+        }
+
+        if (isset($ids[0]) && isset($ids[1])) {
+            $uid   = $ids[0];
+            $openid = $ids[1];
+
+            $member = MemberMiniAppModel::getMemberByTokenAndUid($token, $uid);
+
+            if (!is_null($member) && !empty($token) && !empty($uid)) {
+                $min_set = \Setting::get('plugin.min_app');
+
+                $auth_url = $this->_tokenAuth($token, $openid);
+
+                $auth_info = \Curl::to($auth_url)
+                    ->asJsonResponse(true)
+                    ->get();
+
+                if (!isset($auth_info['errcode'])) {
+                    setcookie('access', true, time() + 7000);
+
+                    return true;
+                } else {
+                    // TODO refreshToken
+
+                    $account = '';
+                    $appId = $account->key;
+                    $refreshToken = $member->refresh_token_1;
+
+                    $refresh_url = $this->_refreshAuth($appId, $refreshToken);
+
+                    $refresh_info = \Curl::to($refresh_url)
+                        ->asJsonResponse(true)
+                        ->get();
+
+                    if (!isset($refresh_info['errcode'])) {
+                        if ($token != $refresh_info['access_token']) {
+                            $member->access_token_1 = $refresh_info['access_token'];
+                            $member->access_expires_in_1 = time() + 7200;
+
+                            $member->save();
+                        }
+
+                        setcookie('access', true, time() + 7000);
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 }

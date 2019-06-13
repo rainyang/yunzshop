@@ -549,10 +549,12 @@ class MemberOfficeAccountService extends MemberService
                          if ($token != $refresh_info['access_token']) {
                              $member->access_token_1 = $refresh_info['access_token'];
                              $member->access_expires_in_1 = time() + 7200;
-
-                             $member->save();
                          }
-                         
+
+                         $member->refresh_token_1 = $refresh_info['refresh_token'];
+                         $member->save();
+
+                         setcookie('Yz-Token', encrypt($refresh_info['access_token'] . ':' . $uid . ':' . $openid));
                          setcookie('access', true, time() + 7000);
 
                          return true;
