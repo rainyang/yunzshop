@@ -175,10 +175,12 @@ class MemberController extends ApiController
 
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
-
 //                if ($data['is_open_net_car']) {
 //                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
 //                }
+
+
+                $data['is_open_lease_toy'] = \app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled();
 
                 if (is_null($integrated)) {
                     return $this->successJson('', $data);
