@@ -116,7 +116,7 @@ class WithdrawController extends ApiController
             $store_order->where('has_settlement',$status);
         }
 
-        $data = $store_order->paginate(15)
+        $data = $store_order->orderBy('created_at', 'desc')->paginate(15)
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
@@ -162,7 +162,7 @@ class WithdrawController extends ApiController
             $store_cashier->where('has_settlement',$status);
         }
 
-        $data = $store_cashier->paginate(15)
+        $data = $store_cashier->orderBy('created_at', 'desc')->paginate(15)
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
@@ -207,7 +207,7 @@ class WithdrawController extends ApiController
             $hotel_order->where('has_settlement',$status);
         }
 
-        $data = $hotel_order->paginate(15)
+        $data = $hotel_order->orderBy('created_at', 'desc')->paginate(15)
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
@@ -252,7 +252,7 @@ class WithdrawController extends ApiController
             $hotel_order->where('has_settlement',$status);
         }
 
-        $data = $hotel_order->paginate(15)
+        $data = $hotel_order->orderBy('created_at', 'desc')->paginate(15)
             ->toArray();
         $pager  = PaginationHelper::show($data['total'], $data['currentPage'], $data['perPage']);
         foreach ($data['data'] as $key => $itme){
