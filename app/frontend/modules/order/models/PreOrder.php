@@ -61,7 +61,10 @@ class PreOrder extends Order
     use PriceNodeTrait;
 
     protected $appends = ['pre_id'];
-    protected $hidden = ['belongsToMember'];
+    /**
+     * @var Member $belongsToMember
+     */
+    public $belongsToMember;
     /**
      * @var OrderDispatch 运费类
      */
@@ -212,7 +215,7 @@ class PreOrder extends Order
      */
     public function setMember($member)
     {
-        $this->setRelation('belongsToMember', $member);
+        $this->belongsToMember = $member;
         $this->uid = $this->belongsToMember->uid;
         $this->uniacid = $this->getUniacid();
     }

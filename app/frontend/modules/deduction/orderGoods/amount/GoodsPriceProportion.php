@@ -22,7 +22,7 @@ class GoodsPriceProportion extends OrderGoodsDeductionAmount
     public function getMaxAmount()
     {
 
-        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->getPriceBeforeWeight($this->getGoodsDeduction()->getCode()) / 100;
+        $result = $this->getGoodsDeduction()->getMaxPriceProportion() * $this->orderGoods->getPriceBefore($this->getGoodsDeduction()->getCode().'Deduction') / 100;
 
         return max($result,0);
     }

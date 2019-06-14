@@ -155,6 +155,17 @@ class PreOrderGoods extends OrderGoods
         return $this->order;
     }
 
+    public function getOrderGoodsDiscounts()
+    {
+        if (!$this->getRelation('orderGoodsDiscounts')) {
+            $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+
+           $this->getPrice();
+
+        }
+        return $this->orderGoodsDiscounts;
+    }
+
     public function getOrderGoodsDeductions()
     {
         if (!$this->getRelation('orderGoodsDeductions')) {
@@ -259,7 +270,7 @@ class PreOrderGoods extends OrderGoods
      * 获取价格计算者
      * @return NormalOrderGoodsPrice
      */
-    protected function getPriceCalculator()
+    public function getPriceCalculator()
     {
         if (!isset($this->priceCalculator)) {
             $this->priceCalculator = $this->_getPriceCalculator();
@@ -279,12 +290,18 @@ class PreOrderGoods extends OrderGoods
 
     }
 
-    public function getPaymentAmountAttribute(){
+    /**
+     * @return float|mixed
+     * @throws AppException
+     */
+    public function getPaymentAmountAttribute()
+    {
         return $this->getPaymentAmount();
     }
     /**
      * 均摊的支付金额
-     * @return float
+     * @return float|mixed
+     * @throws AppException
      */
     public function getPaymentAmount()
     {
