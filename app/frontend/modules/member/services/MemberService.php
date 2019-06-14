@@ -973,8 +973,10 @@ class MemberService
     }
 
     /**
-     *
      * @param $member_id
+     * @param string $key
+     * @param int $minute
+     * @throws MemberNotLoginException
      */
     public function chkAccount($member_id, $key = 'chekAccount', $minute = 30)
     {

@@ -13,7 +13,6 @@ use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\MemberRelation;
 use app\backend\modules\order\models\Order;
 use app\common\components\ApiController;
-use app\common\exceptions\MemberNotLoginException;
 use app\common\facades\Setting;
 use app\common\helpers\Cache;
 use app\common\helpers\Client;
@@ -27,12 +26,10 @@ use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\member\MemberInviteGoodsLogController;
 use app\common\models\MemberShopInfo;
 use app\common\services\alipay\OnekeyLogin;
-use app\common\services\plugin\huanxun\HuanxunSet;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\common\services\Utils;
 use app\frontend\models\Member;
-use app\frontend\models\OrderListModel;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\frontend\modules\member\services\MemberService;
@@ -49,10 +46,8 @@ use Yunshop\Kingtimes\common\models\Provider;
 use Yunshop\Poster\models\Poster;
 use Yunshop\Poster\services\CreatePosterService;
 use Yunshop\StoreCashier\common\models\Store;
-use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 use app\frontend\models\MembershipInformationLog;
-use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
 
 class MemberController extends ApiController
 {
@@ -81,7 +76,9 @@ class MemberController extends ApiController
 
     /**
      * 获取用户信息
-     *
+     * @param $request
+     * @param null $integrated
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function getUserInfo($request, $integrated = null)
     {
@@ -102,6 +99,7 @@ class MemberController extends ApiController
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
+                dd($data);
                 $data = MemberModel::addPlugins($data);
 
                 //隐藏爱心值插件入口
@@ -165,12 +163,9 @@ class MemberController extends ApiController
                 }
 
                 //查看聚合支付是否开启
-                if (app('plugins')->isEnabled('yop-pay')) {
-                    $data['yop'] = 1;
-                } else {
-                    $data['yop'] = 0;
-                }
+                $data['yop'] = app('plugins')->isEnabled('yop-pay') ? 1 : 0;
 
+                //酒店
                 $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
 
                 //网约车
@@ -1843,7 +1838,7 @@ class MemberController extends ApiController
 
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
-            $sets = \Yunshop\Designer\models\ViewSet::uniacid()->select('names', 'type')->get()->toArray();
+            $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
 
             if (!$sets) {
                 $arr['ViewSet'] = [];

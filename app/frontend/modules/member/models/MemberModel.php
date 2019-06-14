@@ -124,7 +124,7 @@ class MemberModel extends Member
      */
     public static function getMyReferrerInfo($uid)
     {
-        return self::select(['uid'])->uniacid()
+        return self::select(['uid','avatar','nickname'])->uniacid()
             ->where('uid', $uid)
             ->with([
                 'yzMember' => function ($query) {
@@ -415,6 +415,54 @@ class MemberModel extends Member
                     'is_show' => $set['is_referrer']
                 ];
             }
+        }
+
+        return $data;
+    }
+
+    /**
+     * 我的推荐人
+     * @param $yz_member
+     * @param $set
+     * @return array
+     */
+    public static function getMyReferral_v3($yz_member, $set)
+    {
+        if (isset($set) && $set['headimg']) {
+            $avatar = replace_yunshop(tomedia($set['headimg']));
+        } else {
+            $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+        }
+
+        $referrer_info = self::getMyReferrerInfo($yz_member['parent_id'])->first();
+
+        if ($yz_member['inviter'] == 1) {
+            if (!empty($referrer_info)) {
+                $info = $referrer_info->toArray();
+                $data = [
+                    'uid' => $info['uid'],
+                    'avatar' => $info['avatar'],
+                    'nickname' => $info['nickname'],
+                    'level' => $info['yz_member']['level']['level_name'],
+                    'is_show' => $set['is_referrer']
+                ];
+            } else {
+                $data = [
+                    'uid' => '',
+                    'avatar' => $avatar,
+                    'nickname' => '总店',
+                    'level' => '',
+                    'is_show' => $set['is_referrer']
+                ];
+            }
+        } else {
+            $data = [
+                'uid' => '',
+                'avatar' => $avatar,
+                'nickname' => '暂无',
+                'level' => '',
+                'is_show' => $set['is_referrer']
+            ];
         }
 
         return $data;
@@ -778,6 +826,7 @@ class MemberModel extends Member
      */
     public static function userData($member_info, $yz_member)
     {
+        $set = \Setting::get('shop.member');
         if (!empty($yz_member)) {
             $member_info['alipay_name'] = $yz_member['alipayname'];
             $member_info['alipay'] =  $yz_member['alipay'];
@@ -799,10 +848,13 @@ class MemberModel extends Member
                 $member_info['level_id'] =  $yz_member['level']['id'];
                 $member_info['level_name'] =  $yz_member['level']['level_name'];
             } else {
-                $set = \Setting::get('shop.member');
                 $member_info['level_id'] =  0;
                 $member_info['level_name'] =  $set['level_name'] ? $set['level_name'] : '普通会员';
             }
+
+            $member_info['is_agent'] = $yz_member['is_agent'] == 1 && $yz_member['status'] == 2 ? true : false;
+
+            $member_info['referral'] = self::getMyReferral_v3($yz_member, $set);
         }
 
         if (!empty($member_info['birthyear'] )) {
@@ -817,9 +869,6 @@ class MemberModel extends Member
         if (app('plugins')->isEnabled('hotel')) {
             $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
-
-        $member_info['is_agent'] = self::isAgent();
-        $member_info['referral'] = self::getMyReferral();
 
         self::createDir(storage_path('app/public/qr'));
         self::createDir(storage_path('app/public/avatar'));
