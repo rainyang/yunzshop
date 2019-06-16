@@ -15,6 +15,8 @@ use app\common\exceptions\ShopException;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\member\models\MemberRelation as Relation;
+use app\backend\modules\member\models\MemberParent;
 
 class MemberRelation
 {
@@ -181,6 +183,8 @@ class MemberRelation
         if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
             \Log::debug('------step1-------');
             if ($this->addMemberOfRelation($member_id, $parent_id)) {
+                //绑定下线成功赠送积分
+                $this->rewardPoint($parent_id,$member_id);
 
                 return ['status' => 1];
             }
@@ -230,6 +234,25 @@ class MemberRelation
 
         return ['status' => 0];
     }
+    //成为下线奖励积分
+    public function  rewardPoint($parent_id,$member_id){
+
+        $relation = Relation::getSetInfo()->first();
+        $reward_points  = $relation->reward_points;
+        $maxinum_number = $relation->maximum_number;
+        $total = MemberParent::where('parent_id', $parent_id)->count();
+
+        if( $total <= $maxinum_number){
+            //团队下线小于设置的最大奖励人数就奖励积分
+            $memberModel = Member::where('uid',$member_id)->first();
+            $memberModel->credit1 = $reward_points;
+            if($memberModel->save()){
+                \Log::debug('------会员ID为--'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
+            }
+        }
+
+    }
+
 
     /**
      * 修复会员关系
