@@ -261,7 +261,7 @@ class MemberRelation
             //团队下线小于设置的最大奖励人数就奖励积分
             $memberModel = Member::where('uid',$parent_id)->first();
 
-            $memberModel->credit1 = $reward_points;
+            $memberModel->credit1 += $reward_points;
 
             if($memberModel->save()){
 
