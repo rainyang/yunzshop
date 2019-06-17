@@ -36,7 +36,8 @@ class PointListener
         $this->orderModel = Order::find($event->getOrderModel()->id);
         $this->pointSet = $this->orderModel->getSetting('point.set');
         // 订单商品赠送积分[ps:商品单独设置]
-        $this->givingTime($this->orderModel);
+//        $this->givingTime($this->orderModel);
+        self::byGoodsGivePoint($this->orderModel);
         // 订单金额赠送积分[ps:积分基础设置]
         $this->orderGivePoint($this->orderModel);
 
@@ -44,17 +45,17 @@ class PointListener
         $this->dispatch(new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel));
     }
 
-    private function givingTime($orderModel)
-    {
-        $data = self::byGoodsGivePoint($orderModel);
-//      每月赠送
-        if ($data['goodsSale']['point_type'] && $data['goodsSale']['max_once_point'] > 0) {
-                PointQueue::handle($this->orderModel, $data['goodsSale'], $data['point_data']['point']);
-        } else {
-        // 订单完成立即赠送[ps:原业务逻辑]
-            $this->addPointLog($data['point_data']);
-        }
-    }
+//    private function givingTime($orderModel)
+//    {
+//        $data = self::byGoodsGivePoint($orderModel);
+////      每月赠送
+//        if ($data['goodsSale']['point_type'] && $data['goodsSale']['max_once_point'] > 0) {
+//                PointQueue::handle($this->orderModel, $data['goodsSale'], $data['point_data']['point']);
+//        } else {
+//        // 订单完成立即赠送[ps:原业务逻辑]
+//            $this->addPointLog($data['point_data']);
+//        }
+//    }
 
     public function getPointDataByGoods($order_goods_model)
     {
@@ -91,16 +92,38 @@ class PointListener
 
     public function byGoodsGivePoint($orderModel)
     {
+
         // 验证订单商品是立即赠送还是每月赠送
-        $data = [];
         foreach ($orderModel->hasManyOrderGoods as $orderGoods) {
             // 商品营销数据
-            $data['goodsSale'] = $orderGoods->hasOneGoods->hasOneSale;
+            $goodsSale = $orderGoods->hasOneGoods->hasOneSale;
             // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
-            $data['point_data'] = self::getPointDataByGoods($orderGoods);
-            return $data;
+            $point_data = self::getPointDataByGoods($orderGoods);
+            // 每月赠送
+            if ($goodsSale->point_type && $goodsSale->max_once_point > 0) {
+                PointQueue::handle($this->orderModel, $goodsSale, $point_data['point']);
+            } else {
+                // 订单完成立即赠送[ps:原业务逻辑]
+                self::addPointLog($point_data);
+            }
         }
     }
+
+
+    public function byGoodsGivePointPay($orderModel)
+    {
+        $point = 0;
+        // 验证订单商品是立即赠送还是每月赠送
+        foreach ($orderModel->hasManyOrderGoods as $orderGoods) {
+            // 赠送积分数组[ps:放到这是因为(每月赠送)需要赠送积分总数]
+            $point_data = self::getPointDataByGoods($orderGoods);
+            $point += $point_data['point'];
+            // 每月赠送
+        }
+        return $point;
+    }
+
+
 //    private function byGoodsGivePoint()
 //    {
 //        // 验证订单商品是立即赠送还是每月赠送

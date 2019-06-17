@@ -52,6 +52,12 @@ class ApiController extends BaseController
         }
 
         if (!MemberService::isLogged()) {
+            if ($mid && $this->controller == 'HomePage'
+                  && ($this->action == 'index' || $this->action == 'getParams')
+            ) {
+               return $this->jumpUrl($type, $mid);
+            }
+
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {

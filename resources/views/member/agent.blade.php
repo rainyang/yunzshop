@@ -152,7 +152,6 @@
                             {{--@endif--}}
                             {{--</td>--}}
                             <td  style="text-align: center;">
-                                @if(!empty($row['has_one_child_member']['avatar']))
                                     @if(!empty($row['has_one_child_member']['avatar']))
                                         <img src='{{$row['has_one_child_member']['avatar']}}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                     @endif
@@ -161,8 +160,6 @@
                                     @else
                                         {{$row['has_one_child_member']['nickname']}}
                                     @endif
-                                @endif
-
                             </td>
                             <td>{{$row['has_one_child_member']['realname']}}</td>
                             <td>{{$row['has_one_child_member']['mobile']}}</td>
