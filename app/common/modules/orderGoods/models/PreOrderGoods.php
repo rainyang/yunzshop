@@ -63,14 +63,6 @@ class PreOrderGoods extends OrderGoods
      */
     public $coupons;
 
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
-    }
-
     /**
      * @param $key
      * @return mixed
