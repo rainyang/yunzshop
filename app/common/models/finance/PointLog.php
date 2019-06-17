@@ -120,7 +120,11 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_TASK_REWARD_ATTACHED;
                 break;
             case (18):
-                $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                if (app('plugins')->isEnabled('love')) {
+                    $mode_attribute = '转入'.\Yunshop\Love\Common\Services\SetService::getLoveName();
+                } else {
+                    $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                }
                 break;
             case (19):
                 if (app('plugins')->isEnabled('sign')) {
