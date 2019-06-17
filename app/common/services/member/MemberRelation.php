@@ -249,7 +249,10 @@ class MemberRelation
 
         $maxinum_number = $relation->maximum_number;
 
-        $total = MemberParent::where('parent_id', $parent_id)->andwhere('level',1)->count();
+        $total = MemberParent::where([
+            ['parent_id','=',$parent_id],
+            ['level','=',1],
+        ])->count();
 
         \Log::debug('会员成为下线奖励积分',$reward_points.'--'.$maxinum_number.'---'.$total);
 
