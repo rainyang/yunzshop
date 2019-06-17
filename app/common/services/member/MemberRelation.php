@@ -285,6 +285,7 @@ class MemberRelation
             ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
             ['name' => '积分变动金额', 'value' => $point ],
             ['name' => '积分变动类型', 'value' => '锁定上线赠送'],
+            ['name' => '变动后积分数值', 'value' => $memberModel->credit1]
         ];
 
         $news_link = MessageTemp::find($template_id)->news_link;
