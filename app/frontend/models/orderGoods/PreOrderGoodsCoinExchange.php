@@ -30,7 +30,7 @@ class PreOrderGoodsCoinExchange extends OrderGoodsCoinExchange
 
     public function save(array $options = [])
     {
-        $this->getMemberCoin()->consume($this->newCoin()->setMoney($this->amount), ['order_sn' => $this->orderGoods->order->order_sn]);
+        $this->getMemberCoin()->consume($this->newCoin()->setCoin($this->coin), ['order_sn' => $this->orderGoods->order->order_sn]);
         return parent::save($options);
     }
 
