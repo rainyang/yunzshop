@@ -17,6 +17,10 @@ use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
 use app\backend\modules\member\models\MemberRelation as Relation;
 use app\backend\modules\member\models\MemberParent;
+use app\common\models\notice\MessageTemp;
+use app\common\events\MessageEvent;
+
+
 
 class MemberRelation
 {
@@ -228,6 +232,8 @@ class MemberRelation
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             if ($this->changeMemberOfRelation($member_id, $parent_id)) {
+                //绑定下线成功赠送积分
+                $this->rewardPoint($parent_id,$member_id);
                 return ['status' => 1];
             }
         }
@@ -238,20 +244,52 @@ class MemberRelation
     public function  rewardPoint($parent_id,$member_id){
 
         $relation = Relation::getSetInfo()->first();
+
         $reward_points  = $relation->reward_points;
+
         $maxinum_number = $relation->maximum_number;
+
         $total = MemberParent::where('parent_id', $parent_id)->count();
 
+        \Log::debug('会员成为下线奖励积分',$reward_points.'--'.$maxinum_number.'---'.$total);
+
         if( $total <= $maxinum_number){
+
             //团队下线小于设置的最大奖励人数就奖励积分
             $memberModel = Member::where('uid',$member_id)->first();
+
             $memberModel->credit1 = $reward_points;
+
             if($memberModel->save()){
-                \Log::debug('------会员ID为--'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
+
+                \Log::debug('------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
+                $this->messageNotice($memberModel,$reward_points);
+
             }
+
         }
 
     }
+
+    public function messageNotice($memberModel,$point)
+    {
+
+        $template_id = \Setting::get('shop.notice')['point_change'];
+
+        $params = [
+            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+            ['name' => '昵称', 'value' => $memberModel->nickname],
+            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
+            ['name' => '积分变动金额', 'value' => $point ],
+            ['name' => '积分变动类型', 'value' => '锁定上线赠送'],
+        ];
+
+        $news_link = MessageTemp::find($template_id)->news_link;
+        $news_link = $news_link ?:'';
+        event(new MessageEvent($memberModel->uid, $template_id, $params, $url=$news_link));
+
+    }
+
 
 
     /**
