@@ -19,9 +19,16 @@ class SyncController extends BaseController
 {
     public function index()
     {
-        $key   = '123456';
         $token = \YunShop::request()->token;
         $type  = \YunShop::request()->type ?: 7;
+
+        $servceSet = \Setting::get('plugins.sync-land');
+
+        if (! $servceSet['encryption']){
+            return $this->errorJson('加密key为空');
+        }
+
+        $key   = $servceSet['encryption'];
 
         if ($token) {
             $decrypt = $this->decrypt($key, $token);
