@@ -47,17 +47,17 @@ class SuccessfulPaymentController extends ApiController
 
             $orders = Order::where('id', $orderPay->order_ids)->with('orderGoods')->first();
 
-
             $order_integral = PointListener::getPointDateByOrder($orders);//point
-//            \Log::debug('getPointDateByOrder');
-            $integral = PointListener::byGoodsGivePoint($orders);
-//            \Log::debug('byGoodsGivePoint');
+
+            $integral = PointListener::byGoodsGivePointPay($orders);
+
+
 //
 //            foreach ($orders as $itme){
 //                $integral = PointLog::where('order_id',$itme->id)->first();
 //                $data['integral'] += $integral['point'];
 //            }
-            $data['integral'] = bcadd($integral['point_data']['point'] , $order_integral['point'],2);
+            $data['integral'] = bcadd($integral , $order_integral['point'],2);
         }
 
         if (app('plugins')->isEnabled('app-set')) {

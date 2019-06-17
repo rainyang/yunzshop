@@ -125,8 +125,8 @@ class AdminUser extends Authenticatable
     {
         $data['username'] ? $data['username'] = trim($data['username']) : null;
         $data['password'] ? $data['password'] = trim($data['password']) : null;
-        $data['application_number'] == 0 ? $data['application_number'] = '' : null ;
-        $data['endtime'] == 0 ? $data['endtime'] = '' : null ;
+        $data['application_number'] == 0 && !$user_model['application_number'] ? $data['application_number'] = '' : $user_model['application_number'];
+        $data['endtime'] == 0 && !$user_model['application_number'] ? $data['endtime'] = '' : $user_model['endtime'];
 
         if (request()->path() == "admin/user/change" || (request()->path() == "admin/user/modify_user" && $data['password'])) {
             $data['old_password'] = trim($data['old_password']);

@@ -70,7 +70,6 @@ abstract class OrderOperation extends Order
     {
         $event = $this->getBeforeEvent();
         event($event);
-        event($event);
 
         if ($this->refund_id > 0) {
             if ($this->hasOneRefundApply->isRefunding()) {
@@ -79,12 +78,9 @@ abstract class OrderOperation extends Order
         }
 
         if (!in_array($this->status, $this->statusBeforeChange)) {
-            // \Log::info('---step4-refund---',$this->status);
 
             throw new AppException("订单状态不满足{$this->name}操作");
         }
-            // \Log::info('---step5-refund---');
-        // dump($this->status);
         return true;
     }
 
