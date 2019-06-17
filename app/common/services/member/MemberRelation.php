@@ -233,7 +233,7 @@ class MemberRelation
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             if ($this->changeMemberOfRelation($member_id, $parent_id)) {
                 //绑定下线成功赠送积分
-                $this->rewardPoint($parent_id,$member_id);
+                //$this->rewardPoint($parent_id,$member_id);
                 return ['status' => 1];
             }
         }
@@ -284,7 +284,7 @@ class MemberRelation
             ['name' => '昵称', 'value' => $memberModel->nickname],
             ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
             ['name' => '积分变动金额', 'value' => $point ],
-            ['name' => '积分变动类型', 'value' => '锁定上线赠送'],
+            ['name' => '积分变动类型', 'value' => '新增下线赠送'],
             ['name' => '变动后积分数值', 'value' => $memberModel->credit1]
         ];
 
