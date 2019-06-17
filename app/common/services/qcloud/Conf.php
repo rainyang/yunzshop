@@ -6,7 +6,6 @@ use app\platform\modules\system\models\SystemSetting;
 
 class Conf {
 
-
     // Cos php sdk version number.
     const VERSION = 'v4.2.2';
     const API_COSAPI_END_POINT = 'http://region.file.myqcloud.com/files/v2/';
