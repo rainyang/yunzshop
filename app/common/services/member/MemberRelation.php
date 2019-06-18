@@ -258,7 +258,6 @@ class MemberRelation
         \Log::debug('会员成为下线奖励积分',$reward_points.'--'.$maxinum_number.'---'.$total);
 
         if( $total <= $maxinum_number){
-
             //团队下线小于设置的最大奖励人数就奖励积分
             $memberModel = Member::where('uid',$parent_id)->first();
             $pointData = array(
@@ -277,40 +276,9 @@ class MemberRelation
                 \Log::error('成为下线积分奖励出错:' . $e->getMessage());
             }
 
-//            $memberModel->credit1 += $reward_points;
-//
-//            if($memberModel->save()){
-//
-//                \Log::debug('------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
-//                $this->messageNotice($memberModel,$reward_points);
-//
-//            }
-
         }
 
     }
-
-    public function messageNotice($memberModel,$point)
-    {
-
-        $template_id = \Setting::get('shop.notice')['point_change'];
-
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '昵称', 'value' => $memberModel->nickname],
-            ['name' => '时间', 'value' => date('Y-m-d H:i', time())],
-            ['name' => '积分变动金额', 'value' => $point ],
-            ['name' => '积分变动类型', 'value' => '新增下线赠送'],
-            ['name' => '变动后积分数值', 'value' => $memberModel->credit1]
-        ];
-
-        $news_link = MessageTemp::find($template_id)->news_link;
-        $news_link = $news_link ?:'';
-        event(new MessageEvent($memberModel->uid, $template_id, $params, $url=$news_link));
-
-    }
-
-
 
     /**
      * 修复会员关系
