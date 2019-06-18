@@ -353,6 +353,9 @@ class UpdateController extends BaseController
             \Log::debug('----Cache Flush----');
             \Cache::flush();
 
+            \Log::debug('----Queue Restarth----');
+            \Artisan::call('queue:restart');
+
             $status = 2;
 
             $success = $total;

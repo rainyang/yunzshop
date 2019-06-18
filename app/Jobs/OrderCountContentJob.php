@@ -43,21 +43,19 @@ class OrderCountContentJob implements  ShouldQueue
             'cost_price' => $this->orderModel->cost_amount,
             'day_time' => Carbon::today()->getTimestamp(),
         ];
-        if ($this->orderModel->is_plugin) {
-            $data['plugin_id'] = 1;
-        }
         $data['address'] = $this->address();
         $data['buy_name'] = $this->buyName();
         $parent = $this->referrerName();
         $data['parent_id'] = $parent['parent_id'];
         $data['parent_name'] = $parent['nickname'];
 
-        //todo 记录订单商家和订单成本
-//        $data['shop_name'] = $this->shopName();
-//        $data['cost_price'] = $this->costPrice();
-
-        OrderIncomeCount::create($data);
-        return true;
+//        $build = OrderIncomeCount::where('order_id',$this->orderModel->id)->first();
+//        if ($build) {
+//            return $build;
+//        } else {
+        $build = OrderIncomeCount::create($data);
+//        }
+        return $build;
     }
 
 
@@ -103,80 +101,81 @@ class OrderCountContentJob implements  ShouldQueue
             $content['nickname'] = '总店';
             $content['parent_id'] = 0;
         }
-
         return $content;
     }
 
-    public function shopName()
-    {
-        if ($this->orderModel->is_plugin) {
-            $supplierTable = DB::table('yz_supplier_order')
-                ->select()
-                ->where('order_id', $this->orderModel->id);
-            $supplier_id = $supplierTable->first()['supplier_id'];
-            $build = DB::table('yz_supplier')
-                ->select()
-                ->where('id', $supplier_id);
-            $content = $build->first()['username'];
-            if (empty($content)) {
-                $content = '供应商';
-            }
+    //记录商家名称
+//    public function shopName()
+//    {
+//        if ($this->orderModel->is_plugin) {
+//            $supplierTable = DB::table('yz_supplier_order')
+//                ->select()
+//                ->where('order_id', $this->orderModel->id);
+//            $supplier_id = $supplierTable->first()['supplier_id'];
+//            $build = DB::table('yz_supplier')
+//                ->select()
+//                ->where('id', $supplier_id);
+//            $content = $build->first()['username'];
+//            if (empty($content)) {
+//                $content = '供应商';
+//            }
+//
+//        } elseif ($this->orderModel->plugin_id == 31) {
+//            $cashierTable = DB::table('yz_plugin_cashier_order')
+//                ->select()
+//                ->where('order_id', $this->orderModel->id);
+//            $cashier_id = $cashierTable->first()['cashier_id'];
+//            $build = DB::table('yz_store')
+//                ->select()
+//                ->where('cashier_id', $cashier_id);
+//            $content = $build->first()['store_name'];
+//            if (empty($content)) {
+//                $content = '收银台';
+//            }
+//
+//        } elseif ($this->orderModel->plugin_id == 32) {
+//            $storeTable = DB::table('yz_plugin_store_order')
+//                ->select()
+//                ->where('order_id', $this->orderModel->id);
+//            $store_id = $storeTable->first()['store_id'];
+//            $build = DB::table('yz_store')
+//                ->select()
+//                ->where('id', $store_id);
+//            $content = $build->first()['store_name'];
+//            if (empty($content)) {
+//                return '门店';
+//            }
+//
+//        } else {
+//            $content = '平台自营';
+//        }
+//        return $content;
+//    }
 
-        } elseif ($this->orderModel->plugin_id == 31) {
-            $cashierTable = DB::table('yz_plugin_cashier_order')
-                ->select()
-                ->where('order_id', $this->orderModel->id);
-            $cashier_id = $cashierTable->first()['cashier_id'];
-            $build = DB::table('yz_store')
-                ->select()
-                ->where('cashier_id', $cashier_id);
-            $content = $build->first()['store_name'];
-            if (empty($content)) {
-                $content = '收银台';
-            }
-
-        } elseif ($this->orderModel->plugin_id == 32) {
-            $storeTable = DB::table('yz_plugin_store_order')
-                ->select()
-                ->where('order_id', $this->orderModel->id);
-            $store_id = $storeTable->first()['store_id'];
-            $build = DB::table('yz_store')
-                ->select()
-                ->where('id', $store_id);
-            $content = $build->first()['store_name'];
-            if (empty($content)) {
-                return '门店';
-            }
-
-        } else {
-            $content = '平台自营';
-        }
-        return $content;
-    }
-
-    public function costPrice()
-    {
-        $build = DB::table('yz_order_goods')
-            ->select()
-            ->where('order_id', $this->orderModel->id)
-            ->sum('goods_cost_price');
-        if ($this->orderModel->plugin_id == 32) {
-
-            $order = DB::table('yz_plugin_store_order')
-                ->select()
-                ->where('order_id', $this->orderModel->id)
-                ->first();
-            $cost_price = $order['amount'];
-        } else if ($this->orderModel->plugin_id == 31) {
-
-            $order = DB::table('yz_plugin_cashier_order')
-                ->select()
-                ->where('order_id', $this->orderModel->id)
-                ->first();
-            $cost_price = $order['amount'];
-        } else {
-            $cost_price = $build;
-        }
-        return $cost_price;
-    }
+    //记录成本价
+//    public function costPrice()
+//    {
+//        $build = DB::table('yz_order_goods')
+//            ->select()
+//            ->where('order_id', $this->orderModel->id)
+//            ->sum('goods_cost_price');
+//        if ($this->orderModel->plugin_id == 32) {
+//
+//            $order = DB::table('yz_plugin_store_order')
+//                ->select()
+//                ->where('order_id', $this->orderModel->id)
+//                ->first();
+//            $cost_price = $order['amount'];
+//        } else if ($this->orderModel->plugin_id == 31) {
+//
+//            $order = DB::table('yz_plugin_cashier_order')
+//                ->select()
+//                ->where('order_id', $this->orderModel->id)
+//                ->first();
+//            $cost_price = $order['amount'];
+//        } else {
+//            $cost_price = $build;
+//        }
+//        return $cost_price;
+//    }
 }

@@ -43,6 +43,15 @@ class MemberModel extends Member
             ->first();
     }
 
+    public static function getMemberinfo($uniacid, $mobile)
+    {
+        return self::where('uniacid', $uniacid)
+            ->where('mobile', $mobile)
+            ->first();
+    }
+
+
+
     /**
      * 添加数据并返回id
      *
