@@ -99,8 +99,8 @@ class MemberController extends ApiController
 
                 $data = MemberModel::userData($member_info, $member_info['yz_member']);
 
-                dd($data);
                 $data = MemberModel::addPlugins($data);
+//                dd($data);
 
                 //隐藏爱心值插件入口
                 $love_show = PortType::popularizeShow(\YunShop::request()->type);
@@ -115,7 +115,7 @@ class MemberController extends ApiController
 
                 //个人中心的推广二维码
                 if ($data['relation_switch']) {
-                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+//                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
                 }
 
                 //文章营销
@@ -136,6 +136,7 @@ class MemberController extends ApiController
                 $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
 
                 $withdraw_status = Setting::get('shop_app.pay.withdraw_status');
+
                 if (isset($withdraw_status) && $withdraw_status == 0) {
                     $withdraw_status = 0;
                 } else {
@@ -1409,14 +1410,15 @@ class MemberController extends ApiController
 
     public function isOpenRelation($request, $integrated = null)
     {
-        $data = ['switch' => 0];
-
-        $switch = Setting::get('shop_app.pay.switch');
-        if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
-            $switch = 0;
-        } else {
-            $switch = 1;
-        }
+        // todo 没用用到
+//        $data = ['switch' => 0];
+//
+//        $switch = Setting::get('shop_app.pay.switch');
+//        if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
+//            $switch = 0;
+//        } else {
+//            $switch = 1;
+//        }
 
         //是否显示我的推广
         $switch = PortType::popularizeShow(\YunShop::request()->type);
@@ -2122,10 +2124,7 @@ class MemberController extends ApiController
     {
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
-            if (!$store) {
-                return show_json(0, ['status' => 0]);
-            }
-            if ($store->is_black == 1) {
+            if (!$store || $store->is_black == 1) {
                 return show_json(0, ['status' => 0]);
             }
 
@@ -2133,6 +2132,29 @@ class MemberController extends ApiController
         }
 
         return show_json(1, ['status' => 0]);
+    }
+
+    public function getMemberSetting($request, $integrated)
+    {
+        $set = \Setting::get('shop.member');
+
+        //判断是否显示等级页
+        $data['level_open'] = $set['display_page'] ? 1 : 0;
+        $data['level_type'] = $set['level_type'] ?: '0';
+
+        //获取自定义字段
+        $data += [
+            'is_custom'    => $set['is_custom'],
+            'custom_title' => $set['custom_title'],
+            'is_validity'  => $set['level_type'] == 2 ? true : false,
+            'term'         => $set['term'] ?: 0,
+        ];
+
+        if (is_null($integrated)) {
+            return $this->successJson('获取自定义字段成功！', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function memberData($request)
@@ -2143,7 +2165,9 @@ class MemberController extends ApiController
         $this->dataIntegrated($this->getCustomField($request, true), 'custom');
         $this->dataIntegrated($this->isOpen(), 'level');
         $this->dataIntegrated($this->pluginStore(), 'isStore');
+        $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
 
+        dd($this->apiData);
         return $this->successJson('', $this->apiData);
     }
 
