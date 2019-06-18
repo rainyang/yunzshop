@@ -888,14 +888,6 @@ return [
                         'parents'    => ['Goods', 'search_filtering']
                     ],
 
-                    'goods_return_add_one' => [
-                        'name'    => '添加模板',
-                        'url'     => 'goods.return-address.add',
-                        'sort'    => '2',
-                        'item'    => 'filtering_create',
-                        'parents' => ['Goods', 'search_filtering'],
-                        'child'   => []
-                    ],
                     'filtering_edit'       => [
                         'name'       => '编辑',
                         'url'        => 'filtering.filtering.edit',
@@ -908,14 +900,6 @@ return [
                         'parents'    => ['Goods', 'search_filtering',],
                     ],
 
-                    'goods_return_alter' => [
-                        'name'    => '修改模板',
-                        'url'     => 'goods.return-address.edit',
-                        'sort'    => '2',
-                        'item'    => 'filtering_edit',
-                        'parents' => ['Goods', 'search_filtering'],
-                        'child'   => []
-                    ],
                     'filtering_del'      => [
                         'name'       => '删除',
                         'url'        => 'filtering.filtering.del',
@@ -925,18 +909,6 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_alter',
-                        'parents'    => ['Goods', 'search_filtering',],
-                    ],
-
-                    'goods_return_delete' => [
-                        'name'       => '删除模板',
-                        'url'        => 'goods.return-address.delete',
-                        'url_params' => '',
-                        'permit'     => 1,
-                        'menu'       => 0,
-                        'icon'       => '',
-                        'sort'       => 0,
-                        'item'       => 'goods_return_delete',
                         'parents'    => ['Goods', 'search_filtering',],
                     ],
                 ],
@@ -975,6 +947,34 @@ return [
                         'sort'       => '4',
                         'item'       => 'goods_return_sort',
                         'parents'    => ['Goods', 'goods_return']
+                    ],
+
+                    'goods_return_add_one' => [
+                        'name'    => '添加模板',
+                        'url'     => 'goods.return-address.add',
+                        'sort'    => '2',
+                        'item'    => 'filtering_create',
+                        'parents' => ['Goods', 'goods_return'],
+                        'child'   => []
+                    ],
+                    'goods_return_alter' => [
+                        'name'    => '修改模板',
+                        'url'     => 'goods.return-address.edit',
+                        'sort'    => '2',
+                        'item'    => 'filtering_edit',
+                        'parents' => ['Goods', 'goods_return'],
+                        'child'   => []
+                    ],
+                    'goods_return_delete' => [
+                        'name'       => '删除模板',
+                        'url'        => 'goods.return-address.delete',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'goods_return_delete',
+                        'parents'    => ['Goods', 'goods_return',],
                     ],
                 ],
 
