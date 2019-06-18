@@ -126,8 +126,8 @@ class PointService
     const POINT_MODE_CARD_REGISTER_REWARD = 31;
     const POINT_MODE_CARD_REGISTER_REWARD_ATTACHED = '名片新增会员奖励';
 
-    const POINT_MODE_Presentation = 32;
-    const POINT_MODE_Presentation_ATTACHED = '锁定下线奖励';
+    const POINT_MODE_PRESENTATION = 32;
+    const POINT_MODE_PRESENTATION_ATTACHED = '锁定下线奖励';
 
 
 

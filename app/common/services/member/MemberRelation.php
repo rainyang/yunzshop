@@ -263,9 +263,9 @@ class MemberRelation
             $memberModel = Member::where('uid',$parent_id)->first();
             $pointData = array(
                 'uniacid' => \YunShop::app()->get('uniacid'),
-                'point_income_type' => 32,
+                'point_income_type' => PointService::POINT_INCOME_GET,
                 'member_id' => $memberModel->uid,
-                'point_mode' => 3,
+                'point_mode' => PointService::POINT_MODE_PRESENTATION,
                 'point' => $reward_points,
                 'remark' => '------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points.'个',
             );
