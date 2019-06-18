@@ -19,6 +19,7 @@ use app\backend\modules\member\models\MemberRelation as Relation;
 use app\backend\modules\member\models\MemberParent;
 use app\common\models\notice\MessageTemp;
 use app\common\events\MessageEvent;
+use app\common\services\finance\PointService;
 
 
 
@@ -260,15 +261,30 @@ class MemberRelation
 
             //团队下线小于设置的最大奖励人数就奖励积分
             $memberModel = Member::where('uid',$parent_id)->first();
-
-            $memberModel->credit1 += $reward_points;
-
-            if($memberModel->save()){
-
+            $pointData = array(
+                'uniacid' => \YunShop::app()->get('uniacid'),
+                'point_income_type' => 32,
+                'member_id' => $memberModel->uid,
+                'point_mode' => 3,
+                'point' => $reward_points,
+                'remark' => '------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points.'个',
+            );
+            try {
+                $pointService = new PointService($pointData);
+                $pointService->changePoint();
                 \Log::debug('------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
-                $this->messageNotice($memberModel,$reward_points);
-
+            } catch (\Exception $e) {
+                \Log::error('成为下线积分奖励出错:' . $e->getMessage());
             }
+
+//            $memberModel->credit1 += $reward_points;
+//
+//            if($memberModel->save()){
+//
+//                \Log::debug('------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
+//                $this->messageNotice($memberModel,$reward_points);
+//
+//            }
 
         }
 

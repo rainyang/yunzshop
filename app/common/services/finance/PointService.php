@@ -126,6 +126,11 @@ class PointService
     const POINT_MODE_CARD_REGISTER_REWARD = 31;
     const POINT_MODE_CARD_REGISTER_REWARD_ATTACHED = '名片新增会员奖励';
 
+    const POINT_MODE_Presentation = 32;
+    const POINT_MODE_Presentation_ATTACHED = '锁定下线奖励';
+
+
+
 
 
     const POINT = 0;
@@ -345,7 +350,9 @@ class PointService
             case (31):
                 $mode_attribute = self::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
                 break;
-
+            case (32):
+                $mode_attribute = self::POINT_MODE_Presentation_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }
