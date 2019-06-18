@@ -8,10 +8,11 @@ namespace app\frontend\modules\orderGoods\price\option;
  * Date: 2017/5/19
  * Time: 下午6:04
  */
+
+use app\frontend\models\orderGoods\PreOrderGoodsCoinExchange;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\PriceNode;
 use app\frontend\modules\order\PriceNodeTrait;
-use app\frontend\modules\orderGoods\discount\BaseDiscount;
 use app\frontend\modules\orderGoods\GoodsPriceNodeBase;
 use app\frontend\modules\orderGoods\OrderGoodsCouponPriceNode;
 use app\frontend\modules\orderGoods\OrderGoodsDeductionPriceNode;
@@ -52,6 +53,10 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         if (isset($this->price)) {
             return $this->price;
         }
+        if ($this->isCoinExchange()) {
+            return 0;
+        }
+
         // 商品销售价 - 等级优惠金额
         $this->price = $this->getGoodsPrice();
 
@@ -60,6 +65,40 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         $this->price = max($this->price, 0);
 
         return $this->price;
+    }
+    public function getVipPrice(){
+        if ($this->isCoinExchange()) {
+            return 0;
+        }
+        return $this->getGoodsPrice() - $this->getVipDiscountAmount($this->getGoodsPrice());
+    }
+    private $isCoinExchange;
+
+    private function isCoinExchange()
+    {
+        if (!isset($this->isCoinExchange)) {
+
+            if (!$this->orderGoods->goods->hasOneSale->has_all_point_deduct) {
+                $this->isCoinExchange = false;
+            } else {
+                $this->isCoinExchange = true;
+                // 优惠记录
+                $preOrderGoodsDiscount = new PreOrderGoodsDiscount([
+                    'discount_code' => 'coinExchange',
+                    'amount' => $this->getGoodsPrice() ?: 0,
+                    'name' => '积分全额抵扣',
+                ]);
+                $preOrderGoodsDiscount->setOrderGoods($this->orderGoods);
+                // 全额抵扣记录
+                $orderGoodsCoinExchange = new PreOrderGoodsCoinExchange([
+                    'code' => 'point',
+                    'amount' => $this->getGoodsPrice() ?: 0,
+                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct,
+                ]);
+                $orderGoodsCoinExchange->setOrderGoods($this->orderGoods);
+            }
+        }
+        return $this->isCoinExchange;
     }
 
     /**
@@ -86,12 +125,13 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
         ]);
         // 订单优惠的节点
         $discountNodes = collect();
-        $discountNodes->push(new OrderGoodsDiscountPriceNode($this,$this->singleEnoughReduce,2010));
-        $discountNodes->push(new OrderGoodsDiscountPriceNode($this, $this->enoughReduce,2020));
+        //$discountNodes->push(new OrderGoodsCoinExchangePriceNode($this,1900));
+        $discountNodes->push(new OrderGoodsDiscountPriceNode($this, $this->singleEnoughReduce, 2010));
+        $discountNodes->push(new OrderGoodsDiscountPriceNode($this, $this->enoughReduce, 2020));
 
         $discountNodes->push(new OrderGoodsCouponPriceNode($this, 2100));
         // 订单抵扣节点
-        $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction){
+        $deductionNodes = $this->orderGoods->getOrderGoodsDeductions()->map(function (PreOrderGoodsDeduction $preOrderGoodsDeduction) {
             return new OrderGoodsDeductionPriceNode($this, $preOrderGoodsDeduction, 2200);
 
         });
@@ -156,26 +196,6 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
 
         }
         return $this->deductionAmount;
-    }
-
-
-    /**
-     * 单品满减
-     * @return float|int
-     */
-    private function getSingleEnoughReduceAmount()
-    {
-        return $this->singleEnoughReduce->getAmount();
-    }
-
-    /**
-     * 全场满减
-     * @return float|int
-     */
-    private function getEnoughReduceAmount()
-    {
-
-        return $this->enoughReduce->getAmount();
     }
 
     /**
