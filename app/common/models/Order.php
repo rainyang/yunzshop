@@ -151,8 +151,8 @@ class Order extends BaseModel
     public function scopeHidePluginIds($query, $plugin_ids)
     {
         if (empty($plugin_ids)) {
-            //酒店订单、网约车订单
-            $plugin_ids = [33,41];
+            //酒店订单、租赁订单、网约车订单
+            $plugin_ids = [33,40,41];
         }
 
         return $query->whereNotIn('plugin_id', $plugin_ids);
