@@ -697,7 +697,7 @@ return [
                         'icon'       => 'fa-ticket',
                         'sort'       => '2',
                         'item'       => 'coupon_coupon_set',
-                        'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
+                        'parents'    => ['Goods', 'coupon'],
                         'child'      => [
 
                             'coupon_coupon_set_see' => [
@@ -709,7 +709,7 @@ return [
                                 'icon'       => 'fa-ticket',
                                 'sort'       => '2',
                                 'item'       => 'coupon_coupon_set_see',
-                                'parents'    => ['Goods', 'coupon',],
+                                'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
                             ],
 
                             'coupon_coupon_set_store' => [
@@ -885,7 +885,7 @@ return [
                         'icon'       => '',
                         'sort'       => '4',
                         'item'       => 'goods_return_sort',
-                        'parents'    => ['Goods', 'goods_return']
+                        'parents'    => ['Goods', 'search_filtering']
                     ],
 
                     'goods_return_add_one' => [
@@ -905,7 +905,7 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_add_one',
-                        'parents'    => ['Goods', 'goods_return',],
+                        'parents'    => ['Goods', 'search_filtering',],
                     ],
 
                     'goods_return_alter' => [
@@ -925,7 +925,7 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_alter',
-                        'parents'    => ['Goods', 'goods_return',],
+                        'parents'    => ['Goods', 'search_filtering',],
                     ],
 
                     'goods_return_delete' => [
@@ -937,7 +937,7 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_delete',
-                        'parents'    => ['Goods', 'goods_return',],
+                        'parents'    => ['Goods', 'search_filtering',],
                     ],
                 ],
             ],
@@ -1134,7 +1134,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_select_category',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
                             'goods_dispatch_delete_set' => [
@@ -1146,7 +1146,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_delete_set',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
                         ],
