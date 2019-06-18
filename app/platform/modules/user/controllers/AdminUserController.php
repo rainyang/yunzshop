@@ -202,8 +202,7 @@ class AdminUserController extends BaseController
             $uniacid_apps = $uniacid_apps->toArray();
             // 添加创始人数据
             foreach ($uniacid_apps as $item) {
-                //array_push($user['has_many_app_user'], ['role_name' => '创始人', 'has_one_app' => $item ?  : [] ]);
-                array_push($user['has_many_app_user'], ['role' => 'creator', 'has_one_app' => $item ?  : [] ]);
+                array_push($user['has_many_app_user'], ['role_name' => '创始人', 'has_one_app' => $item ?  : [] ]);
             }
         }
         $user['current_page'] = $page ? : 1;
