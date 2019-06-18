@@ -178,6 +178,9 @@ class MemberController extends ApiController
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
 
+                // 汇聚支付是否开启
+                $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
+
 //                if ($data['is_open_net_car']) {
 //                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
 //                }
