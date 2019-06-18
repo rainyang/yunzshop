@@ -351,7 +351,7 @@ class PointService
                 $mode_attribute = self::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
                 break;
             case (32):
-                $mode_attribute = self::POINT_MODE_Presentation_ATTACHED;
+                $mode_attribute = self::POINT_MODE_PRESENTATION_ATTACHED;
                 break;
         }
         return $mode_attribute;
