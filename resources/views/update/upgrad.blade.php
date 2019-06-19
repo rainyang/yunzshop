@@ -159,7 +159,12 @@
 
                     if(ret.filecount > 0 || ret.upgrade){
                         $('#versionNumber').html(ret.version);
-                        $('#versionDetail').html(ret.log);
+                        if (ret.log.length != 0) {
+                            var count = ret.log.length;
+                            for (i=0; i < count; i++) {
+                                $('<div>' + ret.log[i]['content'] + '</div>').appendTo('#versionDetail');
+                            }
+                        }
                         $('#upgrade').show();
 
                         $("#upgradebtn").unbind('click').click(function(){
