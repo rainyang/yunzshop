@@ -108,7 +108,7 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
                     'code' => 'point',
                     'amount' => $this->getGoodsPrice() ?: 0,
                     'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct,
-                    'name' => '积分全额抵扣',
+                    'name' => '积分全额',
                     'uid' => $this->orderGoods->uid,
                 ]);
 
