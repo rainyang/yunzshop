@@ -28,26 +28,23 @@ class FirstOrderListener
             return;
         }
 
-        $firstOrder = FirstOrder::select()
-            ->where('uid', $order->uid)
-            ->first();
-        if ($firstOrder) {
-            return;
-        }
-
-        $firstOrderRet = false;
         foreach ($order->hasManyOrderGoods as $orderGoods) {
             if ($shopOrderSet['goods'][$orderGoods->goods_id]) {
-                $firstOrderRet = true;
-                break;
+
+                $firstOrder = FirstOrder::select()
+                    ->where('uid', $order->uid)
+                    ->where('goods_id', $orderGoods->goods_id)
+                    ->first();
+                if ($firstOrder) {
+                    continue;
+                }
+                FirstOrder::create([
+                    'order_id' => $order->id,
+                    'goods_id' => $orderGoods->goods_id,
+                    'uid' => $order->uid,
+                    'shop_order_set' => $shopOrderSet['goods']
+                ]);
             }
-        }
-        if ($firstOrderRet) {
-            FirstOrder::create([
-                'order_id' => $order->id,
-                'uid' => $order->uid,
-                'shop_order_set' => $shopOrderSet['goods']
-            ]);
         }
     }
 

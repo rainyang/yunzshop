@@ -35,15 +35,15 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
-    public function hasOneFirstOrder()
+    public function hasManyFirstOrder()
     {
-        return $this->hasOne(FirstOrder::class, 'order_id', 'id');
+        return $this->hasMany(FirstOrder::class, 'order_id', 'id');
     }
 
     public function scopeExportOrders(Order $query, $search)
     {
         if ($search['first_order']) {
-            $query->whereHas('hasOneFirstOrder');
+            $query->whereHas('hasManyFirstOrder');
         }
 
         $order_builder = $query->search($search);
@@ -57,7 +57,7 @@ class Order extends \app\common\models\Order
             'express',
             'hasOnePayType',
             'hasOneOrderPay',
-            'hasOneFirstOrder'
+            'hasManyFirstOrder'
         ]);
         return $orders;
     }
@@ -65,7 +65,7 @@ class Order extends \app\common\models\Order
     public function scopeOrders(Builder $order_builder, $search)
     {
         if ($search['first_order']) {
-            $order_builder->whereHas('hasOneFirstOrder');
+            $order_builder->whereHas('hasManyFirstOrder');
         }
         $order_builder->search($search);
 
@@ -82,7 +82,7 @@ class Order extends \app\common\models\Order
             'hasOneOrderPay'=> function (Builder $query) {
                 $query->orderPay();
             },
-            'hasOneFirstOrder'
+            'hasManyFirstOrder'
         ]);
         return $orders;
     }
