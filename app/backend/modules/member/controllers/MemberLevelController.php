@@ -16,6 +16,7 @@ use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
+use app\common\services\member\level\LevelUpgradeService;
 
 class MemberLevelController extends BaseController
 {
@@ -96,6 +97,9 @@ class MemberLevelController extends BaseController
             return $this->message('无此记录或已被删除','','error');
         }
         $requestLevel = \YunShop::request()->level;
+
+        $goods = MemberLevel::getGoodsId($levelModel['goods_id']);
+
         if($requestLevel) {
             $levelModel->fill($requestLevel);
             if (empty($requestLevel['goods_id'])) {
@@ -115,6 +119,7 @@ class MemberLevelController extends BaseController
         }
         return view('member.level.form', [
             'levelModel' => $levelModel,
+            'goods' => $goods ? $goods->toArray() : [],
             'shopSet' => Setting::get('shop.member')
         ])->render();
     }
