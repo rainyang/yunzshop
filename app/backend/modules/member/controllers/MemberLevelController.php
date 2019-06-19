@@ -16,7 +16,6 @@ use app\common\components\BaseController;
 use app\common\facades\Setting;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
-use app\common\services\member\level\LevelUpgradeService;
 
 class MemberLevelController extends BaseController
 {

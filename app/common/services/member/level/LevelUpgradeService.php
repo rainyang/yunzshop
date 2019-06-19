@@ -207,11 +207,16 @@ class LevelUpgradeService
     {
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
 
-        $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();
+        // $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();  // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
+        $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->first();
+        
+        $levelGoodsId = explode(',', $level->goods_id);
+
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
 
         foreach ($this->orderModel->hasManyOrderGoods as $time) {
-            if ($time->goods_id == $level->goods_id) {
+            // if ($time->goods_id == $level->goods_id) { // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
+            if (in_array($time->goods_id, $levelGoodsId)) {
                 $this->validity['goods_total'] = $time->total;
                 //开启一卡通
                 if (app('plugins')->isEnabled('universal-card')) {
@@ -221,10 +226,6 @@ class LevelUpgradeService
                 }
             }
         }
-
-
-
-
 
         return $level ?: [];
     }
