@@ -129,6 +129,8 @@ class PointService
     const POINT_MODE_PRESENTATION = 32;
     const POINT_MODE_PRESENTATION_ATTACHED = '锁定下线奖励';
 
+    const POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION = 33;
+    const POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED = '爱心值提现扣除';
 
 
 
@@ -352,6 +354,9 @@ class PointService
                 break;
             case (32):
                 $mode_attribute = self::POINT_MODE_PRESENTATION_ATTACHED;
+                break;
+            case (33):
+                $mode_attribute = self::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
                 break;
         }
         return $mode_attribute;
