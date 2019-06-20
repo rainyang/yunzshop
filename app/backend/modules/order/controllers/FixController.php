@@ -26,7 +26,7 @@ class FixController extends BaseController
 {
     public function yy()
     {
-        $order = Order::find(3381);
+        $order = Order::find(3401);
         \YunShop::app()->uniacid = $order->uniacid;
         Setting::$uniqueAccountId = $order->uniacid;
 
