@@ -234,7 +234,7 @@ class MemberRelation
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             if ($this->changeMemberOfRelation($member_id, $parent_id)) {
                 //绑定下线成功赠送积分
-                //$this->rewardPoint($parent_id,$member_id);
+                $this->rewardPoint($parent_id,$member_id);
                 return ['status' => 1];
             }
         }
