@@ -14,6 +14,7 @@ use app\common\models\OrderAddress;
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
+use app\common\facades\Setting;
 
 /**
  * Created by PhpStorm.
