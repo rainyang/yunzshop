@@ -42,6 +42,9 @@ class PayWayValidatorService
             case 'yop_pay':
                 $this->yopPayValidator();
                 break;
+            case 'converge_pay':
+                $this->convergePayValidator();
+                break;
             default:
                 throw new AppException('未知提现方式');
                 break;
@@ -79,6 +82,11 @@ class PayWayValidatorService
     }
 
     private function yopPayValidator()
+    {
+
+    }
+
+    private function convergePayValidator()
     {
 
     }
