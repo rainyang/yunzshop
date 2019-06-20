@@ -34,8 +34,10 @@ class FirstOrderListener
             file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'不是商城订单'.PHP_EOL,1), FILE_APPEND);
             return;
         }
+        file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'setgoods:'.json_encode($shopOrderSet['goods'], 256).PHP_EOL,1), FILE_APPEND);
 
         foreach ($order->hasManyOrderGoods as $orderGoods) {
+            file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'goods_id:'.$orderGoods->goods_id.PHP_EOL,1), FILE_APPEND);
             if ($shopOrderSet['goods'][$orderGoods->goods_id]) {
 
                 $firstOrder = FirstOrder::select()
