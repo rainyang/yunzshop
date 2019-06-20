@@ -137,7 +137,7 @@
 
 
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额转换爱心值：</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额转换@if (app('plugins')->isEnabled('designer') == 1){{ LOVE_NAME }}@else'爱心值'@endif：</label>
                         <div class="col-sm-4 col-xs-6">
                             <label class="radio-inline">
                                 <input type="radio" name="balance[love_swich]" value="1" @if($balance['love_swich'] ==1 ) checked="checked" @endif>
@@ -160,7 +160,7 @@
                                 <div class="input-group-addon">%</div>
                             </div>
                             <div class="help-block">
-                                转化实例:实际转化10个爱心值,余额转化比例10%，则需要10x10%，比例为空或为0则默认为1:1
+                                转化实例:实际转化10个@if (app('plugins')->isEnabled('designer') == 1){{ LOVE_NAME }}@else'爱心值'@endif,余额转化比例10%，则需要10x10%，比例为空或为0则默认为1:1
                             </div>
                         </div>
                     </div>

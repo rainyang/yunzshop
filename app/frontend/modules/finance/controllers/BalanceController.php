@@ -103,6 +103,8 @@ class BalanceController extends ApiController
             $result['credit2'] = $memberInfo->credit2;
             $result['buttons'] = $this->getPayTypeButtons();
             $result['typename'] = '充值';
+            $result['love_name'] =  (app('plugins')->isEnabled('designer') == 1) ? LOVE_NAME  : '爱心值';
+            $result['convert'] = (new BalanceService())->convertSet();
             return $this->successJson('获取数据成功', $result);
         }
         return $this->errorJson('未获取到会员数据');
