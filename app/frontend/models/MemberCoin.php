@@ -27,9 +27,11 @@ abstract class MemberCoin
      */
     abstract public function getMaxUsableCoin();
 
+    abstract public function lockCoin($coin);
+
     /**
      * @param VirtualCoin $coin
      * @return bool
      */
-    abstract public function consume(VirtualCoin $coin,$data);
+    abstract public function consume(VirtualCoin $coin, $data);
 }
