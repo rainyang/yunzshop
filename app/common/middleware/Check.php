@@ -10,6 +10,7 @@ namespace app\common\middleware;
 
 
 use app\common\traits\JsonTrait;
+use app\common\facades\Setting;
 
 class Check
 {
@@ -27,8 +28,8 @@ class Check
      */
     private function checkRegister()
     {
-        $key = \Setting::get('shop.key')['key'];
-        $secret = \Setting::get('shop.key')['secret'];
+        $key = Setting::getNotUniacid('shop.key')['key'];
+        $secret = Setting::getNotUniacid('shop.key')['secret'];
 
         if ((!$key || !$secret) && (request()->path() != 'admin/index' && !strpos(request()->path(), 'siteRegister'))) {
             $this->errorJson('', [
