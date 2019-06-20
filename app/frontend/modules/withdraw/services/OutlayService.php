@@ -92,9 +92,13 @@ class OutlayService
         $rate = $this->getServiceTaxRate();
 
         $withdraw_amount = $this->getWithdrawAmount();
-        $withdraw_poundage = $this->getPoundage();
 
-        $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
+        if(!(\Setting::get('withdraw.income.service_tax_calculation'))){
+            $withdraw_poundage = $this->getPoundage();
+            $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
+        }else{
+            $amount = $withdraw_amount;
+        }
 
         return $this->calculate($amount, $rate);
     }
