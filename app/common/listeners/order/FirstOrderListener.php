@@ -19,6 +19,10 @@ class FirstOrderListener
     public function handle(AfterOrderPaidEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
+
+        \YunShop::app()->uniacid = $order->uniacid;
+        Setting::$uniqueAccountId = $order->uniacid;
+
         $shopOrderSet = Setting::get('shop.order');
         if (!$shopOrderSet['goods']) {
             return;
@@ -51,6 +55,10 @@ class FirstOrderListener
     public function cancel(AfterOrderCanceledEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
+
+        \YunShop::app()->uniacid = $order->uniacid;
+        Setting::$uniqueAccountId = $order->uniacid;
+
         $ret = FirstOrder::select()
             ->where('order_id', $order->id)
             ->first();
