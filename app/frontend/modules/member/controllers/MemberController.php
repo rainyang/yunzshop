@@ -87,124 +87,97 @@ class MemberController extends ApiController
     {
         $member_id = \YunShop::app()->getMemberId();
 
-        $v = request('v');
-        $this->type = intval(\YunShop::request()->type);
-        $this->sign = intval(\YunShop::request()->ingress);
-
-        if (!empty($member_id)) {
-            $memberService = app(MemberService::class);
-            $memberService->chkAccount($member_id);
-
-            $member_info = MemberModel::getUserInfos($member_id)->first();
-
-            if (!empty($member_info)) {
-                $member_info = $member_info->toArray();
-
-                $data = MemberModel::userData($member_info, $member_info['yz_member']);
-
-                $data = MemberModel::addPlugins($data);
-//                dd($data);
-
-                //隐藏爱心值插件入口
-                $love_show = PortType::popularizeShow(\YunShop::request()->type);
-                if (isset($data['love']) && (!$love_show)) {
-                    $data['love']['status'] = false;
-                }
-
-                $data['income'] = MemberModel::getIncomeCount();
-
-                $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
-                    ? 1 : 0;
-
-                //个人中心的推广二维码
-                if ($data['relation_switch']) {
-//                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
-                }
-
-                //文章营销
-                $articleSetting = Setting::get('plugin.article');
-                if ($articleSetting['enabled'] == 1) {
-                    $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
-                }
-
-                //自定义表单
-                $data['myform'] = (new MemberService())->memberInfoAttrStatus();
-
-                $data['avatar'] = $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
-
-                //修复微信头像地址
-                $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
-
-                //IOS时，把微信头像url改为https前缀
-                $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
-
-                $withdraw_status = Setting::get('shop_app.pay.withdraw_status');
-
-                if (isset($withdraw_status) && $withdraw_status == 0) {
-                    $withdraw_status = 0;
-                } else {
-                    $withdraw_status = 1;
-                }
-                //是否显示我的推广
-                $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
-                $data['withdraw_status'] = $withdraw_status;
-
-                if (!is_null($v)) {
-                    $set = \Setting::get('shop.member');
-
-                    $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
-
-//                    $data['inviteCode']['required'] =$set['required'] ?: 0;
-
-
-                    if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
-                        $data['inviteCode']['code'] = MemberModel::getInviteCode($member_id);
-                    } else {
-                        $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
-                    }
-                } else {
-                    $data['inviteCode'] = 0;
-                }
-
-                //查看聚合支付是否开启
-                $data['yop'] = app('plugins')->isEnabled('yop-pay') ? 1 : 0;
-
-                //酒店
-                $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
-
-                //网约车
-                $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
-
-                // 汇聚支付是否开启
-                $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
-
-//                if ($data['is_open_net_car']) {
-//                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-//                }
-
-                if (is_null($integrated)) {
-                    return $this->successJson('', $data);
-                } else {
-                    return show_json(1, $data);
-                }
-
-            } else {
-                if (is_null($integrated)) {
-                    return $this->errorJson('[' . $member_id . ']用户不存在');
-                } else {
-                    return show_json(0, '[' . $member_id . ']用户不存在');
-                }
-            }
-
-        } else {
+        if (empty($member_id)) {
             if (is_null($integrated)) {
                 return $this->errorJson('缺少访问参数');
             } else {
                 return show_json(0, '缺少访问参数');
             }
         }
-    }
+        $v = request('v');
+        $this->type = intval(\YunShop::request()->type);
+        $this->sign = intval(\YunShop::request()->ingress);
 
+        $memberService = app(MemberService::class);
+        $memberService->chkAccount($member_id);
+
+        $member_info = MemberModel::getUserInfos($member_id)->first();
+
+        if (empty($member_info)) {
+            if (is_null($integrated)) {
+                return $this->errorJson('[' . $member_id . ']用户不存在');
+            } else {
+                return show_json(0, '[' . $member_id . ']用户不存在');
+            }
+        }
+
+        $member_info = $member_info->toArray();
+
+        $data = MemberModel::userData($member_info, $member_info['yz_member']);
+        $data = MemberModel::addPlugins($data);
+        dd($data);
+
+        //隐藏爱心值插件入口
+        $love_show = PortType::popularizeShow(\YunShop::request()->type);
+        if (isset($data['love']) && (!$love_show)) {
+            $data['love']['status'] = false;
+        }
+
+        $data['income'] = MemberModel::getIncomeCount();
+
+        //自定义表单
+        $data['myform'] = (new MemberService())->memberInfoAttrStatus();
+
+        $data['avatar'] = $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+        //修复微信头像地址
+        $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
+        //IOS时，把微信头像url改为https前缀
+        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+
+        //邀请码
+        if (!is_null($v)) {
+            $set = \Setting::get('shop.member');
+            $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+            if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
+                $data['inviteCode']['code'] = MemberModel::getInviteCode();
+            } else {
+                $data['inviteCode']['code'] = $member_info['yz_member']['invite_code'];
+            }
+        } else {
+            $data['inviteCode'] = 0;
+        }
+        
+        //个人中心的推广二维码
+        $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status']) ? 1 : 0;
+        if ($data['relation_switch']) {
+            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+        }
+
+        //文章营销
+        $articleSetting = Setting::get('plugin.article');
+        if ($articleSetting['enabled'] == 1) {
+            $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
+        }
+
+        //查看聚合支付是否开启
+        $data['yop'] = app('plugins')->isEnabled('yop-pay') ? 1 : 0;
+
+        //酒店
+        $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
+
+        //网约车
+        $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
+
+        // 汇聚支付是否开启
+        $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
+
+        if (is_null($integrated)) {
+            return $this->successJson('', $data);
+        } else {
+            return show_json(1, $data);
+        }
+
+    }
 
     /**
      * 检查会员推广资格
@@ -1516,16 +1489,6 @@ class MemberController extends ApiController
 
     public function isOpenRelation($request, $integrated = null)
     {
-        // todo 没用用到
-//        $data = ['switch' => 0];
-//
-//        $switch = Setting::get('shop_app.pay.switch');
-//        if (isset($switch) && $switch == 0 && \YunShop::request()->type == 7) {
-//            $switch = 0;
-//        } else {
-//            $switch = 1;
-//        }
-
         //是否显示我的推广
         $switch = PortType::popularizeShow(\YunShop::request()->type);
 
@@ -2267,9 +2230,13 @@ class MemberController extends ApiController
     {
         $this->dataIntegrated($this->getUserInfo($request, true), 'member');
         $this->dataIntegrated($this->getEnablePlugins($request, true), 'plugins');
+        //是否显示我的推广
         $this->dataIntegrated($this->isOpenRelation($request, true), 'relation');
+        //查看自定义
         $this->dataIntegrated($this->getCustomField($request, true), 'custom');
+        //查看等级是否开启
         $this->dataIntegrated($this->isOpen(), 'level');
+        //查看自己是否是门店店主
         $this->dataIntegrated($this->pluginStore(), 'isStore');
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
 
