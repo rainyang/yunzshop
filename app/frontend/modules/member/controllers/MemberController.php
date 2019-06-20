@@ -1579,12 +1579,14 @@ class MemberController extends ApiController
         }
         
         if (app('plugins')->isEnabled('declaration')) {
-            $data[] = [
-                'name'  => 'declaration',
-                'title' => DECLARATION_NAME,
-                'class' => 'icon-declaration_system',
-                'url'   => 'DeclarationApply'
-            ];
+            if(Setting::get('plugin.declaration.switch')){
+                $data[] = [
+                    'name'  => 'declaration',
+                    'title' => DECLARATION_NAME,
+                    'class' => 'icon-declaration_system',
+                    'url'   => 'DeclarationApply'
+                ];
+            }
         }
 
         if (app('plugins')->isEnabled('article')) {
