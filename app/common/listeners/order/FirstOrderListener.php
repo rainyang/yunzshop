@@ -18,6 +18,7 @@ class FirstOrderListener
 {
     public function handle(AfterOrderPaidEvent $event)
     {
+        file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'首单开始'.PHP_EOL,1), FILE_APPEND);
         $order = Order::find($event->getOrderModel()->id);
 
         \YunShop::app()->uniacid = $order->uniacid;
@@ -25,10 +26,12 @@ class FirstOrderListener
 
         $shopOrderSet = Setting::get('shop.order');
         if (!$shopOrderSet['goods']) {
+            file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'没设置'.PHP_EOL,1), FILE_APPEND);
             return;
         }
 
         if ($order->is_plugin != 0 || $order->plugin_id != 0) {
+            file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'不是商城订单'.PHP_EOL,1), FILE_APPEND);
             return;
         }
 
@@ -40,8 +43,10 @@ class FirstOrderListener
                     ->where('goods_id', $orderGoods->goods_id)
                     ->first();
                 if ($firstOrder) {
+                    file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'存在:'.$orderGoods->goods_id.PHP_EOL,1), FILE_APPEND);
                     continue;
                 }
+                file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'添加首单'.PHP_EOL,1), FILE_APPEND);
                 FirstOrder::create([
                     'order_id' => $order->id,
                     'goods_id' => $orderGoods->goods_id,
