@@ -5,6 +5,7 @@ namespace app\frontend\modules\order\listeners;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderSentEvent;
 use app\common\listeners\order\FirstOrderListener;
@@ -69,7 +70,7 @@ class orderListener
         $events->listen(AfterOrderCreatedEvent::class, self::class . '@onCreated');
 
         // 首单
-        $events->listen(AfterOrderPaidEvent::class, FirstOrderListener::class . '@handle');
+        $events->listen(AfterOrderPaidImmediatelyEvent::class, FirstOrderListener::class . '@handle');
         // 订单取消,取消首单标识
         $events->listen(AfterOrderCanceledEvent::class, FirstOrderListener::class . '@cancel');
 

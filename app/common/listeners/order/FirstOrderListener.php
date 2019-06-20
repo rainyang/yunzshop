@@ -9,14 +9,14 @@ namespace app\common\listeners\order;
 
 
 use app\common\events\order\AfterOrderCanceledEvent;
-use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\models\Order;
 use app\common\facades\Setting;
 use app\common\models\order\FirstOrder;
 
 class FirstOrderListener
 {
-    public function handle(AfterOrderPaidEvent $event)
+    public function handle(AfterOrderPaidImmediatelyEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
         //file_put_contents(storage_path('logs/620test.txt'), print_r(date('Ymd His').'首单开始order_id:'.$order->id.PHP_EOL,1), FILE_APPEND);
