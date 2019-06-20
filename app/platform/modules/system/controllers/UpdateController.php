@@ -179,7 +179,7 @@ class UpdateController extends BaseController
                             }
                         }
 
-                        //忽略前端版本号记录文件
+                        //忽略前后端版本号记录文件
                         if (($file['path'] == 'config/front-version.php' || $file['path'] == 'config/backend_version.php') && is_file(base_path() . '/' . $file['path'])) {
                             continue;
                         }
@@ -362,6 +362,9 @@ class UpdateController extends BaseController
             //清理缓存
             \Log::debug('----Cache Flush----');
             \Cache::flush();
+
+            \Log::debug('----Queue Restarth----');
+            \Artisan::call('queue:restart');
 
             $status = 2;
 
