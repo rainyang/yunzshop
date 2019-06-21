@@ -2333,10 +2333,12 @@ class MemberController extends ApiController
 //        $this->dataIntegrated($this->isOpen(), 'level');
         //查看自己是否是门店店主
 //        $this->dataIntegrated($this->pluginStore(), 'isStore');
+        //查看会员设置
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
+        //查看会员订单
         $this->dataIntegrated($this->getMemberOrder($request, true), 'order');
 
-        dd($this->apiData);
+//        dd($this->apiData);
         return $this->successJson('', $this->apiData);
     }
 
