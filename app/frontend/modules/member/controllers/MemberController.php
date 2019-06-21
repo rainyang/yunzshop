@@ -1663,7 +1663,7 @@ class MemberController extends ApiController
             $disorder_setting = Setting::get('plugin.distribution-order');
             if ($disorder_setting && 1 == $disorder_setting['is_open']) {
                 $data[] = [
-                    'name'  => 'credit',
+                    'name'  => 'distribution-order',
                     'title' => $disorder_setting['title'] ? : '分销订单统计',
                     'class' => 'icon-order_system',
                     'url'   => 'DistributionOrders'
