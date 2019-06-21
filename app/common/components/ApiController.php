@@ -36,8 +36,8 @@ class ApiController extends BaseController
         if (!UniAccount::checkIsExistsAccount(\YunShop::app()->uniacid)) {
             throw new UniAccountNotFoundException('无此公众号', ['login_status' => -2]);
         }
-        
-        if(\YunShop::request()->type == 1 and \Setting::get('shop.member.wechat_login_mode') == 1){
+
+        if(\YunShop::request()->type == 1 && \Setting::get('shop.member.wechat_login_mode') == 1){
             \YunShop::request()->type = 5;
         }
 
