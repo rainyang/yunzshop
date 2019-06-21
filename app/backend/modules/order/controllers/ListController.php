@@ -192,7 +192,7 @@ class ListController extends BaseController
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
 
                     $address = explode(' ', $item['address']['address']);
-                    $fistOrder = $item['has_one_first_order'] ? '首单' : '';
+                    $fistOrder = $item['has_many_first_order'] ? '首单' : '';
 
                     $export_data[$key + 1] = [
                         $item['id'],
