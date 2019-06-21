@@ -226,17 +226,16 @@ class SiteRegisterController extends BaseController
     public function resetSecretKey()
     {
         $data = request()->data;
+        $setting = Setting::getNotUniacid('shop.key');
 
-        if (!$data) {
-            return $this->errorJson('参数错误');
+        if ($data['key'] && $data['secret']) {
+            try {
+                Setting::setNotUniacid('platform_shop.key', $data);
+            }  catch (\Exception $e) {
+                return $this->errorJson($e->getMessage());
+            }
         }
 
-        try{
-            Setting::setNotUniacid('platform_shop.key', $data);
-        } catch (\Exception $e) {
-            return $this->errorJson($e->getMessage());
-        }
-
-        return $this->successJson('成功');
+        return $this->successJson('成功', $setting);
     }
 }

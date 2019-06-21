@@ -240,14 +240,14 @@ class KeyController extends BaseController
     public function reset()
     {
         $data = request()->data;
-        $setting = Setting::set('shop.key', $data);
+        $setting = Setting::get('shop.key');
 
-        if ($data) {
-            try {
-                Setting::set('shop.key', $data);
-            } catch (\Exception $e) {
-                return $this->errorJson($e->getMessage());
-            }
+        if ($data['key'] && $data['secret']) {
+             try {
+                 Setting::set('shop.key', $data);
+             }  catch (\Exception $e) {
+                 return $this->errorJson($e->getMessage());
+             }
         }
 
         return $this->successJson('成功', $setting);
