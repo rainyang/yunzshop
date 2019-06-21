@@ -100,14 +100,14 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
                 $orderGoodsCoinExchange = new PreOrderGoodsCoinExchange([
                     'code' => 'point',
                     'amount' => $this->getGoodsPrice() ?: 0,
-                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct,
+                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct * $this->orderGoods->total,
                     'name' => '积分全额抵扣',
                 ]);
                 $orderGoodsCoinExchange->setOrderGoods($this->orderGoods);
                 $orderCoinExchange = new PreOrderCoinExchange([
                     'code' => 'point',
                     'amount' => $this->getGoodsPrice() ?: 0,
-                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct,
+                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct * $this->orderGoods->total,
                     'name' => '积分全额',
                     'uid' => $this->orderGoods->uid,
                 ]);
