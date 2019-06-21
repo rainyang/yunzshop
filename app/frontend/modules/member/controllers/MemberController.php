@@ -95,7 +95,7 @@ class MemberController extends ApiController
                 return show_json(0, '缺少访问参数');
             }
         }
-        $v = request('v');
+
         $this->type = intval(\YunShop::request()->type);
         $this->sign = intval(\YunShop::request()->ingress);
 
@@ -113,9 +113,7 @@ class MemberController extends ApiController
         }
 
         $member_info = $member_info->toArray();
-
         $data = MemberModel::userData($member_info, $member_info['yz_member']);
-        $data = MemberModel::addPlugins($data);
 
         //会员收入
         $data['income'] = MemberModel::getIncomeCount();
@@ -124,6 +122,7 @@ class MemberController extends ApiController
         $data['myform'] = (new MemberService())->memberInfoAttrStatus($member_info['yz_member']);
 
         //邀请码
+        $v = request('v');
         if (!is_null($v)) {
             $data['inviteCode']['status'] = \Setting::get('shop.member.is_invite') ?: 0;
             if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
@@ -137,26 +136,8 @@ class MemberController extends ApiController
         
         //个人中心的推广二维码
         if ($data['is_agent']) {
-            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+//            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
         }
-
-        //文章营销
-        $articleSetting = Setting::get('plugin.article');
-        if ($articleSetting['enabled'] == 1) {
-            $data['article_title'] = $articleSetting['center'] ? html_entity_decode($articleSetting['center']) : '文章营销';
-        }
-
-        //查看聚合支付是否开启
-        $data['yop'] = app('plugins')->isEnabled('yop-pay') ? 1 : 0;
-
-        //酒店
-        $data['is_open_hotel'] = app('plugins')->isEnabled('hotel') ? 1 : 0;
-
-        //网约车
-        $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
-
-        // 汇聚支付是否开启
-        $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
 
         if (is_null($integrated)) {
             return $this->successJson('', $data);
@@ -1536,10 +1517,11 @@ class MemberController extends ApiController
         ];
 
         $diyarr = [
-            'tool'         => ['separate'],
-            'asset_equity' => ['integral', 'credit', 'asset'],
-            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center']
+            'tool'         => ['separate','elive'],
+            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin'],
+            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro'],
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
+                , 'help-center', 'sign', 'courier']
         ];
 
         $data = [];
@@ -1621,13 +1603,102 @@ class MemberController extends ApiController
         }
         if (app('plugins')->isEnabled('ranking')) {
             $ranking_setting = Setting::get('plugin.ranking');
-
             if ($ranking_setting && 1 == $ranking_setting['is_ranking']) {
                 $data[] = [
                     'name'  => 'ranking',
                     'title' => '排行榜',
                     'class' => 'icon-member-bank-list1',
                     'url'   => 'rankingIndex'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('micro')) {
+            $micro_set = \Setting::get('plugin.micro');
+            if ($micro_set['is_open_miceo'] == 1) {
+                $micro_shop = \Yunshop\Micro\common\models\MicroShop::getMicroShopByMemberId(\YunShop::app()->getMemberId());
+                if ($micro_shop) {
+                    $data[] = [
+                        'name'  => 'micro',
+                        'title' => '微店中心',
+                        'class' => 'icon-member-mendian1',
+                        'url'   => 'microShop_home'
+                    ];
+                } else {
+                    $data[] = [
+                        'name'  => 'micro',
+                        'title' => '我要开店',
+                        'class' => 'icon-member-mendian1',
+                        'url'   => 'microShop_apply'
+                    ];
+                }
+            }
+        }
+
+        if (app('plugins')->isEnabled('help-center')) {
+            $status = \Setting::get('help-center.status') ? true : false;
+            if ($status) {
+                $data[] = [
+                    'name'  => 'help-center',
+                    'title' => '帮助中心',
+                    'class' => 'icon-member-help',
+                    'url'   => 'helpcenter'
+                ];
+            }
+        }
+
+        if (app('plugins')->isEnabled('love')) {
+            $data[] = [
+                'name' => 'love',
+                'title' => \Yunshop\Love\Common\Services\SetService::getLoveName() ?: '爱心值',
+                'class' => 'icon-wealth-c',
+                'url' => 'love_index'
+            ];
+        }
+
+        if (app('plugins')->isEnabled('froze')) {
+            $data[] = [
+                'name' => 'froze',
+                'title' => \Yunshop\Froze\Common\Services\SetService::getFrozeName() ?: '冻结币',
+                'class' => 'icon-member-frozen1',
+                'url' => 'FrozenCoin'
+            ];
+        }
+
+        if (app('plugins')->isEnabled('coin')) {
+            $data[] = [
+                'name' => 'coin',
+                'title' => \Yunshop\Coin\Common\Services\SetService::getCoinName() ?: '华侨币',
+                'class' => 'icon-member-currency1',
+                'url' => 'overseas_index',
+            ];
+        }
+
+        if (app('plugins')->isEnabled('elive')) {
+            $data[] = [
+                'name' => 'elive',
+                'title' => '生活缴费',
+                'class' => 'icon-member-tool-j',
+                'url' => 'lifeService',
+            ];
+        }
+
+        if (app('plugins')->isEnabled('sign')) {
+            $data[] = [
+                'name' => 'sign',
+                'title' => trans('Yunshop\Sign::sign.plugin_name') ?: '签到',
+                'class' => 'icon-member-clock1',
+                'url' => 'sign'
+            ];
+        }
+
+        if (app('plugins')->isEnabled('courier')) {
+            //快递单
+            $status = \Setting::get('courier.courier.radio');
+            if ($status) {
+                $data[] = [
+                    'name' => 'courier',
+                    'title' => '快递'
                 ];
             }
         }
@@ -1647,7 +1718,7 @@ class MemberController extends ApiController
             if ($article_setting) {
                 $data[] = [
                     'name'  => 'article',
-                    'title' => $article_setting['center'] ? $article_setting['center'] : '文章中心',
+                    'title' => $article_setting['center'] ?: '文章中心',
                     'class' => 'icon-member-collect1',
                     'url'   => 'notice',
                     'param' => 0,
@@ -1699,36 +1770,55 @@ class MemberController extends ApiController
             }
         }
 
-        if (app('plugins')->isEnabled('courier')) {
-            $courier_setting = Setting::get('courier.courier');
-
-            if ($courier_setting && 1 == $courier_setting['radio']) {
-                $data[] = [
-                    'name'  => 'courier',
-                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
-                    'class' => 'icon-member-express',
-                    'url'   => 'courier'
-                ];
-            }
-        }
+        //todo 不要了
+//        if (app('plugins')->isEnabled('courier')) {
+//            $courier_setting = Setting::get('courier.courier');
+//            if ($courier_setting && 1 == $courier_setting['radio']) {
+//                $data[] = [
+//                    'name'  => 'courier',
+//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
+//                    'class' => '',
+//                    'url'   => ''
+//                ];
+//            }
+//        }
 
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+
             if (!$store) {
                 $data[] = [
                     'name'  => 'store-cashier',
                     'title' => '门店申请',
                     'class' => 'icon-member-store-apply1',
                     'url'   => 'storeApply',
-
                 ];
             }
+
+            if ($store && $store->is_black != 1) {
+                $data[] = [
+                    'name'  => 'store-cashier',
+                    'title' => '门店管理',
+                    'class' => 'icon-member-store-apply1',
+                    'url'   => 'storeApply',
+                ];
+
+                if ($store->hasOneCashier->hasOneCashierGoods->is_open == 1) {
+                    $data[] = [
+                        'name' => 'cashier',
+                        'title' => '收银台',
+                        'class' => 'icon-member-cashier',
+                        'url' => 'cashier',
+                        'api' => 'plugin.store-cashier.frontend.cashier.center.index'
+                    ];
+                }
+            }
+
+
         }
         if (app('plugins')->isEnabled('supplier')) {
             $supplier_setting = Setting::get('plugin.supplier');
-
-            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(),
-                1);
+            $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
 
             if (!$supplier) {
                 $data[] = [
@@ -1736,11 +1826,12 @@ class MemberController extends ApiController
                     'title' => '供应商申请',
                     'class' => 'icon-member-apply1',
                     'url'   => 'supplier',
+                    'api'   => 'plugin.supplier.supplier.controllers.apply.supplier-apply.apply',
                 ];
             } elseif ($supplier_setting && 1 == $supplier_setting['status']) {
                 $data[] = [
                     'name'  => 'supplier',
-                    'title' => $supplier_setting['name'] ? $supplier_setting['name'] : '供应商管理',
+                    'title' => $supplier_setting['name'] ?: '供应商管理',
                     'class' => 'icon-member-supplier',
                     'url'   => 'SupplierCenter'
                 ];
@@ -1892,9 +1983,6 @@ class MemberController extends ApiController
             }
         }
 
-
-        //return $this->successJson('ok', $data);
-
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
             $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
@@ -1908,6 +1996,13 @@ class MemberController extends ApiController
                 }
             }
         }
+
+        $arr['is_open'] = [
+            'yop' => app('plugins')->isEnabled('yop-pay') ? 1 : 0,
+            'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
+            'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
+            'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
+        ];
 
         if (is_null($integrated)) {
             return $this->successJson('ok', $arr);
@@ -2217,11 +2312,11 @@ class MemberController extends ApiController
         //是否显示我的推广
         $this->dataIntegrated($this->isOpenRelation($request, true), 'relation');
         //查看自定义
-        $this->dataIntegrated($this->getCustomField($request, true), 'custom');
+//        $this->dataIntegrated($this->getCustomField($request, true), 'custom');
         //查看等级是否开启
-        $this->dataIntegrated($this->isOpen(), 'level');
+//        $this->dataIntegrated($this->isOpen(), 'level');
         //查看自己是否是门店店主
-        $this->dataIntegrated($this->pluginStore(), 'isStore');
+//        $this->dataIntegrated($this->pluginStore(), 'isStore');
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
 
         dd($this->apiData);
