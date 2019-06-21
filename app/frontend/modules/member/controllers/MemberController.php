@@ -72,6 +72,7 @@ class MemberController extends ApiController
     ];
     protected $type;
     protected $sign;
+    protected $set;
 
     public $apiErrMsg = [];
 
@@ -115,29 +116,16 @@ class MemberController extends ApiController
 
         $data = MemberModel::userData($member_info, $member_info['yz_member']);
         $data = MemberModel::addPlugins($data);
-        dd($data);
 
-        //隐藏爱心值插件入口
-        $love_show = PortType::popularizeShow(\YunShop::request()->type);
-        if (isset($data['love']) && (!$love_show)) {
-            $data['love']['status'] = false;
-        }
-
+        //会员收入
         $data['income'] = MemberModel::getIncomeCount();
 
         //自定义表单
-        $data['myform'] = (new MemberService())->memberInfoAttrStatus();
-
-        $data['avatar'] = $data['avatar'] ? yz_tomedia($data['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
-        //修复微信头像地址
-        $data['avatar'] = ImageHelper::fix_wechatAvatar($data['avatar']);
-        //IOS时，把微信头像url改为https前缀
-        $data['avatar'] = ImageHelper::iosWechatAvatar($data['avatar']);
+        $data['myform'] = (new MemberService())->memberInfoAttrStatus($member_info['yz_member']);
 
         //邀请码
         if (!is_null($v)) {
-            $set = \Setting::get('shop.member');
-            $data['inviteCode']['status'] = $set['is_invite'] ?: 0;
+            $data['inviteCode']['status'] = \Setting::get('shop.member.is_invite') ?: 0;
             if (is_null($member_info['yz_member']['invite_code']) || empty($member_info['yz_member']['invite_code'])) {
                 $data['inviteCode']['code'] = MemberModel::getInviteCode();
             } else {
@@ -148,8 +136,7 @@ class MemberController extends ApiController
         }
         
         //个人中心的推广二维码
-        $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status']) ? 1 : 0;
-        if ($data['relation_switch']) {
+        if ($data['is_agent']) {
             $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
         }
 
@@ -1010,6 +997,7 @@ class MemberController extends ApiController
         ];
         return $this->successJson('', $data);
     }
+
     public function designer()
     {
        $TemId =  \Yunshop::request()->id;
@@ -1914,9 +1902,7 @@ class MemberController extends ApiController
             if (!$sets) {
                 $arr['ViewSet'] = [];
             } else {
-
                 foreach ($sets as $k => $v) {
-
                     $arr['ViewSet'][$v['type']]['name'] = $v['names'];
                     $arr['ViewSet'][$v['type']]['name'] = $v['names'];
                 }
@@ -2142,7 +2128,6 @@ class MemberController extends ApiController
         return $this->successJson('ok', $shop_set_name ?: $default_name);
     }
 
-
     public function getArticleQr()
     {
         if (app('plugins')->isEnabled('article')) {
@@ -2206,7 +2191,6 @@ class MemberController extends ApiController
     public function getMemberSetting($request, $integrated)
     {
         $set = \Setting::get('shop.member');
-
         //判断是否显示等级页
         $data['level_open'] = $set['display_page'] ? 1 : 0;
         $data['level_type'] = $set['level_type'] ?: '0';

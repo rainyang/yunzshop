@@ -872,27 +872,32 @@ class MemberModel extends Member
             $member_info['birthday'] = date('Y-m-d', time());
         }
 
-        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-
-        $member_info['order'] = $order_info;
-        if (app('plugins')->isEnabled('hotel')) {
-            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-        }
-
+        //创建二维码目录
         self::createDir(storage_path('app/public/qr'));
+        //创建头像目录
         self::createDir(storage_path('app/public/avatar'));
 
         $member_info['qr'] = self::getAgentQR();
         $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . config('app.webPath') . \Storage::url('app/public/avatar/');
 
+        $member_info['avatar'] = $member_info['avatar'] ? yz_tomedia($member_info['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+        //修复微信头像地址
+        $member_info['avatar'] = ImageHelper::fix_wechatAvatar($member_info['avatar']);
+        //IOS时，把微信头像url改为https前缀
+        $member_info['avatar'] = ImageHelper::iosWechatAvatar($member_info['avatar']);
+
         $shop = \Setting::get('shop.shop');
-        $member_info['copyright'] = $shop['copyright'] ? $shop['copyright'] : '';
+        //版权信息
+        $member_info['copyright'] = $shop['copyright'] ?: '';
+
         $member_info['credit'] = [
             //增加是否显示余额值
             'is_show' => \Setting::get('shop.member.show_balance') ? 0 : 1,
             'text' => !empty($shop['credit']) ? $shop['credit'] : '余额',
             'data' => $member_info['credit2']
         ];
+
+        //显示积分
         $member_info['integral'] = [
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
@@ -910,11 +915,17 @@ class MemberModel extends Member
             $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
         }
 
+        //订单显示
+        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        $member_info['order'] = $order_info;
+        if (app('plugins')->isEnabled('hotel')) {
+            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
 
         return $member_info;
     }
 
-    function createDir($dest)
+    public static function createDir($dest)
     {
         if (!is_dir($dest)) {
             (@mkdir($dest, 0777, true));

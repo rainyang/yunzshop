@@ -11,6 +11,7 @@ use app\common\models\member\MemberParent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\common\modules\memberCart\MemberCartCollection;
+use app\common\services\popularize\PortType;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
@@ -670,6 +671,12 @@ class Member extends BackendModel
                 'button_name' => '帮助中心',
                 'status' => false
             ];
+        }
+
+        //隐藏爱心值插件入口
+        $love_show = PortType::popularizeShow(\YunShop::request()->type);
+        if (isset($data['love']) && (!$love_show)) {
+            $data['love']['status'] = false;
         }
 
         return $data;
