@@ -96,8 +96,8 @@ class ConstService
             self::SOURCE_RECHARGE_CODE         => '充值码充值',
             self::SOURCE_EXCEL_RECHARGE         => 'EXCEL充值',
             self::SOURCE_REJECTED              => static::$title . '提现驳回',
-            self::SOURCE_CONVERT               => static::$title.'转化爱心值',
-            self::SOURCE_CONVERT_CANCEL        => static::$title.'转化爱心值失败回滚'
+            self::SOURCE_CONVERT               => static::$title.'转化'.(defined('LOVE_NAME') ? LOVE_NAME : '爱心值'),
+            self::SOURCE_CONVERT_CANCEL        => static::$title.'转化'.(defined('LOVE_NAME') ? LOVE_NAME : '爱心值').'失败回滚'
         ];
     }
 
