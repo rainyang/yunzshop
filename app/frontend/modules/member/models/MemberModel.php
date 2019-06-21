@@ -827,6 +827,44 @@ class MemberModel extends Member
     }
 
     /**
+     * 获取用户信息
+     *
+     * @param $member_id
+     * @return mixed
+     */
+    public static function getUserInfos_v2($member_id)
+    {
+        return self::select(['uid','uniacid','credit1','credit2','credit3','createtime','nickname','realname','avatar','mobile'])
+            ->uniacid()
+            ->where('uid', $member_id)
+            ->with([
+                'yzMember' => function ($query) {
+                    return $query->select(['*'])->where('is_black', 0)
+                        ->with([
+                            'group' => function ($query1) {
+                                return $query1->select(['id', 'group_name']);
+                            },
+                            'level' => function ($query2) {
+                                return $query2->select(['id', 'level_name']);
+                            },
+                            'agent' => function ($query3) {
+                                return $query3->select(['uid', 'avatar', 'nickname']);
+                            }
+                        ]);
+                },
+                'hasOneFans' => function ($query4) {
+                    return $query4->select(['uid', 'openid', 'follow as followed']);
+                },
+                'hasOneOrder' => function ($query5) {
+                    return $query5->selectRaw('uid, count(uid) as total, sum(price) as sum')
+                        ->uniacid()
+                        ->where('status', 3)
+                        ->groupBy('uid');
+                }
+            ]);
+    }
+
+    /**
      * 会员中心返回数据
      *
      * @param $member_info
@@ -920,6 +958,87 @@ class MemberModel extends Member
         $member_info['order'] = $order_info;
         if (app('plugins')->isEnabled('hotel')) {
             $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+
+        return $member_info;
+    }
+    /**
+     * 会员中心返回数据
+     *
+     * @param $member_info
+     * @param $yz_member
+     * @return mixed
+     */
+    public static function userData_v2($member_info, $yz_member)
+    {
+        $set = \Setting::get('shop.member');
+        if (!empty($yz_member)) {
+
+            if (!empty( $yz_member['group'])) {
+                $member_info['group_id'] =  $yz_member['group']['id'];
+                $member_info['group_name'] =  $yz_member['group']['group_name'];
+            }
+
+            if (!empty( $yz_member['level'])) {
+                $member_info['level_id'] =  $yz_member['level']['id'];
+                $member_info['level_name'] =  $yz_member['level']['level_name'];
+            } else {
+                $member_info['level_id'] =  0;
+                $member_info['level_name'] =  $set['level_name'] ? $set['level_name'] : '普通会员';
+            }
+
+            $member_info['is_agent'] = $yz_member['is_agent'] == 1 && $yz_member['status'] == 2 ? true : false;
+
+            $member_info['referral'] = self::getMyReferral_v3($yz_member, $set);
+        }
+
+        if (!empty($member_info['birthyear'] )) {
+            $member_info['birthday'] = date('Y-m-d', strtotime($member_info['birthyear'] . '-'. $member_info['birthmonth'] . '-' .$member_info['birthday']));
+        } else {
+            $member_info['birthday'] = date('Y-m-d', time());
+        }
+
+        //创建二维码目录
+        self::createDir(storage_path('app/public/qr'));
+        //创建头像目录
+        self::createDir(storage_path('app/public/avatar'));
+
+        $member_info['qr'] = self::getAgentQR();
+        $member_info['avatar_dir'] =  request()->getSchemeAndHttpHost() . config('app.webPath') . \Storage::url('app/public/avatar/');
+
+        $member_info['avatar'] = $member_info['avatar'] ? yz_tomedia($member_info['avatar']) : yz_tomedia(\Setting::get('shop.member.headimg'));
+        //修复微信头像地址
+        $member_info['avatar'] = ImageHelper::fix_wechatAvatar($member_info['avatar']);
+        //IOS时，把微信头像url改为https前缀
+        $member_info['avatar'] = ImageHelper::iosWechatAvatar($member_info['avatar']);
+
+        $shop = \Setting::get('shop.shop');
+        //版权信息
+        $member_info['copyright'] = $shop['copyright'] ?: '';
+
+        $member_info['credit'] = [
+            //增加是否显示余额值
+            'is_show' => \Setting::get('shop.member.show_balance') ? 0 : 1,
+            'text' => !empty($shop['credit']) ? $shop['credit'] : '余额',
+            'data' => $member_info['credit2']
+        ];
+
+        //显示积分
+        $member_info['integral'] = [
+            'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
+            'data' => $member_info['credit1']
+        ];
+
+        //增加是否显示爱心值值
+        $member_info['love_show'] = [
+            'is_show' => \Setting::get('love.member_center_show') ? 1 : 0,
+            'text' => '爱心值',
+            'data' => '0.00'
+        ];
+        if (app('plugins')->isEnabled('love')) {
+            $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
+            $member_info['love_show']['text'] = LOVE_NAME;
+            $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
         }
 
         return $member_info;

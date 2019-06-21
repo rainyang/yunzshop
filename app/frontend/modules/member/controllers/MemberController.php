@@ -102,7 +102,7 @@ class MemberController extends ApiController
         $memberService = app(MemberService::class);
         $memberService->chkAccount($member_id);
 
-        $member_info = MemberModel::getUserInfos($member_id)->first();
+        $member_info = MemberModel::getUserInfos_v2($member_id)->first();
 
         if (empty($member_info)) {
             if (is_null($integrated)) {
@@ -113,7 +113,7 @@ class MemberController extends ApiController
         }
 
         $member_info = $member_info->toArray();
-        $data = MemberModel::userData($member_info, $member_info['yz_member']);
+        $data = MemberModel::userData_v2($member_info, $member_info['yz_member']);
 
         //会员收入
         $data['income'] = MemberModel::getIncomeCount();
@@ -136,7 +136,7 @@ class MemberController extends ApiController
         
         //个人中心的推广二维码
         if ($data['is_agent']) {
-//            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
         }
 
         if (is_null($integrated)) {
@@ -1458,7 +1458,7 @@ class MemberController extends ApiController
 
     public function isOpenRelation($request, $integrated = null)
     {
-        //是否显示我的推广
+        //是否显示我的推广 和 withdraw_status是否显示提现
         $switch = PortType::popularizeShow(\YunShop::request()->type);
 
         $data = [
@@ -2287,11 +2287,11 @@ class MemberController extends ApiController
     {
         $set = \Setting::get('shop.member');
         //判断是否显示等级页
-        $data['level_open'] = $set['display_page'] ? 1 : 0;
-        $data['level_type'] = $set['level_type'] ?: '0';
+        $data['level']['is_open'] = $set['display_page'] ? 1 : 0;
+        $data['level']['level_type'] = $set['level_type'] ?: '0';
 
         //获取自定义字段
-        $data += [
+        $data['custom'] = [
             'is_custom'    => $set['is_custom'],
             'custom_title' => $set['custom_title'],
             'is_validity'  => $set['level_type'] == 2 ? true : false,
@@ -2302,6 +2302,22 @@ class MemberController extends ApiController
             return $this->successJson('获取自定义字段成功！', $data);
         } else {
             return show_json(1, $data);
+        }
+    }
+
+    public function getMemberOrder($request, $integrated)
+    {
+        //订单显示
+        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        $order['order'] = $order_info;
+        if (app('plugins')->isEnabled('hotel')) {
+            $order['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+
+        if (is_null($integrated)) {
+            return $this->successJson('获取会员订单成功！', $order);
+        } else {
+            return show_json(1, $order);
         }
     }
 
@@ -2318,6 +2334,7 @@ class MemberController extends ApiController
         //查看自己是否是门店店主
 //        $this->dataIntegrated($this->pluginStore(), 'isStore');
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
+        $this->dataIntegrated($this->getMemberOrder($request, true), 'order');
 
         dd($this->apiData);
         return $this->successJson('', $this->apiData);
