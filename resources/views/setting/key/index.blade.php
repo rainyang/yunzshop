@@ -354,30 +354,20 @@
                                 res=res.body
                         if (res.result==1) {
                                 this.tapTwoPas()
-                        }else{
-                            this.$message({
-                                    message: res.msg,
-                                    type: 'error'
-                                });
                         }
                     })
                 },
                 tapTwoPas(){
                     this.$http.post("{!! yzWebUrl('setting.key.reset') !!}").then(res => {
-                        console.log(res,'511512');
+                        console.log(res, '511512');
                                 res=res.body
                         if (res.result==1) {
-                                this.key=res.data.key;
-                                this.secret=res.data.secret
-                                this.$message({
-                                    message: res.msg,
-                                    type: 'success'
-                                });
-                        }else{
+                            this.key = res.data.key;
+                            this.secret = res.data.secret
                             this.$message({
-                                    message: res.msg,
-                                    type: 'error'
-                                });
+                                message: res.msg,
+                                type: 'success'
+                            });
                         }
                     })
                 }
