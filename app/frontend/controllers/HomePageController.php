@@ -24,6 +24,7 @@ use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Love\Common\Models\GoodsLove;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
+use app\common\models\Goods;
 
 class HomePageController extends ApiController
 {
@@ -171,31 +172,42 @@ class HomePageController extends ApiController
                 }
 
                 if ($page) {
-                    if (empty($pageId) && Cache::has($member_id . '_designer_default_0')) {
-                        $designer = Cache::get($member_id . '_designer_default_0');
-                    } else {
+                    if (!Cache::has("{$member_id}_designer_default_{$page->id}")) {
+
                         $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+
+                        Cache::put("{$member_id}_designer_default_{$page->id}", $designer, 180);
+                    } else {
+                        $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
+                    $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
                     if ($is_love){
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                                    $goode_award['stock'] = $this ->getGoodsStock($goode_award['goodid']);
                                 }
                             }
                         }
                     }else{
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                foreach ($data['params'] as &$award_content){
+                                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                                }
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = 0;
                                 }
                             }
                         }
-                    }
-
-                    if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
-                        Cache::put($member_id . '_designer_default_0', $designer, 180);
                     }
 
                     $result['item'] = $designer;
@@ -431,6 +443,13 @@ class HomePageController extends ApiController
         $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
+    }
+    
+    private function getGoodsStock($goods_id)
+    {
+        $goodsModel = Goods::select('stock')->where('uniacid',\Yunshop::app()->uniacid)->where('id',$goods_id)->first();
+        $stock = $goodsModel ? $goodsModel->stock : 0;
+        return $stock;
     }
     /*
      * 获取分页数据
@@ -966,7 +985,7 @@ class HomePageController extends ApiController
         if (!is_null(\Config('customer_service'))) {
             $class    = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
-            $ret      = $class::$function(request()->goods_id);
+            $ret      = $class::$function(request()->id);
             if ($ret) {
                 $shop['cservice'] = $ret;
             }
@@ -984,9 +1003,11 @@ class HomePageController extends ApiController
                 foreach ($value['page_type_cast'] as $item){
                     if ($item == 1){
                         $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
-                        $share['title'] = $designer->title;
-                        $share['icon'] = $designer->img;
-                        $share['desc'] = $designer->desc;
+                        if (!empty($share['icon']) && !empty($share['desc'])) {
+                            $share['title'] = $designer->title;
+                            $share['icon'] = $designer->img;
+                            $share['desc'] = $designer->desc;
+                        }
                         break;
                     }
                 }

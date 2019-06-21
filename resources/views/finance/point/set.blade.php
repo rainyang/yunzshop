@@ -28,6 +28,20 @@
                             </label>
                             <span class='help-block'>积分转让： 会员之间可以进行积分转让</span>
                         </div>
+                        @if($set['point_transfer'] == 1)
+                        <div id='point_transfer_poundage' class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                            <div class="col-sm-3">
+                                <div class='input-group'>
+                                    <span class='input-group-addon'>手续费</span>
+                                    <input type="text" name="set[point_transfer_poundage]" value="{{$set['point_transfer_poundage']}}"
+                                           class="form-control"/>
+                                    <span class='input-group-addon'>%</span>
+                                </div>
+                                <span class='help-block'></span>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
@@ -176,6 +190,26 @@
                             </span>
                         </div>
                     </div>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费赠送类型</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_award_type]" value='1'
+                                       @if ($set['point_award_type'] == 1) checked @endif /> 百分比
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="set[point_award_type]" value='0'
+                                       @if (empty($set['point_award_type'])) checked @endif /> 固定数值
+                            </label>
+                            <span class='help-block'>
+                                百分比:单笔订单满200元, 设置10积分, 成交价格200元, 则购买后获得 20 积分（200*10%）
+                                <br>
+                                固定数值:单笔订单满200元, 设置10积分, 成交价格200元, 则购买后获得 10 积分
+                            </span>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费赠送</label>
                         <div class="col-sm-4 col-lg-3">
@@ -275,6 +309,14 @@
                 }
                 else {
                     $("#transfer_love").hide();
+                }
+            });
+            $(":radio[name='set[point_transfer]']").click(function () {
+                if ($(this).val() == 1) {
+                    $("#point_transfer_poundage").show();
+                }
+                else {
+                    $("#point_transfer_poundage").hide();
                 }
             });
         })

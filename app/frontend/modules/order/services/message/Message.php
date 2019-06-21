@@ -24,6 +24,7 @@ class Message extends MessageService
     protected $noticeType;
     protected $formId;
     protected $title;
+    protected $news_link;
     function __construct($order,$formId = '',$type = 1,$title)
     {
         $this->order = $order;

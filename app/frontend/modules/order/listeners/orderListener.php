@@ -7,6 +7,7 @@ use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderSentEvent;
+use app\common\listeners\order\FirstOrderListener;
 use app\common\models\Order;
 use app\common\models\UniAccount;
 use app\frontend\modules\order\services\MessageService;
@@ -66,6 +67,10 @@ class orderListener
     public function subscribe(Dispatcher $events)
     {
         $events->listen(AfterOrderCreatedEvent::class, self::class . '@onCreated');
+
+        // 首单
+        $events->listen(AfterOrderCreatedEvent::class, FirstOrderListener::class . '@handle');
+
         $events->listen(AfterOrderPaidEvent::class, self::class . '@onPaid');
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');
@@ -78,7 +83,7 @@ class orderListener
             // 虚拟订单修复
             \Log::info("--虚拟订单修复--");
             \Cron::add("VirtualOrderFix", '*/60 * * * * *', function () {
-                $orders = DB::table('yz_order')->whereIn('status', [1, 2])->where('is_virtual', 1)->get();
+                $orders = DB::table('yz_order')->whereIn('status', [1, 2])->where('is_virtual', 1)->where('refund_id',0)->where('is_pending',0)->get();
                 // 所有超时未收货的订单,遍历执行收货
                 $orders->each(function ($order) {
                     OrderService::fixVirtualOrder($order);

@@ -19,8 +19,16 @@ class CreditPay extends BasePayType
      */
     function getPayParams($option)
     {
+        $uid = \YunShop::request()->pid;
+
+        if (!isset($uid) || (isset($uid) && $uid == "null")) {
+            $uid = $this->orderPay->orders->first()->uid;
+        } else {
+            $uid = \YunShop::app()->getMemberId();
+        }
+
         $result = [
-            'member_id' => $this->orderPay->orders->first()->uid,
+            'member_id' => $uid,
             'operator' => Balance::OPERATOR_ORDER_,//订单
             'operator_id' => $this->orderPay->id,
             'remark' => '合并支付(id:' . $this->orderPay->id . '),余额付款' . $this->orderPay->amount . '元',

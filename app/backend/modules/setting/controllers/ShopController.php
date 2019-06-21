@@ -8,6 +8,7 @@
 
 namespace app\backend\modules\setting\controllers;
 
+use app\backend\modules\goods\models\Goods;
 use app\common\components\BaseController;
 use app\common\helpers\Cache;
 use app\common\helpers\Url;
@@ -115,8 +116,18 @@ class ShopController extends BaseController
             }
         }
 
+        $goods = Goods::select('id', 'title', 'thumb')
+            ->where('status', 1)
+            ->whereIn('id', $order['goods'])
+            ->where('plugin_id', 0)
+            ->get();
+        if (!$goods->isEmpty()) {
+            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        }
+
         return view('setting.shop.order', [
             'set' => $order,
+            'goods' => $goods
         ])->render();
     }
 
@@ -447,7 +458,7 @@ class ShopController extends BaseController
                 $originalName = $file->getClientOriginalName(); // 文件原名
                 $ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
-                $i = \YunShop::app()->uniaccount['uniacid'];
+                $i = \YunShop::app()->uniacid;
 
                 $upload_file = $i . '_' . $originalName;
 

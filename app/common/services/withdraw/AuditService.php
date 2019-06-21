@@ -228,10 +228,12 @@ class AuditService
         if (empty($servicetax)) {
             return $servicetax_rate;
         }
-        krsort($servicetax);
+
+        $max_money = array_column($servicetax,'servicetax_money');
+        array_multisort($max_money,SORT_DESC,$servicetax);
 
         foreach ($servicetax as $value) {
-            if ($amount >= $value['servicetax_money']) {
+            if ($amount >= $value['servicetax_money'] && !empty($value['servicetax_money'])) {
                 return $value['servicetax_rate'];
                 break;
             }

@@ -339,7 +339,6 @@ class GoodsController extends BaseController
             }
             !session()->has('flash_notification.message') && $this->error('商品修改失败');
         }
-
         return view('goods.goods', [
             'goods' => $goods_service->goods_model,
             'lang' => $this->lang,
@@ -514,7 +513,12 @@ class GoodsController extends BaseController
     public function getSearchGoods()
     {
         $keyword = \YunShop::request()->keyword;
-        $goods = Goods::getGoodsByName($keyword);
+        $goods = Goods::select('id', 'title', 'thumb')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->where('is_plugin', 0)
+            ->where('plugin_id', 0)
+            ->get();
         if (!$goods->isEmpty()) {
             $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
         }

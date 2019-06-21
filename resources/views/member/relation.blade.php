@@ -29,6 +29,8 @@
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="0" @if($set['status'] ==0)
                                     checked="checked"
                                             @endif/> 关闭</label>
+                                <span class='help-block'>开启后首页也需要授权登录</span>
+
                             </div>
                         </div>
                         <div class="form-group">

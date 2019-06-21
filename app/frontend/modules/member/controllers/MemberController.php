@@ -53,6 +53,8 @@ use Yunshop\TeamDividend\models\YzMemberModel;
 use Yunshop\Designer\models\Designer;
 use app\frontend\models\MembershipInformationLog;
 use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
+use app\common\models\SynchronizedBinder;
+
 
 class MemberController extends ApiController
 {
@@ -175,6 +177,9 @@ class MemberController extends ApiController
 
                 //网约车
                 $data['is_open_net_car'] = app('plugins')->isEnabled('net-car') ? 1 : 0;
+
+                // 汇聚支付是否开启
+                $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
 
 //                if ($data['is_open_net_car']) {
 //                    $data['net_car_order'] = \Yunshop\NetCar\frontend\models\Order::getNetCarOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
@@ -676,6 +681,7 @@ class MemberController extends ApiController
         $password = \YunShop::request()->password;
         $confirm_password = \YunShop::request()->password;
         $uid = \YunShop::app()->getMemberId();
+        $type = \YunShop::request()->type;
         $close_invitecode = \YunShop::request()->close;
 
 
@@ -766,6 +772,105 @@ class MemberController extends ApiController
                 $member_model->mobile = $mobile;
                 $member_model->password = md5($password . $salt);
                 \Log::info('member_save', $member_model);
+                if( $type == 1 ){
+                    DB::transaction(function () use(&$member_model,$uid,$mobile,$salt,$password) {
+                        $memberinfo_model = MemberModel::getMemberinfo(\YunShop::app()->uniacid, $mobile);
+
+                        //同步绑定已存在的手机号
+                        if (!empty($memberinfo_model) && ($memberinfo_model->createtime < $member_model->createtime)) {
+                            //app注册的会员信息id
+                            $mc_uid = $memberinfo_model['uid'];
+                            //微信注册的会员的余额 积分
+                            $credit1 = $member_model->credit1;
+                            $credit2 = $member_model->credit2;
+                            $old_credit1 = $memberinfo_model->credit1;
+                            $old_credit2 = $memberinfo_model->credit2;
+                            $member_model->credit1 = 0;
+                            $member_model->credit2 = 0;
+                            $member_model->mobile = '';
+
+                            //同步微信注册的会员的积分 余额 到app web注册的会员表中
+                            $memberinfo_model->credit1 += $credit1;
+                            $memberinfo_model->credit2 += $credit2;
+                            $memberinfo_model->nickname = $member_model->nickname;
+                            $memberinfo_model->avatar = $member_model->avatar;
+
+
+                            //更新fans表的uid字段
+                            $fansinfo = McMappingFans::getFansById($uid);
+                            $fansinfo->uid = $mc_uid;
+
+                            //保存修改的信息
+                            $bindinfo = [
+                                'uniacid' => \YunShop::app()->uniacid,
+                                'new_uid' => $mc_uid ,
+                                'old_uid' => $uid,
+                                'old_credit1' => $old_credit1 ,
+                                'old_credit2' => $old_credit2,
+                                'add_credit1' => $credit1,
+                                'add_credit2' => $credit2,
+                            ];
+                            \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
+
+                            \app\backend\modules\member\models\MemberShopInfo::deleteMemberInfo($uid);
+
+                            $synchronizedbinder = SynchronizedBinder::create($bindinfo);
+
+                            if ( !$memberinfo_model->save() || !$member_model->save() || !$fansinfo->save() || !$synchronizedbinder) {
+                                \Log::debug('---------手机号码绑定已存在手机号失败--------');
+                                return $this->errorJson('手机号码绑定已存在手机号失败');
+                            }
+                            //修改现在登录会员的信息
+                            $member_model = MemberModel::getMemberById($mc_uid);
+                            $salt = Str::random(8);
+                            $member_model->salt = $salt;
+                            $member_model->mobile = $mobile;
+                            $member_model->password = md5($password . $salt);
+
+
+                            Session::set('member_id',$mc_uid);
+                        }elseif (!empty($memberinfo_model) && ($memberinfo_model->createtime > $member_model->createtime)) {
+                            //app注册的会员信息id
+                            $mc_uid = $memberinfo_model['uid'];
+                            //app注册的会员的余额 积分
+                            $credit1 = $memberinfo_model->credit1;
+                            $credit2 = $memberinfo_model->credit2;
+                            $memberinfo_model->credit1 = 0;
+                            $memberinfo_model->credit2 = 0;
+                            //微信注册的会员的余额积分
+                            $old_credit1 = $member_model->credit1;
+                            $old_credit2 = $member_model->credit2;
+
+                            //同步微信注册的会员的积分 余额 到app web注册的会员表中
+                            $member_model->credit1 += $credit1;
+                            $member_model->credit2 += $credit2;
+                            $memberinfo_model->mobile = '';
+
+                            //保存修改的信息
+                            $bindinfo = [
+                                'uniacid' => \YunShop::app()->uniacid,
+                                'new_uid' => $uid ,
+                                'old_uid' => $uid,
+                                'old_credit1' => $old_credit1 ,
+                                'old_credit2' => $old_credit2,
+                                'add_credit1' => $credit1,
+                                'add_credit2' => $credit2,
+                                'old_mobile'  => $memberinfo_model->mobile,
+                                'new_mobile'  =>$mobile
+                            ];
+                            \Log::debug('---------手机号码绑定已存在手机号的信息--------',$bindinfo);
+                            \app\backend\modules\member\models\MemberShopInfo::deleteMemberInfo($mc_uid);
+
+                            $synchronizedbinder = SynchronizedBinder::create($bindinfo);
+                            if ( !$memberinfo_model->save() || !$synchronizedbinder) {
+                                \Log::debug('---------手机号码绑定已存在手机号失败--------');
+                                return $this->errorJson('手机号码绑定已存在手机号失败');
+                            }
+                        }
+                    });
+
+                }
+
                 if ($member_model->save()) {
 
                     if (Cache::has($member_model->uid . '_member_info')) {
@@ -1485,7 +1590,7 @@ class MemberController extends ApiController
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car','declaration']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center','declaration']
         ];
 
         $data = [];
@@ -1524,11 +1629,11 @@ class MemberController extends ApiController
                 'url'   => $url
             ];
         });
-        if (app('plugins')->isEnabled('asset')) {
+        if (app('plugins')->isEnabled('asset') && (new \Yunshop\Asset\Common\Services\IncomeDigitizationService)->memberPermission()) {
             $data[] = [
                 'name'  => 'asset',
                 'title' => PLUGIN_ASSET_NAME,
-                'class' => 'icon-member-credit01',
+                'class' => 'icon-number_assets',
                 'url'   => 'TransHome'
             ];
         }
@@ -1543,6 +1648,15 @@ class MemberController extends ApiController
                     'url'   => 'CardCenter'
                 ];
             }
+        }
+
+        if (app('plugins')->isEnabled('material-center')) {
+            $data[] = [
+                'name'  => 'material-center',
+                'title' => '素材中心',
+                'class' => 'icon-member_material',
+                'url'   => 'materialCenter'
+            ];
         }
 
         if (app('plugins')->isEnabled('credit')) {

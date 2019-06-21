@@ -26,6 +26,7 @@ class InstallController
 
     public function agreement()
     {
+        /* // 取出 xml 单独标签列
         $file = base_path().'/manifest.xml';
         $con = file_get_contents($file);
 
@@ -36,7 +37,9 @@ class InstallController
         $first = strpos($temp[0][0],"]");
         // 返回 [ 最后一次出现的位置
         $end = strripos($temp[0][0],"[")+1;
-        $version = substr($temp[0][0], $end, $first-$end);
+        $version = substr($temp[0][0], $end, $first-$end);*/
+
+        $version = require base_path('config/version.php').'';
 
         return $this->successJson('成功', [
             'version' => $version
@@ -170,8 +173,6 @@ class InstallController
         $ret['mysql_connect'] = function_exists('mysql_connect');
         // 检测 file_get_content
         $ret['file_get_content'] = function_exists('file_get_contents');
-        // 检测 exec
-        $ret['exec'] = function_exists('exec');
 
         $check_function = [
             [
@@ -183,11 +184,6 @@ class InstallController
                 'name' => 'file_get_content',
                 'need' => '支持',
                 'value' => $ret['file_get_content'] ? '支持' : '不支持',
-            ],
-            [
-                'name' => 'exec',
-                'need' => '支持',
-                'value' => $ret['exec'] ? '支持' : '不支持',
             ],
         ];
 
@@ -231,7 +227,8 @@ class InstallController
      * @param $dir
      * @return int
      */
-    private function check_writeable($dir) {
+    private function check_writeable($dir)
+    {
         $writeable = 0;
         if(!is_dir($dir)) {
             @mkdir($dir, 0777);
@@ -255,6 +252,7 @@ class InstallController
     {
         $set = request()->set;
         $user = request()->user;
+        $set['AUTH_PASSWORD'] = randNum(8);
 
         $filename = base_path().'/.env';
         $env = file_get_contents($filename);
@@ -269,14 +267,8 @@ class InstallController
             if ((bool)$check_env_key) {
                 $env = substr_replace($env, "{$item}={$value}", $check_env_key, $num);
             } else {
-                $env .= "{$item}=$value\n";
+                $env .= "\n{$item}=$value\n";
             }
-        }
-
-        $result = file_put_contents($filename, $env);
-
-        if (!$result) {
-            return $this->errorJson('保存mysql配置数据有误');
         }
 
         try{
@@ -285,6 +277,12 @@ class InstallController
             new \PDO("mysql:host=".$set['DB_HOST'].";dbname=".$set['DB_DATABASE'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
         } catch (\Exception $e){
             return $this->errorJson($e->getMessage());
+        }
+
+        $result = file_put_contents($filename, $env);
+
+        if (!$result) {
+            return $this->errorJson('保存mysql配置数据有误');
         }
 
         fopen($this->user_txt, 'w+');
@@ -388,8 +386,10 @@ class InstallController
 
     public function delete()
     {
-        @unlink(base_path().'/app/platform/controllers/InstallController.php');
-        
+        if (env('APP_ENV') == 'production') {
+            @unlink(base_path().'/app/platform/controllers/InstallController.php');
+        }
+
         return $this->successJson('成功');
     }
 }

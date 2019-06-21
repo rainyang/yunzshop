@@ -89,7 +89,9 @@ class BalanceNoticeService
         if (!$msg) {
             return;
         }
-        MessageService::notice(MessageTemp::$template_id, $msg, $memberId);
+        $news_link = MessageTemp::find($templateId)->news_link;
+        $news_link = $news_link ?:'';
+        MessageService::notice(MessageTemp::$template_id, $msg, $memberId,'',$news_link);
     }
 
 

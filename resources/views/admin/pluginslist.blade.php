@@ -1,6 +1,6 @@
 @extends('layouts.base')
-@section('title', trans('应用中心'))
 @section('content')
+@section('title', trans('应用中心'))
     <div class="w1200 m0a">
         <script language="javascript" src="{{static_url('js/dist/nestable/jquery.nestable.js')}}"></script>
         <link rel="stylesheet" type="text/css" href="{{static_url('js/dist/nestable/nestable.css')}}"/>
@@ -16,234 +16,49 @@
         </section>
 
         <div class="row">
-            @if($dividend)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">分润类</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($dividend as $key => $plugin)
-                        @if(can($key))
-                        <div class="col-md-2">
-                            <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                <div class="plugin-i-div">
-                                    <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #F15353"></i>
-                                </div>
-                                <span class="plugin-span">{{$plugin['name']}}</span>
-                                <object>
-                                    <a class="top_show"
-                                       style="display: none;"
-                                       href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                        <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                        data-toggle="tooltip"  data-placement="top"
-                                           @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                    </a>
-                                </object>
-                                {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                            </a>
+            @foreach( $class as $key1 => $value)
+                @if(is_array($data[$key1]))
+                    <div class="panel panel-default">
+                        <div class="panel-heading" style="background-color: #f6f6f6">
+                            <h3 class="panel-title">{{ $value['name'] }}</h3>
                         </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($industry)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">行业类</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($industry as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #eb6f50"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($marketing)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">营销类</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($marketing as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #f0b652"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($tool)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">工具类</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($tool as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #f59753"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($recharge)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">生活充值</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($recharge as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #50d9a7"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($api)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">接口类</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($api as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #53d5f0"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            @if($blockchain)
-            <div class="panel panel-default">
-                <div class="panel-heading" style="background-color: #f6f6f6">
-                    <h3 class="panel-title">区块链</h3>
-                </div>
-                <div class="panel-body">
-                    @foreach($blockchain as $key => $plugin)
-                        @if(can($key))
-                            <div class="col-md-2">
-                                <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
-                                    <div class="plugin-i-div">
-                                        <i class="plugin-i {{$plugin['list_icon']}}" style="background-color: #469de2"></i>
-                                    </div>
-                                    <span class="plugin-span">{{$plugin['name']}}</span>
-                                    <object>
-                                        <a class="top_show"
-                                           style="display: none;"
-                                           href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
-                                            <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
-                                            data-toggle="tooltip"  data-placement="top"
-                                               @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
-                                        </a>
-                                    </object>
-                                    {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
-                                </a>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-            @endif
-        </div>
+                        <div class="panel-body">
+                            @foreach($data[$key1] as $key => $plugin)
+                                @if(can($key))
+                                <div class="col-md-2">
+                                    <a href="{{yzWebFullUrl($plugin['url'])}}" class="plugin-a col-md-12">
+                                        <div class="plugin-i-div">
+                                            <i class="plugin-i" style="background-color: {{$value['color']}}; background-image: url({{ $plugin['icon_url'] }})"></i>
+                                        </div>
+                                        <span class="plugin-span">{{$plugin['name']}}</span>
+                                        <object>
+                                            <a class="top_show"
+                                               style="display: none;"
+                                               href="{{yzWebUrl('plugins.setTopShow',['name'=>$key,'action'=>(app('plugins')->isTopShow($key) ? 1 : 0)])}}">
+                                                <i class="fa fa-tags" @if(app('plugins')->isTopShow($key))style="color: red" @endif
+                                                data-toggle="tooltip"  data-placement="top"
+                                                   @if(app('plugins')->isTopShow($key))title="取消顶部显示?" @else title="选择顶部显示?"@endif></i>
+                                            </a>
+                                        </object>
+                                        {{--<span class="plugin-span-down">{{$plugin['description']}}</span>--}}
+                                    </a>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+         <div>
     </div>
 
-        <script>
-            $(function () { $("[data-toggle='tooltip']").tooltip(); });
-            $(".plugin-a").mouseover(function(){
-                $(this).find("a").css("display","inline");
-            });
-            $(".plugin-a").mouseleave(function () {
-                $(this).find("a").css("display","none");
-            })
-        </script>
-
+    <script>
+        $(function () { $("[data-toggle='tooltip']").tooltip(); });
+        $(".plugin-a").mouseover(function(){
+            $(this).find("a").css("display","inline");
+        });
+        $(".plugin-a").mouseleave(function () {
+            $(this).find("a").css("display","none");
+        })
+</script>
 @endsection

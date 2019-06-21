@@ -27,11 +27,10 @@ class MemberInvitedController extends BaseController
         ->orderBy('id', 'desc')
         ->paginate()
         ->toArray();
-        // dd($list);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        return view('member.invited', ['list'=>$list, 'pager'=>$pager])->render();
+        return view('member.invited', ['list'=>$list, 'pager'=>$pager, 'search'=>$search])->render();
     }
 
     public function export()

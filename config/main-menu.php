@@ -1037,7 +1037,7 @@ return [
                         'icon'       => '',
                         'sort'       => '2',
                         'item'       => 'goods_discount_set_all',
-                        'parents'    => ['Goods', 'discount_set'],
+                        'parents'    => ['Goods', 'discount_set',],
                         'child'      => [
                             'goods_discount_set_all_index'  => [
                                 'name'       => '折扣设置',
@@ -1063,6 +1063,18 @@ return [
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set_all'],
                                 'child'      => []
                             ],
+                            'goods_discount_set_all_set' => [
+                                'name'       => '保存折扣全局设置',
+                                'url'        => 'discount.batch-discount.all-set',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_discount_set_all_set',
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set_all'],
+                                'child'      => []
+                            ],
                         ],
                     ],
 
@@ -1075,20 +1087,8 @@ return [
                         'icon'       => '',
                         'sort'       => '2',
                         'item'       => 'goods_discount_set',
-                        'parents'    => ['Goods', 'discount_set'],
+                        'parents'    => ['Goods', 'discount_set',],
                         'child'      => [
-                            'goods_discount_set_index' => [
-                                'name'       => '折扣设置',
-                                'url'        => 'discount.batch-discount.index',
-                                'url_params' => '',
-                                'permit'     => 1,
-                                'menu'       => 0,
-                                'icon'       => 'fa-sitemap',
-                                'sort'       => '2',
-                                'item'       => 'goods_discount_set_index',
-                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
-                                'child'      => []
-                            ],
                             'goods_discount_set_store' => [
                                 'name'       => '保存设置',
                                 'url'        => 'discount.batch-discount.store',
@@ -1099,6 +1099,54 @@ return [
                                 'sort'       => '2',
                                 'item'       => 'goods_discount_set_store',
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
+                                'child'      => []
+                            ],
+                            'goods_discount_set_update' => [
+                                'name'       => '编辑设置',
+                                'url'        => 'discount.batch-discount.update-set',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_discount_set_update',
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
+                                'child'      => []
+                            ],
+                            'goods_discount_set_update' => [
+                                'name'       => '编辑页面',
+                                'url'        => 'discount.discount.set',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_discount_set_update',
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_select_category' => [
+                                'name'       => '分类查询',
+                                'url'        => 'discount.batch-discount.select-category',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_select_category',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_delete_set' => [
+                                'name'       => '删除设置',
+                                'url'        => 'discount.batch-discount.delete-set',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_delete_set',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
                                 'child'      => []
                             ],
                         ],
@@ -1113,7 +1161,7 @@ return [
                         'icon'       => '',
                         'sort'       => '2',
                         'item'       => 'goods_dispatch_freight-set',
-                        'parents'    => ['Goods', 'discount_set'],
+                        'parents'    => ['Goods', 'discount_set',],
                         'child'      => [
                             'goods_dispatch_set_freight' => [
                                 'name'       => '折扣设置',
@@ -1124,7 +1172,55 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_set_freight',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_select_category' => [
+                                'name'       => '分类查询',
+                                'url'        => 'discount.batch-dispatch.select-category',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_select_category',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_freight_save' => [
+                                'name'       => '运费设置',
+                                'url'        => 'discount.batch-dispatch.freight-save',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_freight_save',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_update_freight' => [
+                                'name'       => '修改设置',
+                                'url'        => 'discount.batch-dispatch.update-freight',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_update_freight',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
+                                'child'      => []
+                            ],
+                            'goods_dispatch_freight_delete' => [
+                                'name'       => '删除设置',
+                                'url'        => 'discount.batch-dispatch.delete-freigh',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-sitemap',
+                                'sort'       => '2',
+                                'item'       => 'goods_dispatch_freight_delete-save',
+                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight'],
                                 'child'      => []
                             ],
                         ],

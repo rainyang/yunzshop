@@ -9,6 +9,7 @@ use app\common\models\user\WeiQingUsers;
 use app\common\services\Utils;
 use \app\platform\modules\system\models\SystemSetting;
 use \app\common\helpers\Client;
+use app\common\helpers\ImageHelper;
 
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
@@ -260,18 +261,18 @@ if (!function_exists("tomedia")) {
 
         if (env('APP_Framework') == 'platform') {
             $remote = SystemSetting::settingLoad('remote', 'system_remote');
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-            if ($local_path || !$upload_type || file_exists(base_path() . '/static/upload/' . $src)) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+            if (($local_path || !$remote['type']) && file_exists(base_path() . '/static/upload/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
             } else {
-                if ($upload_type == '2') {
+                if ($remote['type'] == '2') {
                     $src = $remote['alioss']['url'] . '/'. $src;
-                } elseif ($upload_type == '4') {
+                } elseif ($remote['type'] == '4') {
                     $src = $remote['cos']['url'] . '/'. $src;
                 }
             }
         } else {
-            if ($local_path || empty(YunShop::app()->setting['remote']['type']) || file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
+            if (($local_path || empty(YunShop::app()->setting['remote']['type'])) && file_exists(base_path('../../') . '/' . YunShop::app()->config['upload']['attachdir'] . '/' . $src)) {
                 $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
             } else {
                 $src = YunShop::app()->attachurl_remote . $src;
@@ -304,9 +305,10 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
-        if (!$upload_type) {
-            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
-        }
+//        if (!$upload_type) {
+//            $upload_type = \app\platform\modules\application\models\CoreAttach::where('attachment', $src)->first()['upload_type'];
+//        }
+        $upload_type = $setting['remote']['type'];
 
         $addons = '/storage/';
         $attachment = '/static/';
@@ -352,13 +354,14 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-    if (!$sign && ($local_path || empty($upload_type) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))) {
+
+    if (!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
-    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type) || file_exists(base_path('static/upload/').$src))) {
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type)) && file_exists(base_path('static/upload/').$src)) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         $attach_url_remote = '';
@@ -1220,6 +1223,7 @@ if (!function_exists('file_remote_upload')) {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
                 $ossClient->uploadFile($bucket, $filename, base_path() . '/static/upload/' . $filename);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                \Log::info('-----alioss上传失败信息-----', $e->getMessage());
                 return error(1, $e->getMessage());
             }
             if ($auto_delete_local) {
@@ -1233,6 +1237,7 @@ if (!function_exists('file_remote_upload')) {
                 $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
             if ($uploadRet['code'] != 0) {
+                \Log::info('-----cos上传失败信息-----', json_encode($uploadRet));
                 $message = '';
                 switch ($uploadRet['code']) {
                     case -62:
@@ -2015,19 +2020,9 @@ if (!function_exists('attachment_cos_auth')) {
         }
         $filename = '/logo.png';
         if ($bucket_local) {
-            $con = $original = @file_get_contents(base_path() . '/app/common/services/qcloud/Conf.php');
-            if (!$con) {
-                $conf_content = base64_decode("PD9waHANCg0KbmFtZXNwYWNlIHFjbG91ZGNvczsNCg0KY2xhc3MgQ29uZiB7DQogICAgLy8gQ29zIHBocCBzZGsgdmVyc2lvbiBudW1iZXIuDQogICAgY29uc3QgVkVSU0lPTiA9ICd2NC4yLjInOw0KICAgIGNvbnN0IEFQSV9DT1NBUElfRU5EX1BPSU5UID0gJ2h0dHA6Ly9yZWdpb24uZmlsZS5teXFjbG91ZC5jb20vZmlsZXMvdjIvJzsNCg0KICAgIC8vIFBsZWFzZSByZWZlciB0byBodHRwOi8vY29uc29sZS5xY2xvdWQuY29tL2NvcyB0byBmZXRjaCB5b3VyIGFwcF9pZCwgc2VjcmV0X2lkIGFuZCBzZWNyZXRfa2V5Lg0KICAgIGNvbnN0IEFQUF9JRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9JRCA9ICcnOw0KICAgIGNvbnN0IFNFQ1JFVF9LRVkgPSAnJzsNCg0KICAgIC8qKg0KICAgICAqIEdldCB0aGUgVXNlci1BZ2VudCBzdHJpbmcgdG8gc2VuZCB0byBDT1Mgc2VydmVyLg0KICAgICAqLw0KICAgIHB1YmxpYyBzdGF0aWMgZnVuY3Rpb24gZ2V0VXNlckFnZW50KCkgew0KICAgICAgICByZXR1cm4gJ2Nvcy1waHAtc2RrLScgLiBzZWxmOjpWRVJTSU9OOw0KICAgIH0NCn0NCg==");
-                file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $conf_content);
-                $con = $original = $conf_content;
-            }
-            $con = preg_replace('/const[\s]APP_ID[\s]=[\s]\'.*\';/', 'const APP_ID = \'' . $appid . '\';', $con);
-            $con = preg_replace('/const[\s]SECRET_ID[\s]=[\s]\'.*\';/', 'const SECRET_ID = \'' . $key . '\';', $con);
-            $con = preg_replace('/const[\s]SECRET_KEY[\s]=[\s]\'.*\';/', 'const SECRET_KEY = \'' . $secret . '\';', $con);
-            file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $con);
             \app\common\services\qcloud\Cosapi::setRegion($bucket_local);
             \app\common\services\qcloud\Cosapi::setTimeout(180);
-            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/stati/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
+            $uploadRet = \app\common\services\qcloud\Cosapi::upload($bucket, base_path() . '/static/images'.$filename, $filename, '', 3 * 1024 * 1024, 0);
         } else {
             $con = $original = @file_get_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php');
             if (!$con) {
@@ -2063,8 +2058,6 @@ if (!function_exists('attachment_cos_auth')) {
             }
             if (!$bucket_local) {
                 file_put_contents(base_path() . '/app/common/services/cos/Qcloud_cos/Conf.php', $original);
-            } else {
-                file_put_contents(base_path() . '/app/common/services/qcloud/Conf.php', $original);
             }
             return error(-1, $message);
         }
@@ -2395,11 +2388,12 @@ if (!function_exists('file_remote_delete')) {
             return true;
         }
         if ($upload_type == '2') {
+            $bucket = rtrim(substr($remote['alioss']['bucket'], 0, strrpos($remote['alioss']['bucket'],'@')), '@');
             $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
-            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            $endpoint = 'https://' . $buckets[$bucket]['location'] . '.aliyuncs.com';
             try {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
-                $ossClient->deleteObject($remote['alioss']['bucket'], $file);
+                $ossClient->deleteObject($bucket, $file);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, '删除oss远程文件失败');
             }
@@ -2941,5 +2935,12 @@ if (!function_exists('resource_absolute')) {
         }
 
         return  '/addons/yun_shop/' . $file;
+    }
+}
+
+if (!function_exists('upload_image_local')) {
+    function upload_image_local($file)
+    {
+        return ImageHelper::getImageUrl('/static/upload/' . substr($file,strripos($file,"image")));
     }
 }

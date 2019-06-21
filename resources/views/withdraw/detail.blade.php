@@ -254,6 +254,8 @@
                     <input type="submit" name="submit_pay" value="易宝打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'manual')
                     <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                @elseif($item->pay_way == 'converge_pay')
+                    <input type="submit" name="submit_pay" value="打款到汇聚" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @endif
             @endif
 
