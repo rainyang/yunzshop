@@ -70,7 +70,8 @@ class orderListener
         $events->listen(AfterOrderCreatedEvent::class, self::class . '@onCreated');
 
         // 首单
-        $events->listen(AfterOrderPaidImmediatelyEvent::class, FirstOrderListener::class . '@handle');
+        //$events->listen(AfterOrderPaidImmediatelyEvent::class, FirstOrderListener::class . '@handle');
+        $events->listen(AfterOrderPaidEvent::class, FirstOrderListener::class . '@handle');
         // 订单取消,取消首单标识
         $events->listen(AfterOrderCanceledEvent::class, FirstOrderListener::class . '@cancel');
 
