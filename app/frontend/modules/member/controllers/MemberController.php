@@ -1590,7 +1590,7 @@ class MemberController extends ApiController
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center', 'distribution-order']
         ];
 
         $data = [];
@@ -1657,6 +1657,18 @@ class MemberController extends ApiController
                 'class' => 'icon-member_material',
                 'url'   => 'materialCenter'
             ];
+        }
+
+        if (app('plugins')->isEnabled('distribution-order')) {
+            $disorder_setting = Setting::get('plugin.distribution-order');
+            if ($disorder_setting && 1 == $disorder_setting['is_open']) {
+                $data[] = [
+                    'name'  => 'credit',
+                    'title' => $disorder_setting['title'] ? : '分销订单统计',
+                    'class' => 'icon-order_system',
+                    'url'   => 'DistributionOrders'
+                ];
+            }
         }
 
         if (app('plugins')->isEnabled('credit')) {
