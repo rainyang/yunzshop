@@ -77,7 +77,6 @@ class Setting extends BaseModel
         return $result;
     }
 
-
     /**
      * 获取账号内当前组的所有配置信息
      *
@@ -92,16 +91,16 @@ class Setting extends BaseModel
         foreach ($settings as $item) {
             switch (strtolower($item->type)) {
                 case 'string':
-                    $items[$item->key] = (string)$item->value;
+                    $items[$item->key] = (string) $item->value;
                     break;
                 case 'integer':
-                    $items[$item->key] = (integer)$item->value;
+                    $items[$item->key] = (integer) $item->value;
                     break;
                 case 'double':
-                    $items[$item->key] = (double)$item->value;
+                    $items[$item->key] = (double) $item->value;
                     break;
                 case 'boolean':
-                    $items[$item->key] = (boolean)$item->value;
+                    $items[$item->key] = (boolean) $item->value;
                     break;
                 case 'array':
                     $items[$item->key] = unserialize($item->value);
@@ -139,7 +138,6 @@ class Setting extends BaseModel
     {
         return self::where('group', $group)->where('uniacid', $uniqueAccountId)->get();
     }
-
 
     /**
      * 解析key
@@ -219,7 +217,6 @@ class Setting extends BaseModel
             ->where('group', $group)
             ->where('uniacid', $uniqueAccountId);
         $model = $model->first();
-
 
         if (is_null($model)) {
 
