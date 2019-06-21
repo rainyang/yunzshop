@@ -233,4 +233,21 @@ class KeyController extends BaseController
 
         return $this->successJson('ok', $res);
     }
+
+    public function reset()
+    {
+        $data = request()->data;
+
+        if (!$data) {
+            return $this->errorJson('参数错误');
+        }
+
+        try{
+            Setting::set('shop.key', $data);
+        } catch (\Exception $e) {
+            return $this->errorJson($e->getMessage());
+        }
+
+        return $this->successJson('成功');
+    }
 }
