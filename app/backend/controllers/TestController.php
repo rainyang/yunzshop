@@ -41,8 +41,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        $w = new WithdrawController();
-        $w->index();
+       
     }
 
     private $amountItems;
