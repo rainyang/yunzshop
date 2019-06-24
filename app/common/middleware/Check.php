@@ -28,7 +28,7 @@ class Check
      */
     private function checkRegister()
     {
-        $setting = Setting::getNotUniacid('platform_shop.key')['key'];
+        $setting = Setting::getNotUniacid('platform_shop.key');
 
         if ((!$setting['key'] || !$setting['secret']) && (request()->path() != 'admin/index' && !strpos(request()->path(), 'siteRegister'))) {
             $this->errorJson('', [
