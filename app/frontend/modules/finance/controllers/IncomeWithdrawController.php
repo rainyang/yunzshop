@@ -109,7 +109,7 @@ class IncomeWithdrawController extends ApiController
         if ($income_data) {
             $data = [
                 'data' => $income_data,
-                'setting' => ['balance_special' => $this->getBalanceSpecialSet(),'calculation_method'=> $this->getCalculationMethod()],
+                'setting' => ['balance_special' => $this->getBalanceSpecialSet()],
                 'special_type' => $this->special_poundage_type,
             ];
             return $this->successJson('获取数据成功!', $data);
@@ -259,16 +259,6 @@ class IncomeWithdrawController extends ApiController
         return empty(array_get($this->withdraw_set, 'balance_special', 0)) ? false : true;
     }
 
-    /**
-     * 劳务税计算方式
-     * @return bool
-     */
-
-    private function getCalculationMethod()
-    {
-        return empty(array_get($this->withdraw_set, 'service_tax_calculation', 0)) ? false : true;
-    }
-
 
     /**
      * 手续费计算公式
@@ -350,7 +340,12 @@ class IncomeWithdrawController extends ApiController
             }
         }
 
-        $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
+        if(array_get($this->withdraw_set, 'service_tax_calculation', 0) == 1){
+            $special_service_tax = $this->poundageMath($this->withdraw_amounts , $this->special_service_tax_rate);
+        }else{
+            $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
+        }
+
         $can = $this->incomeIsCanWithdraw();
        /* if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
             $can = true;
