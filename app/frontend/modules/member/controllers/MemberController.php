@@ -1999,7 +1999,6 @@ class MemberController extends ApiController
         }
     }
 
-
     public function isOpenHuanxun()
     {
         $huanxun = \Setting::get('plugin.huanxun_set');
@@ -2011,7 +2010,6 @@ class MemberController extends ApiController
         }
         return $this->errorJson('', 0);
     }
-
 
     /**
      *  推广申请页面数据
@@ -2325,8 +2323,7 @@ class MemberController extends ApiController
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
         //查看会员订单
         $this->dataIntegrated($this->getMemberOrder($request, true), 'order');
-
-        dd($this->apiData);
+        
         return $this->successJson('', $this->apiData);
     }
 
