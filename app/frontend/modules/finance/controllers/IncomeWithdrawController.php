@@ -109,8 +109,8 @@ class IncomeWithdrawController extends ApiController
         if ($income_data) {
             $data = [
                 'data' => $income_data,
-                'setting' => ['balance_special' => $this->getBalanceSpecialSet()],
-                'special_type' => $this->special_poundage_type
+                'setting' => ['balance_special' => $this->getBalanceSpecialSet(),'calculation_method'=> $this->getCalculationMethod()],
+                'special_type' => $this->special_poundage_type,
             ];
             return $this->successJson('获取数据成功!', $data);
         }
@@ -259,6 +259,15 @@ class IncomeWithdrawController extends ApiController
         return empty(array_get($this->withdraw_set, 'balance_special', 0)) ? false : true;
     }
 
+    /**
+     * 劳务税计算方式
+     * @return bool
+     */
+
+    private function getCalculationMethod()
+    {
+        return empty(array_get($this->withdraw_set, 'service_tax_calculation', 0)) ? false : true;
+    }
 
 
     /**
