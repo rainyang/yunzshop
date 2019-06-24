@@ -160,7 +160,7 @@
                                 <div class="input-group-addon">%</div>
                             </div>
                             <div class="help-block">
-                                转化实例:实际转化10个@if (app('plugins')->isEnabled('designer') == 1){{ LOVE_NAME }}@else'爱心值'@endif,余额转化比例10%，则需要10x10%，比例为空或为0则默认为1:1
+                                转化实例:实际转化10个@if (app('plugins')->isEnabled('designer') == 1){{ LOVE_NAME }}@else'爱心值'@endif,余额转化比例10%，则需要10 / 10%，比例为空或为0则默认为1:1
                             </div>
                         </div>
                     </div>

@@ -413,7 +413,7 @@ class BalanceController extends ApiController
      */
     private function calculateLoveValue()
     {
-        return bcmul(bcdiv($this->model->covert_amount ,$this->balanceSet->convertRate(),2),100,2);
+        return bcdiv(bcmul($this->model->covert_amount ,$this->balanceSet->convertRate(),2),100,2);
     }
     
     //余额转让详细记录数据
