@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制https</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制https跳转</label>
                     <div class="col-sm-9 col-xs-12">
                         <label class="radio radio-inline">
                             <input type="radio" name="shop[https]" value="0"

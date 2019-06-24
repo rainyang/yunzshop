@@ -52,18 +52,22 @@ class Request extends \Illuminate\Http\Request
             strpos(request()->getRequestUri(), '/cron.php') !== false;
     }
 
+    /**
+     * 前后端强制https跳转
+     *
+     * @return string
+     */
     public function getScheme()
     {
         global $_W;
-        \Log::debug('==============www==========', $_W['uniacid']);
-        if ($_W['uniacid']) {
-           /* $shop = \Setting::get('shop.shop');
+
+        if ($_W['uniacid'] || request()->get('i')) {
+            $shop = \Setting::get('shop.shop');
 
             if (isset($shop['https']) && 1 == $shop['https']) {
                 return 'https';
-            }*/
+            }
 
-            return 'https';
         }
 
         return parent::getScheme();
