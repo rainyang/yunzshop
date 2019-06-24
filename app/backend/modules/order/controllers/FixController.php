@@ -9,10 +9,12 @@ use app\common\models\Address;
 use app\common\models\Member;
 use app\common\models\MemberAddress;
 use app\common\models\Order;
+use app\common\models\order\FirstOrder;
 use app\common\models\OrderAddress;
 use app\common\models\OrderGoods;
 use app\common\models\OrderPay;
 use app\common\models\PayOrder;
+use app\common\facades\Setting;
 
 /**
  * Created by PhpStorm.
@@ -22,6 +24,43 @@ use app\common\models\PayOrder;
  */
 class FixController extends BaseController
 {
+    public function yy()
+    {
+        $order = Order::find(3401);
+        \YunShop::app()->uniacid = $order->uniacid;
+        Setting::$uniqueAccountId = $order->uniacid;
+
+        $shopOrderSet = Setting::get('shop.order');
+        if (!$shopOrderSet['goods']) {
+            return;
+        }
+
+        if ($order->is_plugin != 0 || $order->plugin_id != 0) {
+            return;
+        }
+
+        foreach ($order->hasManyOrderGoods as $orderGoods) {
+            if ($shopOrderSet['goods'][$orderGoods->goods_id]) {
+
+                $firstOrder = FirstOrder::select()
+                    ->where('uid', $order->uid)
+                    ->where('goods_id', $orderGoods->goods_id)
+                    ->first();
+                if ($firstOrder) {
+                    continue;
+                }
+                dump([
+                    'order_id' => $order->id,
+                    'goods_id' => $orderGoods->goods_id,
+                    'uid' => $order->uid,
+                    'shop_order_set' => $shopOrderSet['goods']
+                ]);
+            }
+        }
+        dd('ok');
+        exit;
+    }
+
     public function fixOrderAddress()
     {
         $orders = Order::where(
