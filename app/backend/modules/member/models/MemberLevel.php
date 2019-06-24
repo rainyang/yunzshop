@@ -151,7 +151,7 @@ class MemberLevel extends \app\common\models\MemberLevel
                 break;
             case 2:
                 // $rule = array_merge(['goods_id' => 'integer|numeric'], $rule);
-                $rule = array_merge(['goods_id' => 'string'], $rule);
+                $rule = array_merge(['goods_id' => 'text'], $rule);
                 break;
         }
 
@@ -170,9 +170,13 @@ class MemberLevel extends \app\common\models\MemberLevel
         return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'id'); //注意yz_member数据表记录和关联的是member_level表的主键id, 而不是level值
     }
 
+    //id column 
+    //get array goods.id
     public function getGoodsId($id)
     {
-        $ids = explode(',', $id);
+        $goods = unserialize($id);
+        $ids = explode(',', $goods['goods_id']);
+
         $goods = \app\common\models\Goods::whereIn('id', $ids)->select('id', 'thumb', 'title')->get();
 
         if (!$goods) {

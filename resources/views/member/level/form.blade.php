@@ -59,7 +59,8 @@
                                                 @endif
 
                                                 @if($shopSet['level_type'] == 2)
-                                                    <div class="col-sm-12">
+
+                                                   <!--  <div class="col-sm-12">
                                                         <input type='hidden' class='form-control' id='goodsid'
                                                                name='level[goods_id]' value="{{ $levelModel->goods->id }}"/>
                                                         <div class='input-group'>
@@ -77,15 +78,48 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-
+                                                    </div> -->
+                                                    <div class='input-group'>
+                                                        <div class='input-group-addon'>
+                                                            <label class="radio-inline"><input type="checkbox" name="level[goods_id][4]" value="4" @if($set['goods_id'][4]) checked="checked"  @endif/> 购买商品
+                                                            </label>
+                                                        </div>
+                                                        <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
+                                                        @endif" readonly />
+                                                        <div class="input-group-btn">
+                                                            <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
+                                                        </div>
                                                     </div>
+                                                <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
+                                                <div class="input-group multi-img-details" id='goods_id'>
+                                                    @foreach ($goods as $goods_id => $good)
+                                                        <div class="multi-item saler-item" openid="{{ $goods_id }}">
+                                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
+                                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                                            <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
+
+                                                            <input type="hidden" value="{{ $goods_id }}"
+                                                                   name="level[goods_id][{{ $goods_id }}]">
+
+                                                            <input type="hidden" value="{{ $goods_id }}"
+                                                                   name="level[goods_id][{{ $goods_id }}][goods_id]">
+
+                                                            <input type="hidden" value="{{ $good['title'] }}"
+                                                                   name="level[goods_id][{{ $goods_id }}][title]">
+
+                                                            <input type="hidden" value="{{ $good['thumb'] }}"
+                                                                   name="level[goods_id][{{ $goods_id }}][thumb]">
+
+                                                            <em onclick="remove_member(this)" class="close">×</em>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
 
                                                     <div class="input-group">
                                                         <div class="input-group-addon" style='width: auto !important;'>等级有效天数</div>
                                                         <input type="text" name="level[validity]" class="form-control" value="{{ $levelModel->validity }}"/>
                                                         <div class="input-group-addon" style='width: auto !important;'>天</div>
                                                     </div>
-
                                                 @endif
                                             </div>
                                             <span class='help-block'>会员升级条件，不填写默认为不自动升级, 设置<a
@@ -192,13 +226,44 @@
                 ;
             }
 
+            // function select_good(o) {
+            //     $("#goodsid").val(o.id);
+            //     $("#goods").val("[" + o.id + "]" + o.title);
+            //     $("#modal-goods .close").click();
+            // }
+
             function select_good(o) {
-                $("#goodsid").val(o.id);
-                $("#goods").val("[" + o.id + "]" + o.title);
-                $("#modal-goods .close").click();
+                // var html = "<input type='hidden' class='form-control' name='level[become_goods_id]["+ o.id+"]' value='' />"
+                
+                var html = '<div class="multi-item" openid="' + o.id + '">';
+                html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+                html += '<div class="img-nickname" style="overflow: hidden">' + o.title + '</div>';
+                html += '<input type="hidden" value="' + o.title + '" name="level[goods_id][' + o.id + '][title]">';
+                html += '<input type="hidden" value="' + o.thumb + '" name="level[goods_id][' + o.id + '][thumb]">';
+                html += '<input type="hidden" value="' + o.id + '" name="level[goods_id][' + o.id + '][goods_id]">';
+                html += '<input type="hidden" value="' + o.id + '" name="level[goods_id][' + o.id + ']">';
+                html += '<em onclick="remove_member(this)"  class="close">×</em>';
+                html += '</div>';
+
+                console.log(html);
+                // $("#goods_id").val(o.id);
+                // var data = $("#goods").val();
+                // $("#goods").val(data+ o.title);
+                $("#goods_id").append(html);
+                refresh_members();
             }
 
-
+            function remove_member(obj) {
+                $(obj).parent().remove();
+                refresh_members();
+            }
+            function refresh_members() {
+                var nickname = "";
+                $('.multi-item').each(function () {
+                    nickname += " " + $(this).find('.img-nickname').html() + "; ";
+                });
+                $('#goods').val(nickname);
+            }    
         </script>
     </div>
 
