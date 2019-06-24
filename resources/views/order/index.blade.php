@@ -257,7 +257,7 @@
                                             <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}
                                                 :{{$order['has_one_refund_apply']['status_name']}}</label>
                                     @endif
-                                    @if($order['has_one_first_order'])
+                                    @if($order['has_many_first_order'])
                                         <label class='label label-primary'>首单</label>
                                     @endif
 

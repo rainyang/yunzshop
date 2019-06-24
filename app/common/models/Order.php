@@ -104,7 +104,7 @@ class Order extends BaseModel
     private $StatusService;
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
-    protected $search_fields = ['id', 'order_sn'];
+    protected $search_fields = ['yz_order.id', 'yz_order.order_sn'];
     protected $attributes = [
         'plugin_id' => 0,
         'is_virtual' => 0,
