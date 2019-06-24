@@ -13,28 +13,31 @@ class DistributionOrderService
     {
     	$uniAccount = UniAccount::getEnable();
         foreach ($uniAccount as $u) {
-        	\YunShop::app()->uniacid = $u->uniacid;
+        	
+        	// $u->uniacid = $u->uniacid;
 
         	$allData = [];
             
         	$group = DB::table('yz_order as order')
+        				->distinct('order.uid')
 						->where('order.status', 3)
-						->where('order.uniacid', \YunShop::app()->uniacid)
-						->where('com_order.uniacid', \YunShop::app()->uniacid)
+						->where('order.uniacid', $u->uniacid)
+						->where('com_order.uniacid', $u->uniacid)
 						->leftJoin('yz_commission_order as com_order', 'order.id', '=', 'com_order.ordertable_id')
+						->groupBy('order.uid')
 						->get();
 
 			foreach ($group as $k => $v) {
 				
 				$allData['uid']	 = $v['member_id'];
-				$allData['uniacid'] = \YunShop::app()->uniacid;
+				$allData['uniacid'] = $u->uniacid;
 				//团队总人数
-				$allData['team_people_num'] = DB::table('yz_member_children')->select('member_id')->where('member_id', $v['member_id'])->where('uniacid', \YunShop::app()->uniacid)->count() ? : 0;
+				$allData['team_people_num'] = DB::table('yz_member_children')->select('member_id')->where('member_id', $v['member_id'])->where('uniacid', $u->uniacid)->count() ? : 0;
 
 				$allorder = DB::table('yz_order as order')
 				->where('order.status', 3)
-				->where('order.uniacid', \YunShop::app()->uniacid)
-				->where('com_order.uniacid', \YunShop::app()->uniacid)
+				->where('order.uniacid', $u->uniacid)
+				->where('com_order.uniacid', $u->uniacid)
 				->leftJoin('yz_commission_order as com_order', 'order.id', '=', 'com_order.ordertable_id')
 				->get(); 
 
@@ -45,8 +48,8 @@ class DistributionOrderService
 								DB::table('yz_order as order')
 									->where('order.status', 3)
 									->where('order.uid', $v['member_id'])
-									->where('order.uniacid', \YunShop::app()->uniacid)
-									->where('com_order.uniacid', \YunShop::app()->uniacid)
+									->where('order.uniacid', $u->uniacid)
+									->where('com_order.uniacid', $u->uniacid)
 									->leftJoin('yz_commission_order as com_order', 'order.id', '=', 'com_order.ordertable_id')
 									->count() ? : 0;
 					//分销订单业绩
@@ -55,8 +58,8 @@ class DistributionOrderService
 						DB::table('yz_order as order')
 									->where('order.status', 3)
 									->where('order.uid', $v['member_id'])
-									->where('order.uniacid', \YunShop::app()->uniacid)
-									->where('com_order.uniacid', \YunShop::app()->uniacid)
+									->where('order.uniacid', $u->uniacid)
+									->where('com_order.uniacid', $u->uniacid)
 									->leftJoin('yz_commission_order as com_order', 'order.id', '=', 'com_order.ordertable_id')
 									->sum('order.price') ? : 0.00;
 
@@ -72,8 +75,8 @@ class DistributionOrderService
 						DB::table('yz_order as order')
 									->where('order.status', 3)
 									->whereIn('order.uid', $uids)
-									->where('order.uniacid', \YunShop::app()->uniacid)
-									->where('com_order.uniacid', \YunShop::app()->uniacid)
+									->where('order.uniacid', $u->uniacid)
+									->where('com_order.uniacid', $u->uniacid)
 									->leftJoin('yz_commission_order as com_order', 'order.id', '=', 'com_order.ordertable_id')
 									->sum('order.price') ? : 0.00;
 

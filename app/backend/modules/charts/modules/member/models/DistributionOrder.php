@@ -13,7 +13,7 @@ class DistributionOrder extends BaseModel
     
     public function scopeSearch($q, $search)
     {
-    	$model = $q->with('hasOneMember');
+    	$model = $q->where('uniacid', \YunShop::app()->uniacid)->with('hasOneMember');
        
         if (!empty($search['member_id'])) {
             $model->whereHas('hasOneMember', function ($q) use($search) {
