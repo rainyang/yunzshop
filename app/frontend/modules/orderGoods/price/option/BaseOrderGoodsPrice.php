@@ -9,6 +9,7 @@ namespace app\frontend\modules\orderGoods\price\option;
  * Time: 下午6:04
  */
 
+use app\frontend\models\order\PreOrderCoinExchange;
 use app\frontend\models\orderGoods\PreOrderGoodsCoinExchange;
 use app\frontend\modules\deduction\orderGoods\PreOrderGoodsDeduction;
 use app\frontend\modules\order\PriceNode;
@@ -66,14 +67,20 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
 
         return $this->price;
     }
-    public function getVipPrice(){
+
+    public function getVipPrice()
+    {
         if ($this->isCoinExchange()) {
             return 0;
         }
         return $this->getGoodsPrice() - $this->getVipDiscountAmount($this->getGoodsPrice());
     }
+
     private $isCoinExchange;
 
+    /**
+     * @return bool
+     */
     private function isCoinExchange()
     {
         if (!isset($this->isCoinExchange)) {
@@ -93,9 +100,19 @@ abstract class BaseOrderGoodsPrice extends OrderGoodsPrice
                 $orderGoodsCoinExchange = new PreOrderGoodsCoinExchange([
                     'code' => 'point',
                     'amount' => $this->getGoodsPrice() ?: 0,
-                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct,
+                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct * $this->orderGoods->total,
+                    'name' => '积分全额抵扣',
                 ]);
                 $orderGoodsCoinExchange->setOrderGoods($this->orderGoods);
+                $orderCoinExchange = new PreOrderCoinExchange([
+                    'code' => 'point',
+                    'amount' => $this->getGoodsPrice() ?: 0,
+                    'coin' => $this->orderGoods->goods->hasOneSale->all_point_deduct * $this->orderGoods->total,
+                    'name' => '积分全额',
+                    'uid' => $this->orderGoods->uid,
+                ]);
+
+                $this->orderGoods->order->getOrderCoinExchanges()->addAndGroupByCode($orderCoinExchange);
             }
         }
         return $this->isCoinExchange;
