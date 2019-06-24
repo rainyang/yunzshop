@@ -51,4 +51,21 @@ class Request extends \Illuminate\Http\Request
         return strpos(request()->getRequestUri(), '/addons/') !== false &&
             strpos(request()->getRequestUri(), '/cron.php') !== false;
     }
+
+    public function getScheme()
+    {
+        global $_W;
+        \Log::debug('==============www==========', $_W['uniacid']);
+        if ($_W['uniacid']) {
+           /* $shop = \Setting::get('shop.shop');
+
+            if (isset($shop['https']) && 1 == $shop['https']) {
+                return 'https';
+            }*/
+
+            return 'https';
+        }
+
+        return parent::getScheme();
+    }
 }
