@@ -1589,8 +1589,8 @@ class MemberController extends ApiController
         $diyarr = [
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
-            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center', 'delivery_station', 'service_station']
+            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'delivery_station', 'service_station'],
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center']
         ];
 
         $data = [];
