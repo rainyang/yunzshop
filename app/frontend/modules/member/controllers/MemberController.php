@@ -136,7 +136,7 @@ class MemberController extends ApiController
         
         //个人中心的推广二维码
         if ($data['is_agent']) {
-            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+//            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
         }
 
         if (is_null($integrated)) {
@@ -1518,7 +1518,7 @@ class MemberController extends ApiController
 
         $diyarr = [
             'tool'         => ['separate','elive'],
-            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin'],
+            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro'],
             'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
                 , 'help-center', 'sign', 'courier']
@@ -1770,19 +1770,6 @@ class MemberController extends ApiController
             }
         }
 
-        //todo 不要了
-//        if (app('plugins')->isEnabled('courier')) {
-//            $courier_setting = Setting::get('courier.courier');
-//            if ($courier_setting && 1 == $courier_setting['radio']) {
-//                $data[] = [
-//                    'name'  => 'courier',
-//                    'title' => $courier_setting['name'] ? $courier_setting['name'] : '快递单',
-//                    'class' => '',
-//                    'url'   => ''
-//                ];
-//            }
-//        }
-
         if (app('plugins')->isEnabled('store-cashier')) {
             $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
 
@@ -2002,6 +1989,7 @@ class MemberController extends ApiController
             'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
             'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
             'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
+            'is_store' => $store && $store->is_black != 1 ? 1 : 0,
         ];
 
         if (is_null($integrated)) {
@@ -2338,7 +2326,7 @@ class MemberController extends ApiController
         //查看会员订单
         $this->dataIntegrated($this->getMemberOrder($request, true), 'order');
 
-//        dd($this->apiData);
+        dd($this->apiData);
         return $this->successJson('', $this->apiData);
     }
 
