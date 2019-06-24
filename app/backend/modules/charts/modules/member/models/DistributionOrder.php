@@ -11,10 +11,10 @@ class DistributionOrder extends BaseModel
     protected $fillable = [];
     protected  $guarded = [''];
     
-    public function scopeSearch($q, $keyword)
+    public function scopeSearch($q, $search)
     {
     	$model = $q->with('hasOneMember');
-
+       
         if (!empty($search['member_id'])) {
             $model->whereHas('hasOneMember', function ($q) use($search) {
                 $q->where('uid', $search['member_id']);
@@ -28,7 +28,7 @@ class DistributionOrder extends BaseModel
                     ->orWhere('mobile', 'like' , '%' . $search['member_info'] . '%');
             });
         }
-    	return $q;
+    	return $model;
     }
 
    	public function hasOneMember()

@@ -65,13 +65,13 @@
                             </td>
                             <td>{{ $item->uid?:$item->member_id }}</td>
                             <td>
-                                @if(!empty($item->belongsToMember->avatar))
-                                    <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                @if(!empty($item->hasOneMember->avatar))
+                                    <img src='{{ $item->hasOneMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                 @endif
-                                @if(empty($item->belongsToMember->nickname))
+                                @if(empty($item->hasOneMember->nickname))
                                     未更新
                                 @else
-                                    {{ $item->belongsToMember->nickname }}
+                                    {{ $item->hasOneMember->nickname }}
                                 @endif
                             </td>
                             <td>{{ $item->commission_order_num }}</td>

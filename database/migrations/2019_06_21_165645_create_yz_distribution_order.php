@@ -19,9 +19,9 @@ class CreateYzDistributionOrder extends Migration
                 $table->integer('uid')->default(0);
                 $table->integer('uniacid')->default(0);
                 $table->integer('commission_order_num')->default(0)->comment('分销订单数');
-                $table->decimal('commission_order_prices', 10)->default(0)->comment('分销订单业绩');
+                $table->decimal('commission_order_prices', 65)->default(0)->comment('分销订单业绩');
                 $table->integer('team_people_num')->default(0)->comment('团队总人数');
-                $table->decimal('team_commission_order_prices', 10)->default(0)->comment('团队分销订单业绩');
+                $table->decimal('team_commission_order_prices', 65)->default(0)->comment('团队分销订单业绩');
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
             });

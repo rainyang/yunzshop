@@ -3114,6 +3114,18 @@ return [
                         'item'       => 'member_offline_team_order_charts',
                         'parents'    => ['charts', 'member_offline_charts'],
                     ],
+
+                    'member_offline_commission_order_charts' => [
+                        'name'       => '分销订单排行',
+                        'url'        => 'charts.member.offline-commission-order.index',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 1,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'member_offline_commission_order_charts',
+                        'parents'    => ['charts', 'member_offline_charts'],
+                    ],
                 ]
 
             ],
