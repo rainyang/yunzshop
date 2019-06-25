@@ -33,8 +33,8 @@ class GoodsPriceManager
         })->sort(function (BaseDealPrice $dealPrice) {
             return $dealPrice->getWeight();
         });
-        $dealPrices->each(function (){
-            dump();
+        $dealPrices->each(function ($dealPrice){
+            dump($dealPrice->getWeight());
         });
         /**
          * @var BaseDealPrice $dealPrice
