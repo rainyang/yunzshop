@@ -19,6 +19,7 @@ abstract class BaseDealPrice
     }
 
     abstract public function getWeight();
+    abstract public function enable();
 
     abstract public function getDealPrice();
 }

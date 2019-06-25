@@ -2,9 +2,14 @@
 return [
     'dealPrice' => [
         [
-            'key' => 'marketPrice',
+            'key' => 'goodsDealPrice',
             'class' => function (\app\common\models\Goods $goods, $param = []) {
-                return new \app\frontend\modules\order\discount\SingleEnoughReduce($preOrder);
+                return new \app\common\modules\goods\dealPrice\GoodsDealPrice($goods);
+            },
+        ], [
+            'key' => 'marketDealPrice',
+            'class' => function (\app\common\models\Goods $goods, $param = []) {
+                return new \app\common\modules\goods\dealPrice\MarketDealPrice($goods);
             },
         ]
     ]

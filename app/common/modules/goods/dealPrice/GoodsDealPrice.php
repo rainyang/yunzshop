@@ -3,6 +3,7 @@ namespace app\common\modules\goods\dealPrice;
 
 class GoodsDealPrice extends BaseDealPrice
 {
+
     public function getDealPrice()
     {
         return $this->goods->price;
@@ -15,7 +16,6 @@ class GoodsDealPrice extends BaseDealPrice
     {
         return true;
     }
-
 
     public function getWeight()
     {
