@@ -53,13 +53,13 @@ class Request extends \Illuminate\Http\Request
     }
 
     /**
-     * 前后端强制https跳转
+     * 前后端强制https跳转app
      *
      * @return string
      */
     public function getScheme()
     {
-        global $_W;
+        /*global $_W;
 
         if ($_W['uniacid'] || request()->get('i')) {
             $shop = \Setting::get('shop.shop');
@@ -68,7 +68,7 @@ class Request extends \Illuminate\Http\Request
                 return 'https';
             }
 
-        }
+        }*/
 
         return parent::getScheme();
     }
