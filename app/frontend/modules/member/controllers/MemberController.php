@@ -1658,9 +1658,10 @@ class MemberController extends ApiController
                 'url'   => 'materialCenter'
             ];
         }
+        
 
         if (app('plugins')->isEnabled('distribution-order')) {
-            $disorder_setting = Setting::get('plugin.distribution-order');
+            $disorder_setting = Setting::get('plugins.distribution-order');
             if ($disorder_setting && 1 == $disorder_setting['is_open']) {
                 $data[] = [
                     'name'  => 'distribution-order',

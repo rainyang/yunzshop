@@ -95,7 +95,7 @@
                                                             <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
                                                         </div>
                                                     </div>
-                                                <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
+                                                <span class="help-block">可指定多件商品，只需购买其中一件就可以升级</span>
                                                 <div class="input-group multi-img-details" id='goods_id' style="margin-bottom: 50px">
                                                     @foreach ($goods as $k => $good)
                                                         <div class="multi-item saler-item" openid="{{ $goods[$k]['id'] }}">
@@ -236,7 +236,6 @@
 
             function select_good(o) {
                 // var html = "<input type='hidden' class='form-control' name='level[become_goods_id]["+ o.id+"]' value='' />"
-                
                 var html = '<div class="multi-item" openid="' + o.id + '">';
                 html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
                 html += '<div class="img-nickname" style="overflow: hidden">' + o.title + '</div>';
@@ -256,10 +255,14 @@
             }
 
             function remove_member(obj) {
+                console.log('remove---members---');
+                console.log('obj: '+ obj.html());
+                console.log('obj_parent: '+ obj);
                 $(obj).parent().remove();
                 refresh_members();
             }
             function refresh_members() {
+                console.log('reffresh---members---');
                 var nickname = "";
                 $('.multi-item').each(function () {
                     nickname += " " + $(this).find('.img-nickname').html() + "; ";
