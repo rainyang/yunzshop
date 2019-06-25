@@ -9,6 +9,7 @@ use app\common\models\user\WeiQingUsers;
 use app\common\services\Utils;
 use \app\platform\modules\system\models\SystemSetting;
 use \app\common\helpers\Client;
+use app\common\helpers\ImageHelper;
 
 if (!function_exists("yz_tpl_ueditor")) {
     function yz_tpl_ueditor($id, $value = '', $options = array())
@@ -2934,5 +2935,18 @@ if (!function_exists('resource_absolute')) {
         }
 
         return  '/addons/yun_shop/' . $file;
+    }
+}
+
+if (!function_exists('upload_image_local')) {
+    function upload_image_local($file)
+    {
+        if (env('APP_Framework') == 'platform') {
+            $file = ImageHelper::getImageUrl('static/upload/' . substr($file,strripos($file,"image")));
+        } else {
+            $file = ImageHelper::getImageUrl('attachment/' . substr($file,strripos($file,"image")));
+        }
+
+        return $file;
     }
 }

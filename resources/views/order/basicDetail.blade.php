@@ -172,6 +172,13 @@
 @if(!empty($order['collect_name']))
     @include('invoice.display')
 @endif
+
+@if (app('plugins')->isEnabled('delivery-station'))
+
+    {!! (new\Yunshop\DeliveryStation\widgets\OrderWidget())->run($order['id']) !!}
+
+@endif
+
 @if (count($order['discounts']))
     <div class="panel panel-default">
         <div class="panel-heading">
