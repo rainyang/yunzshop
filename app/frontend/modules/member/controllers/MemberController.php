@@ -1937,6 +1937,21 @@ class MemberController extends ApiController
                     'url'   => 'hotelApply'
                 ];
             }
+            //酒店自定义字段
+            $set = \Setting::get('plugin.hotel');
+            $arr['hotel'] = [
+                'hotel_home_page' => $set['hotel_home_page'] ?: '酒店主页',
+                'check_the_room' => $set['check_the_room'] ?: '查看房型',
+                'hotel_intro' => $set['hotel_intro'] ?: '酒店简介',
+                'goods_details' => $set['goods_details'] ?: '商品详情',
+                'goods_presentation' => $set['goods_presentation'] ?: '商品介绍',
+                'goods_parameters' => $set['goods_parameters'] ?: '商品参数',
+                'user_evaluation' => $set['user_evaluation'] ?: '用户评价',
+                'hotels' => $set['hotels'] ?: '酒店',
+                'hotel_first_page' => $set['hotel_first_page'] ?: '酒店首页',
+                'hotel_find' => $set['hotel_find'] ?: '查找酒店',
+                'hotel_find_name' => $set['hotel_find_name'] ?: '酒店名'
+            ];
         }
 
         //网约车插件开启关闭
@@ -2323,7 +2338,7 @@ class MemberController extends ApiController
         $this->dataIntegrated($this->getMemberSetting($request, true), 'setting');
         //查看会员订单
         $this->dataIntegrated($this->getMemberOrder($request, true), 'order');
-        
+
         return $this->successJson('', $this->apiData);
     }
 
