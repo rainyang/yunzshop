@@ -989,7 +989,8 @@ class MemberController extends ApiController
             'pauseVoice',
             'stopVoice',
             'uploadVoice',
-            'downloadVoice'
+            'downloadVoice',
+            'hideMenuItems'
         ));
         $config = json_decode($config, 1);
 
