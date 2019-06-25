@@ -12,7 +12,7 @@ use app\common\events\payment\GetOrderPaymentTypeEvent;
 use app\common\events\payment\RechargeComplatedEvent;
 
 
-class ConvergeWechatPayListener
+class ConvergeAlipayPayListener
 {
     /**
      * 支付宝支付-HJ
