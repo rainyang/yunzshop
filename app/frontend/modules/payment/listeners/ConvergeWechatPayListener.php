@@ -27,7 +27,7 @@ class ConvergeWechatPayListener
         if (\YunShop::plugin()->get('converge_pay') && !is_null($set) && 1 == $set['converge_pay_status'] && 1 == $set['wechat']['wechat_status'] && $set['wechat']['appid'] && \YunShop::request()->type != 7) {
             $result = [
                 'name' => '微信支付(HJ)',
-                'value' => '29',
+                'value' => '28',
                 'need_password' => '0'
             ];
 
