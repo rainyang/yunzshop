@@ -224,7 +224,7 @@ class LevelUpgradeService
 
         foreach ($this->orderModel->hasManyOrderGoods as $time) {
             // if ($time->goods_id == $level->goods_id) { // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
-            if (in_array($time->goods_id, $levelGoodsId)) {
+            if (in_array($time->goods_id, $levelGoodsId) && $level->goods_id != 0) {
                 $this->validity['goods_total'] = $time->total;
 
                 \Log::info('---===member_level_upgrade===---', $time->total);
