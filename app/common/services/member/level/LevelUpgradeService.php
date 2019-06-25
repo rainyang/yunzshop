@@ -36,10 +36,14 @@ class LevelUpgradeService
         $this->orderModel = $event->getOrderModel();
         $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
         if (is_null($this->memberModel)) {
+                \Log::info('---==会员不存在==----');
             return;
         }
 
         $result = $this->check(0);
+                \Log::info('---==check方法结果==----', $result);
+
+
         $this->setValidity($result); // 设置会员等级期限
         if ($result) {
             return $this->upgrade($result);
@@ -117,6 +121,7 @@ class LevelUpgradeService
     private function check($status)
     {
         $set = Setting::get('shop.member');
+                \Log::info('---==等级设置信息==----', [unserialize($set), json_decode($set, true)]);
 
         //获取可升级的最高等级
         switch ($set['level_type']) {
@@ -144,6 +149,8 @@ class LevelUpgradeService
         //比对当前等级权重，判断是否升级
         if ($this->new_level) {
             $memberLevel = isset($this->memberModel->level->level) ? $this->memberModel->level->level : 0;
+                
+                \Log::info('---==会员等级信息==----', [$memberLevel, $this->new_level->level]);
 
             if ($this->new_level->level == $memberLevel) {
                 $this->validity['superposition'] = true; //会员期限叠加
@@ -208,7 +215,8 @@ class LevelUpgradeService
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
 
         // $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();  // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
-        $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->first();
+        //获取
+        $level = MemberLevel::uniacid()->where('level', '>', $this->memberModel->level_id)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'asc')->first();
         
         $levelGoodsId = explode(',', $level->goods_id);
 
@@ -218,6 +226,9 @@ class LevelUpgradeService
             // if ($time->goods_id == $level->goods_id) { // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
             if (in_array($time->goods_id, $levelGoodsId)) {
                 $this->validity['goods_total'] = $time->total;
+
+                \Log::info('---===member_level_upgrade===---', $time->total);
+
                 //开启一卡通
                 if (app('plugins')->isEnabled('universal-card')) {
                     if ($time->goods_option_id) {

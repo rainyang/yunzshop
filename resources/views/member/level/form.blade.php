@@ -86,7 +86,8 @@
                                                     </div> -->
                                                     <div class='input-group'>
                                                         <div class='input-group-addon'>
-                                                            <label class="radio-inline"><input type="checkbox" name="level[goods_id][4]" value="4" @if($levelModel['goods_id'][4]) checked="checked"  @endif/> 购买商品
+                                                            <label class="radio-inline">
+                                                                购买商品
                                                             </label>
                                                         </div>
                                                         <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
