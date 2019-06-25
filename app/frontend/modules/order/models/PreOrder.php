@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\order\coinExchange\OrderCoinExchangeManager;
 use app\frontend\modules\order\OrderFee;
 use Illuminate\Http\Request;
 use app\common\models\BaseModel;
@@ -81,6 +82,10 @@ class PreOrder extends Order
      * @var OrderDeductManager 抵扣类
      */
     protected $orderDeductManager;
+    /**
+     * @var OrderCoinExchangeManager
+     */
+    protected $orderCoinExchangeManager;
 
     /**
      * @var Request
@@ -155,6 +160,19 @@ class PreOrder extends Order
             $this->orderFeeManager = new OrderFee($this);
         }
         return $this->orderFeeManager;
+    }
+
+    public function getOrderCoinExchangeManager()
+    {
+        if (!isset($this->orderCoinExchangeManager)) {
+            $this->orderCoinExchangeManager = new OrderCoinExchangeManager($this);
+        }
+        return $this->orderCoinExchangeManager;
+    }
+
+    public function getOrderCoinExchanges()
+    {
+        return $this->getOrderCoinExchangeManager()->getOrderCoinExchangeCollection();
     }
 
     public function getDiscount()

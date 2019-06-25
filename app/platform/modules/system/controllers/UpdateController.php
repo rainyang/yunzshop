@@ -179,7 +179,7 @@ class UpdateController extends BaseController
                             }
                         }
 
-                        //忽略前端版本号记录文件
+                        //忽略前后端版本号记录文件
                         if (($file['path'] == 'config/front-version.php' || $file['path'] == 'config/backend_version.php') && is_file(base_path() . '/' . $file['path'])) {
                             continue;
                         }
@@ -219,7 +219,7 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log'])),
+                    'log' => $ret['log'],
                     'frontendUpgrad' => count($frontendUpgrad),
                     'list' => $frontendUpgrad
                 ];
