@@ -210,9 +210,7 @@ class LevelUpgradeService
         // $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();  // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
         $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->first();
         
-        // $levelGoodsId = explode(',', $level->goods_id);
-        $levelGoodsId = unserialize($level->goods_id);
-
+        $levelGoodsId = explode(',', $level->goods_id);
 
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
 

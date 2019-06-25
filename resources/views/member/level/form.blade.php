@@ -1,6 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
+<style type="text/css">
+    .multi-item{
+        margin-bottom: 65px;
+        z-index: 1;
+    }
+</style>
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
@@ -59,7 +65,6 @@
                                                 @endif
 
                                                 @if($shopSet['level_type'] == 2)
-
                                                    <!--  <div class="col-sm-12">
                                                         <input type='hidden' class='form-control' id='goodsid'
                                                                name='level[goods_id]' value="{{ $levelModel->goods->id }}"/>
@@ -81,7 +86,7 @@
                                                     </div> -->
                                                     <div class='input-group'>
                                                         <div class='input-group-addon'>
-                                                            <label class="radio-inline"><input type="checkbox" name="level[goods_id][4]" value="4" @if($set['goods_id'][4]) checked="checked"  @endif/> 购买商品
+                                                            <label class="radio-inline"><input type="checkbox" name="level[goods_id][4]" value="4" @if($levelModel['goods_id'][4]) checked="checked"  @endif/> 购买商品
                                                             </label>
                                                         </div>
                                                         <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
@@ -91,24 +96,21 @@
                                                         </div>
                                                     </div>
                                                 <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
-                                                <div class="input-group multi-img-details" id='goods_id'>
-                                                    @foreach ($goods as $goods_id => $good)
+                                                <div class="input-group multi-img-details" id='goods_id' style="margin-bottom: 50px">
+                                                    @foreach ($goods as $k => $good)
                                                         <div class="multi-item saler-item" openid="{{ $goods_id }}">
-                                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($good['thumb']) }}'
+                                                            <img  width="130px" height="120px" style="margin-bottom: 20px" class="img-responsive img-thumbnail" src="{{ yz_tomedia($good['thumb']) }}"
                                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                                             <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
 
-                                                            <input type="hidden" value="{{ $goods_id }}"
-                                                                   name="level[goods_id][{{ $goods_id }}]">
-
-                                                            <input type="hidden" value="{{ $goods_id }}"
-                                                                   name="level[goods_id][{{ $goods_id }}][goods_id]">
+                                                            <input type="hidden" value="{{ $good['id'] }}"
+                                                                   name="level[goods][$k][goods_id]">
 
                                                             <input type="hidden" value="{{ $good['title'] }}"
-                                                                   name="level[goods_id][{{ $goods_id }}][title]">
+                                                                   name="level[goods][$k][title]">
 
                                                             <input type="hidden" value="{{ $good['thumb'] }}"
-                                                                   name="level[goods_id][{{ $goods_id }}][thumb]">
+                                                                   name="level[goods][$k][thumb]">
 
                                                             <em onclick="remove_member(this)" class="close">×</em>
                                                         </div>

@@ -151,7 +151,7 @@ class MemberLevel extends \app\common\models\MemberLevel
                 break;
             case 2:
                 // $rule = array_merge(['goods_id' => 'integer|numeric'], $rule);
-                $rule = array_merge(['goods_id' => 'text'], $rule);
+                $rule = array_merge(['goods_id' => ''], $rule);
                 break;
         }
 
@@ -174,9 +174,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     //get array goods.id
     public function getGoodsId($id)
     {
-        $goods = unserialize($id);
-        $ids = explode(',', $goods['goods_id']);
-
+        $ids = explode(',', $id);
         $goods = \app\common\models\Goods::whereIn('id', $ids)->select('id', 'thumb', 'title')->get();
 
         if (!$goods) {

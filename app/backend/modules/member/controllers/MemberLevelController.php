@@ -42,6 +42,9 @@ class MemberLevelController extends BaseController
     public function searchGoods()
     {
         $goods = Goods::getGoodsByName(\YunShop::request()->keyword);
+        foreach ($goods as $k => $v) {
+            $goods[$k]['thumb'] = yz_tomedia($v['thumb']);
+        }
         return view('member.goods_query', [
             'goods' => $goods,
         ])->render();
@@ -100,9 +103,14 @@ class MemberLevelController extends BaseController
         $goods = MemberLevel::getGoodsId($levelModel['goods_id']);
 
         if($requestLevel) {
+            
             $levelModel->fill($requestLevel);
+
             if (empty($requestLevel['goods_id'])) {
                 $levelModel->goods_id = 0;
+            } else {
+                $ids = implode(',', array_unique(array_values($requestLevel['goods_id']))); 
+                $levelModel->goods_id = $ids;
             }
             $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
             $validator = $levelModel->validator();
