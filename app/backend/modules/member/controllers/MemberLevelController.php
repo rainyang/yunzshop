@@ -103,7 +103,7 @@ class MemberLevelController extends BaseController
         $goods = MemberLevel::getGoodsId($levelModel['goods_id']);
 
         if($requestLevel) {
-            
+            unset($requestLevel['goods']);
             $levelModel->fill($requestLevel);
 
             if (empty($requestLevel['goods_id'])) {

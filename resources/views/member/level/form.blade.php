@@ -98,7 +98,7 @@
                                                 <span class="help-block">可指定多件商品，只需购买其中一件就可以成为推广员</span>
                                                 <div class="input-group multi-img-details" id='goods_id' style="margin-bottom: 50px">
                                                     @foreach ($goods as $k => $good)
-                                                        <div class="multi-item saler-item" openid="{{ $goods_id }}">
+                                                        <div class="multi-item saler-item" openid="{{ $goods[$k]['id'] }}">
                                                             <img  width="130px" height="120px" style="margin-bottom: 20px" class="img-responsive img-thumbnail" src="{{ yz_tomedia($good['thumb']) }}"
                                                                  onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
                                                             <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
