@@ -186,18 +186,16 @@
                                     `
                                     content_log = content.join("")
                                 }
-                                var html = `<div>
-                                                </div><div class="version-box">
-                                                    <div class="version-radius"></div>
-                                                    <div class="version-margin-left">
-                                                        <div class="version-num">`+ret.log[i]['title']+`</div>
-                                                        <div class="version-margin-bottom">
-                                                            <span class="version-time">`+created_at[0]+`</span>
-                                                        </div>
-                                                            <div style="padding-bottom:30px">`
-                                                                +content_log+
-                                                            `</div>
+                                var html = `<div class="version-box">
+                                                <div class="version-radius"></div>
+                                                <div class="version-margin-left">
+                                                    <div class="version-num">`+ret.log[i]['title']+`</div>
+                                                    <div class="version-margin-bottom">
+                                                        <span class="version-time">`+created_at[0]+`</span>
                                                     </div>
+                                                        <div style="padding-bottom:30px">`
+                                                            +content_log+
+                                                        `</div>
                                                 </div>
                                             </div>`
                                 $(html).appendTo('#versionDetail');
