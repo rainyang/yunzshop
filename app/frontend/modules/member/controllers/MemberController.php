@@ -1589,8 +1589,8 @@ class MemberController extends ApiController
         $diyarr = [
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
-            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center','declaration']
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center','declaration'],
+            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'delivery_station', 'service_station'],
         ];
 
         $data = [];
@@ -1936,6 +1936,40 @@ class MemberController extends ApiController
                     'url'   => 'online_car',
                 ];
             }
+        }
+
+        //配送站
+        if (app('plugins')->isEnabled('delivery-station')) {
+
+            $delivery_station_setting = Setting::get('plugin.delivery_station');
+
+            $delivery_station = \Yunshop\DeliveryStation\models\DeliveryStation::memberId(\YunShop::app()->getMemberId())->first();
+
+
+            if ($delivery_station && $delivery_station_setting['is_open']) {
+                $data[] = [
+                    'name'  => 'delivery_station',
+                    'title' => '配送站',
+                    'class' => 'icon-delivery_order',
+                    'url'   => 'deliveryStation',
+                ];
+            }
+        }
+
+        //服务站
+        if (app('plugins')->isEnabled('service-station')) {
+
+            $service_station = \Yunshop\ServiceStation\models\ServiceStation::isBlack()->memberId(\YunShop::app()->getMemberId())->first();
+
+            if ($service_station) {
+                $data[] = [
+                    'name'  => 'service_station',
+                    'title' => '服务站',
+                    'class' => 'icon-service_station',
+                    'url'   => 'serviceStation',
+                ];
+            }
+            
         }
 
         foreach ($data as $k => $v) {

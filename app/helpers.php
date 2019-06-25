@@ -2941,6 +2941,12 @@ if (!function_exists('resource_absolute')) {
 if (!function_exists('upload_image_local')) {
     function upload_image_local($file)
     {
-        return ImageHelper::getImageUrl('/static/upload/' . substr($file,strripos($file,"image")));
+        if (env('APP_Framework') == 'platform') {
+            $file = ImageHelper::getImageUrl('static/upload/' . substr($file,strripos($file,"image")));
+        } else {
+            $file = ImageHelper::getImageUrl('attachment/' . substr($file,strripos($file,"image")));
+        }
+
+        return $file;
     }
 }

@@ -697,7 +697,7 @@ return [
                         'icon'       => 'fa-ticket',
                         'sort'       => '2',
                         'item'       => 'coupon_coupon_set',
-                        'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
+                        'parents'    => ['Goods', 'coupon'],
                         'child'      => [
 
                             'coupon_coupon_set_see' => [
@@ -709,7 +709,7 @@ return [
                                 'icon'       => 'fa-ticket',
                                 'sort'       => '2',
                                 'item'       => 'coupon_coupon_set_see',
-                                'parents'    => ['Goods', 'coupon',],
+                                'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
                             ],
 
                             'coupon_coupon_set_store' => [
@@ -885,17 +885,9 @@ return [
                         'icon'       => '',
                         'sort'       => '4',
                         'item'       => 'goods_return_sort',
-                        'parents'    => ['Goods', 'goods_return']
+                        'parents'    => ['Goods', 'search_filtering']
                     ],
 
-                    'goods_return_add_one' => [
-                        'name'    => '添加模板',
-                        'url'     => 'goods.return-address.add',
-                        'sort'    => '2',
-                        'item'    => 'filtering_create',
-                        'parents' => ['Goods', 'search_filtering'],
-                        'child'   => []
-                    ],
                     'filtering_edit'       => [
                         'name'       => '编辑',
                         'url'        => 'filtering.filtering.edit',
@@ -905,17 +897,9 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_add_one',
-                        'parents'    => ['Goods', 'goods_return',],
+                        'parents'    => ['Goods', 'search_filtering',],
                     ],
 
-                    'goods_return_alter' => [
-                        'name'    => '修改模板',
-                        'url'     => 'goods.return-address.edit',
-                        'sort'    => '2',
-                        'item'    => 'filtering_edit',
-                        'parents' => ['Goods', 'search_filtering'],
-                        'child'   => []
-                    ],
                     'filtering_del'      => [
                         'name'       => '删除',
                         'url'        => 'filtering.filtering.del',
@@ -925,19 +909,7 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'goods_return_alter',
-                        'parents'    => ['Goods', 'goods_return',],
-                    ],
-
-                    'goods_return_delete' => [
-                        'name'       => '删除模板',
-                        'url'        => 'goods.return-address.delete',
-                        'url_params' => '',
-                        'permit'     => 1,
-                        'menu'       => 0,
-                        'icon'       => '',
-                        'sort'       => 0,
-                        'item'       => 'goods_return_delete',
-                        'parents'    => ['Goods', 'goods_return',],
+                        'parents'    => ['Goods', 'search_filtering',],
                     ],
                 ],
             ],
@@ -975,6 +947,34 @@ return [
                         'sort'       => '4',
                         'item'       => 'goods_return_sort',
                         'parents'    => ['Goods', 'goods_return']
+                    ],
+
+                    'goods_return_add_one' => [
+                        'name'    => '添加模板',
+                        'url'     => 'goods.return-address.add',
+                        'sort'    => '2',
+                        'item'    => 'filtering_create',
+                        'parents' => ['Goods', 'goods_return'],
+                        'child'   => []
+                    ],
+                    'goods_return_alter' => [
+                        'name'    => '修改模板',
+                        'url'     => 'goods.return-address.edit',
+                        'sort'    => '2',
+                        'item'    => 'filtering_edit',
+                        'parents' => ['Goods', 'goods_return'],
+                        'child'   => []
+                    ],
+                    'goods_return_delete' => [
+                        'name'       => '删除模板',
+                        'url'        => 'goods.return-address.delete',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'goods_return_delete',
+                        'parents'    => ['Goods', 'goods_return',],
                     ],
                 ],
 
@@ -1134,7 +1134,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_select_category',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
                             'goods_dispatch_delete_set' => [
@@ -1146,7 +1146,7 @@ return [
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
                                 'item'       => 'goods_dispatch_delete_set',
-                                'parents'    => ['Goods', 'discount_set', 'goods_dispatch_freight-set'],
+                                'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
                         ],
@@ -1765,7 +1765,7 @@ return [
                 'name'             => '会员邀请码',
                 'url'              => 'member.member_invited.index',
                 'url_params'       => '',
-                'permit'           => 0,
+                'permit'           => 1,
                 'menu'             => 1,
                 'icon'             => 'fa-circle-o',
                 'sort'             => 0,
@@ -1774,6 +1774,28 @@ return [
                 'item'             => 'member_invited',
                 'parents'          => ['Member'],
                 'child'            => [
+                    'member_invited_list' => [
+                        'name'       => '查看',
+                        'url'        => 'member.member_invited.index',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-circle-o',
+                        'sort'       => 0,
+                        'item'       => 'member_invited_list',
+                        'parents'    => ['Member', 'member_invited',],
+                    ],
+                    'member_invited_export' => [
+                        'name'       => '导出',
+                        'url'        => 'member.member_invited.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-circle-o',
+                        'sort'       => 0,
+                        'item'       => 'member_invited_export',
+                        'parents'    => ['Member', 'member_invited',],
+                    ],
                 ],
             ],
         ],
@@ -1952,6 +1974,18 @@ return [
                                 'icon'       => '',
                                 'sort'       => 1,
                                 'item'       => 'order_operation_remark',
+                                'parents'    => ['Order', 'order_list'],
+                            ],
+
+                            'order_operation_revoice' => [
+                                'name'       => '上传发票',
+                                'url'        => 'order.operation.remark',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 1,
+                                'item'       => 'order_operation_revoice',
                                 'parents'    => ['Order', 'order_list'],
                             ],
                         ],
@@ -3237,7 +3271,20 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+
+                    'order_dividend_charts_export' => [
+                        'name'       => '订单分润导出',
+                        'url'        => 'charts.order.order-dividend.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'order_dividend_charts_export',
+                        'parents'    => ['charts', 'order_dividend_charts'],
+                    ],
+                ]
             ],
 
             'transaction_amount_charts' => [
@@ -3250,7 +3297,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'transaction_amount_charts_export' => [
+                        'name'       => '交易额统计导出',
+                        'url'        => 'charts.order.transaction-amount.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'transaction_amount_charts_export',
+                        'parents'    => ['charts', 'transaction_amount_charts'],
+                    ],
+                ]
             ],
 
             'merchant_income_charts' => [
@@ -3274,7 +3333,19 @@ return [
                         'sort'       => 0,
                         'item'       => 'member_offline_count_charts',
                         'parents'    => ['charts', 'merchant_income_charts'],
-
+                        'child'      => [
+                            'supplier_charts_export' => [
+                                'name'       => '供应商收入排行导出',
+                                'url'        => 'charts.merchant.supplier-income.export',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 0,
+                                'item'       => 'supplier_charts_export',
+                                'parents'    => ['charts', 'merchant_income_charts', 'supplier_charts'],
+                            ],
+                        ]
                     ],
                     'store_charts'    => [
                         'name'       => '门店收入排行',
@@ -3286,7 +3357,19 @@ return [
                         'sort'       => 0,
                         'item'       => 'member_offline_order_charts',
                         'parents'    => ['charts', 'merchant_income_charts'],
-
+                        'child'      => [
+                            'store_charts_export' => [
+                                'name'       => '门店收入排行导出',
+                                'url'        => 'charts.merchant.store-income.export',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 0,
+                                'item'       => 'store_charts_export',
+                                'parents'    => ['charts', 'merchant_income_charts', 'store_charts'],
+                            ],
+                        ]
                     ],
                     'cashier_charts'  => [
                         'name'       => '收银台收入排行',
@@ -3298,7 +3381,19 @@ return [
                         'sort'       => 0,
                         'item'       => 'member_offline_order_charts',
                         'parents'    => ['charts', 'merchant_income_charts'],
-
+                        'child'      => [
+                            'cashier_charts_export' => [
+                                'name'       => '收银台收入排行导出',
+                                'url'        => 'charts.merchant.cashier-income.export',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 0,
+                                'item'       => 'cashier_charts_export',
+                                'parents'    => ['charts', 'merchant_income_charts', 'cashier_charts'],
+                            ],
+                        ]
                     ],
                 ]
             ],
@@ -3312,7 +3407,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts'],
-                'child'      => []
+                'child'      => [
+                    'shop_income_export' => [
+                        'name'       => '平台收益列表导出',
+                        'url'        => 'charts.income.shop-income-list.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'shop_income_export',
+                        'parents'    => ['charts', 'shop_income_list'],
+                    ],
+                ]
             ],
             'shop_income_charts'     => [
                 'name'       => '平台收益统计',
@@ -3324,7 +3431,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'shop_income_charts_export' => [
+                        'name'       => '平台收益统计导出',
+                        'url'        => 'charts.income.shop-income-statistics.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'shop_income_charts_export',
+                        'parents'    => ['charts', 'shop_income_charts'],
+                    ],
+                ]
             ],
             'member_income_charts'   => [
                 'name'       => '会员收入统计',
@@ -3371,6 +3490,17 @@ return [
                         'sort'       => 0,
                         'item'       => 'order_ranking_charts',
                         'parents'    => ['charts', 'poundage_income_charts'],
+                    ],
+                    'poundage_income_export' => [
+                        'name'       => '导出',
+                        'url'        => 'charts.income.poundage.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'poundage_income_export',
+                        'parents'    => ['charts', 'poundage_income_charts'],
                     ]
                 ],
             ],
@@ -3384,7 +3514,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'point_charts_export' => [
+                        'name'       => '积分数据统计导出',
+                        'url'        => 'charts.finance.point.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'point_charts_export',
+                        'parents'    => ['charts', 'point_charts'],
+                    ]
+                ]
             ],
             'money_charts'           => [
                 'name'       => '余额数据统计',
@@ -3396,7 +3538,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'money_charts_export' => [
+                        'name'       => '余额数据统计导出',
+                        'url'        => 'charts.finance.balance.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'money_charts_export',
+                        'parents'    => ['charts', 'money_charts'],
+                    ]
+                ]
             ],
             'coupon_charts'          => [
                 'name'       => '赠送优惠券统计',
@@ -3408,7 +3562,19 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'coupon_charts_export' => [
+                        'name'       => '赠送优惠券统计导出',
+                        'url'        => 'charts.finance.coupon.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'coupon_charts_export',
+                        'parents'    => ['charts', 'coupon_charts'],
+                    ]
+                ]
             ],
             'goods_charts'           => [
                 'name'       => '商品销售统计',
@@ -3457,7 +3623,20 @@ return [
                 'sort'       => 0,
                 'item'       => 'order_ranking_charts',
                 'parents'    => ['charts',],
-                'child'      => []
+                'child'      => [
+                    'team_charts_export'  => [
+                        'name'       => '会员一二级团队统计导出',
+                        'url'        => 'charts.team.list.export',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'team_charts_export',
+                        'parents'    => ['charts', 'team_charts'],
+
+                    ]
+                ]
             ],
         ],
     ],

@@ -4,6 +4,15 @@
 
 @section('css')
     <link href="{{static_url('resource/css/upgrade.css')}}" rel="stylesheet">
+    <style>
+        .version-box{margin-bottom:40px;}
+        .version-radius{background:#409EFF;width:10px;height:10px;border-radius: 50%;float:left;margin-top:7px}
+        .version-margin-left{margin-left:30px;}
+        .version-num{font-weight:900;font-size:22px;line-height:24px;margin-bottom:20px;}
+        .version-margin-bottom{margin-bottom:20px;}
+        .version-time{background:#f9f9f9;border:1px solid #e9e9e9;padding:5px 10px;font-weight:700;}
+        .version-content{font-weight:600;line-height:28px;}
+    </style>
 @endsection
 
 @section('content')
@@ -65,7 +74,7 @@
                                     <div class="form-group">
                                         <label class="font-description"> 版本说明：</label><br/>
                                         <div class="interval" id="versionDetail">
-
+                                           
                                         </div>
                                     </div>
 
@@ -159,7 +168,39 @@
 
                     if(ret.filecount > 0 || ret.upgrade){
                         $('#versionNumber').html(ret.version);
-                        $('#versionDetail').html(ret.log);
+                        if (ret.log.length != 0) {
+                            var count = ret.log.length;
+                            for (i=0; i < count; i++) {
+                                let created_at = ret.log[i]['created_at'];
+                                created_at = created_at.split(" ");
+                                console.log(created_at[0])
+                                let content_text = ret.log[i]['content'].split("\n");
+                                console.log(content_text)
+                                var content = [];
+                                var content_log = ``;
+                                for(let j=0;j<content_text.length;j++) {
+                                    content[j] = `
+                                        <div class="version-content">
+                                            `+content_text[j]+`
+                                        </div>
+                                    `
+                                    content_log = content.join("")
+                                }
+                                var html = `<div class="version-box">
+                                                <div class="version-radius"></div>
+                                                <div class="version-margin-left">
+                                                    <div class="version-num">`+ret.log[i]['title']+`</div>
+                                                    <div class="version-margin-bottom">
+                                                        <span class="version-time">`+created_at[0]+`</span>
+                                                    </div>`
+                                                    +content_log+
+                                                    `
+                                                </div>
+                                            </div>`
+                                $(html).appendTo('#versionDetail');
+                                // $('<div>' + ret.log[i]['content'] + '</div>').appendTo('#versionDetail');
+                            }
+                        }
                         $('#upgrade').show();
 
                         $("#upgradebtn").unbind('click').click(function(){

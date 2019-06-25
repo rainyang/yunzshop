@@ -51,7 +51,7 @@ abstract class VirtualCoin extends BaseModel
 
     public function getExchangeRate()
     {
-        return isset($this->exchange_rate) ? $this->exchange_rate : $this->exchange_rate = $this->_getExchangeRate();
+        return isset($this->exchange_rate) ? $this->exchange_rate : ($this->exchange_rate = $this->_getExchangeRate() ?: 1);
     }
 
     abstract protected function _getExchangeRate();
