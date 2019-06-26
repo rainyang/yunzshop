@@ -83,6 +83,28 @@ abstract class Credit
     }
 
     /**
+     * 余额转化爱心值
+     * @param array $data
+     * @return bool|string
+     */
+    public function convert(array $data)
+    {
+        $this->source = ConstService::SOURCE_CONVERT;
+        return $this->subtraction($data);
+    }
+
+    /**
+     * 余额转化爱心值回滚
+     * @param array $data
+     * @return bool|string
+     */
+    public function convertCancel(array $data)
+    {
+        $this->source = ConstService::SOURCE_CONVERT_CANCEL;
+        return $this->addition($data);
+    }
+
+    /**
      * 转让收入接口
      * @param array $data
      * @return string

@@ -673,10 +673,18 @@ class Member extends BackendModel
             ];
         }
 
+
         //隐藏爱心值插件入口
         $love_show = PortType::popularizeShow(\YunShop::request()->type);
         if (isset($data['love']) && (!$love_show)) {
             $data['love']['status'] = false;
+        }
+
+        //配送站
+        if (app('plugins')->isEnabled('delivery-station')) {
+            $data['is_open_delivery_station'] = \Setting::get('plugin.delivery_station.is_open')?1:0;
+        } else {
+            $data['is_open_delivery_station'] = 0;
         }
 
         return $data;

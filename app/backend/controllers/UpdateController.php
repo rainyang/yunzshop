@@ -214,7 +214,7 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log']))
+                    'log' => $ret['log']
                 ];
             } else {
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
