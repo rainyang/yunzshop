@@ -35,7 +35,6 @@ class MemberLevelController extends ApiController
     {
         //会员等级的升级的规则
         $this->settinglevel = \Setting::get('shop.member');
-
         if (!$this->settinglevel) {
             return $this->errorJson('未进行等级设置');
         }
@@ -59,9 +58,9 @@ class MemberLevelController extends ApiController
                         $value['deposit_free'] = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
                     }
                 }
-                if ($value['goods']) {
-                    $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
-                }
+                // if ($value['goods']) {
+                //     $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
+                // }
             }
         } else {
             $data = MemberLevel::getLevelData($this->settinglevel['level_type']);

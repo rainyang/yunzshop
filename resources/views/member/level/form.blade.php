@@ -105,13 +105,13 @@
                                                             <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
 
                                                             <input type="hidden" value="{{ $good['id'] }}"
-                                                                   name="level[goods][$k][goods_id]">
+                                                                   name="level[goods][{{$k}}][goods_id]">
 
                                                             <input type="hidden" value="{{ $good['title'] }}"
-                                                                   name="level[goods][$k][title]">
+                                                                   name="level[goods][{{$k}}][title]">
 
                                                             <input type="hidden" value="{{ $good['thumb'] }}"
-                                                                   name="level[goods][$k][thumb]">
+                                                                   name="level[goods][{{$k}}][thumb]">
 
                                                             <em onclick="remove_member(this)" class="close">×</em>
                                                         </div>
@@ -257,16 +257,38 @@
 
             function remove_member(obj) {
                 console.log('remove---members---');
-                console.log('obj: '+ obj.html());
-                console.log('obj_parent: '+ obj);
+                
+
+                console.log('obj_html: '+ JSON.stringify($(obj).parent().html()));
+
+                // var arr = new Array();
+                // for (var i in obj) {
+                //     console.log('i+'+i);
+                //     arr.push(obj[i]); //属性
+                //     //arr.push(obj[i]); //值
+                // }
+                // console.log(arr);
+                
                 $(obj).parent().remove();
+                
+                console.log('obj_parent: '+ $(obj).parent());
+                
                 refresh_members();
             }
+            
             function refresh_members() {
                 console.log('reffresh---members---');
+                
                 var nickname = "";
+                
                 $('.multi-item').each(function () {
+                    
+                    console.log('img-nickname: '+$(this).find('.img-nickname').html());
+                    
                     nickname += " " + $(this).find('.img-nickname').html() + "; ";
+                    
+                    console.log('nickname: '+nickname);
+
                 });
                 $('#goods').val(nickname);
             }    
