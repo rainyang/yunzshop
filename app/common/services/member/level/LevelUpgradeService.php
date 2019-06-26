@@ -213,32 +213,54 @@ class LevelUpgradeService
     private function checkGoodsId()
     {
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
-
+        
+        \Log::info('---==get_order_model==---', $this->orderModel);
+        
+        \Log::info('---==get_member_model==---', $this->memberModel);
         // $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();  // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
         //获取
-        $level = MemberLevel::uniacid()->where('level', '>', $this->memberModel->level_id)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'asc')->first();
         
-        $levelGoodsId = explode(',', $level->goods_id);
+        $levelid = MemberLevel::find($this->memberModel->level_id);
+        
+        \Log::info('---==levelid==---', $levelid);
+
+        $levels = MemberLevel::uniacid()->where('level', '>', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
+        
+        \Log::info('---==levels==---', $levels);
 
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
 
         foreach ($this->orderModel->hasManyOrderGoods as $time) {
             // if ($time->goods_id == $level->goods_id) { // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
-            if (in_array($time->goods_id, $levelGoodsId) && $level->goods_id != 0) {
-                $this->validity['goods_total'] = $time->total;
+            
+            foreach ($levels as  $level) {
+                
+                $levelGoodsId = explode(',', $level->goods_id);
+        
+        \Log::info('---==levelGoodsId==---', $levelGoodsId);
 
-                \Log::info('---===member_level_upgrade===---', $time->total);
+        \Log::info('---==checkInarray==---', in_array($time->goods_id, $levelGoodsId));
 
-                //开启一卡通
-                if (app('plugins')->isEnabled('universal-card')) {
-                    if ($time->goods_option_id) {
-                        $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
+                if (in_array($time->goods_id, $levelGoodsId)) {
+                    
+                    $this->validity['goods_total'] = $time->total;
+
+                    $reallevel = MemberLevel::find($level->id);
+
+                    \Log::info('---===member_level_upgrade===---', $time->total);
+
+                    //开启一卡通
+                    if (app('plugins')->isEnabled('universal-card')) {
+                        
+                        if ($time->goods_option_id) {
+                            $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
+                        }
                     }
                 }
             }
         }
-
-        return $level ?: [];
+        // return $level ?: [];
+        return $reallevel ?: [];
     }
 
     private function upgrade($levelId)
