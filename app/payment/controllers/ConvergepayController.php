@@ -100,6 +100,21 @@ class ConvergepayController extends PaymentController
         }
     }
 
+    public function returnUrlAlipay()
+    {
+        $trade = \Setting::get('shop.trade');
+
+        if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
+            return redirect($trade['redirect_url'])->send();
+        }
+
+        if (0 == $_GET['state'] && $_GET['errorDetail'] == '成功') {
+            redirect(Url::absoluteApp('member/payYes', ['i' => $_GET['attach']]))->send();
+        } else {
+            redirect(Url::absoluteApp('member/payErr', ['i' => $_GET['attach']]))->send();
+        }
+    }
+
     /**
      * 签名验证
      *
