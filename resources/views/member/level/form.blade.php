@@ -247,7 +247,7 @@
                 html += '<em onclick="remove_member(this)"  class="close">×</em>';
                 html += '</div>';
 
-                console.log(html);
+                // console.log(html);
                 // $("#goods_id").val(o.id);
                 // var data = $("#goods").val();
                 // $("#goods").val(data+ o.title);
@@ -257,9 +257,7 @@
 
             function remove_member(obj) {
                 console.log('remove---members---');
-                
-
-                console.log('obj_html: '+ JSON.stringify($(obj).parent().html()));
+                // console.log('obj_html: '+ JSON.stringify($(obj).parent().html()));
 
                 // var arr = new Array();
                 // for (var i in obj) {
@@ -271,7 +269,7 @@
                 
                 $(obj).parent().remove();
                 
-                console.log('obj_parent: '+ $(obj).parent());
+                // console.log('obj_parent: '+ $(obj).parent());
                 
                 refresh_members();
             }
@@ -283,11 +281,11 @@
                 
                 $('.multi-item').each(function () {
                     
-                    console.log('img-nickname: '+$(this).find('.img-nickname').html());
+                    // console.log('img-nickname: '+$(this).find('.img-nickname').html());
                     
                     nickname += " " + $(this).find('.img-nickname').html() + "; ";
                     
-                    console.log('nickname: '+nickname);
+                    // console.log('nickname: '+nickname);
 
                 });
                 $('#goods').val(nickname);
