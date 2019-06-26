@@ -133,11 +133,6 @@ class MemberController extends ApiController
         } else {
             $data['inviteCode'] = 0;
         }
-        
-        //个人中心的推广二维码
-        if ($data['is_agent']) {
-//            $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
-        }
 
         if (is_null($integrated)) {
             return $this->successJson('', $data);
