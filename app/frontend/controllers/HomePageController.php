@@ -1034,7 +1034,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->isValidatePage($request, true), 'page');
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
-//        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }
