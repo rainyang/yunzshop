@@ -118,6 +118,24 @@ class RefundMessageService extends MessageService
                 }
 
                 MessageService::notice(MessageTemp::$template_id, $msg, $v['uid'], $uniacid);
+
+                $is_open = MinAppTemplateMessage::getTitle('退款申请通知');
+                if (!$is_open->is_open){
+                        \Log::debug('暂未开启小程序退款申请通知');
+                    return;
+                }
+                \Log::debug('----------------小程序退款通知+++++++++++++++++');
+                $msg = [
+                    'keyword1'=>['value'=>  $v['nickname']],// 退款人
+                    'keyword2'=>['value'=> $refundApply->refund_sn],//退款单号
+                    'keyword3'=>['value'=> $refundApply->create_time],// 退款时间
+                    'keyword4'=>['value'=>  $orderDate->pay_type_name],// 退款方式
+                    'keyword5'=>['value'=> $refundApply->price],// 订单金额
+                    'keyword6'=>['value'=> $refundApply->reason],// 订单原因
+                ];
+                $news_link = MessageTemp::find($temp_id)->news_link ? : '';
+
+                MessageService::MiniNotice($is_open->template_id, $msg, $v['uid'], $news_link);
             }
 
         } else {
