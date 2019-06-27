@@ -2081,13 +2081,12 @@ class MemberController extends ApiController
             
             MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
             
-            if (!$codemodel->where('member_id', \YunShop::app()->getMemberId())->where('mid', $parent->member_id)->first()) {
                 $member_invitation_model->uniacid = \YunShop::app()->uniacid;
                 $member_invitation_model->mid = $parent->member_id; //邀请用户
                 $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
                 $member_invitation_model->invitation_code = $invite_code; 
                 $member_invitation_model->save();
-            }
+
             return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
