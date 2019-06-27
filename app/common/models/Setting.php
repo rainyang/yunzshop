@@ -45,7 +45,7 @@ class Setting extends BaseModel
 
             }
             $value = array_get($settingGroupItems, $groupKey, $default);
-            app('SettingCache')->put($group, $settingGroupItems, Carbon::now()->addSeconds(3600));
+            app('SettingCache')->put($group, $settingGroupItems, 600)  ;
         }
         return $value;
 
@@ -70,7 +70,6 @@ class Setting extends BaseModel
         if ($type == 'array') {
             $value = unserialize($value);
         }
-
         app('SettingCache')->put($key, $value, 600);
 
         //\Log::debug('-----setting set cache------' . $cacheKey, $value);
