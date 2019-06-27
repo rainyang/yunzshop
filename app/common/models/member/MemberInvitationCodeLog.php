@@ -50,12 +50,14 @@ class MemberInvitationCodeLog extends BaseModel
 
         return $res;
     }
-
+    
+    //使用邀请码用户id
     public function yzMember()
     {
     	return $this->hasOne('\app\common\models\MemberShopInfo', 'member_id', 'member_id');
     }
 
+    //推荐用户id
     public function hasOneMcMember()
     {
     	return $this->hasOne('\app\common\models\MemberShopInfo', 'member_id', 'mid');

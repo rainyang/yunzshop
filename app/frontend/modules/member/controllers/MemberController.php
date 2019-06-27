@@ -117,6 +117,10 @@ class MemberController extends ApiController
                 $data['relation_switch'] = (1 == $member_info['yz_member']['is_agent'] && 2 == $member_info['yz_member']['status'])
                     ? 1 : 0;
 
+                //个人中心的推广二维码
+                if ($data['relation_switch']) {
+                    $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
+                }
 
                 //文章营销
                 $articleSetting = Setting::get('plugin.article');
@@ -1152,7 +1156,133 @@ class MemberController extends ApiController
         return $this->errorJson('暂无数据', []);
     }
 
+    /**
+     * 会员中心推广二维码(包含会员是否有生成海报权限)
+     *
+     * @param $isAgent
+     *
+     * @return string
+     */
+    private function getPoster($isAgent)
+    {
+        if (\YunShop::plugin()->get('poster')) {
+            if (\Schema::hasColumn('yz_poster', 'center_show')) {
+                $posterModel = Poster::uniacid()->select('id', 'is_open')->where('center_show', 1)->first();
+                if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && $isAgent)) {
+                    $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(),
+                        $posterModel->id))->getMemberPosterPath();
+                    return ImageHelper::getImageUrl($file_path);
+                    //return request()->getSchemeAndHttpHost() . '/' . config('app.webPath') . $file_path;
+                }
+            }
+        }
+        return $this->createPoster();
+    }
 
+    //todo 此处海报生成是否可以公用超级海报代码  vs YITIAN
+    //合成推广海报
+    private function createPoster()
+    {
+
+        $width = 320;
+        $height = 540;
+
+        $logo_width = 40;
+        $logo_height = 40;
+
+        $font_size = 15;
+        $font_size_show = 20;
+
+        $member_id = \YunShop::app()->getMemberId();
+
+        $shopInfo = Setting::get('shop.shop');
+        $shopName = $shopInfo['name'] ?: '商城'; //todo 默认值需要更新
+        $shopLogo = $shopInfo['logo'] ? replace_yunshop(yz_tomedia($shopInfo['logo'])) : base_path() . '/static/images/logo.png'; //todo 默认值需要更新
+        $shopImg = $shopInfo['signimg'] ? replace_yunshop(yz_tomedia($shopInfo['signimg'])) : base_path() . '/static/images/photo-mr.jpg'; //todo 默认值需要更新
+
+        $str_lenght = $logo_width + $font_size_show * mb_strlen($shopName);
+
+        $space = ($width - $str_lenght) / 2;
+
+        $uniacid = \YunShop::app()->uniacid;
+        $path = storage_path('app/public/personalposter/' . $uniacid);
+
+        Utils::mkdirs($path);
+
+        $md5 = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg'] . $this->type); //用于标识组成元素是否有变化
+        $extend = '.png';
+        $file = $md5 . $extend;
+        \Log::debug('+++++++++++++ 111 +++++++++++');
+        if (!file_exists($path . '/' . $file)) {
+            $targetImg = imagecreatetruecolor($width, $height);
+            $white = imagecolorallocate($targetImg, 255, 255, 255);
+            imagefill($targetImg, 0, 0, $white);
+
+            $imgSource = imagecreatefromstring(\Curl::to($shopImg)->get());
+            $logoSource = imagecreatefromstring(\Curl::to($shopLogo)->get());
+            if (2 == $this->type) {
+                $qrcode = MemberModel::getWxacode();
+                $qrSource = imagecreatefromstring(\Curl::to($qrcode)->get());
+            } else {
+                $qrcode = MemberModel::getAgentQR();
+                $qrSource = imagecreatefromstring(\Curl::to($qrcode)->get());
+            }
+            $fingerPrintImg = imagecreatefromstring(file_get_contents(base_path() . '/static/app/images/ewm.png'));
+            $mergeData = [
+                'dst_left'   => $space,
+                'dst_top'    => 10,
+                'dst_width'  => $logo_width,
+                'dst_height' => $logo_height,
+            ];
+            self::mergeImage($targetImg, $logoSource, $mergeData); //合并商城logo图片
+            $mergeData = [
+                'size' => $font_size,
+                'left' => $space + $logo_width + 10,
+                'top'  => 37,
+            ];
+            self::mergeText($targetImg, $shopName, $mergeData);//合并商城名称(文字)
+            $mergeData = [
+                'dst_left'   => 0,
+                'dst_top'    => 60,
+                'dst_width'  => 320,
+                'dst_height' => 320,
+            ];
+            self::mergeImage($targetImg, $imgSource, $mergeData); //合并商城海报图片
+            $mergeData = [
+                'dst_left'   => 0,
+                'dst_top'    => 380,
+                'dst_width'  => 160,
+                'dst_height' => 160,
+            ];
+            self::mergeImage($targetImg, $fingerPrintImg, $mergeData); //合并指纹图片
+            if ($this->type == 2) {
+                $mergeData = [
+                    'dst_left'   => 180,
+                    'dst_top'    => 390,
+                    'dst_width'  => 120,
+                    'dst_height' => 120,
+                ];
+            } else {
+                $mergeData = [
+                    'dst_left'   => 160,
+                    'dst_top'    => 380,
+                    'dst_width'  => 160,
+                    'dst_height' => 160,
+                ];
+            }
+            self::mergeImage($targetImg, $qrSource, $mergeData); //合并二维码图片
+
+            header("Content-Type: image/png");
+            $imgPath = $path . "/" . $file;
+            imagepng($targetImg, $imgPath);
+        }
+
+        $file = $path . '/' . $file;
+
+        $imgUrl = ImageHelper::getImageUrl($file);
+        \Log::debug('0000000000000000000000000000000000', $imgUrl);
+        return $imgUrl;
+    }
 
     //合并图片并指定图片大小
     private static function mergeImage($destinationImg, $sourceImg, $data)
@@ -1459,8 +1589,8 @@ class MemberController extends ApiController
         $diyarr = [
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center','declaration'],
-            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'delivery_station', 'service_station'],
+            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center', 'distribution-order']
         ];
 
         $data = [];
@@ -1528,6 +1658,19 @@ class MemberController extends ApiController
                 'url'   => 'materialCenter'
             ];
         }
+        
+
+        if (app('plugins')->isEnabled('distribution-order')) {
+            $disorder_setting = Setting::get('plugins.distribution-order');
+            if ($disorder_setting && 1 == $disorder_setting['is_open']) {
+                $data[] = [
+                    'name'  => 'distribution-order',
+                    'title' => $disorder_setting['title'] ? : '分销订单统计',
+                    'class' => 'icon-order_system',
+                    'url'   => 'DistributionOrders'
+                ];
+            }
+        }
 
         if (app('plugins')->isEnabled('credit')) {
             $credit_setting = Setting::get('plugin.credit');
@@ -1560,17 +1703,6 @@ class MemberController extends ApiController
                 'class' => 'icon-member_my-friend',
                 'url'   => 'MyFriendApply'
             ];
-        }
-        
-        if (app('plugins')->isEnabled('declaration')) {
-            if(Setting::get('plugin.declaration.switch')){
-                $data[] = [
-                    'name'  => 'declaration',
-                    'title' => DECLARATION_NAME,
-                    'class' => 'icon-declaration_system',
-                    'url'   => 'DeclarationApply'
-                ];
-            }
         }
 
         if (app('plugins')->isEnabled('article')) {
@@ -1808,40 +1940,6 @@ class MemberController extends ApiController
             }
         }
 
-        //配送站
-        if (app('plugins')->isEnabled('delivery-station')) {
-
-            $delivery_station_setting = Setting::get('plugin.delivery_station');
-
-            $delivery_station = \Yunshop\DeliveryStation\models\DeliveryStation::memberId(\YunShop::app()->getMemberId())->first();
-
-
-            if ($delivery_station && $delivery_station_setting['is_open']) {
-                $data[] = [
-                    'name'  => 'delivery_station',
-                    'title' => '配送站',
-                    'class' => 'icon-delivery_order',
-                    'url'   => 'deliveryStation',
-                ];
-            }
-        }
-
-        //服务站
-        if (app('plugins')->isEnabled('service-station')) {
-
-            $service_station = \Yunshop\ServiceStation\models\ServiceStation::isBlack()->memberId(\YunShop::app()->getMemberId())->first();
-
-            if ($service_station) {
-                $data[] = [
-                    'name'  => 'service_station',
-                    'title' => '服务站',
-                    'class' => 'icon-service_station',
-                    'url'   => 'serviceStation',
-                ];
-            }
-            
-        }
-
         foreach ($data as $k => $v) {
 
             if (in_array($v['name'], $diyarr['tool'])) {
@@ -1983,9 +2081,9 @@ class MemberController extends ApiController
             MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
 
             $member_invitation_model->uniacid = \YunShop::app()->uniacid;
-            $member_invitation_model->mid = \YunShop::app()->getMemberId();
-            $member_invitation_model->member_id = $parent->member_id;
-            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->mid = $parent->member_id; //邀请用户
+            $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
+            $member_invitation_model->invitation_code = $invite_code; 
             $member_invitation_model->save();
             return $this->successJson('ok', $parent);
         } else {
