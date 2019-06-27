@@ -103,8 +103,10 @@ class MemberLevelController extends BaseController
         $goods = MemberLevel::getGoodsId($levelModel['goods_id']);
 
         if($requestLevel) {
-            // unset($requestLevel['goods']);
-            // $levelModel->fill($requestLevel);
+            $levelModel->fill($requestLevel);
+            unset($levelModel->goods);
+            unset($levelModel->goods_id);
+
             if ($requestLevel['goods'] ) {
 
                 foreach ($requestLevel['goods'] as $k => $v) {
@@ -127,7 +129,6 @@ class MemberLevelController extends BaseController
                 $levelModel->goods_id = $ids;
             }
 
-            $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
             $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
                 $this->error($validator->messages());
