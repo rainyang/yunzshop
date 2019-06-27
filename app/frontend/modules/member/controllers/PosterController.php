@@ -15,16 +15,18 @@ class PosterController extends ApiController
 {
     public function index()
     {
-        if (\YunShop::plugin()->get('poster')
-            && \Schema::hasColumn('yz_poster', 'center_show')) {
-            $imageUrl = $this->supperPoster();
-        }else{
-            $imageUrl = $this->createPoster();
-        }
-        return $this->successJson('成功',['image_url'=>$imageUrl]);
+        $imageUrl = $this->getPoster();
+        return $this->successJson('成功', ['image_url' => $imageUrl]);
     }
 
-    private function supperPoster()
+    /**
+     * 会员中心推广二维码(包含会员是否有生成海报权限)
+     *
+     * @param $isAgent
+     *
+     * @return string
+     */
+    private function getPoster()
     {
         if (\YunShop::plugin()->get('poster')) {
             if (\Schema::hasColumn('yz_poster', 'center_show')) {
@@ -32,7 +34,7 @@ class PosterController extends ApiController
                 if (($posterModel && $posterModel->is_open) || ($posterModel && !$posterModel->is_open && Member::current()->yzMember->is_agent)) {
                     $file_path = (new CreatePosterService(\YunShop::app()->getMemberId(),
                         $posterModel->id))->getMemberPosterPath();
-                    if(!$file_path){
+                    if (!$file_path) {
                         return '';
                     }
                     return ImageHelper::getImageUrl($file_path);
@@ -40,7 +42,9 @@ class PosterController extends ApiController
                 }
             }
         }
+        return $this->createPoster();
     }
+
 
     private function createPoster()
     {
@@ -143,5 +147,26 @@ class PosterController extends ApiController
         $imgUrl = ImageHelper::getImageUrl($file);
         \Log::debug('0000000000000000000000000000000000', $imgUrl);
         return $imgUrl;
+    }
+    //合并图片并指定图片大小
+    private static function mergeImage($destinationImg, $sourceImg, $data)
+    {
+        $w = imagesx($sourceImg);
+        $h = imagesy($sourceImg);
+        imagecopyresized($destinationImg, $sourceImg, $data['dst_left'], $data['dst_top'], 0, 0, $data['dst_width'],
+            $data['dst_height'], $w, $h);
+        imagedestroy($sourceImg);
+        return $destinationImg;
+    }
+
+    //合并字符串
+    private static function mergeText($destinationImg, $text, $data)
+    {
+        putenv('GDFONTPATH=' . base_path('static/fonts'));
+        $font = "source_han_sans";
+
+        $black = imagecolorallocate($destinationImg, 0, 0, 0);
+        imagettftext($destinationImg, $data['size'], 0, $data['left'], $data['top'], $black, $font, $text);
+        return $destinationImg;
     }
 }
