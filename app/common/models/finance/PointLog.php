@@ -187,7 +187,11 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_PRESENTATION_ATTACHED;
                 break;
             case (33):
-                $mode_attribute = PointService::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
+                if(app('plugins')->isEnabled('love')){
+                    $mode_attribute = \Yunshop\Love\Common\Services\SetService::getLoveName() ? \Yunshop\Love\Common\Services\SetService::getLoveName().'提现扣除' : self::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
+                }else {
+                    $mode_attribute = self::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
+                }
                 break;
         }
         return $mode_attribute;
