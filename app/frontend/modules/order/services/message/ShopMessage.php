@@ -63,20 +63,20 @@ class ShopMessage extends Message
     public function created()
     {
         $temp_id = \Setting::get('shop.notice')['seller_order_create'];
-        if (!$temp_id) {
-            return;
-        }
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-        ];
+        if ($temp_id) {
+            $params = [
+                ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+                ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+                ['name' => '订单号', 'value' => $this->order->order_sn],
+                ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
+                ['name' => '订单金额', 'value' => $this->order['price']],
+                ['name' => '运费', 'value' => $this->order['dispatch_price']],
+                ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+            ];
 
-        $this->transfer($temp_id, $params);
+            $this->transfer($temp_id, $params);
+        }
+
 
         //小程序消息通知
         $is_open = MinAppTemplateMessage::getTitle('订单生成通知');
@@ -98,24 +98,23 @@ class ShopMessage extends Message
     public function paid()
     {
         $temp_id = \Setting::get('shop.notice')['seller_order_pay'];
-        if (!$temp_id) {
-            return;
+        if ($temp_id) {
+            $address = $this->order['address'];
+            $params = [
+                ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+                ['name' => '订单号', 'value' => $this->order->order_sn],
+                ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
+                ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
+                ['name' => '支付方式', 'value' => $this->order->pay_type_name],
+                ['name' => '订单金额', 'value' => $this->order['price']],
+                ['name' => '运费', 'value' => $this->order['dispatch_price']],
+                ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+                ['name' => '收件人姓名', 'value' => $address['realname']],
+                ['name' => '收件人电话', 'value' => $address['mobile']],
+                ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
+            ];
+            $this->transfer($temp_id, $params);
         }
-        $address = $this->order['address'];
-        $params = [
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '下单时间', 'value' => $this->order['create_time']->toDateTimeString()],
-            ['name' => '支付时间', 'value' => $this->order['pay_time']->toDateTimeString()],
-            ['name' => '支付方式', 'value' => $this->order->pay_type_name],
-            ['name' => '订单金额', 'value' => $this->order['price']],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '收件人姓名', 'value' => $address['realname']],
-            ['name' => '收件人电话', 'value' => $address['mobile']],
-            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
-        ];
-        $this->transfer($temp_id, $params);
 
         //小程序消息通知
         $is_open = MinAppTemplateMessage::getTitle('订单支付提醒');
@@ -138,21 +137,21 @@ class ShopMessage extends Message
     public function received()
     {
         $temp_id = \Setting::get('shop.notice')['seller_order_finish'];
-        if (!$temp_id) {
-            return;
+        if ($temp_id) {
+            $address = $this->order['address'];
+            $params = [
+                ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
+                ['name' => '订单号', 'value' => $this->order->order_sn],
+                ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
+                ['name' => '运费', 'value' => $this->order['dispatch_price']],
+                ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
+                ['name' => '收件人姓名', 'value' => $address['realname']],
+                ['name' => '收件人电话', 'value' => $address['mobile']],
+                ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
+            ];
+            $this->transfer($temp_id, $params);
         }
-        $address = $this->order['address'];
-        $params = [
-            ['name' => '粉丝昵称', 'value' => $this->order->belongsToMember->nickname],
-            ['name' => '订单号', 'value' => $this->order->order_sn],
-            ['name' => '确认收货时间', 'value' => $this->order['finish_time']->toDateTimeString()],
-            ['name' => '运费', 'value' => $this->order['dispatch_price']],
-            ['name' => '商品详情（含规格）', 'value' => $this->goods_title],
-            ['name' => '收件人姓名', 'value' => $address['realname']],
-            ['name' => '收件人电话', 'value' => $address['mobile']],
-            ['name' => '收件人地址', 'value' => $address['province'] . ' ' . $address['city'] . ' ' . $address['area'] . ' ' . $address['address']],
-        ];
-        $this->transfer($temp_id, $params);
+
 
         //小程序消息
         $is_open = MinAppTemplateMessage::getTitle('确认收货通知');
@@ -185,26 +184,26 @@ class ShopMessage extends Message
                 continue;
             }
             $temp_id = \Setting::get('shop.notice')['buy_goods_msg'];
-            if (!$temp_id) {
-                continue;
+            if ($temp_id) {
+                $params = [
+                    ['name' => '会员昵称', 'value' => $this->order->belongsToMember->nickname],
+                    ['name' => '订单编号', 'value' => $this->order->order_sn],
+                    ['name' => '商品名称（含规格）', 'value' => $this->getGoodsTitle($goods)],
+                    ['name' => '商品金额', 'value' => $goods->price],
+                    ['name' => '商品数量', 'value' => $goods->total],
+                    ['name' => '订单状态', 'value' => $this->order->status_name],
+                    ['name' => '时间', 'value' => $this->getOrderTime($status)],
+                ];
+                $msg = MessageTemp::getSendMsg($temp_id, $params);
+                if (!$msg) {
+                    continue;
+                }
+                $news_link = MessageTemp::find($temp_id)->news_link;
+                $news_link = $news_link ?:'';
+                $template_id = MessageTemp::$template_id;
+                $this->notice($template_id, $msg, $goods_notice->uid,'',$news_link);
             }
-            $params = [
-                ['name' => '会员昵称', 'value' => $this->order->belongsToMember->nickname],
-                ['name' => '订单编号', 'value' => $this->order->order_sn],
-                ['name' => '商品名称（含规格）', 'value' => $this->getGoodsTitle($goods)],
-                ['name' => '商品金额', 'value' => $goods->price],
-                ['name' => '商品数量', 'value' => $goods->total],
-                ['name' => '订单状态', 'value' => $this->order->status_name],
-                ['name' => '时间', 'value' => $this->getOrderTime($status)],
-            ];
-            $msg = MessageTemp::getSendMsg($temp_id, $params);
-            if (!$msg) {
-                continue;
-            }
-            $news_link = MessageTemp::find($temp_id)->news_link;
-            $news_link = $news_link ?:'';
-            $template_id = MessageTemp::$template_id;
-            $this->notice($template_id, $msg, $goods_notice->uid,'',$news_link);
+
 
             //小程序消息通知
             $is_open = MinAppTemplateMessage::getTitle('购买成功通知');
