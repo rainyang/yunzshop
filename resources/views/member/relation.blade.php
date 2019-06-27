@@ -196,6 +196,7 @@
                             <div class="col-sm-6">
                                 <div class='input-group become' >
                                     <input type='text' class='form-control' name='setdata[maximum_number]' value="{{$set['maximum_number']}}" />
+                                    <span class="help-block">不填或为0则不限制</span>
                                 </div>
                             </div>
                         </div>
