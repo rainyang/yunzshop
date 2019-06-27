@@ -575,7 +575,7 @@ class YunApp extends YunComponent
         if (Session::get('member_id')) {
             return Session::get('member_id');
         } else {
-            return 0;
+            return 5;
         }
     }
 
