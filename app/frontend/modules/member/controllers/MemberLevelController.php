@@ -196,7 +196,6 @@ class MemberLevelController extends ApiController
         if (!$data) {
             return $this->errorJson('暂无商品数据');
         }
-        // dd($data->goods_id);
 
         foreach (explode(',', $data->goods_id) as $k => $v) {
             
