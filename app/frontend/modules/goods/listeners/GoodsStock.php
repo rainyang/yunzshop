@@ -1,8 +1,10 @@
 <?php
+
 namespace app\frontend\modules\goods\listeners;
 
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\order\AfterOrderPaidImmediatelyEvent;
+use app\common\exceptions\GoodsStockNotEnough;
 use app\common\models\OrderGoods;
 use app\frontend\models\goods;
 use app\frontend\models\GoodsOption;
@@ -15,31 +17,47 @@ use app\frontend\models\GoodsOption;
  */
 class GoodsStock
 {
-    public function onOrderCreated(AfterOrderCreatedImmediatelyEvent $event){
+    public function onOrderCreated(AfterOrderCreatedImmediatelyEvent $event)
+    {
 
         $order = $event->getOrderModel();
-        $order->hasManyOrderGoods->map(function ($orderGoods){
+        $order->hasManyOrderGoods->map(function ($orderGoods) {
 
-            if(!in_array($orderGoods->belongsToGood->reduce_stock_method,[0,2])){
+            if (!in_array($orderGoods->belongsToGood->reduce_stock_method, [0, 2])) {
                 return false;
             }
             $this->reduceStock($orderGoods);
         });
     }
-    public function onOrderPaid(AfterOrderPaidImmediatelyEvent $event){
+
+    public function onOrderPaid(AfterOrderPaidImmediatelyEvent $event)
+    {
+
         $order = $event->getOrderModel();
-        $order->hasManyOrderGoods->map(function ($orderGoods){
-            if(!in_array($orderGoods->belongsToGood->reduce_stock_method,[1,2])){
+        $order->hasManyOrderGoods->map(function ($orderGoods) {
+            if (!in_array($orderGoods->belongsToGood->reduce_stock_method, [1, 2])) {
                 return false;
             }
-            $this->reduceStock($orderGoods);
+            try {
+                if(isset($_GET['test'])){
+                    dump(1111);
+                }
+                $this->reduceStock($orderGoods);
+            } catch (GoodsStockNotEnough $e){
+                if(isset($_GET['test'])){
+                    dump(22222222);
+                }
+                \Log::error('商品超卖',$e->getMessage());
+            }
         });
     }
-    private function reduceStock($orderGoods){
+
+    private function reduceStock($orderGoods)
+    {
         /**
          * @var $orderGoods OrderGoods
          */
-        if($orderGoods->isOption()){
+        if ($orderGoods->isOption()) {
             $goods_option = $orderGoods->goodsOption;
             /**
              * @var $goods_option GoodsOption
@@ -60,6 +78,7 @@ class GoodsStock
 
         return $goods->save();
     }
+
     public function subscribe($events)
     {
         $events->listen(

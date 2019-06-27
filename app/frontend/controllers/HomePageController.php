@@ -882,6 +882,10 @@ class HomePageController extends ApiController
                 'area_dividend_center' => '',
                 'area_dividend' => '',
                 'dividend_amount' => '',
+            ],
+            'income' => [
+                'income_name' => '收入',
+                'special_service_tax' => '劳务税',
             ]
         ];
 
@@ -891,6 +895,12 @@ class HomePageController extends ApiController
             $langData = $data;
         }
 
+        if($langData['income']['income_name'] == ''){
+            $langData['income']['income_name'] = '收入';
+        }
+        if($langData['income']['special_service_tax'] == ''){
+            $langData['income']['special_service_tax'] = '劳务税';
+        }
         return show_json(1, $langData);
     }
 

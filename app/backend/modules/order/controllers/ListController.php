@@ -184,6 +184,15 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
+            //清除之前没有导出的文件
+            if ($export_page == 1){
+                $fileNameArr = file_tree(storage_path('exports'));
+                foreach ($fileNameArr as $val ) {
+                    if(file_exists(storage_path('exports/' . basename($val)))){
+                        unlink(storage_path('exports/') . basename($val)); // 路径+文件名称
+                    }
+                }
+            }
             $orders = $orders->with(['discounts', 'deductions'])->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
             $export_model = new ExportService($orders, $export_page);
             if (!$export_model->builder_model->isEmpty()) {
@@ -192,7 +201,7 @@ class ListController extends BaseController
                 foreach ($export_model->builder_model->toArray() as $key => $item) {
 
                     $address = explode(' ', $item['address']['address']);
-                    $fistOrder = $item['has_one_first_order'] ? '首单' : '';
+                    $fistOrder = $item['has_many_first_order'] ? '首单' : '';
 
                     $export_data[$key + 1] = [
                         $item['id'],
