@@ -61,7 +61,7 @@ class Request extends \Illuminate\Http\Request
     {
         global $_W;
 
-        if ($_W['uniacid'] || request()->get('i')) {
+        if (isset($_W['uniacid']) || request()->get('i')) {
             if (app()->bound('SettingCache')) {
                 $shop = \Setting::get('shop.shop');
 
