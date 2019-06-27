@@ -245,9 +245,9 @@ class MemberRelation
     public function  rewardPoint($parent_id,$member_id){
 
         $relation = Relation::getSetInfo()->first();
-
+        //奖励积分
         $reward_points  = $relation->reward_points;
-
+        //最大奖励人数
         $maxinum_number = $relation->maximum_number;
 
         $total = MemberParent::where([
@@ -257,7 +257,7 @@ class MemberRelation
 
         \Log::debug('会员成为下线奖励积分',$reward_points.'--'.$maxinum_number.'---'.$total);
 
-        if( $total <= $maxinum_number){
+        if( $total <= $maxinum_number || empty($maxinum_number)){
             //团队下线小于设置的最大奖励人数就奖励积分
             $memberModel = Member::where('uid',$parent_id)->first();
             $pointData = array(
