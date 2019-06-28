@@ -1284,27 +1284,7 @@ class MemberController extends ApiController
         return $imgUrl;
     }
 
-    //合并图片并指定图片大小
-    private static function mergeImage($destinationImg, $sourceImg, $data)
-    {
-        $w = imagesx($sourceImg);
-        $h = imagesy($sourceImg);
-        imagecopyresized($destinationImg, $sourceImg, $data['dst_left'], $data['dst_top'], 0, 0, $data['dst_width'],
-            $data['dst_height'], $w, $h);
-        imagedestroy($sourceImg);
-        return $destinationImg;
-    }
 
-    //合并字符串
-    private static function mergeText($destinationImg, $text, $data)
-    {
-        putenv('GDFONTPATH=' . base_path('static/fonts'));
-        $font = "source_han_sans";
-
-        $black = imagecolorallocate($destinationImg, 0, 0, 0);
-        imagettftext($destinationImg, $data['size'], 0, $data['left'], $data['top'], $black, $font, $text);
-        return $destinationImg;
-    }
 
     public function memberInfo()
     {
