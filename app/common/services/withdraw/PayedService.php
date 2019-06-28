@@ -20,6 +20,7 @@ use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\PayFactory;
 use Illuminate\Support\Facades\DB;
+use app\common\services\finance\BalanceNoticeService;
 
 class PayedService
 {
@@ -42,6 +43,7 @@ class PayedService
             $this->_withdrawPay();
             return true;
         }
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
 
@@ -64,6 +66,9 @@ class PayedService
             });
             return true;
         }
+        
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
+
         throw new ShopException('提现记录不符合确认打款规则');
     }
 
@@ -226,6 +231,9 @@ class PayedService
         $result = (new BalanceChange())->income($data);
 
         if ($result !== true) {
+            
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
+
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result}");
         }
         return true;
@@ -247,6 +255,9 @@ class PayedService
 
         $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 1) {
+            
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
+
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
         return true;
@@ -266,6 +277,9 @@ class PayedService
         if (is_array($result)) {
 
             if ($result['errno'] == 1) {
+                
+                BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
+
                 throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
             }
             return true;
@@ -289,6 +303,8 @@ class PayedService
         if ($result['result'] == 8) {
             return false;
         }
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
+
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
     }
 
@@ -304,6 +320,8 @@ class PayedService
         if ($result['errno'] === 0) {
             return true;
         }
+        
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
     }
@@ -319,6 +337,8 @@ class PayedService
         if ($result['errno'] == 200) {
             return false;
         }
+        
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
     }
@@ -334,6 +354,8 @@ class PayedService
         if (!$result['data']['errorCode'] && $result['hmac']) {
             return false;
         }
+        
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel); //发送消息
 
         \Log::debug("-----收入提现ID：{$this->withdrawModel->id}-----.-----汇聚提现失败：{$result['data']['errorDesc']}-----");
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，汇聚提现失败：{$result['data']['errorDesc']}");
