@@ -15,6 +15,7 @@ use app\backend\modules\goods\models\GoodsSpec;
 use app\backend\modules\goods\models\GoodsOption;
 use app\backend\modules\goods\models\Brand;
 use app\common\models\GoodsCategory;
+use app\common\models\GoodsEditDisable;
 use Setting;
 
 class EditGoodsService
@@ -37,6 +38,12 @@ class EditGoodsService
 
     public function edit()
     {
+        // 检测商品是否可以编辑
+        $goodsEditDisable = GoodsEditDisable::uniacid()->where('goods_id', $this->goods_model->id)->first();
+        if (!empty($goodsEditDisable)) {
+            return ['status' => -1, 'msg' => $goodsEditDisable->message];
+        }
+
         //商品属性默认值
         $arrt_default = [
             'is_recommand' => 0,
