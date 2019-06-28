@@ -96,6 +96,24 @@ class BalanceChange extends Credit
         return $result === true ? $this->addition($data) : $result;
     }
 
+    public function convert(array $data)
+    {
+        $result = parent::convert($data);
+        return $result;
+    }
+
+    public function convertCancel(array $data)
+    {
+        $result = parent::convertCancel($data);
+        return $result;
+    }
+
+    public function deduct(array $data)
+    {
+        $result = parent::consume($data);
+        return $result;
+    }
+
     /**
      * 检测单号是否可用，为空则生成唯一单号
      * @return bool|string

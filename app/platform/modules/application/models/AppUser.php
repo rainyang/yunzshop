@@ -71,6 +71,8 @@ class AppUser extends BaseModel
             return $this->role_name = '店员';
         } elseif ($this->role == 'operator') {
             return  $this->role_name = '操作员';
+        } elseif ($this->role == 'creator') {
+            return  $this->role_name = '创始人';
         }
     }
 

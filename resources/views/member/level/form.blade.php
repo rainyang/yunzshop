@@ -1,6 +1,12 @@
 @extends('layouts.base')
 
 @section('content')
+<style type="text/css">
+    .multi-item{
+        margin-bottom: 65px;
+        z-index: 1;
+    }
+</style>
     <link href="{{static_url('yunshop/css/member.css')}}" media="all" rel="stylesheet" type="text/css"/>
     <div class="rightlist">
         <!-- 新增加右侧顶部三级菜单 -->
@@ -59,7 +65,7 @@
                                                 @endif
 
                                                 @if($shopSet['level_type'] == 2)
-                                                    <div class="col-sm-12">
+                                                   <!--  <div class="col-sm-12">
                                                         <input type='hidden' class='form-control' id='goodsid'
                                                                name='level[goods_id]' value="{{ $levelModel->goods->id }}"/>
                                                         <div class='input-group'>
@@ -77,15 +83,46 @@
                                                                 </button>
                                                             </div>
                                                         </div>
-
+                                                    </div> -->
+                                                    <div class='input-group'>
+                                                        <div class='input-group-addon'>
+                                                            <label class="radio-inline">
+                                                                购买商品
+                                                            </label>
+                                                        </div>
+                                                        <input type='text' class='form-control' id='goods' value="@if(!empty($goods))@foreach($goods as $good){{$good['title']}};@endforeach
+                                                        @endif" readonly />
+                                                        <div class="input-group-btn">
+                                                            <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
+                                                        </div>
                                                     </div>
+                                                <span class="help-block">可指定多件商品，只需购买其中一件就可以升级</span>
+                                                <div class="input-group multi-img-details" id='goods_id' style="margin-bottom: 50px">
+                                                    @foreach ($goods as $k => $good)
+                                                        <div class="multi-item saler-item" openid="{{ $goods[$k]['id'] }}">
+                                                            <img  width="130px" height="120px" style="margin-bottom: 20px" class="img-responsive img-thumbnail" src="{{ yz_tomedia($good['thumb']) }}"
+                                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                                            <div class='img-nickname' style="overflow: hidden">{{ $good['title'] }}</div>
+
+                                                            <input type="hidden" value="{{ $good['id'] }}"
+                                                                   name="level[goods][{{$k}}][goods_id]">
+
+                                                            <input type="hidden" value="{{ $good['title'] }}"
+                                                                   name="level[goods][{{$k}}][title]">
+
+                                                            <input type="hidden" value="{{ $good['thumb'] }}"
+                                                                   name="level[goods][{{$k}}][thumb]">
+
+                                                            <em onclick="remove_member(this)" class="close">×</em>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
 
                                                     <div class="input-group">
                                                         <div class="input-group-addon" style='width: auto !important;'>等级有效天数</div>
                                                         <input type="text" name="level[validity]" class="form-control" value="{{ $levelModel->validity }}"/>
                                                         <div class="input-group-addon" style='width: auto !important;'>天</div>
                                                     </div>
-
                                                 @endif
                                             </div>
                                             <span class='help-block'>会员升级条件，不填写默认为不自动升级, 设置<a
@@ -192,13 +229,67 @@
                 ;
             }
 
+            // function select_good(o) {
+            //     $("#goodsid").val(o.id);
+            //     $("#goods").val("[" + o.id + "]" + o.title);
+            //     $("#modal-goods .close").click();
+            // }
+
             function select_good(o) {
-                $("#goodsid").val(o.id);
-                $("#goods").val("[" + o.id + "]" + o.title);
-                $("#modal-goods .close").click();
+                // var html = "<input type='hidden' class='form-control' name='level[become_goods_id]["+ o.id+"]' value='' />"
+                var html = '<div class="multi-item" openid="' + o.id + '">';
+                html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+                html += '<div class="img-nickname" style="overflow: hidden">' + o.title + '</div>';
+                html += '<input type="hidden" value="' + o.title + '" name="level[goods_id][' + o.id + '][title]">';
+                html += '<input type="hidden" value="' + o.thumb + '" name="level[goods_id][' + o.id + '][thumb]">';
+                html += '<input type="hidden" value="' + o.id + '" name="level[goods_id][' + o.id + '][goods_id]">';
+                html += '<input type="hidden" value="' + o.id + '" name="level[goods_id][' + o.id + ']">';
+                html += '<em onclick="remove_member(this)"  class="close">×</em>';
+                html += '</div>';
+
+                // console.log(html);
+                // $("#goods_id").val(o.id);
+                // var data = $("#goods").val();
+                // $("#goods").val(data+ o.title);
+                $("#goods_id").append(html);
+                refresh_members();
             }
 
+            function remove_member(obj) {
+                console.log('remove---members---');
+                // console.log('obj_html: '+ JSON.stringify($(obj).parent().html()));
 
+                // var arr = new Array();
+                // for (var i in obj) {
+                //     console.log('i+'+i);
+                //     arr.push(obj[i]); //属性
+                //     //arr.push(obj[i]); //值
+                // }
+                // console.log(arr);
+                
+                $(obj).parent().remove();
+                
+                // console.log('obj_parent: '+ $(obj).parent());
+                
+                refresh_members();
+            }
+            
+            function refresh_members() {
+                console.log('reffresh---members---');
+                
+                var nickname = "";
+                
+                $('.multi-item').each(function () {
+                    
+                    // console.log('img-nickname: '+$(this).find('.img-nickname').html());
+                    
+                    nickname += " " + $(this).find('.img-nickname').html() + "; ";
+                    
+                    // console.log('nickname: '+nickname);
+
+                });
+                $('#goods').val(nickname);
+            }    
         </script>
     </div>
 

@@ -31,8 +31,8 @@ class SiteRegisterController extends BaseController
      */
     public function index()
     {
-        $upgrade      = Setting::get('shop.key');
-        $page = 'auth';
+        $upgrade  = Setting::getNotUniacid('platform_shop.key');
+        $page     = 'auth';
 
         if (empty($upgrade['key']) && empty($upgrade['secret'])) {
             $domain = request()->getHttpHost();
@@ -95,7 +95,7 @@ class SiteRegisterController extends BaseController
             $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
                 ->withData($data)
                 ->get();
-            $writeRes = Setting::set('shop.key', $requestModel);
+            $writeRes = Setting::set('platform_shop.key', $requestModel);
 
             \Cache::forget('app_auth');
 
@@ -107,7 +107,7 @@ class SiteRegisterController extends BaseController
                 ->withData($data)
                 ->get();
 
-            $writeRes = Setting::set('shop.key', '');
+            $writeRes = Setting::set('platform_shop.key', '');
 
             \Cache::forget('app_auth');
 
@@ -221,5 +221,22 @@ class SiteRegisterController extends BaseController
             ->get();
 
         return $this->successJson('ok', $res);
+    }
+
+    public function resetSecretKey()
+    {
+        $data = request()->data;
+
+        $setting = Setting::getNotUniacid('shop.key');
+
+        if ($data['key'] && $data['secret']) {
+            try {
+                Setting::setNotUniacid('platform_shop.key', $data);
+            }  catch (\Exception $e) {
+                return $this->errorJson($e->getMessage());
+            }
+        }
+
+        return $this->successJson('成功', $setting);
     }
 }

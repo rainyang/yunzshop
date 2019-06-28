@@ -66,6 +66,17 @@ class BalanceService
         return $this->_recharge_set['transfer'] ? true : false;
     }
 
+    //余额转化爱心值
+    public function convertSet()
+    {
+        return $this->_recharge_set['love_swich'] ? true :false;
+    }
+
+     // 余额转化爱心值，为0或为空 按100计算
+    public function convertRate()
+    {
+        return $this->_recharge_set['love_rate'] ?: 100;
+    }
     //余额提现设置
     public function withdrawSet()
     {
@@ -166,6 +177,5 @@ class BalanceService
     {
         return $this->_recharge_set['recharge_activity_fetter'];
     }
-
 
 }
