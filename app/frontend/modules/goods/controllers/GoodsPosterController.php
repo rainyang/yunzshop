@@ -244,7 +244,7 @@ class GoodsPosterController extends ApiController
 
         Utils::mkdirs($path);
 
-        $file_name = \YunShop::app()->uniacid .  \YunShop::app()->getMemberId() .'-' . $this->goodsModel->id . '.png';
+        $file_name = \YunShop::app()->uniacid .'-'.  \YunShop::app()->getMemberId() .'-' . $this->goodsModel->id . '.png';
 
         return $path . $file_name;
     }
