@@ -798,7 +798,7 @@ class HomePageController extends ApiController
                     $invitation_log = 1;
                 } else {
                     $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid',$member_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member_id)->where('mid', $member->parent_id)->first();
                 }
             }
 
@@ -1034,7 +1034,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->isValidatePage($request, true), 'page');
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
-//        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }

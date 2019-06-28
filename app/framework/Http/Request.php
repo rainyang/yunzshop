@@ -59,16 +59,17 @@ class Request extends \Illuminate\Http\Request
      */
     public function getScheme()
     {
-        /*global $_W;
+        global $_W;
 
-        if ($_W['uniacid'] || request()->get('i')) {
-            $shop = \Setting::get('shop.shop');
+        if (isset($_W['uniacid']) || request()->get('i')) {
+            if (app()->bound('SettingCache')) {
+                $shop = \Setting::get('shop.shop');
 
-            if (isset($shop['https']) && 1 == $shop['https']) {
-                return 'https';
+                if (isset($shop['https']) && 1 == $shop['https']) {
+                    return 'https';
+                }
             }
-
-        }*/
+        }
 
         return parent::getScheme();
     }

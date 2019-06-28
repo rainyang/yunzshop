@@ -25,6 +25,7 @@ class MemberInvitedController extends BaseController
         $list =  MemberInvitationCodeLog::
         searchLog($search)
         ->orderBy('id', 'desc')
+        ->groupBy('member_id')
         ->paginate()
         ->toArray();
 
