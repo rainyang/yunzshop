@@ -355,7 +355,9 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     }
 
 
-    if (!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
+    //todo 2019/06/25 blank ---- 把或 || 条件换成与 && ,这样修改有个问题就是只有开启了远程存储图片，就永远不会再取本地图片
+    //(!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))
+    if (!$sign && ($local_path || empty($upload_type)) && file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         if (strexists($src, '/attachment/')) {
             $src = request()->getSchemeAndHttpHost() . $src;
         } else {
