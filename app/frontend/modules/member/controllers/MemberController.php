@@ -1589,8 +1589,8 @@ class MemberController extends ApiController
         $diyarr = [
             'tool'         => ['separate'],
             'asset_equity' => ['integral', 'credit', 'asset'],
-            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center']
+            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'delivery_station', 'service_station'],
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center', 'declaration', 'distribution-order']
         ];
 
         $data = [];
@@ -1657,6 +1657,19 @@ class MemberController extends ApiController
                 'class' => 'icon-member_material',
                 'url'   => 'materialCenter'
             ];
+        }
+        
+
+        if (app('plugins')->isEnabled('distribution-order')) {
+            $disorder_setting = Setting::get('plugins.distribution-order');
+            if ($disorder_setting && 1 == $disorder_setting['is_open']) {
+                $data[] = [
+                    'name'  => 'distribution-order',
+                    'title' => $disorder_setting['title'] ? : '分销订单统计',
+                    'class' => 'icon-order_system',
+                    'url'   => 'DistributionOrders'
+                ];
+            }
         }
 
         if (app('plugins')->isEnabled('credit')) {
@@ -2065,13 +2078,15 @@ class MemberController extends ApiController
 
         if ($parent) {
             \Log::info('更新上级------' . \YunShop::app()->getMemberId());
+            
             MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
+            
+                $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+                $member_invitation_model->mid = $parent->member_id; //邀请用户
+                $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
+                $member_invitation_model->invitation_code = $invite_code; 
+                $member_invitation_model->save();
 
-            $member_invitation_model->uniacid = \YunShop::app()->uniacid;
-            $member_invitation_model->mid = \YunShop::app()->getMemberId();
-            $member_invitation_model->member_id = $parent->member_id;
-            $member_invitation_model->invitation_code = $invite_code;
-            $member_invitation_model->save();
             return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
@@ -2109,7 +2124,7 @@ class MemberController extends ApiController
                     $invitation_log = 1;
                 } else {
                     $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid', $member_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member_id)->where('mid', $member->parent_id)->first();
                 }
             }
 

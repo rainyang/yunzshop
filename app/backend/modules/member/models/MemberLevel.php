@@ -150,7 +150,8 @@ class MemberLevel extends \app\common\models\MemberLevel
                 $rule = array_merge(['order_count' => 'integer|numeric|between:0,9999999999'], $rule);
                 break;
             case 2:
-                $rule = array_merge(['goods_id' => 'integer|numeric'], $rule);
+                // $rule = array_merge(['goods_id' => 'integer|numeric'], $rule);
+                $rule = array_merge(['goods_id' => ''], $rule);
                 break;
         }
 
@@ -160,7 +161,7 @@ class MemberLevel extends \app\common\models\MemberLevel
     //模型关联 关联商品
     public function goods()
     {
-        return $this->hasOne('app\common\models\Goods', 'id', 'goods_id');
+        return $this->belongsTo('app\common\models\Goods');
     }
 
     //关联会员
@@ -169,5 +170,20 @@ class MemberLevel extends \app\common\models\MemberLevel
         return $this->hasMany('app\common\models\MemberShopInfo', 'level_id', 'id'); //注意yz_member数据表记录和关联的是member_level表的主键id, 而不是level值
     }
 
+    //id column 
+    //get array goods.id
+    public function getGoodsId($id)
+    {
+        $ids = explode(',', $id);
+        $goods = \app\common\models\Goods::whereIn('id', $ids)->select('id', 'thumb', 'title')->get();
 
+        if (!$goods) {
+            \Log::debug('无该'.$ids.'商品数据信息');
+            exit;
+        }
+        foreach ($goods->toArray() as $k => $v) {
+            $goods[$k]['thumb'] = yz_tomedia($v['thumb']);
+        }
+        return $goods;
+    }
 }
