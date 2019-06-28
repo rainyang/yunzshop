@@ -202,7 +202,7 @@ class GoodsPosterController extends ApiController
         $target = $this->mergeText($target, $this->goodsText, $text);
 
         $target = $this->mergePriceText($target);
-dd($target);
+
         imagepng($target, $this->getGoodsPosterPath());
 
         imagedestroy($target);
