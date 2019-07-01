@@ -55,6 +55,7 @@
                                     @if('账户余额提醒'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                         <input type="text" value="{{$item['id']}}" style= "display:none">
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -66,6 +67,7 @@
                                                checked
                                                @endif
                                                onclick="message_default({{$item['id']}})"/>
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -83,7 +85,7 @@
                                     @if('购买成功通知'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                         <input type="text" value="{{$item['id']}}" style= "display:none">
-
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -95,6 +97,7 @@
                                                checked
                                                @endif
                                                onclick="message_default({{$item['id']}})"/>
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -113,7 +116,7 @@
                                     @if('订单生成通知'== $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                         <input type="text" value="{{$item['id']}}" style= "display:none">
-
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -125,6 +128,7 @@
                                                checked
                                            @endif
                                                onclick="message_default({{$item['id']}})"/>
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -144,6 +148,7 @@
                                     @if('订单支付提醒' == $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                         <input type="text" value="{{$item['id']}}"  style= "display:none">
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -155,6 +160,7 @@
                                                checked
                                                @endif
                                                onclick="message_default({{$item['id']}})"/>
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -174,6 +180,7 @@
                                     @if('订单完成通知' == $item['title'])
                                         <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                         <input type="text" value="{{$item['id']}}" style= "display:none">
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -185,6 +192,7 @@
                                                checked
                                                @endif
                                                onclick="message_default({{$item['id']}})"/>
+                                        @break
                                     @endif
                                 @endforeach
                             </div>
@@ -292,6 +300,7 @@
                                         @if('订单提交成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -303,6 +312,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -325,6 +335,7 @@
                                         @if('订单取消通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -336,6 +347,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -357,6 +369,7 @@
                                         @if('订单支付成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -368,6 +381,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -389,6 +403,7 @@
                                         @if('订单发货提醒' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -400,6 +415,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -421,6 +437,7 @@
                                         @if('确认收货通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -432,6 +449,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -453,6 +471,7 @@
                                         @if('退款申请通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -464,6 +483,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -485,6 +505,7 @@
                                         @if('退款成功通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input  type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -496,6 +517,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -517,6 +539,7 @@
                                         @if('退款拒绝通知' == $item['title'])
                                             <input type="text" value="{{$item['title']}}" class='form-control diy-notice' disabled="disabled">
                                             <input type="text" value="{{$item['id']}}" style= "display:none">
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
@@ -528,6 +551,7 @@
                                                    checked
                                                    @endif
                                                    onclick="message_default({{$item['id']}})"/>
+                                            @break
                                         @endif
                                     @endforeach
                                 </div>
