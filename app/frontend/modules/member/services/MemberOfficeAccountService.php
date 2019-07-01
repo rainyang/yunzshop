@@ -497,15 +497,18 @@ class MemberOfficeAccountService extends MemberService
              }
 
              if ($_COOKIE['access']) {
-                 if (SubMemberModel::getMemberByTokenAndUid($token, $uid)) {
+                 $yz_member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
+                 if ($uid = $yz_member->member_id) {
                      return true;
+                 } else {
+                     Session::remove('member_id');
                  }
              }
 
              if (isset($uid) && isset($openid)) {
                  $member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
 
-                 if (!is_null($member) && !empty($token) && !empty($uid)) {
+                 if (!is_null($member) && $uid == $member->member_id) {
                      $auth_url = $this->_tokenAuth($token, $openid);
 
                      $auth_info = \Curl::to($auth_url)
@@ -536,12 +539,14 @@ class MemberOfficeAccountService extends MemberService
                              $member->refresh_token_1 = $refresh_info['refresh_token'];
                              $member->save();
 
-                             setcookie('Yz-Token', encrypt($refresh_info['access_token'] . ':' . $uid . ':' . $openid));
+                             setcookie('Yz-Token', encrypt($refresh_info['access_token']));
                              setcookie('access', true, time() + 7000);
 
                              return true;
                          }
                      }
+                 } else {
+                     Session::remove('member_id');
                  }
              }
          }
