@@ -173,7 +173,7 @@
 
                         <div id="fe-tab-link-li-53" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 53)" data-href="{{ yzAppFullUrl('extension/notPresent') }}">未提现分销佣金</div>
 
-                        <div id="fe-tab-link-li-54" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 54)" data-href="{{ yzAppFullUrl('member/footprint') }}">我的足记</div>
+                        <div id="fe-tab-link-li-54" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 54)" data-href="{{ yzAppFullUrl('member/footprint') }}">我的足迹</div>
 
                         <div id="fe-tab-link-li-55" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 55)" data-href="{{ yzAppFullUrl('member/collection') }}">我的收藏</div>
 

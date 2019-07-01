@@ -25,13 +25,13 @@ class MemberInvitedController extends BaseController
         $list =  MemberInvitationCodeLog::
         searchLog($search)
         ->orderBy('id', 'desc')
+        ->groupBy('member_id')
         ->paginate()
         ->toArray();
-        // dd($list);
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 
-        return view('member.invited', ['list'=>$list, 'pager'=>$pager])->render();
+        return view('member.invited', ['list'=>$list, 'pager'=>$pager, 'search'=>$search])->render();
     }
 
     public function export()

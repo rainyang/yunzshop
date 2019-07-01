@@ -52,7 +52,9 @@
                                 <el-form-item label="密钥" prop="secret">
                                     <el-input v-model="secret" placeholder="请输入密钥" autocomplete="off"></el-input>
                                 </el-form-item>
-
+                                <el-form-item>
+                                <el-button type="primary" @click.native="tapclickPas" >重置密钥</el-button>
+                                </el-form-item>
                                 <el-form-item>
                                     {{--<el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>--}}
                                     <el-button type="primary" @click="reg_shop('create')" v-loading="formLoading" v-if="btn == 1">注册商城</el-button>
@@ -340,6 +342,34 @@
                             return false;
                 }
                 });
+                },
+                tapclickPas(){
+                      let data={
+                        key:this.key,
+                        secret:this.secret
+                      }
+
+                    this.$http.post("{!! yzWebUrl('setting.key.reset') !!}", {'data': data}).then(res => {
+                        console.log(res,'511512');
+                                res=res.body
+                        if (res.result==1) {
+                                this.tapTwoPas()
+                        }
+                    })
+                },
+                tapTwoPas(){
+                    this.$http.post("{!! yzWebUrl('setting.key.reset') !!}").then(res => {
+                        console.log(res, '511512');
+                                res=res.body
+                        if (res.result==1) {
+                            this.key = res.data.key;
+                            this.secret = res.data.secret
+                            this.$message({
+                                message: res.msg,
+                                type: 'success'
+                            });
+                        }
+                    })
                 }
             },
             watch: {

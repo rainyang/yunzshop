@@ -200,8 +200,8 @@ class OrderService
 
         if (isset($param['pay_type_id'])) {
             if ($orderPay->pay_type_id != $param['pay_type_id']) {
-                $orderPay->pay_type_id = $param['pay_type_id'];
                 \Log::error("---------支付回调与与支付请求的订单支付方式不匹配(order_pay_id:{$orderPay->id},orderPay->payTypeId:{$orderPay->pay_type_id} != param[pay_type_id]:{$param['pay_type_id']})--------", []);
+                $orderPay->pay_type_id = $param['pay_type_id'];
 
             }
         }

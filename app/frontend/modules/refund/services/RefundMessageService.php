@@ -22,41 +22,38 @@ class RefundMessageService extends MessageService
     {
         $couponNotice = Setting::get('shop.notice');
         $temp_id = $couponNotice['order_refund_apply'];
-        if (!$temp_id) {
-            return false;
-        }
-
-        $memberDate = Member::getMemberBaseInfoById($refundApply->uid);
-        $orderDate = Order::getOrderDetailById($refundApply->order_id);
+        if ($temp_id) {
+            $memberDate = Member::getMemberBaseInfoById($refundApply->uid);
+            $orderDate = Order::getOrderDetailById($refundApply->order_id);
 //        $goods = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('goods_option_title');//商品详情
 //        $goods_title = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('title').$goods;
-        \Log::debug('++++++++++++微信退款通知+++++++++++++++++');
-        $params = [
-            ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
-            ['name' => '粉丝昵称', 'value' => $memberDate['nickname']],
-            ['name' => '退款单号', 'value' => $refundApply->refund_sn],
+            $params = [
+                ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+                ['name' => '粉丝昵称', 'value' => $memberDate['nickname']],
+                ['name' => '退款单号', 'value' => $refundApply->refund_sn],
 //            ['name' => '下单时间', 'value' => $orderDate['create_time']],
 //            ['name' => '订单金额', 'value' => $orderDate['price']],
 //            ['name' => '运费', 'value' => $orderDate['dispatch_price']],
 //            ['name' => '商品详情（含规格）', 'value' => $goods_title],
 //            ['name' => '支付方式', 'value' => $orderDate->pay_type_name],
-            ['name' => '退款申请时间', 'value' => $refundApply->create_time],
-            ['name' => '退款方式', 'value' => $orderDate->pay_type_name],
-            ['name' => '退款金额', 'value' => $refundApply->price],
-            ['name' => '退款原因', 'value' => $refundApply->reason],
-        ];
+                ['name' => '退款申请时间', 'value' => $refundApply->create_time],
+                ['name' => '退款方式', 'value' => $orderDate->pay_type_name],
+                ['name' => '退款金额', 'value' => $refundApply->price],
+                ['name' => '退款原因', 'value' => $refundApply->reason],
+            ];
 
-        $msg = MessageTemp::getSendMsg($temp_id, $params);
-        if (!$msg) {
-            return false;
+            $msg = MessageTemp::getSendMsg($temp_id, $params);
+            if (!$msg) {
+                return false;
+            }
+            MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
         }
-        MessageService::notice(MessageTemp::$template_id, $msg, $refundApply->uid, $uniacid);
-        \Log::debug('++++++++++++小程序退款通知+++++++++++++++++');
+
+
         $is_open = MinAppTemplateMessage::getTitle('退款通知');
         if (!$is_open->is_open){
             return;
         }
-        \Log::debug('----------------小程序退款通知+++++++++++++++++');
         $orderDate = Order::getOrderDetailById($refundApply->order_id);
         $msg = [
             'keyword1'=>['value'=>  $orderDate->pay_type_name],// 退款类型
@@ -70,4 +67,77 @@ class RefundMessageService extends MessageService
         MessageService::MiniNotice($is_open->template_id,$msg,$refundApply->uid.'',$news_link);
     }
 
+    public static function applyRefundNoticeBuyer($refundApply,$uniacid = '')
+    {
+        $couponNotice = Setting::get('shop.notice');
+        \Log::info('shop.notice', $couponNotice);
+        //获取用户退货退款通知商家的消息模板
+        $temp_id = $couponNotice['order_refund_apply_to_saler'];
+        \Log::info('temp_id', $temp_id);
+
+        if ($temp_id) {
+            return false;
+        }
+
+        $ordersn = Order::find($refundApply->order_id)->order_sn;
+        $orderDate = Order::getOrderDetailById($refundApply->order_id);
+        //品详情
+        $goods = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('goods_option_title');
+        $goods_title = Order::find($refundApply->order_id)->hasManyOrderGoods()->value('title').$goods;
+
+        //统计通知用户人数并整理数据
+        $peonum = count($couponNotice['salers']);
+        $key = range(0, $peonum-1);
+        $new_perpson = array_combine($key, $couponNotice['salers']);
+
+        if ($peonum >= 1) {
+
+            foreach ($new_perpson as $k => $v) {
+                if ($temp_id) {
+                    $params = [
+                        ['name' => '商城名称', 'value' => \Setting::get('shop.shop')['name']],
+                        ['name' => '粉丝昵称', 'value' => $v['nickname']],
+                        ['name' => '退款单号', 'value' => $refundApply->refund_sn],
+                        ['name' => '退款申请时间', 'value' => $refundApply->create_time],
+                        ['name' => '退款类型', 'value' => $refundApply->refund_type_name],
+                        ['name' => '退款方式', 'value' => $orderDate->pay_type_name],
+                        ['name' => '退款原因', 'value' => $refundApply->reason],
+                        ['name' => '订单编号', 'value' => $ordersn],
+                        ['name' => '退款金额', 'value' => $refundApply->price],
+                        ['name' => '商品详情（含规格）', 'value' => $goods_title],
+                    ];
+                    \Log::info('refund_servie', $params);
+
+                    $msg = MessageTemp::getSendMsg($temp_id, $params);
+                    \Log::info('refun_msg', $msg);
+                    if (!$msg) {
+                        return false;
+                    }
+
+                    MessageService::notice(MessageTemp::$template_id, $msg, $v['uid'], $uniacid);
+                }
+
+                $is_open = MinAppTemplateMessage::getTitle('退款申请通知');
+                if (!$is_open->is_open){
+                        \Log::debug('暂未开启小程序退款申请通知');
+                    return;
+                }
+                \Log::debug('----------------小程序退款通知+++++++++++++++++');
+                $msg = [
+                    'keyword1'=>['value'=>  $v['nickname']],// 退款人
+                    'keyword2'=>['value'=> $refundApply->refund_sn],//退款单号
+                    'keyword3'=>['value'=> $refundApply->create_time],// 退款时间
+                    'keyword4'=>['value'=>  $orderDate->pay_type_name],// 退款方式
+                    'keyword5'=>['value'=> $refundApply->price],// 订单金额
+                    'keyword6'=>['value'=> $refundApply->reason],// 订单原因
+                ];
+                $news_link = MessageTemp::find($temp_id)->news_link ? : '';
+
+                MessageService::MiniNotice($is_open->template_id, $msg, $v['uid'], $news_link);
+            }
+
+        } else {
+            return false;
+        }
+    }
 }

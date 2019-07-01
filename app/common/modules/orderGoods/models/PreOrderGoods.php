@@ -63,14 +63,6 @@ class PreOrderGoods extends OrderGoods
      */
     public $coupons;
 
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-        // 订单商品优惠使用记录集合
-        $this->setRelation('orderGoodsDiscounts', $this->newCollection());
-    }
-
     /**
      * @param $key
      * @return mixed
@@ -153,6 +145,17 @@ class PreOrderGoods extends OrderGoods
             throw new AppException('调用顺序错误,Order对象还没有载入');
         }
         return $this->order;
+    }
+
+    public function getOrderGoodsDiscounts()
+    {
+        if (!$this->getRelation('orderGoodsDiscounts')) {
+            $this->setRelation('orderGoodsDiscounts', $this->newCollection());
+
+           $this->getPrice();
+
+        }
+        return $this->orderGoodsDiscounts;
     }
 
     public function getOrderGoodsDeductions()
@@ -259,7 +262,7 @@ class PreOrderGoods extends OrderGoods
      * 获取价格计算者
      * @return NormalOrderGoodsPrice
      */
-    protected function getPriceCalculator()
+    public function getPriceCalculator()
     {
         if (!isset($this->priceCalculator)) {
             $this->priceCalculator = $this->_getPriceCalculator();
@@ -278,12 +281,18 @@ class PreOrderGoods extends OrderGoods
 
     }
 
-    public function getPaymentAmountAttribute(){
+    /**
+     * @return float|mixed
+     * @throws AppException
+     */
+    public function getPaymentAmountAttribute()
+    {
         return $this->getPaymentAmount();
     }
     /**
      * 均摊的支付金额
-     * @return float
+     * @return float|mixed
+     * @throws AppException
      */
     public function getPaymentAmount()
     {

@@ -45,7 +45,7 @@ class SmallProgramController extends BaseController
         }
         $list = $this->SmallProgramNotice->getExistTemplateList();
         if ($list['errcode'] != 0 || !isset($list['errcode'])){
-            return $this->message('获取模板失败'.$list, Url::absoluteWeb('setting.small-program.index'), 'error');
+            return $this->message('获取模板失败'.$list,'', 'error');
         }
         return view('setting.small-program.detail', [
                 'list'=>$list['list'],

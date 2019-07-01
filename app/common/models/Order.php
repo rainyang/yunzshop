@@ -104,7 +104,7 @@ class Order extends BaseModel
     private $StatusService;
     protected $guarded = ['id'];
     protected $appends = ['status_name', 'pay_type_name'];
-    protected $search_fields = ['id', 'order_sn'];
+    protected $search_fields = ['yz_order.id', 'yz_order.order_sn'];
     protected $attributes = [
         'plugin_id' => 0,
         'is_virtual' => 0,
@@ -143,6 +143,7 @@ class Order extends BaseModel
     }
 
     /**
+     * 隐藏插件订单
      * 订单流程和标准订单不一样的插件订单，不显示在前端我的订单里
      * @param $query
      * @return mixed
@@ -150,8 +151,8 @@ class Order extends BaseModel
     public function scopeHidePluginIds($query, $plugin_ids)
     {
         if (empty($plugin_ids)) {
-            //酒店订单、网约车订单
-            $plugin_ids = [33,41];
+            //酒店订单、网约车订单、服务站补货订单
+            $plugin_ids = [33,41,43];
         }
 
         return $query->whereNotIn('plugin_id', $plugin_ids);

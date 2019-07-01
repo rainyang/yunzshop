@@ -34,13 +34,13 @@ class ApplicationController extends BaseController
 
         $ids = self::checkRole();
 
-        if (!is_array($ids)) {
-            
-            return $this->errorJson($ids);
-        }
-
         if (\Auth::guard('admin')->user()->uid != 1) {
 
+            if (!is_array($ids)) {
+            
+                return $this->errorJson($ids);
+            }
+            
             $list = $app->whereIn('id', $ids)->where('status', 1)->search($search)->orderBy('id', 'desc')->paginate()->toArray();
 
         } else {
