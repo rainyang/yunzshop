@@ -146,6 +146,12 @@
 .net_car {
     background-image: url('../img/industry/net_car.png');
 }
+.delivery_station {
+    background-image: url('../img/industry/delivery_station.png');
+}
+.service_station {
+    background-image: url('../img/industry/service_station.png');
+}
 
 
 
@@ -247,6 +253,10 @@
 
 .business_card {
     background-image: url('../img/marketing/business_card.png');
+}
+
+.business_activity {
+    background-image: url('../img/marketing/business_activity.png');
 }
 
 .my-friend {
@@ -393,13 +403,18 @@
 .weisrc_dish {
     background-image: url('../img/api/weisrc_dish.png');
 }
-
-
-
 .asset {
     background-image: url('../img/blockchain/asset.png');
 }
 
+.declaration {
+    background-image: url('../img/marketing/declaration.png');
+}
+
 .material-center {
     background-image: url('../img/marketing/material-center.png');
+}
+
+.distribution-order  {
+    background-image: url('../img/marketing/distribution-order .png');
 }

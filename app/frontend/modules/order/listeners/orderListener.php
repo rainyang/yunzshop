@@ -5,8 +5,10 @@ namespace app\frontend\modules\order\listeners;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderPaidEvent;
+use app\common\events\order\AfterOrderPaidImmediatelyEvent;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\AfterOrderSentEvent;
+use app\common\listeners\order\FirstOrderListener;
 use app\common\models\Order;
 use app\common\models\UniAccount;
 use app\frontend\modules\order\services\MessageService;
@@ -66,6 +68,13 @@ class orderListener
     public function subscribe(Dispatcher $events)
     {
         $events->listen(AfterOrderCreatedEvent::class, self::class . '@onCreated');
+
+        // 首单
+        //$events->listen(AfterOrderPaidImmediatelyEvent::class, FirstOrderListener::class . '@handle');
+        $events->listen(AfterOrderPaidEvent::class, FirstOrderListener::class . '@handle');
+        // 订单取消,取消首单标识
+        $events->listen(AfterOrderCanceledEvent::class, FirstOrderListener::class . '@cancel');
+
         $events->listen(AfterOrderPaidEvent::class, self::class . '@onPaid');
         $events->listen(AfterOrderCanceledEvent::class, self::class . '@onCanceled');
         $events->listen(AfterOrderSentEvent::class, self::class . '@onSent');

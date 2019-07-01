@@ -531,4 +531,50 @@ class MergePayController extends ApiController
 
         return $this->successJson('成功', $data);
     }
+
+    /**
+     * 微信支付-HJ
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function wechatPayHj(\Request $request)
+    {
+        if (\Setting::get('plugin.convergePay_set.wechat') == false && !app('plugins')->isEnabled('converge_pay')) {
+            throw new AppException('商城未开启微信支付-HJ');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_WECHAT_HJ);
+
+        if ($data['msg'] == '成功') {
+            return $this->successJson($data['msg'], $data);
+        } else {
+            return $this->errorJson($data['msg']);
+        }
+    }
+
+    /**
+     * 微信支付-HJ
+     *
+     * @param \Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws AppException
+     */
+    public function alipayPayHj(\Request $request)
+    {
+        if (\Setting::get('plugin.convergePay_set.alipay') == false && !app('plugins')->isEnabled('converge_pay')) {
+            throw new AppException('商城未开启支付宝支付-HJ');
+        }
+
+        $orderPay = \app\frontend\models\OrderPay::find(request()->input('order_pay_id'));
+        $data = $orderPay->getPayResult(PayFactory::PAY_ALIPAY_HJ);
+
+        if ($data['msg'] == '成功') {
+            return $this->successJson($data['msg'], $data);
+        } else {
+            return $this->errorJson($data['msg']);
+        }
+    }
 }

@@ -1890,5 +1890,29 @@ return [
         ],
         'remark' => '请尽快处理这笔会员提现记录！！',
     ],
-
+    'order_refund_apply_to_saler' => [
+        'template_id_short' => 'OPENTM414174084',
+        'title' => '退款申请通知[卖家]',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您好，[商城名称]产生了一笔退款申请！！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "[退款金额]元",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "[商品详情（含规格）]",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "[订单编号]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请及时处理！！！',
+    ],
 ];

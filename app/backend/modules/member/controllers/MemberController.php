@@ -175,7 +175,8 @@ class MemberController extends BaseController
         $member_set = \Setting::get('shop.member');
         \Log::info('member_set', $member_set);
         if (isset($member_set) && $member_set['headimg']) {
-            $avatar = replace_yunshop($member_set['headimg']);
+//            $avatar = replace_yunshop($member_set['headimg']);
+            $avatar =yz_tomedia($member_set['headimg']);
         } else {
             $avatar = Url::shopUrl('static/images/photo-mr.jpg');
         }
@@ -199,7 +200,6 @@ class MemberController extends BaseController
             //添加mc_members表
             $default_groupid = Member_Group::getDefaultGroupId($uniacid)->first();
             \Log::info('default_groupid', $default_groupid);
-
             $data = array(
                 'uniacid' => $uniacid,
                 'mobile' => $mobile,
@@ -634,6 +634,7 @@ class MemberController extends BaseController
 
         $list = MemberParent::children($request)
             ->orderBy('level','asc')
+            ->orderBy('id','asc')
             ->paginate($this->pageSize)
             ->toArray();
 
