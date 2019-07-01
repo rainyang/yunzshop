@@ -114,10 +114,6 @@ class LoginController extends ApiController
 
     public function checkLogin()
     {
-        if (MemberService::isLogged()) {
-            return $this->successJson('已登录');
-        }
-
-        return $this->errorJson('登录失败');
+        return $this->successJson('已登录');
     }
 }
