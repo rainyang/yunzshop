@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateImsYzUsersProfileMobile extends Migration
+class AddMessageTemplateNewsLink extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class UpdateImsYzUsersProfileMobile extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('yz_users_profile')) {
-            if (Schema::hasColumn('yz_users_profile', 'mobile')) {
-                Schema::table('yz_users_profile', function (Blueprint $table) {
-                    $table->dropUnique('yz_users_profile_mobile_unique');
+        //
+        //添加字段
+        if (Schema::hasTable('yz_message_template')) {
+            if (!Schema::hasColumn('yz_message_template', 'news_link')) {
+                Schema::table('yz_message_template', function (Blueprint $table) {
+                    $table->string('news_link')->nullable();
                 });
             }
         }
@@ -29,6 +31,6 @@ class UpdateImsYzUsersProfileMobile extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('yz_users_profile');
+        //
     }
 }

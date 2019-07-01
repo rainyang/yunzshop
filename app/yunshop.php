@@ -413,6 +413,10 @@ class YunComponent implements ArrayAccess
         return $this->values[$name];
     }
 
+    function __isset($name) {
+        return array_key_exists($name, $this->values);
+    }
+
     public function set($name, $value)
     {
         $this->values[$name] = $value;

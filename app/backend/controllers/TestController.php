@@ -39,16 +39,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        // todo 循环用户
-        $agentModels = \Yunshop\Commission\models\Agents::get();
-        $agentModels->each(function (\Yunshop\Commission\models\Agents $agent) {
-            $amount = $this->getAmountByMemberId($agent->member_id);
-            if ($amount) {
-                $agent->commission_pay = $amount;
 
-                $agent->save();
-            }
-        });
     }
 
     private $amountItems;

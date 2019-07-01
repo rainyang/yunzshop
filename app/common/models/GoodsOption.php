@@ -16,6 +16,7 @@ use app\common\exceptions\AppException;
  * @property int uniacid
  * @property int goods_id
  * @property int title
+ * @property int stock
  */
 class GoodsOption extends \app\common\models\BaseModel
 {

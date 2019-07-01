@@ -18,6 +18,7 @@ use app\platform\modules\user\requests\AdminUserUpdateRequest;
 use app\platform\modules\user\models\YzUserProfile;
 use app\platform\modules\application\models\UniacidApp;
 use app\platform\modules\application\models\AppUser;
+use app\platform\controllers\ResetpwdController;
 
 class AdminUserController extends BaseController
 {
@@ -48,14 +49,12 @@ class AdminUserController extends BaseController
      */
     public function create()
     {
-        $user = request()->user;
-        if ($user) {
-            $validate = $this->validate($this->rules(), $user, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($user, $user_model = ''));
+        $data = request()->user;
+        if (!$data) {
+            return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
+
+        return $this->returnMessage(0, $data);
     }
 
     /**
@@ -67,28 +66,19 @@ class AdminUserController extends BaseController
     public function edit()
     {
         $uid = request()->uid;
+        $data = request()->user;
+
         if (!$uid) {
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
+
         $user = AdminUser::with('hasOneProfile')->find($uid);
-        if (!$user) {
-            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
-        }
-        $data = request()->user;
 
-        if($data) {
-            $validate  = $this->validate($this->rules($user), $data, $this->message());
-            if ($validate) {
-                return $validate;
-            }
-            return $this->check(AdminUser::saveData($data, $user));
+        if ($data) {
+            return $this->returnMessage(1, $data, $user);
         }
 
-        if ($user) {
-            return $this->successJson('成功', $user);
-        } else {
-            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
-        }
+        return $this->successJson('成功', $user);
     }
 
     /**
@@ -127,7 +117,10 @@ class AdminUserController extends BaseController
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
         $result = AdminUser::where('uid', $uid)->update(['status'=>$status]);
+        $status == '2' ? $state = '有效' : $state = '无效' ;
+
         if ($result) {
+            \Log::info('状态修改成功，现状态'.$state);
             return $this->check(AdminUser::returnData('1'));
         } else {
             return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
@@ -149,15 +142,8 @@ class AdminUserController extends BaseController
         }
 
         $user = AdminUser::getData($uid);
-        if (!$user) {
-            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
-        }
-        $validate  = $this->validate($this->rules(), $data, $this->message());
-        if ($validate) {
-            return $validate;
-        }
 
-        return $this->check(AdminUser::saveData($data, $user));
+        return $this->returnMessage(1, $data, $user);
     }
 
     /**
@@ -259,10 +245,84 @@ class AdminUserController extends BaseController
 
         $user = \Auth::guard('admin')->user();
 
-        $validate  = $this->validate($this->rules($user, $data), $data, $this->message());
+        return $this->returnMessage(1, $data, $user);
+    }
+
+    /**
+     * 发送手机验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendCode()
+    {
+        $user = \Auth::guard('admin')->user();
+        if (request()->mobile != $user['hasOneProfile']['mobile']) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        return (new ResetpwdController)->SendCode();
+    }
+
+    /**
+     * 修改手机号
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function modifyMobile()
+    {
+        $data = request()->data;
+        $user = \Auth::guard('admin')->user();
+
+        if (request()->data['old_mobile'] != $user['hasOneProfile']['mobile']) {
+            return $this->errorJson(['您输入的手机与登录的账号不符合']);
+        }
+
+        $data['avatar'] = $user['hasOneProfile']['avatar'];
+
+        if (AdminUser::saveProfile($data, $user)) {
+            return $this->check(AdminUser::returnData('0', AdminUser::FAIL));
+        } else {
+            return $this->check(AdminUser::returnData('1'));
+        }
+    }
+
+    /**
+     * 发送新手机号验证码
+     *
+     * @return \Illuminate\Http\JsonResponse|string
+     */
+    public function sendNewCode()
+    {
+        $mobile = request()->mobile;
+        $state = \YunShop::request()->state ? : '86';
+
+        return (new ResetpwdController)->send($mobile, $state);
+    }
+
+    /**
+     * 返回消息
+     *
+     * @param $sign 1: 修改, 0: 添加
+     * @param null $data 参数
+     * @param array $user 用户信息
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function returnMessage($sign, $data = null, $user = [])
+    {
+        if ($sign && !$user) {
+            return $this->check(AdminUser::returnData('0', AdminUser::NO_DATA));
+        }
+
+        $validate = $this->validate($this->rules(), $data, $this->message());
+
+        if ($sign) {
+            $validate = $this->validate($this->rules($user), $data, $this->message());
+        }
+
         if ($validate) {
             return $validate;
         }
+
         return $this->check(AdminUser::saveData($data, $user));
     }
 
@@ -299,12 +359,14 @@ class AdminUserController extends BaseController
         $rules = [];
         if (request()->path() == "admin/user/create") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users',
+                'username' => 'required|unique:yz_admin_users',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile',
             ];
         }else if(request()->path() == "admin/user/edit") {
             $rules = [
-                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+//                'username' => 'required|regex:/^[\x{4e00}-\x{9fa5}A-Za-z0-9_\-]{3,30}$/u|unique:yz_admin_users,username,'.$user['uid'].',uid',
+                'username' => 'required|unique:yz_admin_users,username,'.$user['uid'].',uid',
                 'mobile' => 'required|regex:/^1[34578]\d{9}$/|unique:yz_users_profile,mobile,'.$user['hasOneProfile']['id'],
             ];
         }

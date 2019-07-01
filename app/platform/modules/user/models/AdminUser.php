@@ -93,7 +93,7 @@ class AdminUser extends Authenticatable
      * @param string $user_model
      * @return mixed
      */
-    public static function saveData($data, $user_model)
+    public static function saveData($data, $user_model = [])
     {
         $verify_res = self::verifyData($data, $user_model);
         if ($verify_res['sign'] == '0') {
@@ -101,8 +101,9 @@ class AdminUser extends Authenticatable
         }
         $verify_res['password'] ? $verify_res['password'] = bcrypt($verify_res['password']) : null;
         unset($verify_res['re_password']);
+        \Log::info("----------管理员用户----------", "管理员:(uid:{$verify_res['uid']})-----用户信息-----".$verify_res.'-----参数-----'.json_encode($data));
         if ($verify_res->save()) {
-            if ((request()->path() != "admin/user/modify_user" && request()->path() == "admin/user/change")) {
+            if (request()->path() != "admin/user/modify_user" && request()->path() != "admin/user/change") {
                 if (self::saveProfile($data, $verify_res)) {
                     return self::returnData(0, self::STORAGE);
                 }
@@ -120,14 +121,16 @@ class AdminUser extends Authenticatable
      * @param array $user_model
      * @return AdminUser|array
      */
-    public static function verifyData($data, $user_model = [])
+    public static function verifyData($data, $user_model)
     {
         $data['username'] ? $data['username'] = trim($data['username']) : null;
         $data['password'] ? $data['password'] = trim($data['password']) : null;
+        $data['application_number'] == 0 ? $data['application_number'] = '' : null ;
+        $data['endtime'] == 0 ? $data['endtime'] = '' : null ;
 
         if (request()->path() == "admin/user/change" || (request()->path() == "admin/user/modify_user" && $data['password'])) {
             $data['old_password'] = trim($data['old_password']);
-            if (!Hash::check($data['old_password'], $user_model['password'])) {
+            if (request()->path() != "admin/user/change" && (!Hash::check($data['old_password'], $user_model['password']))) {
                 return self::returnData(0, self::ORIGINAL);
             } elseif (Hash::check($data['password'], $user_model['password'])) {
                 return self::returnData(0, self::NEW_AND_ORIGINAL);
@@ -266,14 +269,14 @@ class AdminUser extends Authenticatable
         ];
 
         $type = 1;
-        $content = '添加了用户';
+        $content = '添加用户';
         $profile_model = new YzUserProfile;
 
         if (request()->path() == "admin/user/create") {
             $data['uid'] = $user->uid;
-        } elseif (request()->path() == "admin/user/edit") {
+        } elseif (request()->path() == "admin/user/edit" || request()->path() == "admin/user/modify_mobile") {
             $type = 3;
-            $content = '编辑了用户';
+            $content = '编辑用户';
             $profile_model = YzUserProfile::where('uid', $user->uid)->first();
         }
 

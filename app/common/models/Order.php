@@ -72,7 +72,7 @@ use Illuminate\Support\Facades\DB;
  * @property float change_price
  * @property float cost_amount
  * @property float change_dispatch_price
- * @property float fee
+ * @property float fee_amount
  * @property int plugin_id
  * @property int is_plugin
  * @property Collection orderGoods
@@ -110,7 +110,6 @@ class Order extends BaseModel
         'is_virtual' => 0,
     ];
     static protected $needLog = true;
-
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
     const WAIT_PAY = 0;
@@ -463,7 +462,6 @@ class Order extends BaseModel
         return $statusName;
     }
 
-
     /**
      * 支付类型汉字
      * @return string
@@ -504,6 +502,7 @@ class Order extends BaseModel
         //$status = [Order::WAIT_PAY, Order::WAIT_SEND, Order::WAIT_RECEIVE, Order::COMPLETE, Order::REFUND];
         $status_counts = $query->select('status', DB::raw('count(*) as total'))
             ->whereIn('status', $status)->where('plugin_id', '<', 900)
+            ->HidePluginIds()
             ->groupBy('status')->get()->makeHidden(['status_name', 'pay_type_name', 'has_one_pay_type', 'button_models'])
             ->toArray();
         if (in_array(Order::REFUND, $status)) {
@@ -908,6 +907,11 @@ class Order extends BaseModel
     public function orderCreatedJob()
     {
         return $this->hasOne(OrderCreatedJob::class, 'order_id');
+    }
+
+    public function orderSentJob()
+    {
+        return $this->hasOne(OrderSentJob::class, 'order_id');
     }
 
     public function orderPaidJob()

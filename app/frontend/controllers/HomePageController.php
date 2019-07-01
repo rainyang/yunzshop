@@ -171,11 +171,15 @@ class HomePageController extends ApiController
                 }
 
                 if ($page) {
-                    if (empty($pageId) && Cache::has($member_id . '_designer_default_0')) {
-                        $designer = Cache::get($member_id . '_designer_default_0');
-                    } else {
+                    if (!Cache::has("{$member_id}_designer_default_{$page->id}")) {
+
                         $designer = (new \Yunshop\Designer\services\DesignerService())->getPageForHomePage($page->toArray());
+
+                        Cache::put("{$member_id}_designer_default_{$page->id}", $designer, 180);
+                    } else {
+                        $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
+
                     if ($is_love){
                         foreach ($designer['data'] as &$data){
                             if ($data['temp']=='goods'){
@@ -192,10 +196,6 @@ class HomePageController extends ApiController
                                 }
                             }
                         }
-                    }
-
-                    if (empty($pageId) && !Cache::has($member_id . '_designer_default_0')) {
-                        Cache::put($member_id . '_designer_default_0', $designer, 180);
                     }
 
                     $result['item'] = $designer;
@@ -956,7 +956,7 @@ class HomePageController extends ApiController
         if (!is_null(\Config('customer_service'))) {
             $class    = array_get(\Config('customer_service'), 'class');
             $function = array_get(\Config('customer_service'), 'function');
-            $ret      = $class::$function(request()->goods_id);
+            $ret      = $class::$function(request()->id);
             if ($ret) {
                 $shop['cservice'] = $ret;
             }
@@ -974,9 +974,11 @@ class HomePageController extends ApiController
                 foreach ($value['page_type_cast'] as $item){
                     if ($item == 1){
                         $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
-                        $share['title'] = $designer->title;
-                        $share['icon'] = $designer->img;
-                        $share['desc'] = $designer->desc;
+                        if (!empty($share['icon']) && !empty($share['desc'])) {
+                            $share['title'] = $designer->title;
+                            $share['icon'] = $designer->img;
+                            $share['desc'] = $designer->desc;
+                        }
                         break;
                     }
                 }

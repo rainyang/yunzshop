@@ -447,7 +447,7 @@ class ShopController extends BaseController
                 $originalName = $file->getClientOriginalName(); // 文件原名
                 $ext = $file->getClientOriginalExtension();     // 扩展名
                 $realPath = $file->getRealPath();   //临时文件的绝对路径
-                $i = \YunShop::app()->uniaccount['uniacid'];
+                $i = \YunShop::app()->uniacid;
 
                 $upload_file = $i . '_' . $originalName;
 

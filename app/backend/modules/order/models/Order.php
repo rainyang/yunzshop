@@ -21,8 +21,6 @@ use app\common\models\PayTypeGroup;
  */
 class Order extends \app\common\models\Order
 {
-    protected $appends = ['status_name', 'pay_type_name'];
-
     //订单导出订单数据
     public static function getExportOrders($search)
     {
@@ -36,7 +34,7 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
-    public function scopeExportOrders(Builder $query, $search)
+    public function scopeExportOrders(Order $query, $search)
     {
         $order_builder = $query->search($search);
 
@@ -53,11 +51,9 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders(Builder $order_builder, $search = [])
+    public function scopeOrders(Builder $order_builder, $search)
     {
-        if(!empty($search)){
-            $order_builder->search($search);
-        }
+        $order_builder->search($search);
 
         $orders = $order_builder->with([
             'belongsToMember' => self::memberBuilder(),
@@ -69,7 +65,7 @@ class Order extends \app\common\models\Order
             'process',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
-            'hasOneOrderPay'=> function ($query) {
+            'hasOneOrderPay'=> function (Builder $query) {
                 $query->orderPay();
             },
 
