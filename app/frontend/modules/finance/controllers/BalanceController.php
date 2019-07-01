@@ -132,7 +132,6 @@ class BalanceController extends ApiController
                     $button[] = $item;
                 }
             }
-
             return $button;
         }
 
