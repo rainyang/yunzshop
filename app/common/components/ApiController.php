@@ -58,7 +58,7 @@ class ApiController extends BaseController
 
         $member = MemberFactory::create($type);
 
-        if (!$member->isLogged()) {
+        if (!$member->checkLogged()) {
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {
@@ -101,5 +101,7 @@ class ApiController extends BaseController
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         }
+
+        throw new MemberNotLoginException('请登录');
     }
 }

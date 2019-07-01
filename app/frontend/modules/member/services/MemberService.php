@@ -71,7 +71,7 @@ class MemberService
      *
      * @return bool
      */
-    /*public static function isLogged()
+    public static function isLogged()
     {
         if (\YunShop::app()->getMemberId()) {
             $del_member = MemberDel::byMemberId(\YunShop::app()->getMemberId())->first();
@@ -81,7 +81,7 @@ class MemberService
             }
         }
         return \YunShop::app()->getMemberId() && \YunShop::app()->getMemberId() > 0;
-    }*/
+    }
 
     /**
      * 验证手机号和密码

@@ -46,7 +46,7 @@ class MemberOfficeAccountService extends MemberService
 
         $callback = ($_SERVER['REQUEST_SCHEME'] ? $_SERVER['REQUEST_SCHEME'] : 'http')  . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
-        $state = 'yz';
+        $state = 'yz-' . session_id();
 
         $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
@@ -73,9 +73,10 @@ class MemberOfficeAccountService extends MemberService
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-            \YunShop::app()->openid = $userinfo['openid'];
 
-            setcookie('Yz-Token', encrypt($userinfo['access_token'] . ':' . $member_id . ':' . $userinfo['openid']));
+            Session::set('member_id', $member_id);
+            Session::set('openid', $userinfo['openid']);
+            setcookie('Yz-Token', encrypt($userinfo['access_token']));
         } else {
             $this->_setClientRequestUrl();
 
@@ -478,86 +479,68 @@ class MemberOfficeAccountService extends MemberService
         exit;
     }
 
-    public function isLogged()
+    public function checkLogged()
     {
-         $uniacid  = \YunShop::app()->uniacid;
-         $token = \request()->getPassword();
-         $ids   = \request()->getUser();
-         $ids   = explode('=', $ids);
+        $uid = \YunShop::app()->getMemberId();
+        $uniacid = \YunShop::app()->uniacid;
 
-         if ($_COOKIE['access'] && (!is_null($ids) || $ids != 'null')) {
-             if (SubMemberModel::getMemberByTokenAndUid($token, $ids[0])) {
-                 return true;
-             }
-         }
+         if ($uid) {
+             $openid = Session::get('openid');
 
-         if (isset($_COOKIE['Yz-Token'])) {
-             try {
-                 $decrypt = decrypt($_COOKIE['Yz-Token']);
-                 $decrypt = explode(':', $decrypt);
+             if (isset($_COOKIE['Yz-Token'])) {
+                 try {
+                     $token = decrypt($_COOKIE['Yz-Token']);
 
-                 $data = [
-                     'token' => $decrypt[0],
-                     'uid'   => $decrypt[1] . '=' . $decrypt[2]
-                 ];
-             } catch (DecryptException $e) {
-                 return $this->successJson('登录失败', $e->getMessage());
+                 } catch (DecryptException $e) {
+                     return $this->successJson('登录失败', $e->getMessage());
+                 }
              }
 
-             if (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
-                 || ($token != $data['token'])) {
-                     $yz_token = decrypt($_COOKIE['Yz-Token']);
-                     $yz_token = explode(':', $yz_token);
-
-                     $token = $yz_token[0];
-                     $ids   =  [
-                         $yz_token[1],
-                         $yz_token[2]
-                     ];
-             }
-         }
-
-         if (isset($ids[0]) && isset($ids[1])) {
-             $uid   = $ids[0];
-             $openid = $ids[1];
-
-             $member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
-
-             if (!is_null($member) && !empty($token) && !empty($uid)) {
-                 $auth_url = $this->_tokenAuth($token, $openid);
-
-                 $auth_info = \Curl::to($auth_url)
-                     ->asJsonResponse(true)
-                     ->get();
-
-                 if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
-                     setcookie('access', true, time() + 7000);
-
+             if ($_COOKIE['access']) {
+                 if (SubMemberModel::getMemberByTokenAndUid($token, $uid)) {
                      return true;
-                 } else {
-                     $account = AccountWechats::getAccountByUniacid($uniacid);
-                     $appId = $account->key;
-                     $refreshToken = $member->refresh_token_1;
+                 }
+             }
 
-                     $refresh_url = $this->_refreshAuth($appId, $refreshToken);
+             if (isset($uid) && isset($openid)) {
+                 $member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
 
-                     $refresh_info = \Curl::to($refresh_url)
+                 if (!is_null($member) && !empty($token) && !empty($uid)) {
+                     $auth_url = $this->_tokenAuth($token, $openid);
+
+                     $auth_info = \Curl::to($auth_url)
                          ->asJsonResponse(true)
                          ->get();
 
-                     if (!isset($refresh_info['errcode'])) {
-                         if ($token != $refresh_info['access_token']) {
-                             $member->access_token_1 = $refresh_info['access_token'];
-                             $member->access_expires_in_1 = time() + 7200;
-                         }
-
-                         $member->refresh_token_1 = $refresh_info['refresh_token'];
-                         $member->save();
-
-                         setcookie('Yz-Token', encrypt($refresh_info['access_token'] . ':' . $uid . ':' . $openid));
+                     if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
                          setcookie('access', true, time() + 7000);
 
                          return true;
+                     } else {
+                         $account = AccountWechats::getAccountByUniacid($uniacid);
+                         $appId = $account->key;
+                         $refreshToken = $member->refresh_token_1;
+
+                         $refresh_url = $this->_refreshAuth($appId, $refreshToken);
+
+                         $refresh_info = \Curl::to($refresh_url)
+                             ->asJsonResponse(true)
+                             ->get();
+
+                         if (!isset($refresh_info['errcode'])) {
+                             if ($token != $refresh_info['access_token']) {
+                                 $member->access_token_1 = $refresh_info['access_token'];
+                                 $member->access_expires_in_1 = time() + 7200;
+                             }
+
+                             $member->refresh_token_1 = $refresh_info['refresh_token'];
+                             $member->save();
+
+                             setcookie('Yz-Token', encrypt($refresh_info['access_token'] . ':' . $uid . ':' . $openid));
+                             setcookie('access', true, time() + 7000);
+
+                             return true;
+                         }
                      }
                  }
              }

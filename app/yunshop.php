@@ -569,11 +569,8 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        $ids   = \request()->getUser();
-        $ids   = explode('=', $ids);
-
-        if (isset($ids[0]) && !empty($ids[0])) {
-            return $ids[0];
+        if (Session::get('member_id')) {
+            return Session::get('member_id');
         } else {
             return 0;
         }

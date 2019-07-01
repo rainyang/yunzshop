@@ -78,20 +78,12 @@ class MemberMiniAppService extends MemberService
             $json_user['headimgurl'] = $json_user['avatarUrl'];
             $json_user['sex']        = $json_user['gender'];
 
-            $token_url = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=' . $min_set['key'] . '&secret=' . $min_set['secret'];
-
-            $token_info = \Curl::to($token_url)
-                ->asJsonResponse(true)
-                ->get();
-
-            $token_info['refresh_token'] = '';
-
-            $json_user = array_merge($json_user, $token_info);
-
             //Login
             $member_id = $this->memberLogin($json_user);
 
-            setcookie('Yz-Token', encrypt($json_user['access_token'] . ':' . $member_id . ':' . $json_user['openid']));
+            Session::set('member_id', $member_id);
+            Session::set('openid', $json_user['openid']);
+            setcookie('Yz-Token', encrypt($json_user['access_token']));
 
             $random = $this->wx_app_session($user_info);
 
@@ -277,93 +269,8 @@ class MemberMiniAppService extends MemberService
      *
      * @return bool
      */
-    public function isLogged()
+    public function checkLogged()
     {
-        $uniacid  = \YunShop::app()->uniacid;
-        $token = \request()->getPassword();
-        $ids   = \request()->getUser();
-        $ids   = explode('=', $ids);
-
-        if ($_COOKIE['access'] && (!is_null($ids) || $ids != 'null')) {
-            if (MemberMiniAppModel::getMemberByTokenAndUid($token, $ids[0])) {
-                return true;
-            }
-        }
-
-        if (isset($_COOKIE['Yz-Token'])) {
-            try {
-                $decrypt = decrypt($_COOKIE['Yz-Token']);
-                $decrypt = explode(':', $decrypt);
-
-                $data = [
-                    'token' => $decrypt[0],
-                    'uid'   => $decrypt[1] . '=' . $decrypt[2]
-                ];
-            } catch (DecryptException $e) {
-                return $this->successJson('登录失败', $e->getMessage());
-            }
-
-            if (is_null($token) || is_null($ids) || $ids == 'null' || $token == 'null'
-                || ($token != $data['token'])) {
-                $yz_token = decrypt($_COOKIE['Yz-Token']);
-                $yz_token = explode(':', $yz_token);
-
-                $token = $yz_token[0];
-                $ids   =  [
-                    $yz_token[1],
-                    $yz_token[2]
-                ];
-            }
-        }
-
-        if (isset($ids[0]) && isset($ids[1])) {
-            $uid   = $ids[0];
-            $openid = $ids[1];
-
-            $member = MemberMiniAppModel::getMemberByTokenAndUid($token, $uid);
-
-            if (!is_null($member) && !empty($token) && !empty($uid)) {
-                $min_set = \Setting::get('plugin.min_app');
-
-                $auth_url = $this->_tokenAuth($token, $openid);
-
-                $auth_info = \Curl::to($auth_url)
-                    ->asJsonResponse(true)
-                    ->get();
-
-                if (!isset($auth_info['errcode'])) {
-                    setcookie('access', true, time() + 7000);
-
-                    return true;
-                } else {
-                    // TODO refreshToken
-
-                    $account = '';
-                    $appId = $account->key;
-                    $refreshToken = $member->refresh_token_1;
-
-                    $refresh_url = $this->_refreshAuth($appId, $refreshToken);
-
-                    $refresh_info = \Curl::to($refresh_url)
-                        ->asJsonResponse(true)
-                        ->get();
-
-                    if (!isset($refresh_info['errcode'])) {
-                        if ($token != $refresh_info['access_token']) {
-                            $member->access_token_1 = $refresh_info['access_token'];
-                            $member->access_expires_in_1 = time() + 7200;
-
-                            $member->save();
-                        }
-
-                        setcookie('access', true, time() + 7000);
-
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return MemberService::isLogged();
     }
 }

@@ -63,5 +63,13 @@ class MemberMobileService extends MemberService
 
     }
 
-
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged()
+    {
+        return MemberService::isLogged();
+    }
 }

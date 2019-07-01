@@ -37,6 +37,17 @@ class LoginController extends ApiController
             $type = Client::getType();
         }
 
+        if (1 == $type && MemberService::isLogged()) {
+            $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
+
+            if (Session::get('client_url')) {
+                $url = Session::get('client_url');
+            }
+
+            redirect($url)->send();
+        }
+
+
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
@@ -103,37 +114,10 @@ class LoginController extends ApiController
 
     public function checkLogin()
     {
-        $data = [
-            'token' => '',
-            'uid'   => ''
-        ];
-
-        $token = \request()->getPassword();
-        $ids   = \request()->getUser();
-
-        if ($_COOKIE['Yz-Token']) {
-            try {
-                $decrypt = decrypt($_COOKIE['Yz-Token']);
-                $decrypt = explode(':', $decrypt);
-
-                $data = [
-                    'token' => $decrypt[0],
-                    'uid'   => $decrypt[1] . '=' . $decrypt[2]
-                ];
-            } catch (DecryptException $e) {
-                return $this->successJson('登录失败', $e->getMessage());
-            }
-
-            setcookie('Yz-Token', '', time() - 3600);
-        } elseif (!is_null($token) || !is_null($ids) || $ids != 'null' || $token != 'null') {
-            $data = [
-                'token' => $token,
-                'uid'   => $ids
-            ];
-        } else {
-            return $this->errorJson('登录失败');
+        if (MemberService::isLogged()) {
+            return $this->successJson('已登录');
         }
 
-        return $this->successJson('已登录', $data);
+        return $this->errorJson('登录失败');
     }
 }

@@ -95,11 +95,11 @@ class BaseController extends Controller
     protected function setCookie()
     {
         $session_id = '';
-        /*if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
+        if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
             $pieces     = explode('-', \YunShop::request()->state);
             $session_id = $pieces[1];
             unset($pieces);
-        }*/
+        }
 
         if (isset($_COOKIE[session_name()])) {
             $session_id = $_COOKIE[session_name()];
