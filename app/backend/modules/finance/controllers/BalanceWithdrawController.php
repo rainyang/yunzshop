@@ -64,6 +64,7 @@ class BalanceWithdrawController extends BaseController
                 }
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);//提现失败通知
 
             return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]), 'error');
         }
