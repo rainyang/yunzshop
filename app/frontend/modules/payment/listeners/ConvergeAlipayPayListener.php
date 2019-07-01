@@ -38,10 +38,10 @@ class ConvergeAlipayPayListener
 
     public function subscribe($events)
     {
-//        $events->listen(
-//            GetOrderPaymentTypeEvent::class,
-//            self::class . '@onGetPaymentTypes'
-//        );
+        $events->listen(
+            GetOrderPaymentTypeEvent::class,
+            self::class . '@onGetPaymentTypes'
+        );
         $events->listen(
             RechargeComplatedEvent::class,
             self::class . '@onGetPaymentTypes'
