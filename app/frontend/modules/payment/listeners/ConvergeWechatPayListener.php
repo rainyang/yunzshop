@@ -24,7 +24,13 @@ class ConvergeWechatPayListener
     {
         $set = \Setting::get('plugin.convergePay_set');
 
-        if (\YunShop::plugin()->get('converge_pay') && !is_null($set) && 1 == $set['converge_pay_status'] && 1 == $set['wechat']['wechat_status'] && \YunShop::app()->type == 2 ? $set['wechat']['XCX_appid'] : $set['wechat']['GZH_appid'] && \YunShop::request()->type != 7) {
+        if (\YunShop::plugin()->get('converge_pay')
+            && !is_null($set)
+            && 1 == $set['converge_pay_status']
+            && 1 == $set['wechat']['wechat_status']
+            && \YunShop::request()->type == 2 ? $set['wechat']['XCX_appid'] : $set['wechat']['GZH_appid']
+            && \YunShop::request()->type != 7
+        ) {
             $result = [
                 'name' => '微信支付(HJ)',
                 'value' => '28',
