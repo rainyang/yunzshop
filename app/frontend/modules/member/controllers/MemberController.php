@@ -124,6 +124,7 @@ class MemberController extends ApiController
         //自定义表单
         $data['myform'] = (new MemberService())->memberInfoAttrStatus($member_info['yz_member']);
 
+        $data['relation_switch'] = $data['is_agent'] ? 1 : 0;
         //个人中心的推广二维码
         if ($data['relation_switch']) {
             $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
