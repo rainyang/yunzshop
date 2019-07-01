@@ -178,6 +178,9 @@
                     @elseif($item['pay_way'] == 'yop_pay')
                         <input type="hidden" name="pay_way" value="7">
                         <input type="submit" name="submit_pay" value="易宝提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                    @elseif($item['pay_way'] == 'converge_pay')
+                        <input type="hidden" name="pay_way" value="8">
+                        <input type="submit" name="submit_pay" value="汇聚提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 

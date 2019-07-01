@@ -76,6 +76,12 @@ class RefundService
             case PayType::YOP:
                 $result = $this->yopWechat();
                 break;
+            case PayType::WECHAT_HJ_PAY:
+                $result = $this->ConvergeWechat();
+                break;
+            case PayType::ALIPAY_HJ_PAY:
+                $result = $this->ConvergeWechat();
+                break;
             default:
                 $result = false;
                 break;
@@ -240,6 +246,25 @@ class RefundService
 
         if (!$result) {
             throw new AdminException('环迅微信退款失败');
+        }
+        return $result;
+    }
+
+    private function ConvergeWechat()
+    {
+        //汇聚微信退款 同步改变退款和订单状态
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
+        $pay = PayFactory::create($this->refundApply->order->pay_type_id);
+
+        $result = $pay->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn,
+            $this->refundApply->order->hasOneOrderPay->amount, [
+                'price' => $this->refundApply->price,
+                'reason' => $this->refundApply->reason
+            ]);
+
+        if ($result['ra_Status'] == '101') {
+            \Log::debug('汇聚微信或支付宝退款失败，失败原因'.$result['rc_CodeMsg'].'-----失败参数-----'.json_encode($result));
+            throw new AdminException('汇聚微信或支付宝退款失败，失败原因'.$result['rc_CodeMsg'].'-----失败参数-----'.json_encode($result));
         }
         return $result;
     }
