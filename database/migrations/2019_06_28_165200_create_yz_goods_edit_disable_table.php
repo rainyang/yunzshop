@@ -19,6 +19,7 @@ class CreateYzGoodsEditDisableTable extends Migration
                 $table->integer('uniacid')->comment('公众号');
                 $table->integer('goods_id')->comment('商品id');
                 $table->string('message')->comment('提示信息，简述禁止编辑商品的原因,如:商品已参加XX活动，不可编辑，请等待XX活动结束!');
+                $table->string('key')->comment('关键字,通过该字段可区分一条记录!');
 
                 $table->integer('created_at')->nullable();
                 $table->integer('updated_at')->nullable();
