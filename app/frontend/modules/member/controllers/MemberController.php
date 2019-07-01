@@ -130,6 +130,10 @@ class MemberController extends ApiController
             $data['poster'] = $this->getPoster($member_info['yz_member']['is_agent']);
         }
 
+        //是否显示我的推广
+        $withdraw_status = PortType::popularizeShow(\YunShop::request()->type);
+        $data['withdraw_status'] = $withdraw_status;
+
         //邀请码
         $v = request('v');
         if (!is_null($v)) {
@@ -1800,11 +1804,12 @@ class MemberController extends ApiController
             }
 
             if ($store && $store->is_black != 1) {
+                //todo 门店管理可以放到这里
                 $data[] = [
                     'name'  => 'store-cashier',
                     'title' => '门店管理',
-                    'class' => 'icon-member-store-apply1',
-                    'url'   => 'storeApply',
+                    'class' => 'icon-member_store',
+                    'url'   => 'store_manage',
                 ];
 
                 if ($store->hasOneCashier->hasOneCashierGoods->is_open == 1) {
