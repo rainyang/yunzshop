@@ -181,6 +181,9 @@ class BalanceWithdrawController extends BaseController
             case 'yop_pay': //易宝余额提现
                 return $this->yopPayment();
                 break;
+            case 'converge_pay': //汇聚余额提现
+                return $this->convergePayment($this->paymentRemark());
+                break;
             default:
                 throw new AppException('未知打款方式！！！');
         }
@@ -282,6 +285,24 @@ class BalanceWithdrawController extends BaseController
             return ['errno' => 0, 'message' => '打款成功'];
         }
         $result['errno'] = 1;
+
+        return $result;
+    }
+
+    /**
+     * 汇聚余额提现
+     *
+     * @param $remark
+     * @return array|mixed
+     * @throws AppException
+     */
+    private function convergePayment($remark)
+    {
+        $result = WithdrawService::convergePayMent($this->withdrawModel, $remark);
+
+        if ($result['data']['errorCode'] && !$result['hmac']) {
+            return $this->paymentError($result['data']['errorDesc']);
+        }
 
         return $result;
     }
