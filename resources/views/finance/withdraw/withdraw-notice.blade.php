@@ -169,8 +169,8 @@
      <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败通知</label>
         <div class="col-sm-8 col-xs-12">
-            <select name='withdraw[notice][withdraw_fail]' class='form-control diy-notice'>
-                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail'])) value="{{$set['withdraw_fail']}}"
+            <select name='withdraw[notice][income_withdraw_fail]' class='form-control diy-notice'>
+                <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_fail'])) value="{{$set['income_withdraw_fail']}}"
                         selected @else value=""
                         @endif
                 >
@@ -178,7 +178,7 @@
                 </option>
                 @foreach ($temp_list as $item)
                     <option value="{{$item['id']}}"
-                            @if($set['withdraw_fail'] == $item['id'])
+                            @if($set['income_withdraw_fail'] == $item['id'])
                             selected
                             @endif>{{$item['title']}}</option>
                 @endforeach
@@ -186,8 +186,8 @@
             <div class="help-block">通知公众平台模板消息编号: OPENTM207574677</div>
         </div>
         <div class="col-sm-2 col-xs-6">
-            <input class="mui-switch mui-switch-animbg" id="withdraw_fail" type="checkbox"
-                   @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['withdraw_fail']))
+            <input class="mui-switch mui-switch-animbg" id="income_withdraw_fail" type="checkbox"
+                   @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_fail']))
                    checked
                    @endif
                    onclick="message_default(this.id)"/>

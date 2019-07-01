@@ -537,7 +537,17 @@ return [
         '昵称', '时间'
         ]
     ],
-
+/**
+ * 收入提现失败通知
+ */
+    'finance_income_withdraw_fail' => [
+        'title' => '余额(提现失败通知)',
+        'subtitle' => '余额提现失败通知',
+        'value' => 'finance_income_withdraw_fail',
+        'param' => [
+            '时间', '金额', '手续费', '提现单号'
+        ]
+    ],
 
     /*$data = [
         [

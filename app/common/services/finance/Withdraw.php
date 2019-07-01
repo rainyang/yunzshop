@@ -79,7 +79,7 @@ class Withdraw
                 'arrival_at' => time(),
             ];
             
-            \app\common\services\finance\BalanceNoticeService::withdrawFailureNotice($withdrawModel); //发送消息
+            \app\common\services\finance\BalanceNoticeService::withdrawFailureNotice($withdraw); //发送消息
 
             \Log::info('修改提现记录状态', print_r($updatedData, true));
             return WithdrawModel::updatedWithdrawStatus($withdrawId, $updatedData);

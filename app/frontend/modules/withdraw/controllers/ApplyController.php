@@ -19,6 +19,7 @@ use app\common\facades\Setting;
 use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use app\common\services\finance\MessageService;
 
 class ApplyController extends ApiController
 {
@@ -196,6 +197,8 @@ class ApplyController extends ApiController
         //$post_data = $this->testData();
 
         if (!$post_data) {
+            MessageService::withdrawFailure(); //发送收入提现失败消息通知
+
             throw new AppException('Undetected submission of data');
         }
         // 12月20号修改 提现原代码是提现金额不能小于1元
