@@ -232,10 +232,10 @@
                     <td>
                         @if($row->type == 'balance')
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}" target = "_blank">详情</a>
+                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}">详情</a>
                         @else
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('withdraw.detail.index', ['id' => $row->id])}}" target = "_blank">详情</a>
+                               href="{{yzWebUrl('withdraw.detail.index', ['id' => $row->id])}}">详情</a>
                         @endif
                     </td>
                 </tr>
