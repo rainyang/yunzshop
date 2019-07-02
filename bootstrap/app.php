@@ -35,7 +35,7 @@ $app->singleton('Log.error', function (){
 });
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
+    app\Kernel::class
 );
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
