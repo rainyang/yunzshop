@@ -118,8 +118,11 @@ class MemberController extends ApiController
         $member_info = $member_info->toArray();
         $data = MemberModel::userData_v2($member_info, $member_info['yz_member']);
 
+        $switch = PortType::popularizeShow(\YunShop::request()->type);
         //会员收入
-        $data['income'] = MemberModel::getIncomeCount();
+        if ($switch) {
+            $data['income'] = MemberModel::getIncomeCount();
+        }
 
         //自定义表单
         $data['myform'] = (new MemberService())->memberInfoAttrStatus($member_info['yz_member']);
@@ -1516,7 +1519,7 @@ class MemberController extends ApiController
 
         $diyarr = [
             'tool'         => ['separate','elive'],
-            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze'],
+            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze','extension'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro', 'delivery_station', 'service_station'],
             'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
                 , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order']
@@ -1564,6 +1567,15 @@ class MemberController extends ApiController
                 'title' => PLUGIN_ASSET_NAME,
                 'class' => 'icon-number_assets',
                 'url'   => 'TransHome'
+            ];
+        }
+
+        if (PortType::popularizeShow(\YunShop::request()->type)) {
+            $data[] = [
+                'name' => 'extension',
+                'title' => '推广中心',
+                'class' => 'icon-member-extension1',
+                'url' => 'extension'
             ];
         }
 
@@ -2340,7 +2352,7 @@ class MemberController extends ApiController
         $this->dataIntegrated($this->getUserInfo($request, true), 'member');
         $this->dataIntegrated($this->getEnablePlugins($request, true), 'plugins');
         //是否显示我的推广
-        $this->dataIntegrated($this->isOpenRelation($request, true), 'relation');
+//        $this->dataIntegrated($this->isOpenRelation($request, true), 'relation');
         //查看自定义
 //        $this->dataIntegrated($this->getCustomField($request, true), 'custom');
         //查看等级是否开启
