@@ -39,20 +39,6 @@ class TeamOrderService
                 break;
             }
 
-//            foreach ($group as $key => $group_member) {
-//                $member_all[$key] = [
-//                    'member_id' => $group_member['member_id'],
-//                    'child'  => ''
-//                ];
-//
-//                foreach ($members as $member_info) {
-//                    if ($group_member['member_id'] == $member_info['member_id']) {
-//                        $member_all[$key]['child'] .= $member_info['child'] . ',';
-//                    }
-//                }
-//                $member_all[$key]['child'] =  rtrim($member_all[$key]['child'], ',');
-//            }
-//
             foreach ($member_all as $item){
                 $result[$item['member_id']]['uid'] = $item['member_id'];
                 $result[$item['member_id']]['uniacid'] = \YunShop::app()->uniacid;
@@ -61,7 +47,7 @@ class TeamOrderService
                 $result[$item['member_id']]['team_count'] = count(explode(',',$item['child']));
                 $result[$item['member_id']]['pay_count'] = $order->whereIn('uid', explode(',',$item['child']))->groupBy('uid')->count();
             }
-
+            
             $memberModel = new TeamOrder();
             foreach ($result as $item) {
                 $memberModel->updateOrCreate(['uid' => $item['uid']], $item);
