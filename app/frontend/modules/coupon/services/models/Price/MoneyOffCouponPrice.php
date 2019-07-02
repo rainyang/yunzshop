@@ -20,9 +20,8 @@ class MoneyOffCouponPrice extends CouponPrice
      */
     protected function _getAmount()
     {
-        return min($this->dbCoupon->deduct,$this->getOrderGoodsCollectionPaymentAmount());
+        return min($this->dbCoupon->deduct, $this->getOrderGoodsCollectionPaymentAmount());
     }
-
 
 
 }

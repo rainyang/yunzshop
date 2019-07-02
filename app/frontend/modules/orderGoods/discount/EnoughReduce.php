@@ -16,7 +16,6 @@ class EnoughReduce extends BaseDiscount
     protected $name = '全场满减优惠';
 
     /**
-     * 获取金额
      * @return float|int|null
      */
     protected function _getAmount()
@@ -35,7 +34,6 @@ class EnoughReduce extends BaseDiscount
     }
 
     /**
-     * todo 这里应该累加 商品成交金额-优先级更高的N种优惠金额之和
      * 订单中同商品的价格小计
      * @return float
      */

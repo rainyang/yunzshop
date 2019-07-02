@@ -269,7 +269,7 @@ class BaseModel extends Model
     }
 
     /**
-     * @param BaseModel $query
+     * @param $query
      * @param array $excludeFields
      * @return mixed
      * @throws \Exception

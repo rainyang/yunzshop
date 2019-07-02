@@ -26,11 +26,11 @@ class EarningController extends ApiController
     private $incomeModel;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
+        $this->incomeModel = Income::uniacid()->where('member_id', $this->getMemberId());
 
-        $this->incomeModel = Income::uniacid()->where('member_id',$this->getMemberId());
     }
 
     /**
@@ -43,14 +43,13 @@ class EarningController extends ApiController
         $result = [
             'total' => [
                 'grand_total' => $this->grandTotal(),
-                'can_withdraw'=> $this->canWithdrawTotal()
+                'can_withdraw' => $this->canWithdrawTotal()
             ],
-            'data'  => $this->earningDetail(),
+            'data' => $this->earningDetail(),
         ];
 
         return $this->successJson('ok', $result);
     }
-
 
 
     //累计收入
@@ -74,13 +73,13 @@ class EarningController extends ApiController
         foreach ($config as $key => $item) {
 
             //$typeModel = $this->incomeModel->where('incometable_type', $item['class']);
-            $typeModel = Income::uniacid()->where('member_id',$this->getMemberId())->whereStatus(0)->where('incometable_type', $item['class']);
+            $typeModel = Income::uniacid()->where('member_id', $this->getMemberId())->whereStatus(0)->where('incometable_type', $item['class']);
             $array[] = [
                 'title' => $item['title'],
-                'ico'   => $item['ico'],
-                'type'  => $item['type'],
+                'ico' => $item['ico'],
+                'type' => $item['type'],
                 'type_name' => $item['title'],
-                'income'    => $typeModel->sum('amount'),
+                'income' => $typeModel->sum('amount'),
                 'can' => $this->itemIsShow($item)
             ];
         }
@@ -92,7 +91,7 @@ class EarningController extends ApiController
     {
         $result = true;
         if ($item['agent_class']) {
-            $agentModel = $item['agent_class']::$item['agent_name']($this->getMemberId());
+            $agentModel = $item['agent_class']::{$item['agent_name']}($this->getMemberId());
 
             if ($item['agent_status']) {
                 $agentModel = $agentModel->where('status', 1);

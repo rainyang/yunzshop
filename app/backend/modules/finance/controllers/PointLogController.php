@@ -18,7 +18,7 @@ use app\Jobs\PointQueueJob;
 
 class PointLogController extends BaseController
 {
-    public function index(\Request $request)
+    public function index(\Illuminate\Http\Request $request)
     {
         $pageSize = 10;
         $search = $request->search;

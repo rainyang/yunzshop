@@ -1,6 +1,4 @@
 <?php
-require_once __DIR__.'/../vendor/autoload.php';
-
 /*
 |--------------------------------------------------------------------------
 | Create The Application
@@ -37,19 +35,16 @@ $app->singleton('Log.error', function (){
 });
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    app\Kernel::class
+    App\Http\Kernel::class
 );
-
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     app\console\Kernel::class
 );
-
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     app\common\exceptions\Handler::class
 );
-
 /*
 |--------------------------------------------------------------------------
 | Return The Application
@@ -60,5 +55,4 @@ $app->singleton(
 | from the actual running of the application and sending responses.
 |
 */
-
 return $app;

@@ -18,12 +18,13 @@ class WithdrawStatisticsController extends BaseController
 
     private $withdrawModel;
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
-
+        parent::preAction();
         $this->withdrawModel = new Withdraw();
+
     }
+
     public function index()
     {
 

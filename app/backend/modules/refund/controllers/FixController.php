@@ -12,7 +12,7 @@ use app\common\components\BaseController;
  */
 class FixController extends BaseController
 {
-//    public function backReject(\Request $request){
+//    public function backReject(\Illuminate\Http\Request $request){
 //        $refundApply = RefundApply::find($request->query('refund_id'));
 //        $refundApply->status = 0;
 //        $refundApply->reject_reason = '';

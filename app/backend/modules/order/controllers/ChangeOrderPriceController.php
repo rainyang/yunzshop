@@ -37,7 +37,7 @@ class ChangeOrderPriceController extends BaseController
      * @param \Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(\Request $request)
+    public function store(\Illuminate\Http\Request $request)
     {
         OrderService::changeOrderPrice($request);
 
@@ -48,7 +48,7 @@ class ChangeOrderPriceController extends BaseController
      * 改价状态清空重置 todo 有bug
      * @param \Request $request
      */
-    public function back(\Request $request){
+    public function back(\Illuminate\Http\Request $request){
         $orderId = $request->input('order_id');
         $this->validate([
             'order_id'=>'required'

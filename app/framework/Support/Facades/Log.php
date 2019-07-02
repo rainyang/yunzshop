@@ -22,4 +22,10 @@ class Log extends \Illuminate\Support\Facades\Log
         }
         app('Log.error')->add($message,$content);
     }
+    static public function info($message,$content = []){
+        if(!is_array($content)){
+            $content = [$content];
+        }
+        app('log')->info($message,$content);
+    }
 }

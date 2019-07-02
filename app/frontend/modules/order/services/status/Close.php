@@ -23,13 +23,4 @@ class Close extends Status
     {
         return '已关闭';
     }
-
-    public function getButtonModels()
-    {
-        $result =
-            [
-
-            ];
-        return $result;
-    }
 }
