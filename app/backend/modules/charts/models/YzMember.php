@@ -15,9 +15,9 @@ class YzMember extends \app\common\models\MemberShopInfo
 
     public function scopeRecommender(Builder $query)
     {
-        return $query->select(['member_id','parent_id'])->with('recommender', function ($query) {
+        return $query->select(['member_id','parent_id'])->with(['recommender'=> function ($query) {
 //            return $query->select(['id','title','status','type','thumb','sku','market_price','price','cost_price'])->goods();
-        });
+        }]);
     }
 
     public function recommender()

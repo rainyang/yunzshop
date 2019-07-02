@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\order\operations;
 
-use app\frontend\models\Order;
+use app\common\models\Order;
 
 abstract class OrderOperation implements OrderOperationInterface
 {

@@ -14,6 +14,7 @@ class ShopException extends Exception
 {
     public $redirect = '';
     public $data = [];
+
     const UNIACID_NOT_FOUND = -2; // 公众号id不存在
 
     public function setRedirect($redirect)
@@ -49,4 +50,5 @@ class ShopException extends Exception
     {
         return 200;
     }
+
 }

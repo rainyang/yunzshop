@@ -17,9 +17,11 @@ class SettingController extends BaseController
 {
     protected $_lang;
 
-    public function __construct()
+    public function preAction()
     {
         $this->_lang = 'zh_cn';
+        parent::preAction();
+
     }
 
     /**

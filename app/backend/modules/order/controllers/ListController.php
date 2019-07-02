@@ -31,9 +31,9 @@ class ListController extends BaseController
      */
     protected $orderModel;
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $params = \YunShop::request()->get();
         $this->orderModel = $this->getOrder()->orders($params['search']);
     }
@@ -184,6 +184,15 @@ class ListController extends BaseController
     {
         if (\YunShop::request()->export == 1) {
             $export_page = request()->export_page ? request()->export_page : 1;
+            //清除之前没有导出的文件
+            if ($export_page == 1){
+                $fileNameArr = file_tree(storage_path('exports'));
+                foreach ($fileNameArr as $val ) {
+                    if(file_exists(storage_path('exports/' . basename($val)))){
+                        unlink(storage_path('exports/') . basename($val)); // 路径+文件名称
+                    }
+                }
+            }
             $orders = $orders->with(['discounts', 'deductions'])->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
             $export_model = new ExportService($orders, $export_page);
             if (!$export_model->builder_model->isEmpty()) {

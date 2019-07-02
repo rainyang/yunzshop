@@ -20,9 +20,9 @@ class WftController extends PaymentController
 
     private $parameters = [];
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         if (empty(\YunShop::app()->uniacid)) {
 

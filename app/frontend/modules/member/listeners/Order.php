@@ -12,16 +12,18 @@ use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 
 class Order
 {
-    public function handle(AfterOrderCreatedImmediatelyEvent $event){
+    public function handle(AfterOrderCreatedImmediatelyEvent $event)
+    {
         $order = $event->getOrder();
         $goods_ids = $order->orderGoods->pluck('goods_id');
-        $goods_option_ids = $order->orderGoods->pluck('goods_option_id');
-
+        if (is_array($goods_ids)) {
+            app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
+        }
+        $goods_option_ids = $order->orderGoods->pluck('goods_option_id')->toArray();
         //过滤空值
         $goods_option_ids = array_filter($goods_option_ids);
-
-        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
-        app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
-
+        if (is_array($goods_option_ids)) {
+            app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
+        }
     }
 }

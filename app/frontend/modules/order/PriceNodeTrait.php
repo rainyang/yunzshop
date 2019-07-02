@@ -71,6 +71,7 @@ trait PriceNodeTrait
             }
             $nodeKey = $priceNode->getKey();
         }
+
         if (empty($nodeKey)) {
             throw new AppException("没有比{$key}更先计算的节点了");
         }

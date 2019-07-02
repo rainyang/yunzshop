@@ -35,11 +35,11 @@ class PluginsController extends BaseController
 
     public function manage()
     {
-        $name   = \YunShop::request()->name;
+        $name = \YunShop::request()->name;
         $action = \YunShop::request()->action;
 
         $plugins = app('app\common\services\PluginManager');
-        $plugin  = plugin($name);
+        $plugin = plugin($name);
 
         if (app()->environment() == 'production') {
             $this->proAuth($name, $action);
@@ -75,8 +75,8 @@ class PluginsController extends BaseController
     public function batchMange()
     {
         $plugins = app('app\common\services\PluginManager');
-        $names   = explode(',', \YunShop::request()->names);
-        $action  = \YunShop::request()->action;
+        $names = explode(',', \YunShop::request()->names);
+        $action = \YunShop::request()->action;
 
         foreach ($names as $name) {
             if (app()->environment() == 'production') {
@@ -96,7 +96,7 @@ class PluginsController extends BaseController
                     default:
                         die(json_encode(array(
                             "result" => 0,
-                            "error"  => "操作错误"
+                            "error" => "操作错误"
                         )));
                         break;
                 }
@@ -126,8 +126,10 @@ class PluginsController extends BaseController
         $class = $this->getType();
         $data = [];
 
-        $plugins = Config::get('plugins_menu');//全部插件
+        $plugins = \Config::get('plugins_menu');//全部插件
+
         foreach ($plugins as $key => $plugin) {
+
             if (!$plugin['type']) {
                 continue;
             }
@@ -163,7 +165,7 @@ class PluginsController extends BaseController
     public function proAuth($name, $action)
     {
         if ($action == 'enable') {
-            $key    = \Setting::get('shop.key')['key'];
+            $key = \Setting::get('shop.key')['key'];
             $secret = \Setting::get('shop.key')['secret'];
 
             $url = config('auto-update.proAuthUrl') . "/chkname/{$name}";

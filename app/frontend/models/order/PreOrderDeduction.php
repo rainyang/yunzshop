@@ -403,7 +403,7 @@ class PreOrderDeduction extends OrderDeduction
     public function lock()
     {
         // 抵扣被选中后,锁定要使用的虚拟币额度
-        $this->getMemberCoin()->lockCoin($this->amount);
+        $this->getMemberCoin()->lockCoin($this->coin);
     }
 
     /**

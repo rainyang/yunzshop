@@ -8,17 +8,22 @@
 
 namespace app\frontend\modules\order\controllers;
 
+use app\common\exceptions\AppException;
 use app\frontend\models\Member;
 
 class CreateAllController extends CreateController
 {
 
     /**
-     * @return \Illuminate\Database\Eloquent\Collection|static
-     * @throws \app\common\exceptions\AppException
+     * @return void|static
+     * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
     protected function _getMemberCarts()
     {
-        return Member::current()->memberCarts;
+        $memberCarts =  Member::current()->memberCarts;
+        if($memberCarts->isEmpty()){
+            throw new AppException("该用户(".Member::current()->uid.")购物车记录为空");
+        }
     }
 }
