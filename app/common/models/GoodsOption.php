@@ -10,6 +10,14 @@ namespace app\common\models;
 
 use app\common\exceptions\AppException;
 
+/**
+ * Class GoodsOption
+ * @package app\common\models
+ * @property int uniacid
+ * @property int goods_id
+ * @property int title
+ * @property int stock
+ */
 class GoodsOption extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_option';

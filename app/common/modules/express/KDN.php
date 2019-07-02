@@ -8,6 +8,7 @@
 
 namespace app\common\modules\express;
 
+use app\common\exceptions\ShopException;
 use Ixudra\Curl\Facades\Curl;
 
 class KDN
@@ -36,6 +37,7 @@ class KDN
                 'LogisticCode' => $expressSn,
             ]
         );
+
         if(empty($express_api['KDN']['express_api'])){//判断如果快递鸟状态为空，默认赋值为1002免费状态
             $express_api['KDN']['express_api'] = 1002;
         }

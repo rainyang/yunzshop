@@ -26,9 +26,9 @@ class LimitBuy
                 ->whereHas('hasOneGoodsLimitbuy', function ($query) {
                     return $query->uniacid();
                 })
-                ->with('hasOneGoodsLimitbuy', function ($query) {
+                ->with(['hasOneGoodsLimitbuy'=> function ($query) {
                     return $query->select('goods_id', 'end_time');
-                })
+                }])
                 ->get();
             $current_time = time();
 

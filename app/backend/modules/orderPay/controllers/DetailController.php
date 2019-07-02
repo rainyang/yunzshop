@@ -23,7 +23,7 @@ class DetailController extends BaseController
      */
     public function index()
     {
-        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
+        $orderPay = OrderPay::with(['orders' => function ($query) {
             $query->with('orderGoods');
         }, 'process', 'member', 'payOrder']);
         if (request()->has('order_pay_id')) {
@@ -49,7 +49,7 @@ class DetailController extends BaseController
     public function usablePayTypes()
     {
         $orderPayId = request()->query('order_pay_id');
-        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
+        $orderPay = OrderPay::with(['orders' => function ($query) {
             $query->with('orderGoods');
         }, 'process', 'member', 'payOrder'])->find($orderPayId);
 
@@ -69,7 +69,7 @@ class DetailController extends BaseController
     public function allPayTypes()
     {
         $orderPayId = request()->query('order_pay_id');
-        $orderPay = OrderPay::with(['orders' => function (Builder $query) {
+        $orderPay = OrderPay::with(['orders' => function ($query) {
             $query->with('orderGoods');
         }, 'process', 'member', 'payOrder'])->find($orderPayId);
 

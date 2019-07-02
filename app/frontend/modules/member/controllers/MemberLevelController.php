@@ -19,9 +19,9 @@ class MemberLevelController extends ApiController
 
     protected $settinglevel;
     
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         //会员等级的升级的规则
         $this->settinglevel = \Setting::get('shop.member');
     }

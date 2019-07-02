@@ -31,7 +31,6 @@ abstract class Status
 
     abstract function getStatusName();
 
-    abstract function getButtonModels();
 
     /**
      * 退款按钮

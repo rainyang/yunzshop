@@ -76,6 +76,7 @@ class YunShop
             self::$currentItems = array_merge(Menu::getCurrentMenuParents($item, $menuList), [$item]);
 //            dd(self::$currentItems);
             Config::set('currentMenuItem', $item);
+
 //            dd($item);exit;
             //检测权限
             if (!PermissionService::can($item)) {

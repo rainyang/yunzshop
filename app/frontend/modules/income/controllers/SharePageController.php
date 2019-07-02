@@ -27,9 +27,9 @@ class SharePageController extends ApiController
     private $relationSet;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->relationSet = $this->getRelationSet();
     }
 
@@ -104,7 +104,8 @@ class SharePageController extends ApiController
         if ($this->memberModel->yzMember->is_agent == 1 && $this->memberModel->yzMember->status == 2) {
 
             $url = yzAppFullUrl('member', ['mid' => $this->memberModel->uid]);
-            return (new QrCodeHelper($url, 'app/public/qr/share'))->url();
+
+            return \QrCode::size(240)->get($url,'app/public/qr/share')['url'];
         }
         return "";
 

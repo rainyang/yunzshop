@@ -14,6 +14,7 @@ use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\OrderCreatedEvent;
+use app\common\exceptions\AppException;
 use app\common\models\Goods;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
@@ -39,7 +40,7 @@ class TestController extends BaseController
 
     public function t()
     {
-
+        throw new AppException(111);
     }
 
     private $amountItems;
