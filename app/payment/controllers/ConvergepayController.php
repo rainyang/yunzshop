@@ -245,7 +245,7 @@ class ConvergepayController extends PaymentController
      */
     public function refundUrlWechat()
     {
-        $this->log($this->parameter, '微信或支付宝退款-HJ');
+        $this->logRefund($this->parameter, '微信或支付宝退款-HJ');
 
         if ($this->getSignWechatResult()) {
             if ($this->parameter['ra_Status'] == '100') {
