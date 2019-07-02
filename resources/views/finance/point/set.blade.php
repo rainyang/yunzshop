@@ -162,7 +162,7 @@
                                 <input type="text" name="set[transfer_integral]" value="{{$set['transfer_integral']}}"
                                        class="form-control wid100"/>
                                 <span class='input-group-addon'>:</span>
-                                <input type="text" name="set[transfer_love]" value="{{$set['transfer_love']}}"
+                                <input type="text" name="set[transfer_integral_love]" value="{{$set['transfer_integral_love']}}"
                                        class="form-control wid100"/>
                             </div>
                             <div class="help-block">

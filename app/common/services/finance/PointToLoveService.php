@@ -111,7 +111,7 @@ class PointToLoveService
         }
 
         //如果全局比例为空
-        if (empty($set['transfer_integral']) && empty($set['transfer_love'])){
+        if (empty($set['transfer_integral']) && empty($set['transfer_integral_love'])){
             $transfer_integral = 1;
 
             $transfer_love = 1;
@@ -123,8 +123,8 @@ class PointToLoveService
         }
 
         //全局比例设置
-        if (isset($set['transfer_love']) && $set['transfer_love'] > 0) {
-            $transfer_love = $set['transfer_love'];
+        if (isset($set['transfer_integral_love']) && $set['transfer_integral_love'] > 0) {
+            $transfer_love = $set['transfer_integral_love'];
         }
 
         //会员独立设置判断
