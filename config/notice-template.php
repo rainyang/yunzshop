@@ -1915,4 +1915,71 @@ return [
         ],
         'remark' => '请及时处理！！！',
     ],
+
+    /**
+     * 拼团活动-拼团成功通知
+     */
+    'fight_groups_success_message' => [
+        'template_id_short' => 'OPENTM415038167',
+        'title' => '拼团成功通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '亲爱的[会员昵称],您参与由[团长昵称]发起的[活动标题][拼团人数]人团,拼团活动成团成功！！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value"    => "[商品名称(含规格)]",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value"   => "[价格]",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value"  => "[时间]",
+                "color" => "#000000",
+            ],
+            3 => [
+                "keywords" => "keyword4",
+                "value"  => "[订单号]",
+                "color" => "#000000",
+            ],
+            4 => [
+                "keywords" => "keyword5",
+                "value"  => "[提示]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '感谢您的支持！！！',
+    ],
+    /**
+     * 拼团活动-拼团失败通知
+     */
+    'fight_groups_fail_message' => [
+        'template_id_short' => 'OPENTM401113750',
+        'title' => '拼团失败通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '亲爱的[会员昵称],您参与由[团长昵称]发起的[活动标题][拼团人数]人团,由于团已过期，拼团失败。！！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value"    => "[商品名称(含规格)]",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value"   => "[价格]",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value"  => "[退款金额]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '系统将自动退款,感谢您的参与！！！',
+    ],
 ];
