@@ -42,7 +42,7 @@ class PointListener
         $this->orderGivePoint($this->orderModel);
 
         // 订单插件分红记录
-        $this->dispatch(new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel));
+        (new OrderBonusJob('yz_point_log', 'point', 'order_id', 'id', 'point', $this->orderModel))->handle();
     }
 
 //    private function givingTime($orderModel)
