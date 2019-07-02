@@ -160,7 +160,7 @@ class MessageService
 //        return;
     }
     //收入提现失败通知
-    public static function withdrawFailure($withdrawData, $member, $uniacid = '')
+    public static function withdrawFailure($withdrawData, $member, $reason='', $uniacid = '')
     {
         // if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title')) {
         //     return;
@@ -177,6 +177,7 @@ class MessageService
         $withdrawData['amounts'] = $withdrawData['actual_amounts'];
         $withdrawData['withdraw_sn'] = $withdrawData['withdraw_sn'];
         $withdrawData['poundage'] = $withdrawData['actual_poundage'];
+        $withdrawData['reason'] = $reason;
 
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
     }
@@ -194,6 +195,7 @@ class MessageService
             ['name' => '状态', 'value' => $data['status']],
             ['name' => '审核通过金额', 'value' => $data['actual_amounts']],
             ['name' => '提现单号', 'value' => $data['withdraw_sn']],
+            ['name' => '失败原因', 'value' => $data['reason']],
         ];
 
         $msg = MessageTemp::getSendMsg($temp_id, $params);

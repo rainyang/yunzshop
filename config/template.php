@@ -545,7 +545,7 @@ return [
         'subtitle' => '收入提现失败通知',
         'value' => 'finance_income_withdraw_fail',
         'param' => [
-            '时间', '金额', '手续费', '提现单号'
+            '时间', '金额', '手续费', '提现单号', '失败原因'
         ]
     ],
 

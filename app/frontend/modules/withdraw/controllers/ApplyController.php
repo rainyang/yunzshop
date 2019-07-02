@@ -58,12 +58,10 @@ class ApplyController extends ApiController
         $this->withdraw_set = $this->getWithdrawSet();
     }
 
-
     //提现接口
     public function index()
     {
         list($amount, $pay_way, $poundage, $withdraw_data) = $this->getPostValue();
-
         $this->amount = $amount;
         $this->pay_way = $pay_way;
         $this->poundage = $poundage;
@@ -197,8 +195,6 @@ class ApplyController extends ApiController
         //$post_data = $this->testData();
 
         if (!$post_data) {
-            MessageService::withdrawFailure(); //发送收入提现失败消息通知
-
             throw new AppException('Undetected submission of data');
         }
         // 12月20号修改 提现原代码是提现金额不能小于1元
