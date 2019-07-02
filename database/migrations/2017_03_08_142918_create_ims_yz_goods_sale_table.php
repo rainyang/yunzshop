@@ -20,7 +20,7 @@ class CreateImsYzGoodsSaleTable extends Migration {
                 $table->integer('max_balance_deduct')->nullable()->default(0);
                 $table->integer('is_sendfree')->nullable()->default(0);
                 $table->integer('ed_num')->nullable()->default(0);
-                $table->integer('ed_money')->nullable()->default(0);
+                $table->integer('ed_money')->nullable();
                 $table->text('ed_areas', 65535)->nullable();
                 $table->string('point', 255)->nullable();
                 $table->integer('bonus')->nullable()->default(0);

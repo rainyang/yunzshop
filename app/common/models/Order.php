@@ -110,7 +110,6 @@ class Order extends BaseModel
         'is_virtual' => 0,
     ];
     static protected $needLog = true;
-
     //protected $attributes = ['discount_price'=>0];
     const CLOSE = -1;
     const WAIT_PAY = 0;
@@ -463,7 +462,6 @@ class Order extends BaseModel
 
         return $statusName;
     }
-
 
     /**
      * 支付类型汉字

@@ -21,7 +21,7 @@ class CouponController extends ChartsController
     protected $couponLog;
 
 
-    public function __construct()
+    public function preAction()
     {
         $this->couponLog = new CouponLog();
     }

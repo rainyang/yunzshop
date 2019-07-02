@@ -8,10 +8,10 @@
 
 namespace app\common\exceptions;
 
-use Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class NotFoundException extends Exception
+class NotFoundException extends NotFoundHttpException
 {
     public function getStatusCode()
     {

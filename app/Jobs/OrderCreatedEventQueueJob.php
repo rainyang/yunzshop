@@ -15,6 +15,7 @@ use app\common\models\Order;
 use app\frontend\modules\order\models\PreOrder;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
+use Illuminate\Http\Request;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
@@ -44,7 +45,6 @@ class OrderCreatedEventQueueJob implements ShouldQueue
     public function handle()
     {
         DB::transaction(function () {
-
             \YunShop::app()->uniacid = $this->order->uniacid;
             Setting::$uniqueAccountId = $this->order->uniacid;
             if($this->order->orderCreatedJob->status == 'finished'){

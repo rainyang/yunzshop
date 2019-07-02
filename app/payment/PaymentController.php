@@ -21,9 +21,9 @@ use Yunshop\Gold\frontend\services\RechargeService;
  */
 class PaymentController extends BaseController
 {
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         $this->init();
     }

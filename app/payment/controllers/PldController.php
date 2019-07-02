@@ -21,10 +21,9 @@ class PldController extends PaymentController
     private $pld_proportion = 0;
 
     private $balance_proportion = 0;
-
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode('a', $_GET['OrderID']);

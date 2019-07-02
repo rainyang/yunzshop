@@ -10,6 +10,7 @@ namespace app\common\helpers\FormParam;
 
 use app\common\exceptions\AppException;
 use Illuminate\Database\Eloquent\Model;
+use app\framework\Database\Eloquent\Builder;
 
 /**
  * 表单参数助手
@@ -54,7 +55,7 @@ class FromParam
      * @return Model
      * @throws AppException
      */
-    public function toWhere(Model $builder)
+    public function toWhere(Builder $builder)
     {
         // 过滤调空的
         $result = array_filter($this->params, function ($value) {

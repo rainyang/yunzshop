@@ -23,9 +23,9 @@ abstract class PreController extends BaseController
     protected $withdrawModel;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->withdrawModel = $this->getWithdrawModel();
     }
 
