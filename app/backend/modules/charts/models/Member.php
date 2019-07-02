@@ -18,7 +18,7 @@ class Member extends \app\backend\modules\member\models\Member
     public static function boot()
     {
         parent::boot();
-        self::addGlobalScope('uniacid', new UniacidScope);
+        self::addGlobalScope( new UniacidScope);
     }
 
 

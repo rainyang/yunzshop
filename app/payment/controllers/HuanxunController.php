@@ -21,9 +21,9 @@ class HuanxunController extends PaymentController
     private $attach = [];
     private $set = [];
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         if (empty(\YunShop::app()->uniacid)) {
             if(empty($_REQUEST)) {

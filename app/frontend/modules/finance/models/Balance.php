@@ -11,6 +11,7 @@ namespace app\frontend\modules\finance\models;
 use \app\common\models\finance\Balance as BalanceModel;
 use app\common\services\credit\ConstService;
 use \app\frontend\modules\finance\models\BalanceTransfer;
+use Illuminate\Database\Eloquent\Builder;
 
 class Balance extends BalanceModel
 {

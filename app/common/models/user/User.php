@@ -34,6 +34,11 @@ class User extends BaseModel
 
     protected $guarded = [''];
 
+    /**
+     * User constructor.
+     * @param array $attributes
+     * @throws \Exception
+     */
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -46,48 +51,52 @@ class User extends BaseModel
         }
     }
 
+    /**
+     * @return array|mixed
+     * @throws \Exception
+     */
     public function getNewAttributes()
     {
-        if(Schema::hasColumn($this->table, 'owner_uid')){ //用于兼容新版微擎新增的字段
+        if($this->hasColumn('owner_uid')){ //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'founder_groupid')){
+        if($this->hasColumn('founder_groupid')){
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'register_type')){
+        if($this->hasColumn('register_type')){
             $this->attributes = array_merge($this->attributes, ['register_type' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'openid')){
+        if($this->hasColumn('openid')){
             $this->attributes = array_merge($this->attributes, ['openid' => '']);
         }
-        if(Schema::hasColumn($this->table, 'welcome_link')){
+        if($this->hasColumn('welcome_link')){
             $this->attributes = array_merge($this->attributes, ['welcome_link' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'is_bind')){
+        if($this->hasColumn('is_bind')){
             $this->attributes = array_merge($this->attributes, ['is_bind' => '0']);
         }
 
-        if(Schema::hasColumn($this->table, 'schoolid')){
+        if($this->hasColumn('schoolid')){
             $this->attributes = array_merge($this->attributes, ['schoolid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit1')){
+        if($this->hasColumn('credit1')){
             $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'credit2')){
+        if($this->hasColumn('credit2')){
             $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'agentid')){
+        if($this->hasColumn('agentid')){
             $this->attributes = array_merge($this->attributes, ['agentid' => '0']);
         }
-        if(Schema::hasColumn($this->table, 'uniacid')){
+        if($this->hasColumn('uniacid')){
             $this->attributes = array_merge($this->attributes, ['uniacid' => '0']);
         }
 
-        if(Schema::hasColumn($this->table, 'token')){
+        if($this->hasColumn('token')){
             $this->attributes = array_merge($this->attributes, ['token' => '']);
         }
 
-        if(Schema::hasColumn($this->table, 'registration_id')){
+        if($this->hasColumn('registration_id')){
             $this->attributes = array_merge($this->attributes, ['registration_id' => '']);
         }
 

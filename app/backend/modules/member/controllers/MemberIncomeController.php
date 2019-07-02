@@ -142,7 +142,7 @@ class MemberIncomeController extends BaseController
                 'no_withdraw' => $typeModel->where('status', 0)->sum('amount')
             ];
             if ($item['agent_class']) {
-                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+                $agentModel = $item['agent_class']::{$item['agent_name']}(\YunShop::app()->getMemberId());
 
                 if ($item['agent_status']) {
                     $agentModel = $agentModel->where('status', 1);

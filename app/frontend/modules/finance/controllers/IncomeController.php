@@ -70,7 +70,7 @@ class IncomeController extends ApiController
                 'income' => $typeModel->sum('amount')
             ];
             if ($item['agent_class']) {
-                $agentModel = $item['agent_class']::$item['agent_name'](\YunShop::app()->getMemberId());
+                $agentModel = $item['agent_class']::{$item['agent_name']}(\YunShop::app()->getMemberId());
 
                 if ($item['agent_status']) {
                     $agentModel = $agentModel->where('status', 1);
@@ -349,7 +349,7 @@ Log::info($this->getLangTitle($key) ? $this->getLangTitle($key) : $item['title']
             if (isset($config['name']) && ($type == $config['class'])) {
                 $income = \Yunshop\Commission\models\Income::whereIn('id', explode(',', $typeId))->get();
                 foreach ($income as $item) {
-                    $config['class']::$config['name']([$config['value'] => 1], ['id' => $item->incometable_id]);
+                    $config['class']::{$config['name']}([$config['value'] => 1], ['id' => $item->incometable_id]);
                 }
 
             }

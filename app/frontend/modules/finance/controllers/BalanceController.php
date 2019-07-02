@@ -38,9 +38,9 @@ class BalanceController extends ApiController
     public $uniacid;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->balanceSet = new BalanceService();
         //$this->memberModel = $this->getMemberModel();
         $this->uniacid = \YunShop::app()->uniacid;

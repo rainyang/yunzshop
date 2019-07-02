@@ -31,10 +31,10 @@ class OrderSend extends ChangeStatusOperation
      */
     protected function updateTable()
     {
+        $data = $this->params ? $this->params : request()->input();
 
-        if ($this->dispatch_type_id == DispatchType::EXPRESS) {
+        if ($data['express_code']) {
             
-            $data = $this->params ? $this->params : request()->input();
             //实体订单
             // $order_id = request()->input('order_id');   
             $order_id = $data['order_id'];   

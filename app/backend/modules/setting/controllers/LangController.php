@@ -18,8 +18,9 @@ class LangController extends BaseController
 {
     public $_lang;
 
-    public function __construct()
+    public function preAction()
     {
+        parent::preAction();
         $this->_lang = 'zh_cn';
     }
 

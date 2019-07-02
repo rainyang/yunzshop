@@ -11,6 +11,7 @@ namespace app\backend\modules\finance\models;
 
 class IncomeOrder extends \app\common\models\finance\IncomeOrder
 {
+    protected $appends = ['status_name', 'pay_type_name'];
 
     
 }

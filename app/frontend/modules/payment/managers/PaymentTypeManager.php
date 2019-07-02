@@ -159,10 +159,9 @@ class PaymentTypeManager extends Container
             $orderPay = OrderPay::newVirtual();
         }
         // 过滤掉无效的
-        $orderPaymentTypes = $this->getAllOrderPaymentTypes($orderPay)->filter(function (BasePayment $paymentType) {
-
+        $orderPaymentTypes = $this->getAllOrderPaymentTypes($orderPay)->filter(function ($paymentType) {
             // 可用的
-            return isset($paymentType) && $paymentType->canUse();
+            return isset($paymentType) && $paymentType instanceof BasePayment && $paymentType->canUse();
         });
 
         return $orderPaymentTypes;

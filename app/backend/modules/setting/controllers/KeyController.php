@@ -18,7 +18,7 @@ use Ixudra\Curl\Facades\Curl;
 class KeyController extends BaseController
 {
 
-    public function __construct()
+    public function preAction()
     {
         $this->uniacid = \YunShop::app()->uniacid;
         $this->_log = app('log');

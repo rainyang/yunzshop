@@ -18,8 +18,8 @@ class Income extends \app\common\models\Income
     public static function boot()
     {
         parent::boot();
-        self::addGlobalScope('uniacid', new UniacidScope);
-        self::addGlobalScope('member_id', new MemberIdScope);
+        self::addGlobalScope( new UniacidScope);
+        self::addGlobalScope( new MemberIdScope);
     }
 
 }
