@@ -723,6 +723,18 @@ return [
                                 'item'       => 'coupon_coupon_set_store',
                                 'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
                             ],
+
+                            'coupon_notice_set_see' => [
+                                'name'       => '通知设置',
+                                'url'        => 'setting.default-notice.store',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-ticket',
+                                'sort'       => '2',
+                                'item'       => 'coupon_notice_set_see',
+                                'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
                         ],
                     ],
 
