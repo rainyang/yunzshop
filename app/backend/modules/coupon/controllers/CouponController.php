@@ -13,6 +13,7 @@ use app\backend\modules\goods\models\Goods;
 use app\backend\modules\goods\models\Category;
 use app\common\facades\Setting;
 use app\frontend\modules\coupon\listeners\CouponSend;
+use Yunshop\Hotel\common\models\CouponHotel;
 
 /**
  * Created by PhpStorm.
@@ -74,6 +75,8 @@ class CouponController extends BaseController
         $couponRequest['storeids'] = \YunShop::request()->store_ids; //去重,去空值
         $couponRequest['storenames'] = \YunShop::request()->store_names;
 
+        $hotel_is_open = app('plugins')->isEnabled('hotel');
+
 
         //获取会员等级列表
         $memberLevels = MemberLevel::getMemberLevelList();
@@ -84,6 +87,9 @@ class CouponController extends BaseController
         //表单验证
         if($_POST){
             $coupon = new Coupon();
+            if($hotel_is_open){
+                $coupon->widgets['more_hotels'] = \YunShop::request()->hotel_ids;
+            }
             $coupon->fill($couponRequest);
             $validator = $coupon->validator();
             if($validator->fails()){
@@ -101,6 +107,7 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => strtotime(\YunShop::request()->time['start']),
             'timeend' => strtotime(\YunShop::request()->time['end']),
+            'hotel_is_open' => $hotel_is_open
             //'template_id' => $template_id,
         ])->render();
     }
@@ -130,6 +137,9 @@ class CouponController extends BaseController
             $coupon->category_ids = array_filter(array_unique($coupon->category_ids)); //去重,去空值
             $coupon->categorynames = Category::getCategoryNameByIds($coupon->category_ids); //因为商品分类名称可能修改,所以必须以商品表为准
         }
+        //新增酒店
+        $hotel_is_open = app('plugins')->isEnabled('hotel');
+
         $couponRequest = \YunShop::request()->coupon;
         if ($couponRequest) {
 
@@ -143,6 +153,10 @@ class CouponController extends BaseController
             //新增门店
             $coupon->storeids = array_filter(array_unique(\YunShop::request()->store_ids)); //去重,去空值
             $coupon->storenames = \YunShop::request()->store_names;
+            if($hotel_is_open){
+                $coupon->widgets['more_hotels'] = \YunShop::request()->hotel_ids;
+            }
+
 
             //表单验证
             $coupon->fill($couponRequest);
@@ -162,7 +176,7 @@ class CouponController extends BaseController
                 }
             }
         }
-        
+
         return view('coupon.coupon', [
             'coupon' => $coupon->toArray(),
             'usetype' => $coupon->use_type,
@@ -173,6 +187,8 @@ class CouponController extends BaseController
             'memberlevels' => $memberLevels,
             'timestart' => $coupon->time_start->timestamp,
             'timeend' => $coupon->time_end->timestamp,
+            'hotel_is_open' => $hotel_is_open,
+            'hotels' => CouponHotel::getHotels($coupon_id)
             //'template_id' => $template_id,
         ])->render();
     }
@@ -243,6 +259,9 @@ class CouponController extends BaseController
                 break;
             case 'store':
                 return view('coupon.tpl.store')->render();
+                break;
+            case 'hotel':
+                return view('coupon.tpl.hotel')->render();
                 break;
         }
     }

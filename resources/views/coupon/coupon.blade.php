@@ -165,12 +165,33 @@
                 }
             );
         }
+        {{--搜索门店--}}
+        function search_hotel() {
+            if ($.trim($('#search-kwd-hotel').val()) == '') {
+                Tip.focus('#search-kwd-hotel', '请输入关键词');
+                return;
+            }
+            $("#module-menus-hotel").html("正在搜索....");
+            $.get('{!! yzWebUrl('goods.goods.get-search-hotel') !!}', {
+                    keyword: $.trim($('#search-kwd-hotel').val())
+                }, function (dat) {
+                    $('#module-menus-hotel').html(dat);
+                }
+            );
+        }
         function select_store(o) {
             console.log(o);
             $(".focusstore:last input[data-name=storeids]").val(o.id);
             $(".focusstore:last input[data-name=storenames]").val(o.store_name);
             $(".focusstore").removeClass("focusstore");
             $("#modal-module-menus-store .close").click();
+        }
+        function select_hotel(o) {
+            console.log(o);
+            $(".focushotel:last input[data-name=hotelids]").val(o.id);
+            $(".focushotel:last input[data-name=hotelnames]").val(o.hotel_name);
+            $(".focushotel").removeClass("focushotel");
+            $("#modal-module-menus-hotel .close").click();
         }
     </script>
 @endsection('js')

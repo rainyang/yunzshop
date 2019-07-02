@@ -50,7 +50,8 @@ class  Coupon extends BaseModel
     const COUPON_SUPPLIER_USE = 3; //适用范围 - 指定供应商single
     const COUPON_STORE_USE = 4; //适用范围 - 指定门店
     const COUPON_SINGLE_STORE_USE = 5; //适用范围 - 指定单个门店
-
+    const COUPON_ONE_HOTEL_USE = 6; //适用范围 - 单个酒店
+    const COUPON_MORE_HOTEL_USE = 7; //适用范围 - 多个酒店
 
 
     const COUPON_MONEY_OFF = 1; //优惠方式- 立减
