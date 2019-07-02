@@ -9,8 +9,8 @@
 namespace app\backend\modules\withdraw\controllers;
 
 
+use app\backend\models\Withdraw;
 use app\backend\modules\income\models\Income;
-use app\backend\modules\withdraw\models\Withdraw;
 use app\common\exceptions\ShopException;
 use Illuminate\Support\Facades\DB;
 

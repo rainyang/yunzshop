@@ -14,6 +14,7 @@ class EnoughReduce extends BaseDiscount
 {
     protected $code = 'enoughReduce';
     protected $name = '全场满减优惠';
+
     /**
      * 获取总金额
      * @return int|mixed

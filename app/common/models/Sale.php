@@ -26,10 +26,6 @@ class Sale extends BaseModel
         'point' => '',
         'bonus' => 0
     ];
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-    }
 
     protected $guarded = [''];
 

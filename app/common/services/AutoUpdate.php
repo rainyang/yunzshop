@@ -1137,7 +1137,8 @@ class AutoUpdate
 
             $data = [
                 'plugins' => $this->getDirsByPath('plugins'),
-                'vendor'  => $this->getDirsByPath('vendor')
+                'vendor'  => $this->getDirsByPath('vendor'),
+                'domain'  => request()->getHost()
             ];
 
             $update = Curl::to($updateFile)

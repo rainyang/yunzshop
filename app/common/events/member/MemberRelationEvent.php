@@ -9,7 +9,7 @@ namespace app\common\events\member;
 
 
 use app\common\events\Event;
-use app\backend\modules\member\models\Member;
+use app\common\models\Member;
 
 class MemberRelationEvent extends Event
 {

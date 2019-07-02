@@ -31,15 +31,4 @@ class WaitSend extends Status
 
         return $name;
     }
-
-    public function getButtonModels()
-    {
-        $result =
-            [
-
-            ];
-        //$result = array_merge($result,self::getRefundButtons($this->order));
-
-        return $result;
-    }
 }

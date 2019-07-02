@@ -14,11 +14,6 @@ class ListController extends ApiController
      */
     protected $order;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * @return Order
      */

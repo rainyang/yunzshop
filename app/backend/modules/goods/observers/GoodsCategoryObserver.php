@@ -9,9 +9,11 @@
 namespace app\backend\modules\goods\observers;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 class GoodsCategoryObserver extends \app\common\observers\BaseObserver
 {
-    public function saving(Model $model)
+    public function saving(Model$model)
     {
         (new \app\common\services\operation\GoodsCategoryLog($model, 'create'));
     }
