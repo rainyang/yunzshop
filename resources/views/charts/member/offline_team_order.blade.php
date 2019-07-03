@@ -63,7 +63,7 @@
                                     <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                 @endif
                             </td>
-                            <td>{{ $item->uid?:$item->member_id }}</td>
+                            <td>{{ $item['member_id'] }}</td>
                             <td>
                                 @if(!empty($item->belongsToMember->avatar))
                                     <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
@@ -74,10 +74,10 @@
                                     {{ $item->belongsToMember->nickname }}
                                 @endif
                             </td>
-                            <td>{{ $item->team_count }}</td>
-                            <td>{{ $item->pay_count }}</td>
-                            <td>{{ $item->team_order_quantity }}</td>
-                            <td>{{ $item->team_order_amount }}</td>
+                            <td>{{ $item['team_next_count'] }}</td>
+                            <td>{{ $item['pay_count'] }}</td>
+                            <td>{{ $item['order_goods_total'] }}</td>
+                            <td>{{ $item['order_price'] }}</td>
 
                         </tr>
                     @endforeach
