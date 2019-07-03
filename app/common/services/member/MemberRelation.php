@@ -15,6 +15,13 @@ use app\common\exceptions\ShopException;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
 use Illuminate\Support\Facades\DB;
+use app\backend\modules\member\models\MemberRelation as Relation;
+use app\backend\modules\member\models\MemberParent;
+use app\common\models\notice\MessageTemp;
+use app\common\events\MessageEvent;
+use app\common\services\finance\PointService;
+
+
 
 class MemberRelation
 {
@@ -181,6 +188,8 @@ class MemberRelation
         if ($parent_relation->isEmpty() && intval($parent_id) > 0) {
             \Log::debug('------step1-------');
             if ($this->addMemberOfRelation($member_id, $parent_id)) {
+                //绑定下线成功赠送积分
+                $this->rewardPoint($parent_id,$member_id);
 
                 return ['status' => 1];
             }
@@ -224,11 +233,51 @@ class MemberRelation
 
             file_put_contents(storage_path("logs/" . date('Y-m-d') . "_changerelation.log"), print_r($member_id . '-'. $parent_relation[0]->parent_id . '-'. $parent_id . PHP_EOL, 1), FILE_APPEND);
             if ($this->changeMemberOfRelation($member_id, $parent_id)) {
+//                //绑定下线成功赠送积分
+//                $this->rewardPoint($parent_id,$member_id);
                 return ['status' => 1];
             }
         }
 
         return ['status' => 0];
+    }
+    //成为下线奖励积分
+    public function  rewardPoint($parent_id,$member_id){
+
+        $relation = Relation::getSetInfo()->first();
+        //奖励积分
+        $reward_points  = $relation->reward_points;
+        //最大奖励人数
+        $maxinum_number = $relation->maximum_number;
+
+        $total = MemberParent::where([
+            ['parent_id','=',$parent_id],
+            ['level','=',1],
+        ])->count();
+
+        \Log::debug('会员成为下线奖励积分',$reward_points.'--'.$maxinum_number.'---'.$total);
+
+        if( $total <= $maxinum_number || empty($maxinum_number)){
+            //团队下线小于设置的最大奖励人数就奖励积分
+            $memberModel = Member::where('uid',$parent_id)->first();
+            $pointData = array(
+                'uniacid' => \YunShop::app()->get('uniacid'),
+                'point_income_type' => PointService::POINT_INCOME_GET,
+                'member_id' => $memberModel->uid,
+                'point_mode' => PointService::POINT_MODE_PRESENTATION,
+                'point' => $reward_points,
+                'remark' => '------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points.'个',
+            );
+            try {
+                $pointService = new PointService($pointData);
+                $pointService->changePoint();
+                \Log::debug('------会员ID为----'.$member_id.'成为会员ID为'.$parent_id.'的下线奖励积分'.$reward_points);
+            } catch (\Exception $e) {
+                \Log::error('成为下线积分奖励出错:' . $e->getMessage());
+            }
+
+        }
+
     }
 
     /**
