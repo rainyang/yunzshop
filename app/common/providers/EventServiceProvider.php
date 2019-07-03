@@ -162,6 +162,8 @@ class EventServiceProvider extends ServiceProvider
         \app\frontend\modules\payment\listeners\WftAlipayListener::class,
         \app\frontend\modules\payment\listeners\HuanxunWxPay::class,
         \app\frontend\modules\payment\listeners\DianbangScan::class,
+        \app\frontend\modules\payment\listeners\ConvergeWechatPayListener::class,
+        \app\frontend\modules\payment\listeners\ConvergeAlipayPayListener::class,
 
         orderListener::class,
         IncomeWithdraw::class,
