@@ -1964,16 +1964,34 @@ class MemberController extends ApiController
             
             MemberShopInfo::change_relation(\YunShop::app()->getMemberId(), $parent->member_id);
             
-                $member_invitation_model->uniacid = \YunShop::app()->uniacid;
-                $member_invitation_model->mid = $parent->member_id; //邀请用户
-                $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
-                $member_invitation_model->invitation_code = $invite_code; 
-                $member_invitation_model->save();
+            $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+            $member_invitation_model->mid = $parent->member_id; //邀请用户
+            $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
+            $member_invitation_model->invitation_code = $invite_code;
+            $member_invitation_model->save();
 
             return $this->successJson('ok', $parent);
         } else {
             return $this->errorJson('邀请码有误!请重新填写');
         }
+    }
+
+    /**
+     * 邀请页面确认上级
+     */
+    public function updateMemberInvite()
+    {
+        $parent_id = request()->parent_id;
+        $parent_id = $parent_id ?: 0;
+        $member_invitation_model = new MemberInvitationCodeLog();
+        $member_invitation_model->uniacid = \YunShop::app()->uniacid;
+        $member_invitation_model->member_id = \YunShop::app()->getMemberId(); //使用用户
+        $member_invitation_model->mid = $parent_id; //邀请用户
+        $invitation_code = $parent_id ? MemberShopInfo::where('member_id',$parent_id)->first()->invite_code : 0;
+        $member_invitation_model->invitation_code = $invitation_code;
+        $member_invitation_model->save();
+
+        return $this->successJson('成功');
     }
 
     public function isValidatePage()
