@@ -67,6 +67,8 @@ class ApplyController extends ApiController
         $this->pay_way = $pay_way;
         $this->poundage = $poundage;
         $this->withdraw_data = $withdraw_data;
+        //提现限额判断
+        $this->cashLimitation();
 
         //插入提现
         $result = $this->withdrawStart();
@@ -75,6 +77,43 @@ class ApplyController extends ApiController
             return $this->successJson('提现成功');
         }
         return $this->errorJson('提现失败');
+    }
+
+    private function cashLimitation(){
+        $set = Setting::get('withdraw.balance');
+        $withdrawModel = new Withdraw();
+        $start = strtotime(date("Y-m-d"),time());
+        $end = $start+60*60*24;
+
+        if( $this->pay_way == 'wechat'){
+            $wechat_min =  $set['wechat_min'];
+            $wechat_max =  $set['wechat_max'];
+            $wechat_frequency =  $set['wechat_frequency'];
+            $count = count($this->withdraw_data);
+            $withdraw_count = $withdrawModel->where([
+                ['status','=','2'],
+                ['pay_way','=','wechat'],
+                ['pay_at','>=',$start],
+                ['pay_at','<=',$end]
+            ])->count();
+
+            $total =$withdrawModel->where([
+                ['status','=','2'],
+                ['pay_way','=','wechat'],
+                ['pay_at','>=',$start],
+                ['pay_at','<=',$end]
+            ])->sum('actual_amounts');
+            //统计用户今天提现的次数
+
+
+        }elseif($this->pay_way == 'alipay'){
+            $alipay_min =  $set['alipay_min'];
+            $alipay_max =  $set['alipay_max'];
+            $alipay_frequency =  $set['alipay_frequency'];
+
+        }
+
+
     }
 
 

@@ -109,7 +109,51 @@
             </label>
         </div>
     </div>
+
+    <div id='withdraw_income_wechat' @if(empty($set['wechat']))style="display:none"@endif>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">单笔最低金额</div>
+                        <input type="text" name="withdraw[income][wechat_min]" class="form-control"
+                               value="{{$set['wechat_min']}}" placeholder=""/>
+                        <div class="input-group-addon">单笔最高金额</div>
+                        <input type="text" name="withdraw[income][wechat_max]" class="form-control"
+                               value="{{$set['wechat_max']}}" placeholder=""/>
+                    </div>
+                </div>
+                <div class="help-block">
+                   可设置区间:1-20000
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="input-group">
+                    <div class="input-group">
+
+                        <input type="text" name="withdraw[income][wechat_frequency]" class="form-control"
+                               value="{{$set['wechat_frequency']}}" placeholder=""/>
+                        <div class="input-group-addon">次</div>
+                    </div>
+                </div>
+                <div class="help-block">
+                    可设置1-999次
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+
+
+
 
 <div class="tab-pane  active">
     <div class="form-group">
@@ -125,6 +169,46 @@
             </label>
         </div>
     </div>
+
+    <div id='withdraw_income_alipay' @if(empty($set['alipay']))style="display:none"@endif>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="input-group">
+                    <div class="input-group">
+                        <div class="input-group-addon">单笔最低金额</div>
+                        <input type="text" name="withdraw[income][alipay_min]" class="form-control"
+                               value="{{$set['alipay_min']}}" placeholder=""/>
+                        <div class="input-group-addon">单笔最高金额</div>
+                        <input type="text" name="withdraw[income][alipay_max]" class="form-control"
+                               value="{{$set['alipay_max']}}" placeholder=""/>
+                    </div>
+                </div>
+                <div class="help-block">
+                    可设置区间:1-20000
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="input-group">
+                    <div class="input-group">
+
+                        <input type="text" name="withdraw[income][alipay_frequency]" class="form-control"
+                               value="{{$set['alipay_frequency']}}" placeholder=""/>
+                        <div class="input-group-addon">次</div>
+                    </div>
+                </div>
+                <div class="help-block">
+                    可设置1-999次
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
 
 @if(app('plugins')->isEnabled('huanxun'))
@@ -355,6 +439,27 @@
                 $("#withdraw_income_balance").hide();
             }
         });
+
+        $(":radio[name='withdraw[income][wechat]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_income_wechat").show();
+            }
+            else {
+                $("#withdraw_income_wechat").hide();
+            }
+        });
+
+        $(":radio[name='withdraw[income][alipay]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_income_alipay").show();
+            }
+            else {
+                $("#withdraw_income_alipay").hide();
+            }
+        });
+
+
+
         $(":radio[name='withdraw[income][balance_special]']").click(function () {
             if ($(this).val() == 1) {
                 $("#balance_special").show();
