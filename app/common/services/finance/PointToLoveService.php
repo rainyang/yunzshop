@@ -57,7 +57,7 @@ class PointToLoveService
                 'point'             => -$change_value,
                 'remark'            => '积分自动转入：'.$change_value. '转入比例：' . $rate,
             ];
-
+            //修改用户积分
             $result = (new PointService($point_change_data))->changePoint();
 
             if (!$result) {
@@ -65,6 +65,9 @@ class PointToLoveService
                 DB::rollBack();
                 return false;
             }
+
+
+            $change_value = $this->getExchange($member,$change_value);
 
             $love_change_data = [
                 'member_id'         => $member->uid,
@@ -75,7 +78,7 @@ class PointToLoveService
                 'relation'          => ''
             ];
 
-
+            //修改爱心值
             $result = (new LoveChangeService())->pointTransfer($love_change_data);
             if (!$result) {
                 Log::info('积分自动转入爱心值失败',print_r($love_change_data,true));
@@ -96,10 +99,6 @@ class PointToLoveService
 
         $rate = 0;
 
-        $transfer_integral = 1;
-
-        $transfer_love = 1;
-
         //如果全局比例为空、为零
         if (empty($set['transfer_love_rate'])) {
             $rate = 0;
@@ -110,8 +109,32 @@ class PointToLoveService
             $rate = $set['transfer_love_rate'];
         }
 
+        //会员独立设置判断
+        if (isset($memberModel->pointLove) && $memberModel->pointLove > 0) {
+            $rate              =  $memberModel->pointLove->rate;
+
+        }
+
+        //独立设置为 -1，跳过此会员
+        if (isset($memberModel->pointLove) && $memberModel->pointLove == -1) {
+            $rate = 0;
+        }
+
+        return $rate;
+    }
+
+
+
+    private function getExchange($memberModel,$change_value)
+    {
+        $set = Setting::get('point.set');
+
+        $transfer_integral = 1;
+
+        $transfer_love = 1;
+
         //如果全局比例为空
-        if (empty($set['transfer_integral']) && empty($set['transfer_integral_love'])){
+        if (empty($set['transfer_integral']) || empty($set['transfer_integral_love'])){
             $transfer_integral = 1;
 
             $transfer_love = 1;
@@ -129,8 +152,6 @@ class PointToLoveService
 
         //会员独立设置判断
         if (isset($memberModel->pointLove) && $memberModel->pointLove > 0) {
-            $rate              =  $memberModel->pointLove->rate;
-
             //判断会员是否单独设置积分转入爱心值比例
             if ($memberModel->pointLove->transfer_love && $memberModel->pointLove->transfer_integral) {
 
@@ -140,14 +161,10 @@ class PointToLoveService
             }
         }
 
-        //独立设置为 -1，跳过此会员
-        if (isset($memberModel->pointLove) && $memberModel->pointLove == -1) {
-            $rate = 0;
-        }
-
-        $rate = bcmul(bcdiv($transfer_love,$transfer_integral,4),$rate,4);
+        $rate = bcmul(bcdiv($transfer_love,$transfer_integral,4),$change_value,2);
 
         return $rate;
+
     }
 
 }
