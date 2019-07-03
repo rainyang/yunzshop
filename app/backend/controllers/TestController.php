@@ -32,14 +32,14 @@ use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\facades\Setting;
 use Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener;
 
-
+use app\common\services\finance\PointToLoveService;
 class TestController extends BaseController
 {
     public $transactionActions = ['*'];
 
     public function t()
     {
-
+        (new PointToLoveService())->handleTransferQueue(\YunShop::app()->uniacid);
     }
 
     private $amountItems;
