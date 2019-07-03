@@ -68,7 +68,6 @@ class DetailController extends BaseController
      */
     public function index(\Illuminate\Http\Request $request)
     {
-
         $order = Order::orders()->with(['deductions', 'coupons', 'discounts','orderFees', 'orderPays' => function ($query) {
             $query->with('payType');
         }, 'hasOnePayType']);

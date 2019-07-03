@@ -9,11 +9,13 @@
 namespace app\backend\controllers;
 
 
+use app\backend\models\Withdraw;
 use app\backend\modules\charts\modules\phone\services\PhoneAttributionService;
 use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
 use app\common\events\order\AfterOrderReceivedEvent;
 use app\common\events\order\OrderCreatedEvent;
+use app\common\exceptions\AppException;
 use app\common\models\Goods;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
@@ -31,6 +33,7 @@ use Yunshop\PointActivity\Common\Listeners\OrderReceivedListener;
 use app\common\events\order\AfterOrderCanceledEvent;
 use app\common\facades\Setting;
 use Yunshop\ProviderPlatform\Common\Listeners\OrderDiscountListener;
+use Yunshop\Love\Frontend\Modules\Love\Controllers\WithdrawController;
 
 
 class TestController extends BaseController
@@ -39,7 +42,7 @@ class TestController extends BaseController
 
     public function t()
     {
-
+        throw new AppException(111);
     }
 
     private $amountItems;

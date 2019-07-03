@@ -26,23 +26,4 @@ class Complete extends Status
         return '交易完成';
     }
 
-    public function getButtonModels()
-    {
-        $result[] = [
-            'name' => '删除订单',
-            'api' => 'order.operation.delete',
-            'value' => static::DELETE
-        ];
-
-        if (!$this->order->isVirtual() && !in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
-            $result[] = [
-                'name' => '查看物流', // todo 原来商城的逻辑是, 当有物流单号时, 才显示"查看物流"按钮
-                'api' => 'dispatch.express',
-                'value' => static::EXPRESS
-            ];
-        }
-        //$result = array_merge($result, self::getRefundButtons($this->order));
-
-        return $result;
-    }
 }

@@ -20,9 +20,9 @@ class DetailController extends BaseController
      * DetailController constructor.
      * @throws AppException
      */
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $processId = request()->input('id');
         $this->process = RemittanceAuditProcess::uniacid()->detail()->find($processId);
         if(!isset($this->process)){

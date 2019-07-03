@@ -30,53 +30,23 @@ class MemberCartService
     /**
      * @param $params
      * @return mixed
-     * @throws AppException
+     * @throws \app\common\exceptions\MemberNotLoginException
      */
     public static function newMemberCart($params)
     {
-        if (!isset($params['total']) || $params['total']<= 0) {
+        if (!isset($params['total']) || $params['total'] <= 0) {
             // 数量默认1
             $params['total'] = 1;
         }
-        if(Member::current()){
-            $params['member_id'] = Member::current()->uid;
 
+        if (!isset($params['member_id'])) {
+            $params['member_id'] = Member::current()->uid;
         }
-        $cart = app('OrderManager')->make('MemberCart',$params);
+
+        $cart = app('OrderManager')->make('MemberCart', $params);
+
+        $cart->setRelation('member', Member::current());
         return $cart;
     }
 
-    /**
-     * @param Collection $memberCarts
-     * @return Collection
-     */
-    public static function filterShopMemberCart(Collection $memberCarts)
-    {
-        return $memberCarts->filter(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        });
-    }
-
-    /**
-     * @param Collection $memberCarts
-     * @return Collection
-     */
-    public static function filterPluginMemberCart(Collection $memberCarts)
-    {
-        return $memberCarts->filter(function ($memberCart) {
-            /**
-             * @var $memberCart MemberCart
-             */
-            if (!empty($memberCart->goods->is_plugin)) {
-                return true;
-            }
-            return false;
-        });
-    }
 }

@@ -64,4 +64,9 @@ trait PreOrderTrait
     {
         return $this->orderGoods->getGoodsPrice();
     }
+
+    public function getPriceAttribute()
+    {
+        return $this->getPrice();
+    }
 }

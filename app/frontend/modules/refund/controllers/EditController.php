@@ -14,7 +14,7 @@ use app\common\models\refund\RefundApply;
 
 class EditController extends ApiController
 {
-    public function index(\Request $request){
+    public function index(\Illuminate\Http\Request $request){
         $this->validate([
             'refund_id' => 'required|integer',
         ]);
@@ -43,7 +43,7 @@ class EditController extends ApiController
         $data = compact('refundApply','reasons','refundTypes');
         return $this->successJson('成功',$data);
     }
-    public function store(\Request $request){
+    public function store(\Illuminate\Http\Request $request){
         $this->validate([
             'reason' => 'required|string',
             'content' => 'sometimes|string',

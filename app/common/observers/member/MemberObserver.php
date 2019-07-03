@@ -9,6 +9,8 @@
 namespace app\common\observers\member;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 class MemberObserver extends \app\common\observers\BaseObserver
 {
     public function saving(Model $model) {

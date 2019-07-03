@@ -16,7 +16,7 @@ class RoleModel extends \app\common\models\role\RoleModel
     public static function boot()
     {
         parent::boot();
-        self::addGlobalScope('uniacid', new UniacidScope);
+        self::addGlobalScope( new UniacidScope);
     }
 
 }

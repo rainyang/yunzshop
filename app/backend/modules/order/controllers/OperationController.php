@@ -24,7 +24,6 @@ class OperationController extends BaseController
     protected $order;
     public $transactionActions = ['*'];
 
-
     public function preAction()
     {
         parent::preAction();

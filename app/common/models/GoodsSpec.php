@@ -8,7 +8,12 @@
 
 namespace app\common\models;
 
-
+/**
+ * Class GoodsSpec
+ * @package app\common\models
+ * @property int uniacid
+ * @property int goods_id
+ */
 class GoodsSpec extends \app\common\models\BaseModel
 {
     public $table = 'yz_goods_spec';

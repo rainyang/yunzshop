@@ -70,4 +70,19 @@ class Coupon extends \app\common\models\Coupon
     }
 
 
+    //指定ID的, 在优惠券中心可领取的, 优惠券
+    public static function getAvailableCouponById($couponId)
+    {
+        return static::uniacid()
+            ->where('id', '=', $couponId)
+            ->where(function($query){
+                $query->where('total', '>', 0)
+                        ->orWhere(function($query){
+                            $query->where('total', '=', -1);
+                        });
+            })
+            ->where('status','=',1)
+            ->where('get_type', '=', 1)
+            ->first();
+    }
 }

@@ -27,7 +27,7 @@ class RechargeModel extends \app\common\models\point\RechargeModel
     public static function boot()
     {
         parent::boot();
-        self::addGlobalScope('uniacid', new UniacidScope);
+        self::addGlobalScope( new UniacidScope);
     }
 
     /**
