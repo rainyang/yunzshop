@@ -39,7 +39,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        (new PointToLoveService())->handleTransferQueue(\YunShop::app()->uniacid);
+     
     }
 
     private $amountItems;
