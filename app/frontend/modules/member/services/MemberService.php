@@ -711,9 +711,9 @@ class MemberService
             'pay_password' => '',
             'salt' => '',
             'yz_openid' => $userinfo['openid'],
-            'account_token_1' => $userinfo['account_token'],
-            'account_expires_in_1' => time() + $userinfo['expires_in'],
-            'refresh_token_1' => $userinfo['refresh_token'],
+            'account_token_1' => isset($userinfo['account_token']) ? $userinfo['account_token'] : '',
+            'account_expires_in_1' => isset($userinfo['expires_in']) ? time() + $userinfo['expires_in'] : '',
+            'refresh_token_1' => isset($userinfo['refresh_token']) ? $userinfo['refresh_token'] : '',
             'refresh_expires_in_1' => time() + (20 * 24 * 3600)
         ));
     }
