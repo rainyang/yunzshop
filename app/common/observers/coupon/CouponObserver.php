@@ -33,11 +33,10 @@ class CouponObserver extends BaseObserver
 
     public function updated(Model $model)
     {
-        if($model->widgets['more_hotels'] && $model->use_type == Coupon::COUPON_MORE_HOTEL_USE){
             CouponHotel::where([
                 'coupon_id' => $model->id,
             ])->delete();
-
+        if($model->widgets['more_hotels'] && $model->use_type == Coupon::COUPON_MORE_HOTEL_USE){
             foreach ($model->widgets['more_hotels'] as $v){
                 $couponHotel = new CouponHotel();
                 $couponHotel->fill([
