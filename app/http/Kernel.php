@@ -2,7 +2,7 @@
 
 namespace App\Http;
 
-use app\http\Middleware\PreAction;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -56,5 +56,6 @@ class Kernel extends HttpKernel
         'authShop' => \app\common\middleware\AuthenticateShop::class,
         'globalparams' => \app\common\middleware\GlobalParams::class,
         'shopbootstrap' => \app\common\middleware\ShopBootstrap::class,
+        'check' => \app\common\middleware\Check::class,
     ];
 }
