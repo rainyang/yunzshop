@@ -110,13 +110,13 @@ class PointToLoveService
         }
 
         //会员独立设置判断
-        if (isset($memberModel->pointLove) && $memberModel->pointLove > 0) {
+        if (isset($memberModel->pointLove) && $memberModel->pointLove->rate > 0) {
             $rate              =  $memberModel->pointLove->rate;
 
         }
 
         //独立设置为 -1，跳过此会员
-        if (isset($memberModel->pointLove) && $memberModel->pointLove == -1) {
+        if (isset($memberModel->pointLove) && $memberModel->pointLove->rate == -1) {
             $rate = 0;
         }
 
