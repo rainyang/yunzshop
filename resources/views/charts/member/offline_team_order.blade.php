@@ -65,13 +65,13 @@
                             </td>
                             <td>{{ $item['member_id'] }}</td>
                             <td>
-                                @if(!empty($item->belongsToMember->avatar))
-                                    <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                @if(!empty($item['avatar']))
+                                    <img src='{{ $item['avatar'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                 @endif
-                                @if(empty($item->belongsToMember->nickname))
+                                @if(empty($item['nickname']))
                                     未更新
                                 @else
-                                    {{ $item->belongsToMember->nickname }}
+                                    {{ $item['nickname'] }}
                                 @endif
                             </td>
                             <td>{{ $item['team_next_count'] }}</td>
