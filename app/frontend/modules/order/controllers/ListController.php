@@ -30,7 +30,7 @@ class ListController extends ApiController
      */
     protected function _getOrder()
     {
-        return $this->order = app('OrderManager')->make('Order')->orders()->where(app('OrderManager')->make('Order')->getTable().'.status', '<>', '-1')->hidePluginIds()->where('plugin_id','<','900')->with('hasOnePayType');
+        return $this->order = app('OrderManager')->make('Order')->orders()->where(app('OrderManager')->make('Order')->getTable().'.status', '<>', '-1')->hidePluginIds()->where('plugin_id','<','900')->with(['hasOnePayType','process']);
     }
 
     protected function getData()
