@@ -19,6 +19,8 @@ use app\common\facades\Setting;
 use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use app\common\services\finance\MessageService;
+use Mockery\Exception;
 
 class ApplyController extends ApiController
 {
@@ -49,6 +51,7 @@ class ApplyController extends ApiController
      */
     private $withdraw_data;
 
+    private $withdraw_item_data;
 
     public function __construct()
     {
@@ -80,10 +83,18 @@ class ApplyController extends ApiController
 
     private function withdrawStart()
     {
-        DB::transaction(function () {
-            $this->_withdrawStart();
-        });
-        return true;
+        try{
+
+            DB::transaction(function () {
+                $this->_withdrawStart();
+            });
+            return true;
+
+        } catch (Exception $exception) {
+
+            MessageService::withdrawFailure($this->withdraw_item_data, \YunShop::app()->getMemberId());
+            return $exception->getMessage();
+        }
     }
 
 
@@ -102,6 +113,8 @@ class ApplyController extends ApiController
             $withdrawModel->withdraw_set = $this->withdraw_set;
             $withdrawModel->income_set = $this->getIncomeSet($item['key_name']);
             $withdrawModel->fill($this->getWithdrawData($item));
+
+            $this->withdraw_item_data = $withdrawModel;
 
             event(new WithdrawApplyEvent($withdrawModel));
             
