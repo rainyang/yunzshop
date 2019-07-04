@@ -64,6 +64,7 @@ class BalanceWithdrawController extends BaseController
                 }
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);//提现失败通知
 
             return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]), 'error');
         }
@@ -338,6 +339,8 @@ class BalanceWithdrawController extends BaseController
     {
         $this->withdrawModel->status = 1;
         $this->withdrawUpdate();
+        //发送打款失败通知 
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
 
         throw new AppException($message ?: '打款失败，请重试');
     }
@@ -394,6 +397,9 @@ class BalanceWithdrawController extends BaseController
 
                 if (!is_null($withdraw_modle)) {
                     if ($withdraw_modle->status != '1') {
+                        
+                        BalanceNoticeService::withdrawFailureNotice($withdraw_modle);
+
                         return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $id]), 'error');
                     }
 
