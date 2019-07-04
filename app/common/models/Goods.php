@@ -15,6 +15,7 @@ use app\common\models\goods\GoodsDispatch;
 use app\common\models\goods\GoodsLimitBuy;
 use app\common\models\goods\GoodsVideo;
 use app\common\models\goods\Privilege;
+use app\common\models\goods\Share;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -70,6 +71,7 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property Brand hasOneBrand
  * @property GoodsLimitBuy hasOneGoodsLimitBuy
  * @property GoodsVideo hasOneGoodsVideo
+ * @property Share hasOneShare
  */
 class Goods extends BaseModel
 {

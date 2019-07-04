@@ -202,6 +202,7 @@ class GoodsController extends ApiController
         if ($goodsModel->hasOneShare) {
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
+        //todo 不知道干什么用的
         $this->setGoodsPluginsRelations($goodsModel);
 
         //该商品下的推广
@@ -312,6 +313,11 @@ class GoodsController extends ApiController
         }
     }
 
+    /**
+     * @param $goodsModel
+     * @param $member
+     * @throws \app\common\exceptions\AppException
+     */
     public function validatePrivilege($goodsModel, $member)
     {
         Privilege::validatePrivilegeLevel($goodsModel, $member);
