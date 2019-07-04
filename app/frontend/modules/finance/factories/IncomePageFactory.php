@@ -166,7 +166,8 @@ class IncomePageFactory
         if (is_numeric($value)) {
             return $value;
         } else {
-            return $this->total_income->where('incometable_type', $value)->first()->total_amount;
+            $total_income = $this->total_income->where('incometable_type', $value)->first();
+            return  $total_income ? $total_income->total_amount : '0.00';
         }
     }
 
