@@ -302,7 +302,8 @@ class Privilege extends BaseModel
 
     /**
      * 用户等級限制浏览
-     * @param
+     * @param $goodsModel
+     * @param $member
      * @throws AppException
      */
     public static function validatePrivilegeLevel($goodsModel, $member)
@@ -311,16 +312,18 @@ class Privilege extends BaseModel
             return;
         }
         $show_levels = explode(',', $goodsModel->hasOnePrivilege->show_levels);
-        if ($goodsModel->hasOnePrivilege->show_levels !== '0') {
-            $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))->whereIn('id', $show_levels)->value('level_name');
-            if (empty($level_names)) {
-                return;
-            }
-        }
-        if (!in_array($member->level_id, $show_levels)) {
-            $ordinaryMember = in_array('0', $show_levels)? '普通会员 ':'';
 
-            throw new AppException('商品(' . $goodsModel->title . ')仅限' . $ordinaryMember.$level_names . '浏览');
+        $level_names = MemberLevel::select(DB::raw('group_concat(level_name) as level_name'))
+            ->whereIn('id', $show_levels)
+            ->value('level_name');
+        if (empty($level_names)) {
+            return;
+        }
+
+        if (!in_array($member->level_id, $show_levels)) {
+            $ordinaryMember = in_array('0', $show_levels) ? '普通会员 ' : '';
+
+            throw new AppException('商品(' . $goodsModel->title . ')仅限' . $ordinaryMember . $level_names . '浏览');
         }
     }
 

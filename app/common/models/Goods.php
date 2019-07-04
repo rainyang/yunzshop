@@ -12,6 +12,8 @@ use app\common\exceptions\AppException;
 use app\common\exceptions\GoodsStockNotEnough;
 use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\goods\GoodsLimitBuy;
+use app\common\models\goods\GoodsVideo;
 use app\common\models\goods\Privilege;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -65,6 +67,9 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property GoodsDiscount hasManyGoodsDiscount
  * @property GoodsDispatch hasOneGoodsDispatch
  * @property Privilege hasOnePrivilege
+ * @property Brand hasOneBrand
+ * @property GoodsLimitBuy hasOneGoodsLimitBuy
+ * @property GoodsVideo hasOneGoodsVideo
  */
 class Goods extends BaseModel
 {
