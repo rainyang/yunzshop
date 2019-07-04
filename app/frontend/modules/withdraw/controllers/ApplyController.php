@@ -20,7 +20,6 @@ use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use app\common\services\finance\MessageService;
-use Mockery\Exception;
 
 class ApplyController extends ApiController
 {
@@ -90,7 +89,7 @@ class ApplyController extends ApiController
             });
             return true;
 
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             
             if ($this->withdraw_set['free_audit'] == 1) {
                 MessageService::withdrawFailure($this->withdraw_item_data, \YunShop::app()->getMemberId());
