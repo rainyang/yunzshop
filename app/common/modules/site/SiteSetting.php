@@ -7,6 +7,7 @@ class SiteSetting
 {
     private $setting;
 
+
     public function loadSettingFromCache()
     {
         $this->setting = \app\common\facades\SiteSettingCache::get();

@@ -9,6 +9,7 @@ class SiteSettingCache
     public function load()
     {
         $setting = \app\common\models\SiteSetting::first();
+
         if (!$setting) {
             $setting = \app\common\models\SiteSetting::create();
         }
@@ -22,6 +23,7 @@ class SiteSettingCache
         if (!isset($cache)) {
             $this->load();
         }
+
         return \Cache::get('siteSetting');
     }
 
