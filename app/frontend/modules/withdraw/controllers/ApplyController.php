@@ -81,35 +81,45 @@ class ApplyController extends ApiController
 
     private function cashLimitation(){
         $set = Setting::get('withdraw.balance');
-        $withdrawModel = new Withdraw();
         $start = strtotime(date("Y-m-d"),time());
         $end = $start+60*60*24;
+        //提交提现的次数
+        $number_of_submissions = count($this->withdraw_data);
 
         if( $this->pay_way == 'wechat'){
             $wechat_min =  $set['wechat_min'];
             $wechat_max =  $set['wechat_max'];
             $wechat_frequency =  $set['wechat_frequency'];
-            $count = count($this->withdraw_data);
-            $withdraw_count = $withdrawModel->where([
-                ['status','=','2'],
-                ['pay_way','=','wechat'],
-                ['pay_at','>=',$start],
-                ['pay_at','<=',$end]
-            ])->count();
 
-            $total =$withdrawModel->where([
-                ['status','=','2'],
-                ['pay_way','=','wechat'],
-                ['pay_at','>=',$start],
-                ['pay_at','<=',$end]
-            ])->sum('actual_amounts');
             //统计用户今天提现的次数
+            $today_withdraw_count = Withdraw::successfulWithdrawals('wechat',$start,$end);
+            if(($number_of_submissions + $today_withdraw_count) <= $wechat_frequency ){
+                if($this->amount >= $wechat_max || $this->amount <= $wechat_min){
+                    return $this->errorJson('提现失败,提现金额应在'.$wechat_min.'到'.$wechat_max.'之间');
+                }
+            }else{
+
+                return $this->errorJson('提现失败,今天提现次数超过最大限制');
+
+            }
 
 
         }elseif($this->pay_way == 'alipay'){
             $alipay_min =  $set['alipay_min'];
             $alipay_max =  $set['alipay_max'];
             $alipay_frequency =  $set['alipay_frequency'];
+
+            //统计用户今天提现的次数
+            $today_withdraw_count = Withdraw::successfulWithdrawals('wechat',$start,$end);
+            if(($number_of_submissions + $today_withdraw_count) <= $alipay_frequency ){
+                if($this->amount >= $alipay_max || $this->amount <= $alipay_min){
+
+                    return $this->errorJson('提现失败,提现金额应在'.$alipay_min.'到'.$alipay_max.'之间');
+                }
+            }else{
+
+                return $this->errorJson('提现失败,今天提现次数超过最大限制');
+            }
 
         }
 

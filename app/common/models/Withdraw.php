@@ -513,5 +513,30 @@ class Withdraw extends BaseModel
             ->update($updatedData);
     }
 
+    //统计当天的
+    public static function  successfulWithdrawals($pay_type,$start,$end){
+
+        return self::where([
+            ['status','=',self::STATUS_PAY],
+            ['pay_way','=',$pay_type],
+            ['pay_at','>=',$start],
+            ['pay_at','<=',$end]
+        ])->count();
+
+    }
+
+
+    public static function SuccessfulCashWithdrawal($pay_type,$start,$end){
+
+        return self::where([
+                ['status','=',self::STATUS_PAY],
+                ['pay_way','=',$pay_type],
+                ['pay_at','>=',$start],
+                ['pay_at','<=',$end]
+            ])->sum('actual_amounts');
+
+    }
+
+
 
 }
