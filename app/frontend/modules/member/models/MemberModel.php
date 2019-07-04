@@ -828,7 +828,7 @@ class MemberModel extends Member
         }
 
         if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {
-            $member_info['lease_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+            $member_info['lease_order'] = \Yunshop\LeaseToy\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
 
         $member_info['is_agent'] = self::isAgent();
