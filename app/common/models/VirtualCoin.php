@@ -96,7 +96,7 @@ abstract class VirtualCoin extends BaseModel
      */
     public function getCoin()
     {
-        return $this->amountOfCoin = $this->amountOfMoney / $this->exchange_rate;
+        return $this->amountOfCoin = bcdiv($this->amountOfMoney,$this->exchange_rate,2);;
     }
 
     /**
