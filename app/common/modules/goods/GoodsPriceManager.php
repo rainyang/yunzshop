@@ -29,15 +29,15 @@ class GoodsPriceManager
     private function _getDealPrice()
     {
         $dealPrices = collect(config('shop-foundation.goods.dealPrice'))->map(function (array $dealPriceStrategy) {
+
             return call_user_func($dealPriceStrategy['class'], $this->goods);
-        })->sort(function (BaseDealPrice $dealPrice) {
+        });
+
+        $dealPrices = $dealPrices->sortBy(function (BaseDealPrice $dealPrice) {
+
             return $dealPrice->getWeight();
         });
-        /*
-        $dealPrices->each(function ($dealPrice){
-            dump($dealPrice->getWeight());
-        });
-        */
+
         /**
          * @var BaseDealPrice $dealPrice
          */
