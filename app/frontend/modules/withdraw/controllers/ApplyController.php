@@ -87,18 +87,19 @@ class ApplyController extends ApiController
         $number_of_submissions = count($this->withdraw_data);
 
         if( $this->pay_way == 'wechat'){
-            $wechat_frequency =  $set['wechat_frequency'];
+            $wechat_frequency =  $set['wechat_frequency'] ?: 1;
             //统计用户今天提现的次数
             $today_withdraw_count = Withdraw::successfulWithdrawals('wechat',$start,$end);
-            if(($number_of_submissions + $today_withdraw_count) >= $wechat_frequency ){
-                return $this->errorJson('提现失败,今天提现次数超过最大限制');
+            \Log::debug('提现次数',[$today_withdraw_count,$number_of_submissions,$wechat_frequency]);
+            if(($number_of_submissions + $today_withdraw_count) > $wechat_frequency ){
+                return $this->errorJson('提现失败,每日提现到微信次数不能超过'.$wechat_frequency.'次');
             }
         }elseif($this->pay_way == 'alipay'){
-            $alipay_frequency =  $set['alipay_frequency'];
+            $alipay_frequency =  $set['alipay_frequency'] ?: 1;
             //统计用户今天提现的次数
-            $today_withdraw_count = Withdraw::successfulWithdrawals('wechat',$start,$end);
-            if(($number_of_submissions + $today_withdraw_count) >= $alipay_frequency ){
-                return $this->errorJson('提现失败,今天提现次数超过最大限制');
+            $today_withdraw_count = Withdraw::successfulWithdrawals('alipay',$start,$end);
+            if(($number_of_submissions + $today_withdraw_count) > $alipay_frequency ){
+                return $this->errorJson('提现失败,每日提现到支付宝次数不能超过'.$alipay_frequency.'次');
 
             }
         }
