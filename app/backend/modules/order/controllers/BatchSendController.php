@@ -22,8 +22,9 @@ class BatchSendController extends BaseController
     private $err_array = [];
     private $error_msg;
 
-    public function __construct()
+    public function preAction()
     {
+        parent::preAction();
         // 生成目录
         if (!is_dir(storage_path('app/public/orderexcel'))) {
             mkdir(storage_path('app/public/orderexcel'), 0777);
@@ -99,12 +100,10 @@ class BatchSendController extends BaseController
         $highestColumn = $sheet->getHighestColumn();
         $highestColumnCount = \PHPExcel_Cell::columnIndexFromString($highestColumn);
         $row = 2;
-        while ($row <= $highestRow)
-        {
+        while ($row <= $highestRow) {
             $rowValue = array();
             $col = 0;
-            while ($col < $highestColumnCount)
-            {
+            while ($col < $highestColumnCount) {
                 $rowValue[] = (string)$sheet->getCellByColumnAndRow($col, $row)->getValue();
                 ++$col;
             }
@@ -142,7 +141,7 @@ class BatchSendController extends BaseController
                 $this->err_array[] = $order_sn;
                 continue;
             }
-            $express_model = Express::where('order_id',$order->id)->first();
+            $express_model = Express::where('order_id', $order->id)->first();
 
             !$express_model && $express_model = new Express();
 
@@ -168,11 +167,9 @@ class BatchSendController extends BaseController
         if (count($this->err_array) > 0) {
             $num = 1;
             $this->error_msg = '<br>' . count($this->err_array) . '个订单发货失败,失败的订单编号: <br>';
-            foreach ($this->err_array as $k => $v )
-            {
+            foreach ($this->err_array as $k => $v) {
                 $this->error_msg .= $v . ' ';
-                if (($num % 2) == 0)
-                {
+                if (($num % 2) == 0) {
                     $this->error_msg .= '<br>';
                 }
                 ++$num;

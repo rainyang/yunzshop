@@ -16,10 +16,19 @@ use app\common\traits\CreateOrderSnTrait;
 /**
  * Class Withdraw
  * @package app\common\models
+ *
  * @property int id
  * @property int type_id
  * @property float amounts
  * @property int status
+ *
+ * @method self initial()
+ * @method self audit()
+ * @method self paying()
+ * @method self payed()
+ * @method self rebut()
+ * @method self invalid()
+ *
  */
 class Withdraw extends BaseModel
 {
@@ -270,11 +279,67 @@ class Withdraw extends BaseModel
         return static::getPayWayComment($this->attributes['pay_way']);
     }
 
+    /**
+     * 待审核状态
+     *
+     * @param $query
+     */
+    public function scopeInitial($query)
+    {
+        $query->where('status', self::STATUS_INITIAL);
+    }
 
     /**
+     * 待打款状态
+     *
      * @param $query
-     * @return mixed
      */
+    public function scopeAudit($query)
+    {
+        $query->where('status', self::STATUS_AUDIT);
+    }
+
+    /**
+     * 打款中状态
+     *
+     * @param $query
+     */
+    public function scopePaying($query)
+    {
+        $query->where('status', self::STATUS_PAYING);
+    }
+
+    /**
+     * 已打款状态
+     *
+     * @param $query
+     */
+    public function scopePayed($query)
+    {
+        $query->where('status', self::STATUS_PAY);
+    }
+
+    /**
+     * 已驳回状态
+     *
+     * @param $query
+     */
+    public function scopeRebut($query)
+    {
+        $query->where('status', self::STATUS_REBUT);
+    }
+
+    /**
+     * 已无效状态
+     *
+     * @param $query
+     */
+    public function scopeInvalid($query)
+    {
+        $query->where('status', self::STATUS_INVALID);
+    }
+
+
     public function scopeRecords($query)
     {
         $types = static::getIncomeTypes();
@@ -282,12 +347,10 @@ class Withdraw extends BaseModel
         return $query->uniacid()->whereIn('type', $types);
     }
 
-
     public function scopeOfStatus($query, $status)
     {
         return $query->where('status', $status);
     }
-
 
     public function scopeOfType($query, $type)
     {
@@ -299,7 +362,6 @@ class Withdraw extends BaseModel
         return $query->where('withdraw_sn', $withdraw_sn);
     }
 
-
     public function atributeNames()
     {
         return [
@@ -309,7 +371,6 @@ class Withdraw extends BaseModel
             'pay_way'       => '打款方式',
         ];
     }
-
 
     public function rules()
     {

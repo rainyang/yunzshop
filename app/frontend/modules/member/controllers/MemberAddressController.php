@@ -17,9 +17,9 @@ class MemberAddressController extends ApiController
 {
     protected $publicAction = ['address','street'];
     private $memberAddressRepository;
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->memberAddressRepository = app(MemberAddressRepository::class);
     }
 

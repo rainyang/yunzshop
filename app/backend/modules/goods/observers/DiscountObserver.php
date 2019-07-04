@@ -9,6 +9,8 @@
 namespace app\backend\modules\goods\observers;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 class DiscountObserver extends \app\common\observers\BaseObserver
 {
     public function saving(Model $model)

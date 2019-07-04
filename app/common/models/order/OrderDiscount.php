@@ -12,7 +12,10 @@ use app\common\models\BaseModel;
 
 /**
  * Class OrderDiscount
+ * @property int id
  * @property int uid
+ * @property int code
+ * @property int amount
  * @package app\common\models\order
  */
 class OrderDiscount extends BaseModel

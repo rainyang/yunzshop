@@ -105,6 +105,6 @@ trait MessageTrait
             'redirect' => $redirect,
             'message' => $message,
             'status' => $status
-        ])->render();
+        ]);
     }
 }

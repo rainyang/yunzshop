@@ -14,7 +14,7 @@ use app\frontend\modules\refund\models\RefundApply;
 
 class ListController extends ApiController
 {
-    public function index(\Request $request)
+    public function index(\Illuminate\Http\Request $request)
     {
         $this->validate([
             'pagesize' => 'sometimes|filled|integer',

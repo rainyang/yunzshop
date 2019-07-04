@@ -24,10 +24,11 @@ class GoodsDispatch extends BaseModel
      * @var array
      */
     protected $guarded = ['created_at', 'updated_at'];
-public function __construct(array $attributes = [])
-{
-    parent::__construct($attributes);
-}
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+    }
 
     /**
      * 自定义显示错误信息
@@ -45,7 +46,7 @@ public function __construct(array $attributes = [])
      * 可使用
      * @return array
      */
-    public  function atributeNames()
+    public function atributeNames()
     {
         return [
             'dispatch_type' => '配送方式',
@@ -56,7 +57,7 @@ public function __construct(array $attributes = [])
     }
 
 
-    public  function rules()
+    public function rules()
     {
         return [
             'dispatch_type' => 'required|integer|min:0|max:1',

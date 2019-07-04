@@ -181,6 +181,25 @@
                                 <span class="help-block">以上条件达到后，是否需要审核才能发展下线</span>
                             </div>
                         </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 推荐一个人奖励积分</label>
+                            <div class="col-sm-6">
+                                <div class='input-group become' >
+                                    <input type='text' class='form-control' name='setdata[reward_points]' value="{{$set['reward_points']}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 赠送积分最大人数</label>
+                            <div class="col-sm-6">
+                                <div class='input-group become' >
+                                    <input type='text' class='form-control' name='setdata[maximum_number]' value="{{$set['maximum_number']}}" />
+                                    <span class="help-block">不填或为0则不限制</span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">推广中心跳转</label>
                             <div class="col-sm-9 col-xs-12">

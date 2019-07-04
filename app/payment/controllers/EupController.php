@@ -13,9 +13,9 @@ class EupController extends PaymentController
 	
 	private $attach = [];
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
 
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode('a', $_GET['OrderID']);

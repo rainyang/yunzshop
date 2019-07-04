@@ -79,7 +79,7 @@ abstract class OrderOperation extends Order
 
         if (!in_array($this->status, $this->statusBeforeChange)) {
 
-            throw new AppException("订单状态不满足{$this->name}操作");
+            throw new AppException("ID:{$this->id}订单状态不满足{$this->name}操作");
         }
         return true;
     }

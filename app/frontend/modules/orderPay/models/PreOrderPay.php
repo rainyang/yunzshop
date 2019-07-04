@@ -9,10 +9,9 @@
 namespace app\frontend\modules\orderPay\models;
 
 use app\common\exceptions\AppException;
-use app\common\models\OrderGoods;
 use app\common\models\PayType;
 use app\frontend\models\Member;
-use app\frontend\models\Order;
+use app\common\models\Order;
 use app\frontend\models\OrderPay;
 use app\frontend\modules\order\OrderCollection;
 use app\frontend\modules\order\services\OrderService;

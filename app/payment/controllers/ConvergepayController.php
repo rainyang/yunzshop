@@ -24,7 +24,10 @@ class ConvergepayController extends PaymentController
         parent::__construct();
 
         $this->parameter = $_GET;
+    }
 
+    public function notifyUrlWechat()
+    {
         if (empty(\YunShop::app()->uniacid)) {
             $this->attach = explode(':', $_GET['r2_OrderNo']);
 
@@ -32,10 +35,7 @@ class ConvergepayController extends PaymentController
 
             AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
         }
-    }
 
-    public function notifyUrlWechat()
-    {
         $this->log($this->parameter, '微信支付-HJ');
 
         if ($this->getSignResult()) {
@@ -77,6 +77,14 @@ class ConvergepayController extends PaymentController
 
     public function notifyUrlAlipay()
     {
+        if (empty(\YunShop::app()->uniacid)) {
+            $this->attach = explode(':', $_GET['r2_OrderNo']);
+
+            \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $this->attach[1];
+
+            AccountWechats::setConfig(AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid));
+        }
+
         $this->log($this->parameter, '支付宝支付-HJ');
 
         if ($this->getSignResult()) {
@@ -245,7 +253,7 @@ class ConvergepayController extends PaymentController
      */
     public function refundUrlWechat()
     {
-        $this->log($this->parameter, '微信或支付宝退款-HJ');
+        $this->logRefund($this->parameter, '微信或支付宝退款-HJ');
 
         if ($this->getSignWechatResult()) {
             if ($this->parameter['ra_Status'] == '100') {

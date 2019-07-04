@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\payment\managers;
 
-use app\frontend\models\OrderPay;
+use app\common\models\OrderPay;
 use app\frontend\modules\payment\paymentSettings\OrderPaymentSettingCollection;
 use app\frontend\modules\payment\paymentSettings\PaymentSettingInterface;
 use Illuminate\Container\Container;
@@ -17,7 +17,7 @@ class OrderPaymentTypeSettingManager extends Container
 {
     public function getOrderPaymentSettingCollection($code,OrderPay $orderPay){
 
-        $settings = $this->make($code,$orderPay);
+        $settings = $this->make($code,[$orderPay]);
 
         $settings = collect($settings)->map(function($setting) use ($orderPay){
             return call_user_func($setting,$orderPay);
