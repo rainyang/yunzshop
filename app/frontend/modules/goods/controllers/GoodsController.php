@@ -35,6 +35,12 @@ class GoodsController extends ApiController
     protected $publicAction = ['getRecommendGoods'];
     protected $ignoreAction = ['getRecommendGoods'];
 
+    /**
+     * @param $request
+     * @param null $integrated
+     * @return array|\Illuminate\Http\JsonResponse
+     * @throws \app\common\exceptions\AppException
+     */
     public function getGoods($request, $integrated = null)
     {
         $id = intval(\YunShop::request()->id);
@@ -120,27 +126,17 @@ class GoodsController extends ApiController
                 $item->thumb = replace_yunshop(yz_tomedia($item->thumb));
             }
         }
-        foreach ($goodsModel->hasManySpecs as &$spec) {
-            $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
-            foreach ($spec['specitem'] as &$specitem) {
-                $specitem['thumb'] = yz_tomedia($specitem['thumb']);
-            }
-        }
-
-        //商品营销 todo 优化新的
-        $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
-
-        //商品会员优惠
-        $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
-
-        //商品是否开启领优惠卷
-        $goodsModel->availability = $this->couponsMemberLj($member);
-
         $goodsModel->content = html_entity_decode($goodsModel->content);
         if ($goodsModel->has_option) {
             $goodsModel->min_price = $goodsModel->hasManyOptions->min("product_price");
             $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
             $goodsModel->stock = $goodsModel->hasManyOptions->sum('stock');
+        }
+        foreach ($goodsModel->hasManySpecs as &$spec) {
+            $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
+            foreach ($spec['specitem'] as &$specitem) {
+                $specitem['thumb'] = yz_tomedia($specitem['thumb']);
+            }
         }
 
         $goodsModel->setHidden(
@@ -175,6 +171,15 @@ class GoodsController extends ApiController
             $goodsModel->video_image = '';
         }
 
+        //商品营销 todo 优化新的
+        $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
+
+        //商品会员优惠
+        $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
+
+        //商品是否开启领优惠卷
+        $goodsModel->availability = $this->couponsMemberLj($member);
+
         // 商品详情挂件
         if (\Config::get('goods_detail')) {
             foreach (\Config::get('goods_detail') as $key_name => $row) {
@@ -202,7 +207,7 @@ class GoodsController extends ApiController
         if ($goodsModel->hasOneShare) {
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
-        //todo 不知道干什么用的
+        //设置商品相关插件信息
         $this->setGoodsPluginsRelations($goodsModel);
 
         //该商品下的推广
