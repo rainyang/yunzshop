@@ -374,14 +374,17 @@
                 return false;
             }
         }
-        if ($(':input[name="widgets[area_dividend][has_dividend]"]').get(0).checked) {
+
+        if ($(':input[name="widgets[area_dividend][has_dividend]"]').get(0) != undefined  && $(':input[name="widgets[area_dividend][has_dividend]"]').get(0).checked) {
             if ($(':input[name="widgets[area_dividend][has_dividend_price]"]').val() == '') {
                 $('#myTab a[href="#tab_area_dividend"]').tab('show');
                 Tip.focus(':input[name="widgets[area_dividend][has_dividend_price]"]', "独立分红金额!");
                 return false;
             }
         }
+
         var full = true;
+
         if (window.type == '3') {
             if (window.virtual != '0') {  //如果单规格，不能有规格
                 if ($('#hasoption').get(0).checked) {
@@ -409,11 +412,13 @@
                 }
             }
         }
+
         if (!full) {
             return false;
         }
 
         full = checkoption();
+
         if (!full) {
             return false;
         }
@@ -422,6 +427,7 @@
             alert('规格数据有变动，请重新点击 [刷新规格项目表] 按钮!');
             return false;
         }
+
         var discountway = $('input:radio[name=discountway]:checked').val();
         var discounttype = $('input:radio[name=discounttype]:checked').val();
         var returntype = $('input:radio[name=returntype]:checked').val();
@@ -473,9 +479,8 @@
                     }
                 });
             }
-
-
         }
+
         if (returntype == 1) {
             $(".returns").each(function () {
                 if (parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)) {
@@ -509,7 +514,7 @@
         var full = true;
         if ($("#hasoption").get(0).checked) {
             $(".spec_title").each(function (i) {
-                if ($(this).isEmpty()) {
+                if ($(this).val() == '') {
                     $('#myTab a[href="#tab_option"]').tab('show');
                     Tip.focus(".spec_title:eq(" + i + ")", "请输入规格名称!", "top");
                     full = false;
@@ -517,7 +522,7 @@
                 }
             });
             $(".spec_item_title").each(function (i) {
-                if ($(this).isEmpty()) {
+                if ($(this).val() == '') {
                     $('#myTab a[href="#tab_option"]').tab('show');
                     Tip.focus(".spec_item_title:eq(" + i + ")", "请输入规格项名称!", "top");
                     full = false;
