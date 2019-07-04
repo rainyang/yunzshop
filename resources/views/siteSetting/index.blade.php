@@ -23,7 +23,8 @@
                     <el-input placeholder=""
                               v-model="form.host"
                               style="width: 27%">
-                        <template slot="prepend">https://</template>
+                        <template v-if="form.https == 1" slot="prepend">https://</template>
+                        <template v-if="form.https == 0" slot="prepend">http://</template>
                     </el-input>
                 </el-form-item>
 
