@@ -91,8 +91,10 @@ class ApplyController extends ApiController
             return true;
 
         } catch (Exception $exception) {
-
-            MessageService::withdrawFailure($this->withdraw_item_data, \YunShop::app()->getMemberId());
+            
+            if ($this->withdraw_set['free_audit'] == 1) {
+                MessageService::withdrawFailure($this->withdraw_item_data, \YunShop::app()->getMemberId());
+            }
             return $exception->getMessage();
         }
     }
