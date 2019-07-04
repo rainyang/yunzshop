@@ -327,7 +327,7 @@ class InstallController
         try {
             \Log::debug('安装初始数据迁移');
             \Artisan::call('migrate',['--force' => true]);
-            \Artisan::call('db:seed', ['--class' => 'YzSystemSettingTableSeeder']);
+            \Artisan::call('db:seed', ['--force' => true, '--class' => 'YzSystemSettingTableSeeder']);
         }catch (\Exception $e) {
             return $this->errorJson($e->getMessage());
         }
