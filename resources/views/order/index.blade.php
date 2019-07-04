@@ -138,6 +138,20 @@
                                                 </option>
                                             </select>
                                         </div>
+
+                                        <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
+                                            <select name="search[first_order]" class="form-control">
+                                                <option value=""
+                                                        @if(!$requestSearch['first_order'])  selected="selected"@endif>
+                                                    不搜索首单
+                                                </option>
+                                                <option value="1"
+                                                        @if($requestSearch['first_order'] == '1')  selected="selected"@endif>
+                                                    搜索首单
+                                                </option>
+                                            </select>
+                                        </div>
+
                                         <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
@@ -179,7 +193,6 @@
 
                                     <div class="col-sm-7 col-lg-9 col-xs-12">
                                         <button class="btn btn-success"><i class="fa fa-search"></i> 搜索</button>
-                                        <input type="hidden" name="token" value="{{$var['token']}}"/>
                                         @section('export')
                                             <button type="submit" name="export" value="1" id="export" class="btn btn-info">导出
                                                 Excel
@@ -242,6 +255,9 @@
                                         @if(!empty($order['has_one_refund_apply']))
                                             <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}
                                                 :{{$order['has_one_refund_apply']['status_name']}}</label>
+                                    @endif
+                                    @if($order['has_many_first_order'])
+                                        <label class='label label-primary'>首单</label>
                                     @endif
 
 

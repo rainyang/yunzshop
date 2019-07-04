@@ -10,8 +10,6 @@
 namespace app\backend\modules\withdraw\controllers;
 
 
-use app\common\facades\Setting;
-
 class DetailController extends PreController
 {
     /**
@@ -21,14 +19,20 @@ class DetailController extends PreController
      */
     public function index()
     {
-        return view('withdraw.detail', [
-            'item'  => $this->withdrawModel,
-            'set'   => Setting::get('plugin.commission'),
-        ])->render();
+        return view('withdraw.detail', $this->resultData());
     }
 
 
-    public function validatorWithdrawModel($withdrawModel){}
+    public function validatorWithdrawModel($withdrawModel)
+    {
+    }
+
+    private function resultData()
+    {
+        return [
+            'item'      => $this->withdrawModel,
+        ];
+    }
 
 
 }

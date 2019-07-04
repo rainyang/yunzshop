@@ -21,9 +21,9 @@ class OrderPayController extends BaseController
     public function index()
     {
         $orderId = request()->query('order_id');
-        $order = Order::with('orderPays',function($query){
+        $order = Order::with(['orderPays' => function ($query) {
             $query->with('orders');
-        })->find($orderId);
+        }])->find($orderId);
 
         return view('order.orderPay', [
             'orderPays' => json_encode($order->orderPays)

@@ -4,7 +4,7 @@
         @foreach($goods as $row)
             <tr>
                 <td><img src='{{yz_tomedia($row['thumb'])}}'
-                         style='width:30px;height:30px;padding1px;border:1px solid #ccc'/> {{$row['title']}}
+                         style='width:30px;height:30px;padding1px;border:1px solid #ccc'/> {{$row['title']}}[ID:{{$row['id']}}]
                 </td>
                 <td style="width:80px;"><a href="javascript:;" onclick='select_good({{json_encode($row)}})'>选择</a></td>
             </tr>

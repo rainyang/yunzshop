@@ -244,7 +244,7 @@ class GoodsPosterController extends ApiController
 
         Utils::mkdirs($path);
 
-        $file_name = \YunShop::app()->uniacid . '-' . $this->goodsModel->id . '.png';
+        $file_name = \YunShop::app()->uniacid .'-'.  \YunShop::app()->getMemberId() .'-' . $this->goodsModel->id . '.png';
 
         return $path . $file_name;
     }
@@ -380,21 +380,26 @@ class GoodsPosterController extends ApiController
         if (empty($this->storeid)) {
             //商城商品二维码
             $url = yzAppFullUrl('/goods/' . $this->goodsModel->id, ['mid' => $this->mid]);
+
+            $file =  'shop-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
+
         } else {
             //门店商品二维码
             $url = yzAppFullUrl('/goods/' . $this->goodsModel->id . '/o2o/' . $this->storeid, ['mid' => $this->mid]);
+
+            $file =  'store-'.$this->storeid.'-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
         }
 
         $path = storage_path('app/public/goods/qrcode/' . \YunShop::app()->uniacid);
 
         Utils::mkdirs($path);
 
-        $file = 'mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
 
-//        if (!is_file($path.'/'.$file)) {
+        if (!is_file($path.'/'.$file)) {
 
-        \QrCode::format('png')->size(200)->generate($url, $path . '/' . $file);
-//        }
+            \QrCode::format('png')->size(200)->generate($url, $path . '/' . $file);
+
+        }
         $img = imagecreatefromstring(file_get_contents($path . '/' . $file));
         // unlink($path.'/'.$file);
 

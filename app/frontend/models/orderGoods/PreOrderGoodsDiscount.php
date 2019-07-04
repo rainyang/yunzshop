@@ -20,7 +20,7 @@ class PreOrderGoodsDiscount extends OrderGoodsDiscount
         $this->orderGoods = $orderGoods;
         $this->uid = $this->orderGoods->uid;
 
-        $orderGoods->orderGoodsDiscounts->push($this);
+        $orderGoods->getOrderGoodsDiscounts()->push($this);
 
     }
 

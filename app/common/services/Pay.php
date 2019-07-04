@@ -408,7 +408,7 @@ abstract class Pay
     public static function payResponseDataLog($out_order_no, $third_type, $params)
     {
         PayResponseDataLog::create([
-            'uniacid' => \YunShop::app()->uniacid,
+            'uniacid' => \YunShop::app()->uniacid ? : 0,
             'out_order_no' => $out_order_no,
             'third_type' => $third_type,
             'params' => $params

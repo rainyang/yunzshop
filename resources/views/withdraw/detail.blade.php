@@ -20,18 +20,6 @@
                 <b>手机号:</b>
                 {{$item->hasOneMember->mobile}}
             </p>
-            {{--<p><b>分销等级:</b> {{$item->hasOneAgent->agent_level->name}} (--}}
-            {{--@if($set['level']>=1)一级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->first_level}}--}}
-            {{--%</span>--}}
-            {{--@endif--}}
-            {{--@if($set['level']>=2)二级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->second_level}}--}}
-            {{--%</span>--}}
-            {{--@endif--}}
-            {{--@if($set['level']>=3)三级比例: <span style='color:blue'>{{$item->hasOneAgent->agent_level->third_level}}--}}
-            {{--%</span>--}}
-            {{--@endif--}}
-            {{--)--}}
-            {{--</p>--}}
             <p>
                 <b>累计收入: </b><span style='color:red'>{{$item->hasOneAgent->commission_total}}</span> 元
             </p>
@@ -168,11 +156,6 @@
                                         <div class="form-group">{{$data['title']}}</div>
                                         @foreach($data['data'] as $value)
 
-
-
-
-
-
                                             @if(!isset($value['title']))
                                                 @foreach($value as $v)
                                                     <div class="modal-body" style="background: #eee">
@@ -185,7 +168,6 @@
                                                     </div>
                                                 @endforeach
                                             @else
-
                                                 <div class="modal-body" style="background: #eee">
                                                     <div class="form-group">
                                                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">{{$value['title']}}</label>
@@ -237,7 +219,7 @@
                 <input type="submit" name="submit_check" value="提交审核" class="btn btn-primary col-lg-1"
                        onclick='return check()'/>
             @endif
-
+·
             @if($item->status == '1')
 
                 @if($item->pay_way == 'balance')
@@ -254,6 +236,8 @@
                     <input type="submit" name="submit_pay" value="易宝打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @elseif($item->pay_way == 'manual')
                     <input type="submit" name="submit_pay" value="手动打款" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                @elseif($item->pay_way == 'converge_pay')
+                    <input type="submit" name="submit_pay" value="打款到汇聚" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                 @endif
             @endif
 
@@ -269,16 +253,10 @@
             @if($item->status == '-1')
                 <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default " onclick='return '/>
             @endif
-            <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回列表" style='margin-left:10px;'/>
+            <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回列表" style='margin-left:10px;'/>
         </div>
     </form>
 
 </div>
-
-<script language='javascript'>
-    function goBack() {
-        window.location.href = "{!! yzWebUrl('finance.withdraw-records') !!}";
-    }
-</script>
 
 @endsection

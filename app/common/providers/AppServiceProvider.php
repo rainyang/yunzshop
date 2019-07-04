@@ -6,10 +6,12 @@ use App;
 use app\common\models\AccountWechats;
 use app\common\repositories\OptionRepository;
 use app\common\services\mews\captcha\src\Captcha;
+
+use app\framework\Log\TraceLog;
+use app\common\facades\Setting;
+use Illuminate\Support\ServiceProvider;
 use app\common\services\Utils;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\ServiceProvider;
-use Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,7 +22,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //require_once $this->app->path('helpers.php');
         \Cron::setDisablePreventOverlapping();
 
         //微信接口不输出错误
@@ -115,6 +116,9 @@ class AppServiceProvider extends ServiceProvider
                 $app['Illuminate\Hashing\BcryptHasher'],
                 $app['Illuminate\Support\Str']
             );
+        });
+        $this->app->singleton('Log.trace', function (){
+            return new TraceLog();
         });
     }
 

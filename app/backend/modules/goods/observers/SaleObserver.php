@@ -9,9 +9,11 @@
 namespace app\backend\modules\goods\observers;
 
 
+use Illuminate\Database\Eloquent\Model;
+
 class SaleObserver extends \app\common\observers\BaseObserver
 {
-    public function saving(Model $model)
+    public function saving( $model)
     {
 
 //        if (!empty($model->id) &&$model->isDirty()) {
@@ -19,7 +21,7 @@ class SaleObserver extends \app\common\observers\BaseObserver
 //        }
     }
 
-    public function updating(Model $model)
+    public function updating( $model)
     {
         (new \app\common\services\operation\SaleLog($model, 'update'));
     }

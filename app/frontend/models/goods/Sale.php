@@ -20,6 +20,8 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  * @property string ed_areaids
  * @property int ed_num
  * @property float ed_money
+ * @property int has_all_point_deduct
+ * @property float all_point_deduct
  */
 class Sale extends \app\common\models\Sale
 {
@@ -88,9 +90,10 @@ class Sale extends \app\common\models\Sale
      */
     private function goodsPriceInOrder(PreOrderGoods $orderGoods)
     {
-        $result =  $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function ($orderGoods) {
-            return $orderGoods->price;
+        $result =  $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function (PreOrderGoods $orderGoods) {
+            return $orderGoods->payment_amount;
         });
+
         return $result;
     }
 

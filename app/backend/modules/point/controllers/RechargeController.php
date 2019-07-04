@@ -28,9 +28,9 @@ class RechargeController extends BaseController
     private $rechargeModel;
 
 
-    public function __construct()
+    public function preAction()
     {
-        parent::__construct();
+        parent::preAction();
         $this->memberModel = $this->getMemberModel();
     }
 

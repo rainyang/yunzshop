@@ -1025,7 +1025,7 @@ class AutoUpdate
 
                     $chk_url = substr(config('auto-update.checkUrl'), strpos(config('auto-update.checkUrl'), '/')+2);
                     $chk_url = substr($chk_url, 0, strpos($chk_url, '/'));
-                    $cp_source_path = 'app/auto-update/temp/data/www/' . $chk_url . '/storage/app/' . $default_dir . '/upgrade/';
+                    $cp_source_path = 'app/auto-update/temp/data/wwwroot/' . $chk_url . '/storage/app/' . $default_dir . '/upgrade/';
                     $cp_destination_path = 'app/auto-update/temp/';
 
                     if (2 == $client) {
@@ -1137,7 +1137,8 @@ class AutoUpdate
 
             $data = [
                 'plugins' => $this->getDirsByPath('plugins'),
-                'vendor'  => $this->getDirsByPath('vendor')
+                'vendor'  => $this->getDirsByPath('vendor'),
+                'domain'  => request()->getHost()
             ];
 
             $update = Curl::to($updateFile)
