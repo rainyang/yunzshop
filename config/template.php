@@ -207,7 +207,7 @@ return [
         'subtitle' => '余额提现失败通知',
         'value' => 'finance_balance_withdraw_fail',
         'param' => [
-            '时间', '金额', '手续费'
+            '时间', '金额', '手续费', '提现单号'
         ]
     ],
     'coupon_expire' => [
@@ -537,7 +537,17 @@ return [
         '提现单号', '提现金额','昵称','子平台名称','到账时间'
         ]
     ],
-
+/**
+ * 收入提现失败通知
+ */
+    'finance_income_withdraw_fail' => [
+        'title' => '收入(提现失败通知)',
+        'subtitle' => '收入提现失败通知',
+        'value' => 'finance_income_withdraw_fail',
+        'param' => [
+            '时间', '金额', '手续费', '提现单号', '失败原因'
+        ]
+    ],
 
     /*$data = [
         [
