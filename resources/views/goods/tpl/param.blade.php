@@ -57,9 +57,7 @@
 <script>
     $(function() {
         require(['jquery.ui'], function () {
-            $("#param-items").sortable({handle: '.fa-move', stop: function(){
-                window.optionchanged = true;
-            }});
+            $("#param-items").sortable({handle: '.fa-move'});
         });
         $("#chkoption").click(function() {
             var obj = $(this);
