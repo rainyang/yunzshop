@@ -134,17 +134,17 @@ class DataValidatorService
             $wechat_min =  $set['wechat_min'] ?: 1;
             $wechat_max =  $set['wechat_max'] ?: 1;
             if( $this->withdrawModel->amounts <= $wechat_min){
-                throw new AppException("{$type_name}提现到微信不能小于{$wechat_min}元");
+                throw new AppException("{$type_name}提现到微信单笔提现额度最低{$wechat_min}元");
             }elseif( $this->withdrawModel->amounts >= $wechat_max){
-                throw new AppException("{$type_name}提现到微信不能大于{$wechat_max}元");
+                throw new AppException("{$type_name}提现到微信单笔提现额度最高{$wechat_max}元");
             }
         }elseif($type == self::WITHDRAW_TYPE_ALIPAY){
             $alipay_min =  $set['alipay_min'] ?: 1;
             $alipay_max =  $set['alipay_max'] ?: 1;
             if( $this->withdrawModel->amounts <= $alipay_min){
-                throw new AppException("{$type_name}提现到支付宝不能小于{$alipay_min}元");
+                throw new AppException("{$type_name}提现到支付宝单笔提现额度最低{$alipay_min}元");
             }elseif( $this->withdrawModel->amounts >= $alipay_max){
-                throw new AppException("{$type_name}提现到支付宝不能大于{$alipay_max}元");
+                throw new AppException("{$type_name}提现到支付宝单笔提现额度最低{$alipay_max}元");
             }
         }
 
