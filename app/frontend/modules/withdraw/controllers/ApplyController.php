@@ -19,6 +19,7 @@ use app\common\facades\Setting;
 use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use app\frontend\modules\withdraw\services\StatisticalPresentationService;
 
 
 class ApplyController extends ApiController
@@ -89,7 +90,8 @@ class ApplyController extends ApiController
         if( $this->pay_way == 'wechat'){
             $wechat_frequency = floor($set['wechat_frequency'] ?: 1);
             //统计用户今天提现的次数
-            $today_withdraw_count = $this->statisticalPresentation('wechat');
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat');
 
             if(($number_of_submissions + $today_withdraw_count) > $wechat_frequency ){
                 \Log::debug('提现到微信失败',['今天提现次数',$today_withdraw_count,'本次提现次数',$number_of_submissions,'每日限制次数',$wechat_frequency]);
@@ -98,25 +100,14 @@ class ApplyController extends ApiController
         }elseif($this->pay_way == 'alipay'){
             $alipay_frequency = floor($set['alipay_frequency'] ?: 1);
             //统计用户今天提现的次数  + 供应商提现的次数
-            $today_withdraw_count = $this->statisticalPresentation('alipay');
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay');
             if(($number_of_submissions + $today_withdraw_count) > $alipay_frequency ){
                 \Log::debug('提现到支付宝失败',['今天提现次数',$today_withdraw_count,'本次提现次数',$number_of_submissions,'每日限制次数',$alipay_frequency]);
                 return $this->errorJson('提现失败,每日提现到支付宝次数不能超过'.$alipay_frequency.'次');
 
             }
         }
-    }
-
-    //统计提现次数
-    public function statisticalPresentation($type){
-        $start = strtotime(date("Y-m-d"),time());
-        $end = $start+60*60*24;
-        $today_withdraw_count =  Withdraw::successfulWithdrawals($type,$start,$end);
-        if(app('plugins')->isEnabled('supplier')){
-            $today_withdraw_count += \Yunshop\Supplier\supplier\models\SupplierWithdraw::successfulWithdrawals($type,$start,$end);
-        }
-
-        return $today_withdraw_count;
     }
 
 
