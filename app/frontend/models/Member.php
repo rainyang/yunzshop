@@ -41,6 +41,7 @@ class Member extends \app\common\models\Member
         }
         return static::$current;
     }
+
     /**
      * 会员－会员优惠券1:多关系
      * @param null $backType

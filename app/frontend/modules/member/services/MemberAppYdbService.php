@@ -96,6 +96,12 @@ class MemberAppYdbService extends MemberService
         } else {
             $para = \YunShop::request();
             \Log::debug('获取用户信息：', print_r($para, 1));
+            $member = MemberWechatModel::getUserInfo($para['openid']);
+            if($member){
+                Session::set('member_id', $member['member_id']);
+                $this->redirect_link($para['openid']);
+            }
+
             if ($para['openid'] && $para['token']) {
                 $this->app_get_userinfo($para['token'], $para['openid'], $uuid);
             } elseif ($para['openid']) {
