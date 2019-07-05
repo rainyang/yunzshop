@@ -201,7 +201,7 @@ class AllUploadController extends BaseController
      */
     public function getNewFileName($originalName, $ext, $file_type)
     {
-        return $file_type.$this->getUniacid().date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        return $file_type.'/'.$this->getUniacid().'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
     }
 
     public function getUniacid()

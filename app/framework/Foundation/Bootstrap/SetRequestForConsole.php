@@ -9,8 +9,8 @@
 namespace app\framework\Foundation\Bootstrap;
 
 
-use app\framework\Foundation\Application;
 use app\framework\Http\Request;
+use Illuminate\Foundation\Application;
 
 class SetRequestForConsole
 {
