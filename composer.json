@@ -99,8 +99,8 @@
 {
     "packagist":
     {
-        "type": "composer",
-        "url": "https://packagist.laravel-china.org"
-    }
+            "type": "composer",
+            "url": "https://mirrors.aliyun.com/composer/"
+        }
 }
 }
