@@ -274,7 +274,8 @@ class AllUploadController extends BaseController
                 return $this->errorJson($e->getErrorMessage());
             }
 
-            $res = $oss->deleteObject($setting['alioss']['bucket'], $core['attachment']); //info['url'] 
+            $ossbucket = rtrim(substr($setting['alioss']['bucket'], 0, strrpos($setting['alioss']['bucket'],'@')), '@');
+            $res = $oss->deleteObject($ossbucket, $core['attachment']); //info['url'] 
 
             if (!$res['info']['url']) {
                 \Log::info('删除阿里云图片失败', [$core['id'], $res]);
