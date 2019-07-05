@@ -34,7 +34,9 @@ class EditGoodsService
         $this->request = $request;
         $this->goods_model = Goods::with('hasOneGoodsVideo')->with(['hasManyParams' => function ($query) {
             return $query->orderBy('displayorder', 'asc');
-        }])->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
+        }])->with(['hasManySpecs' => function ($query) {
+            return $query->orderBy('display_order', 'asc');
+        }])->with('hasManyGoodsCategory')->find($goods_id);
     }
 
     public function edit()
