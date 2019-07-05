@@ -11,6 +11,7 @@ namespace app\backend\modules\EnoughReduce\controllers;
 use app\common\components\BaseController;
 use app\common\exceptions\AppException;
 use app\common\facades\Setting;
+use app\common\facades\SiteSetting;
 use app\common\helpers\Url;
 
 class StoreController extends BaseController
@@ -20,7 +21,7 @@ class StoreController extends BaseController
         $setting = request()->input('setting');
 
         foreach ($setting as $key => $value) {
-            Setting::set('enoughReduce.' . $key, $value);
+            SiteSetting::set($key, $value);
         }
 
         return $this->successJson("设置保存成功", Url::absoluteWeb('goods.enough-reduce.index'));

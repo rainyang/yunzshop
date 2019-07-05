@@ -15,6 +15,7 @@ class PosterController extends ApiController
 {
     public function index()
     {
+        $this->type = intval(\YunShop::request()->type);
         $imageUrl = $this->getPoster();
         return $this->successJson('成功', ['image_url' => $imageUrl]);
     }
@@ -74,7 +75,7 @@ class PosterController extends ApiController
 
         Utils::mkdirs($path);
 
-        $md5 = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg'] . $this->type); //用于标识组成元素是否有变化
+        $md5 = md5($member_id . $shopInfo['name'] . $shopInfo['logo'] . $shopInfo['signimg'] . $this->type . '2'); //用于标识组成元素是否有变化
         $extend = '.png';
         $file = $md5 . $extend;
         \Log::debug('+++++++++++++ 111 +++++++++++');
@@ -148,6 +149,7 @@ class PosterController extends ApiController
         \Log::debug('0000000000000000000000000000000000', $imgUrl);
         return $imgUrl;
     }
+
     //合并图片并指定图片大小
     private static function mergeImage($destinationImg, $sourceImg, $data)
     {
