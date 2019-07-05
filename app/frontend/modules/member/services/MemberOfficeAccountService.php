@@ -28,11 +28,12 @@ class MemberOfficeAccountService extends MemberService
     {
     }
 
-    public function login($params = [])
+    public function login()
     {
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
+        $scope   = \YunShop::request()->scope;
 
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
@@ -49,6 +50,10 @@ class MemberOfficeAccountService extends MemberService
         $state = 'yz-' . session_id();
 
         $authurl = $this->_getAuthUrl($appId, $callback, $state);
+
+        if ($scope == 'base') {
+            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+        }
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
@@ -73,10 +78,10 @@ class MemberOfficeAccountService extends MemberService
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-
+\Log::debug('-----member office-----', [$member_id, $userinfo['openid'], $userinfo['access_token'], encrypt($userinfo['access_token'])]);
             Session::set('member_id', $member_id);
             Session::set('openid', $userinfo['openid']);
-            setcookie('Yz-Token', encrypt($userinfo['access_token']));
+            setcookie('Yz-Token', encrypt($userinfo['access_token']), time() + 9000);
         } else {
             $this->_setClientRequestUrl();
 
@@ -98,26 +103,33 @@ class MemberOfficeAccountService extends MemberService
      */
     public function getUserInfo($appId, $appSecret, $token)
     {
-        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+        $subscribe = 0;
 
-        $global_token = \Curl::to($global_access_token_url)
-            ->asJsonResponse(true)
-            ->get();
+        if (env('APP_Framework') == 'platform') {
+            $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
-        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+            $global_token = \Curl::to($global_access_token_url)
+                ->asJsonResponse(true)
+                ->get();
 
-        $user_info = \Curl::to($global_userinfo_url)
-            ->asJsonResponse(true)
-            ->get();
+            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
 
-        if (0 == $user_info['subscribe']) { //未关注拉取不到用户信息
+            $user_info = \Curl::to($global_userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            $subscribe = $user_info['subscribe'];
+        }
+
+
+        if (0 == $subscribe) { //未关注拉取不到用户信息
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
             $user_info = \Curl::to($userinfo_url)
                 ->asJsonResponse(true)
                 ->get();
 
-            $user_info['subscribe'] = 0;
+            $user_info['subscribe'] = $subscribe;
         }
 
         return array_merge($user_info, $token);
@@ -377,10 +389,9 @@ class MemberOfficeAccountService extends MemberService
     public function updateFansMember($fanid, $member_id, $userinfo)
     {
         $record = array(
-            //'openid' => $userinfo['openid'],
             'uid'       => $member_id,
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => $userinfo['subscribe'] ?: 0,
+            'follow' => isset($userinfo['subscribe']) ? $userinfo['subscribe'] : 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
@@ -481,73 +492,69 @@ class MemberOfficeAccountService extends MemberService
 
     public function checkLogged()
     {
+        \Log::debug('-----step1------', [$_SERVER['QUERY_STRING'], session_id()]);
         $uid = \YunShop::app()->getMemberId();
         $uniacid = \YunShop::app()->uniacid;
-
+\Log::debug('----step2------', [$uid, $uniacid]);
          if ($uid) {
              $openid = Session::get('openid');
-
+             \Log::debug('----step3------', [$openid, $_COOKIE['Yz-Token'], $_COOKIE['access']]);
              if (isset($_COOKIE['Yz-Token'])) {
                  try {
                      $token = decrypt($_COOKIE['Yz-Token']);
-
+                     \Log::debug('----step4------', [$token]);
                  } catch (DecryptException $e) {
-                     return $this->successJson('登录失败', $e->getMessage());
+                     \Log::debug('----step4.5------');
+                     Session::remove('member_id');
+                     return false;
                  }
-             }
 
-             if ($_COOKIE['access']) {
                  $yz_member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
-                 if ($uid = $yz_member->member_id) {
+
+                 \Log::debug('----step5------', [$yz_member->member_id]);
+
+                 if (is_null($yz_member)) {
+                     \Log::debug('----step5.5------');
+                     Session::remove('member_id');
+                     return false;
+                 }
+
+                 if ($yz_member->access_expires_in_1 > time()) {
+                     \Log::debug('---------step6-------');
                      return true;
                  } else {
-                     Session::remove('member_id');
-                 }
-             }
-
-             if (isset($uid) && isset($openid)) {
-                 $member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
-
-                 if (!is_null($member) && $uid == $member->member_id) {
-                     $auth_url = $this->_tokenAuth($token, $openid);
-
-                     $auth_info = \Curl::to($auth_url)
-                         ->asJsonResponse(true)
-                         ->get();
-
-                     if (0 == $auth_info['errcode'] && $auth_info['errmsg'] == 'ok') {
-                         setcookie('access', true, time() + 7000);
-
-                         return true;
-                     } else {
+                     \Log::debug('----step7------', [$yz_member->refresh_expires_in_1]);
+                     if ($yz_member->refresh_expires_in_1 > time()) {
                          $account = AccountWechats::getAccountByUniacid($uniacid);
                          $appId = $account->key;
-                         $refreshToken = $member->refresh_token_1;
+                         $refreshToken = $yz_member->refresh_token_1;
 
                          $refresh_url = $this->_refreshAuth($appId, $refreshToken);
 
                          $refresh_info = \Curl::to($refresh_url)
                              ->asJsonResponse(true)
                              ->get();
-
+                         \Log::debug('----step8------', [$refresh_info]);
                          if (!isset($refresh_info['errcode'])) {
-                             if ($token != $refresh_info['access_token']) {
-                                 $member->access_token_1 = $refresh_info['access_token'];
-                                 $member->access_expires_in_1 = time() + 7200;
-                             }
+                             $yz_member->access_token_1 = $refresh_info['access_token'];
+                             $yz_member->access_expires_in_1 = time() + 7200;
+                             $yz_member->refresh_token_1 = $refresh_info['refresh_token'];
+                             $yz_member->refresh_expires_in_1 = time() + (28 * 24 * 3600);
+                             $yz_member->save();
 
-                             $member->refresh_token_1 = $refresh_info['refresh_token'];
-                             $member->save();
-
-                             setcookie('Yz-Token', encrypt($refresh_info['access_token']));
-                             setcookie('access', true, time() + 7000);
-
+                             setcookie('Yz-Token', encrypt($refresh_info['access_token']), time() + 9000);
+                             \Log::debug('----step9------');
                              return true;
                          }
+                     } else {
+                         \Log::debug('----step10------');
+                         Session::remove('member_id');
+                         return false;
                      }
-                 } else {
-                     Session::remove('member_id');
                  }
+             } else {
+                 Session::remove('member_id');
+                 return false;
              }
          }
 

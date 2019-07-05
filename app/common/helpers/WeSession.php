@@ -96,6 +96,7 @@ class WeSessionMemcache extends WeSession {
 
     public function read($sessionid) {
         $row = cache_read($this->key($sessionid));
+        \Log::debug('-------redis read------', [$sessionid, $row]);
         if ($row['expiretime'] < TIMESTAMP) {
             return '';
         }
@@ -117,7 +118,7 @@ class WeSessionMemcache extends WeSession {
         $row = array();
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + WeSession::$expire;
-
+        \Log::debug('-------redis write------', [$sessionid, $row]);
         return cache_write($this->key($sessionid), $row);
     }
 

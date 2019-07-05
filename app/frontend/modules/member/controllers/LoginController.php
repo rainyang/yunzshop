@@ -38,6 +38,7 @@ class LoginController extends ApiController
         }
 
         if (1 == $type && MemberService::isLogged()) {
+            \Log::debug('----lg ctrl------1');
             $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
 
             if (Session::get('client_url')) {

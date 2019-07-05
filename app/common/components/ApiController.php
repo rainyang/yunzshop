@@ -20,6 +20,7 @@ use app\common\models\UniAccount;
 use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
+use Yunshop\Designer\Common\Services\IndexPageService;
 
 class ApiController extends BaseController
 {
@@ -58,12 +59,13 @@ class ApiController extends BaseController
 
         $member = MemberFactory::create($type);
 
-        if (!$member->checkLogged()) {
-            if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
-                || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
+
+        if ((($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
+                || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction)))
+             && !$member->checkLogged()
             ) {
                 $this->jumpUrl($type, $mid);
-            }
+
         } else {
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
@@ -94,14 +96,24 @@ class ApiController extends BaseController
         $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if ($this->controller == 'Login' && $this->action == 'checkLogin') {
+            $scope   = \YunShop::request()->scope;
+            \Log::debug('-------no login scope-----', [$scope]);
 
+            if ($scope == 'home') {
+                if (!app('plugins')->isEnabled('designer')
+                    || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '') {
+                    throw new MemberNotLoginException('请登录');
+                }
+            }
+
+\Log::debug('-------no login-----', [$this->controller, $this->action, session_id()]);
             if (5 == $type || 7 == $type) {
                 throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
             }
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         }
-
+        \Log::debug('-------no login2-----', [$this->controller, $this->action, session_id()]);
         throw new MemberNotLoginException('请登录');
     }
 }

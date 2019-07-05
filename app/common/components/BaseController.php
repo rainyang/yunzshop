@@ -30,7 +30,7 @@ class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait, JsonTrait;
 
-    const COOKIE_EXPIRE = 864000;
+    const SESSION_EXPIRE = 2160000;
 
     /**
      * controller中执行报错需要回滚的action数组
@@ -104,6 +104,7 @@ class BaseController extends Controller
         }
 
         if (isset($_COOKIE[session_name()])) {
+            \Log::debug('---base ctrl1111111111---', [$_SERVER['QUERY_STRING'], $_COOKIE[session_name()]]);
             $session_id = $_COOKIE[session_name()];
         }
 
@@ -113,21 +114,22 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        if (empty($session_id) && \YunShop::request()->session_id
+        /*if (empty($session_id) && \YunShop::request()->session_id
             && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
             setcookie(session_name(), $session_id);
-        }
+        }*/
 
         if (empty($session_id)) {
             $session_id = md5(\YunShop::app()->uniacid . ':' . random(20));
+            \Log::debug('---base ctrl2222222---', [$_SERVER['QUERY_STRING'], $session_id]);
             setcookie(session_name(), $session_id);
         }
 
         session_id($session_id);
-
-        Session::factory(\YunShop::app()->uniacid);
+\Log::debug('---base ctrl333333333---', [$_SERVER['QUERY_STRING'], session_id()]);
+        Session::factory(\YunShop::app()->uniacid, self::SESSION_EXPIRE);
     }
 
     /**

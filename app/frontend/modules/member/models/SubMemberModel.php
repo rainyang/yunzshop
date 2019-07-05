@@ -37,6 +37,7 @@ class SubMemberModel extends MemberShopInfo
      */
     public static function insertData($data)
     {
+        \Log::debug('----yz add data------', $data);
         self::create($data);
     }
 
@@ -49,6 +50,7 @@ class SubMemberModel extends MemberShopInfo
 
     public static function updateOpenid($uid, $data)
     {
+        \Log::debug('----yz update data------', $data);
         self::uniacid()
             ->where('member_id', $uid)
             ->update($data);

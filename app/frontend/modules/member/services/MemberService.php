@@ -424,7 +424,12 @@ class MemberService
         \Log::debug('----userinfo2----', $userinfo);
 
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+
+        if (isset($userinfo['nickname'])) {
+            $userinfo['nickname'] = $this->filteNickname($userinfo);
+        } else {
+            $userinfo['nickname'] = '';
+        }
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
@@ -533,8 +538,13 @@ class MemberService
         \Log::debug('----userinfo1----', $userinfo);
 
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
-        //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+
+        if (isset($userinfo['nickname'])) {
+            $userinfo['nickname'] = $this->filteNickname($userinfo);
+        } else {
+            $userinfo['nickname'] = '';
+        }
+
         $fans_mode = $this->getFansModel($userinfo['openid']);
         
         $this->checkFansUid($fans_mode, $userinfo);
@@ -711,10 +721,10 @@ class MemberService
             'pay_password' => '',
             'salt' => '',
             'yz_openid' => $userinfo['openid'],
-            'account_token_1' => isset($userinfo['account_token']) ? $userinfo['account_token'] : '',
-            'account_expires_in_1' => isset($userinfo['expires_in']) ? time() + $userinfo['expires_in'] : '',
+            'access_token_1' => isset($userinfo['access_token']) ? $userinfo['access_token'] : '',
+            'access_expires_in_1' => isset($userinfo['expires_in']) ? time() + $userinfo['expires_in'] : '',
             'refresh_token_1' => isset($userinfo['refresh_token']) ? $userinfo['refresh_token'] : '',
-            'refresh_expires_in_1' => time() + (20 * 24 * 3600)
+            'refresh_expires_in_1' => time() + (28 * 24 * 3600)
         ));
     }
 
@@ -733,7 +743,7 @@ class MemberService
                 'access_token_1' => $userinfo['access_token'],
                 'access_expires_in_1' => time() + $userinfo['expires_in'],
                 'refresh_token_1' => $userinfo['refresh_token'],
-                'refresh_expires_in_1' => time() + (20 * 24 * 3600)
+                'refresh_expires_in_1' => time() + (28 * 24 * 3600)
             ]
         );
     }
@@ -765,12 +775,12 @@ class MemberService
     {
         //更新mc_members
         $mc_data = array(
-            'nickname' => stripslashes($userinfo['nickname']),
-            'avatar' => $userinfo['headimgurl'],
-            'gender' => $userinfo['sex'],
-            'nationality' => $userinfo['country'],
-            'resideprovince' => $userinfo['province'] . '省',
-            'residecity' => $userinfo['city'] . '市'
+            'nickname' => isset($userinfo['nickname'])  ? stripslashes($userinfo['nickname']) : '',
+            'avatar' => isset($userinfo['headimgurl']) ? $userinfo['headimgurl'] : '',
+            'gender' => isset($userinfo['sex']) ? $userinfo['sex'] : '-1',
+            'nationality' => isset($userinfo['country']) ? $userinfo['country'] : '',
+            'resideprovince' => isset($userinfo['province']) ? $userinfo['province'] : '' . '省',
+            'residecity' => isset($userinfo['city']) ? $userinfo['city'] : '' . '市'
         );
 
         MemberModel::updataData($member_id, $mc_data);
