@@ -80,8 +80,7 @@ class MemberOfficeAccountService extends MemberService
 
 \Log::debug('-----member office-----', [$member_id, $userinfo['openid'], $userinfo['access_token'], encrypt($userinfo['access_token'])]);
             Session::set('member_id', $member_id);
-            Session::set('openid', $userinfo['openid']);
-            setcookie('Yz-Token', encrypt($userinfo['access_token']), time() + 9000);
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
 
@@ -493,71 +492,66 @@ class MemberOfficeAccountService extends MemberService
     public function checkLogged()
     {
         \Log::debug('-----step1------', [$_SERVER['QUERY_STRING'], session_id()]);
-        $uid = \YunShop::app()->getMemberId();
         $uniacid = \YunShop::app()->uniacid;
-\Log::debug('----step2------', [$uid, $uniacid]);
-         if ($uid) {
-             $openid = Session::get('openid');
-             \Log::debug('----step3------', [$openid, $_COOKIE['Yz-Token'], $_COOKIE['access']]);
-             if (isset($_COOKIE['Yz-Token'])) {
-                 try {
-                     $token = decrypt($_COOKIE['Yz-Token']);
-                     \Log::debug('----step4------', [$token]);
-                 } catch (DecryptException $e) {
-                     \Log::debug('----step4.5------');
-                     Session::remove('member_id');
-                     return false;
-                 }
+\Log::debug('----step2------');
 
-                 $yz_member = SubMemberModel::getMemberByTokenAndUid($token, $uid);
+        \Log::debug('----step3------', [$_COOKIE['Yz-Token']]);
+        if (isset($_COOKIE['Yz-Token'])) {
+            try {
+                $yz_token = decrypt($_COOKIE['Yz-Token']);
 
-                 \Log::debug('----step5------', [$yz_member->member_id]);
+                list($token, $openid) = explode('\t', $yz_token);
+                \Log::debug('----step4------', [$token, $openid]);
+            } catch (DecryptException $e) {
+                \Log::debug('----step4.5------');
+                return false;
+            }
 
-                 if (is_null($yz_member)) {
-                     \Log::debug('----step5.5------');
-                     Session::remove('member_id');
-                     return false;
-                 }
+            $yz_member = SubMemberModel::getMemberByWechatTokenAndOpenid($token, $openid);
 
-                 if ($yz_member->access_expires_in_1 > time()) {
-                     \Log::debug('---------step6-------');
-                     return true;
-                 } else {
-                     \Log::debug('----step7------', [$yz_member->refresh_expires_in_1]);
-                     if ($yz_member->refresh_expires_in_1 > time()) {
-                         $account = AccountWechats::getAccountByUniacid($uniacid);
-                         $appId = $account->key;
-                         $refreshToken = $yz_member->refresh_token_1;
+            \Log::debug('----step5------', [$yz_member->member_id]);
 
-                         $refresh_url = $this->_refreshAuth($appId, $refreshToken);
+            if (is_null($yz_member)) {
+                \Log::debug('----step5.5------');
+                return false;
+            }
 
-                         $refresh_info = \Curl::to($refresh_url)
-                             ->asJsonResponse(true)
-                             ->get();
-                         \Log::debug('----step8------', [$refresh_info]);
-                         if (!isset($refresh_info['errcode'])) {
-                             $yz_member->access_token_1 = $refresh_info['access_token'];
-                             $yz_member->access_expires_in_1 = time() + 7200;
-                             $yz_member->refresh_token_1 = $refresh_info['refresh_token'];
-                             $yz_member->refresh_expires_in_1 = time() + (28 * 24 * 3600);
-                             $yz_member->save();
+            if ($yz_member->access_expires_in_1 > time()) {
+                Session::set('member_id', $yz_member->member_id);
+                \Log::debug('---------step6-------');
+                return true;
+            } else {
+                \Log::debug('----step7------', [$yz_member->refresh_expires_in_1]);
+                if ($yz_member->refresh_expires_in_1 > time()) {
+                    $account = AccountWechats::getAccountByUniacid($uniacid);
+                    $appId = $account->key;
 
-                             setcookie('Yz-Token', encrypt($refresh_info['access_token']), time() + 9000);
-                             \Log::debug('----step9------');
-                             return true;
-                         }
-                     } else {
-                         \Log::debug('----step10------');
-                         Session::remove('member_id');
-                         return false;
-                     }
-                 }
-             } else {
-                 Session::remove('member_id');
-                 return false;
-             }
-         }
+                    $refresh_url = $this->_refreshAuth($appId, $yz_member->refresh_token_1);
 
+                    $refresh_info = \Curl::to($refresh_url)
+                        ->asJsonResponse(true)
+                        ->get();
+                    \Log::debug('----step8------', [$refresh_info]);
+                    if (!isset($refresh_info['errcode'])) {
+                        $yz_member->access_token_1 = $refresh_info['access_token'];
+                        $yz_member->access_expires_in_1 = time() + 7200;
+                        $yz_member->refresh_token_1 = $refresh_info['refresh_token'];
+                        $yz_member->refresh_expires_in_1 = time() + (28 * 24 * 3600);
+                        $yz_member->save();
+
+                        Session::set('member_id', $yz_member->member_id);
+                        setcookie('Yz-Token', encrypt($refresh_info['access_token'] . '\t' . $refresh_info['openid']), time() + self::TOKEN_EXPIRE);
+                        \Log::debug('----step9------');
+                        return true;
+                    }
+                } else {
+                    \Log::debug('----step10------');
+                    return false;
+                }
+            }
+        }
+
+        \Log::debug('----step11------');
          return false;
     }
 }

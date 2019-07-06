@@ -56,11 +56,14 @@ class SubMemberModel extends MemberShopInfo
             ->update($data);
     }
 
-    public static function getMemberByTokenAndUid($token, $uid)
+    public static function getMemberByWechatTokenAndOpenid($token, $openid)
     {
         return self::uniacid()
             ->where('access_token_1', $token)
-            ->where('member_id', $uid)
+            ->join('mc_mapping_fans', function ($join) use ($openid) {
+                $join->on('yz_member.member_id', '=' , 'mc_mapping_fans.uid')
+                    ->where('mc_mapping_fans.openid', $openid);
+            })
             ->first();
     }
 }

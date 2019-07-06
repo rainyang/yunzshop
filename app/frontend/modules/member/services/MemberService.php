@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
+    const TOKEN_EXPIRE = 2160000;
+
     /**
      * @var \app\frontend\models\Member
      */

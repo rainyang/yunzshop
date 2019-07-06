@@ -103,12 +103,12 @@ class Session
         self::put($key, $value);
     }
 
-    public static function factory($uniacid, $expire)
+    public static function factory($uniacid)
     {
         if (env('APP_Framework') == 'platform') {
-            YunSession::start($uniacid, Utils::getClientIp(), $expire);
+            YunSession::start($uniacid, Utils::getClientIp());
         } else {
-            WeSession::start($uniacid, CLIENT_IP, $expire);
+            WeSession::start($uniacid, CLIENT_IP);
         }
     }
 }

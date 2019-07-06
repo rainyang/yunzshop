@@ -96,7 +96,7 @@ class ApiController extends BaseController
         $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
 
         if ($this->controller == 'Login' && $this->action == 'checkLogin') {
-            $scope   = \YunShop::request()->scope;
+            /*$scope   = \YunShop::request()->scope;
             \Log::debug('-------no login scope-----', [$scope]);
 
             if ($scope == 'home') {
@@ -104,7 +104,7 @@ class ApiController extends BaseController
                     || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '') {
                     throw new MemberNotLoginException('请登录');
                 }
-            }
+            }*/
 
 \Log::debug('-------no login-----', [$this->controller, $this->action, session_id()]);
             if (5 == $type || 7 == $type) {

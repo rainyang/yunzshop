@@ -129,7 +129,7 @@ class BaseController extends Controller
 
         session_id($session_id);
 \Log::debug('---base ctrl333333333---', [$_SERVER['QUERY_STRING'], session_id()]);
-        Session::factory(\YunShop::app()->uniacid, self::SESSION_EXPIRE);
+        Session::factory(\YunShop::app()->uniacid);
     }
 
     /**
