@@ -148,7 +148,7 @@ class BaseController extends Controller
     public function dataIntegrated($data, $flag)
     {
         if ($this->apiErrMsg) {
-            return $this->errorJson($this->apiErrMsg[0]);
+            return $this->successJson($this->apiErrMsg[0]);
         }
 
         if (0 == $data['status']) {

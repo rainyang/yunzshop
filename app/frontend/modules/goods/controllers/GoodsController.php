@@ -846,7 +846,7 @@ class GoodsController extends ApiController
         $uid = \YunShop::app()->getMemberId();
         $member = MemberShopInfo::getMemberShopInfo($uid);
         if (empty($member)) {
-            return $this->errorJson('没有找到该用户', []);
+            return $this->successJson('没有找到该用户', []);
         }
         $memberLevel = $member->level_id;
 
@@ -909,14 +909,14 @@ class GoodsController extends ApiController
                 $this->dataIntegrated(\Yunshop\StoreCashier\frontend\store\GetStoreInfoController::getInfobyStoreId($request, true,$storeId),'get_store_Info');
                 $this->dataIntegrated(\Yunshop\StoreCashier\frontend\shoppingCart\MemberCartController::index($request,true,$storeId),'member_cart');
             }else{
-                return $this->errorJson('门店插件未开启');
+                return $this->successJson('门店插件未开启');
             }
         }
         if($this->apiData['get_goods']->is_hotel){
             if(class_exists('\Yunshop\Hotel\frontend\hotel\GoodsController')){
                 $this->dataIntegrated(\Yunshop\Hotel\frontend\hotel\GoodsController::getGoodsDetailByGoodsId($request,true),'get_hotel_info');
             }else{
-                return $this->errorJson('酒店插件未开启');
+                return $this->successJson('酒店插件未开启');
             }
         }
         $this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
