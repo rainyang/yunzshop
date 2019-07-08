@@ -134,10 +134,6 @@ class OperationController extends BaseController
             throw new AppException("未找到该订单".request()->input('order_id'));
         }
 
-        if (request()->has('invoice')) {
-            $order->invoice = request()->input('invoice');
-            $order->save();
-        }
         if(request()->has('remark')){
             $remark = $order->hasOneOrderRemark;
             if (!$remark) {
@@ -160,6 +156,21 @@ class OperationController extends BaseController
             }
         }
         //(new \app\common\services\operation\OrderLog($remark, 'special'));
+        echo json_encode(["data" => '', "result" => 1]);
+    }
+
+    public function invoice()
+    {
+        $order = Order::find(request()->input('order_id'));
+        
+        if(!$order){
+            throw new AppException("未找到该订单".request()->input('order_id'));
+        }
+
+        if (request()->has('invoice')) {
+            $order->invoice = request()->input('invoice');
+            $order->save();
+        }
         echo json_encode(["data" => '', "result" => 1]);
     }
 }

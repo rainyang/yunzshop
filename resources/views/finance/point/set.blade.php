@@ -143,8 +143,8 @@
                 <div id='transfer_love' @if(empty($set['transfer_love']))style="display:none"@endif>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            <div class="input-group">
+                        <div class="col-sm-4 col-lg-3">
+                            <div class='recharge-items'>
                                 <div class="input-group">
                                     <div class="input-group-addon">自动转入比例</div>
                                     <input type="text" name="set[transfer_love_rate]" class="form-control" value="{{ $set['transfer_love_rate'] }}" placeholder=""/>
@@ -157,8 +157,20 @@
                             <div class="help-block">
                                 如果自动转入比例为空、为零，同时会员设置了独立比例，则只自操作有设置比例的会员积分
                             </div>
+                            <div class='input-group recharge-item'>
+                                <span class="input-group-addon">积分转入爱心值比例设置</span>
+                                <input type="text" name="set[transfer_integral]" value="{{$set['transfer_integral']}}"
+                                       class="form-control wid100"/>
+                                <span class='input-group-addon'>:</span>
+                                <input type="text" name="set[transfer_integral_love]" value="{{$set['transfer_integral_love']}}"
+                                       class="form-control wid100"/>
+                            </div>
+                            <div class="help-block">
+                                如果积分转入爱心值比例设置为空、为零，则默认为1：1
+                            </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 @else
                 <div class="form-group">

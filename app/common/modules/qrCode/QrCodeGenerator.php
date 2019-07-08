@@ -29,12 +29,12 @@ class QrCodeGenerator extends BaconQrCodeGenerator
     public function cache($text,$time = 10080)
     {
         // 以内容的md5作为key名
-        $text = md5($text);
-        if (!\Cache::has('qrcode' . '/' . $text)) {
+        $key = md5($text.'v=1');
+        if (!\Cache::has('qrcode' . '/' . $key)) {
             // 二维码内容在缓存中保存一星期
-            \Cache::put('qrcode' . '/' . $text, $this->generate($text), $time);
+            \Cache::put('qrcode' . '/' . $key, $this->generate($text), $time);
         }
-        return \Cache::get('qrcode' . '/' . $text);
+        return \Cache::get('qrcode' . '/' . $key);
     }
 
     /**
