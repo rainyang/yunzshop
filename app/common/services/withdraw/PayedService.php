@@ -45,7 +45,7 @@ class PayedService
             $this->_withdrawPay();
             return true;
         }
-        $this->sendMessage('不符合打款规则');
+        $this->sendMessage();
 
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
@@ -70,7 +70,7 @@ class PayedService
             return true;
         }
         
-        $this->sendMessage('提现记录不符合确认打款规则');
+        $this->sendMessage();
 
         throw new ShopException('提现记录不符合确认打款规则');
     }
@@ -443,7 +443,7 @@ class PayedService
      * @param string $msg 提现错误信息
      *
      */
-    private function sendMessage($msg) 
+    private function sendMessage() 
     {
         if ($this->withdrawModel->type == 'balance') {
             
@@ -453,7 +453,7 @@ class PayedService
             
             foreach ($this->uids as $k => $v) {
                 //收入提现失败通知
-                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
+                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k); 
             }
             return ;
         }

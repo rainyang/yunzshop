@@ -159,28 +159,6 @@ class MessageService
 //        }
 //        return;
     }
-    //收入提现失败通知
-    public static function withdrawFailure($withdrawData, $member, $reason='', $uniacid = '')
-    {
-        // if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title')) {
-        //     return;
-        // }
-        if ($uniacid) {
-            Setting::$uniqueAccountId = $uniacid;
-        }
-        $withdrawNotice = Setting::get('withdraw.notice');
-        $temp_id = $withdrawNotice['income_withdraw_fail'];
-        if (!$temp_id) {
-            \Log::debug('收入提现失败通知发送失败, 无该模板:'.$temp_id);
-            return;
-        }
-        $withdrawData['amounts'] = $withdrawData['actual_amounts'];
-        $withdrawData['withdraw_sn'] = $withdrawData['withdraw_sn'];
-        $withdrawData['poundage'] = $withdrawData['actual_poundage'];
-        $withdrawData['reason'] = $reason;
-
-        static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
-    }
 
     //收入提现失败通知
     public static function withdrawFailure($withdrawData, $member, $uniacid = '')
