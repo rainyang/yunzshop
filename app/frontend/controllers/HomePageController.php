@@ -54,16 +54,6 @@ class HomePageController extends ApiController
     ];
     private $pageSize = 16;
 
-    protected function jumpUrl($type, $mid)
-    {
-        if (empty($type) || $type == 'undefined') {
-            $type = Client::getType();
-        }
-
-        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
-
-        return $queryString;
-    }
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
@@ -1039,6 +1029,8 @@ class HomePageController extends ApiController
             if ($status == 1) {
                 $captcha                     = self::captchaTest();
                 $result['captcha']           = $captcha;
+                $result['captcha']['status'] = $status;     
+            } else {
                 $result['captcha']['status'] = $status;
             }
         }
