@@ -112,12 +112,18 @@ class CategoryController extends BaseController
     public function editCategory()
     {   //查询这个分类是否存在
         $categoryModel = Category::getCategory(\YunShop::request()->id);
+        //判断是否有父类id没有默认0
+        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+
         if(!$categoryModel){
             return $this->message('无此记录或已被删除','','error');
         }
         //URL地址
         $url = Url::absoluteWeb('goods.category.index',['parent_id'=>$categoryModel->parent_id]);
-
+        if(!empty($categoryModel->parent_id)) {
+            //查出父分类
+            $parent = Category::getCategory($categoryModel->parent_id);
+        }
         if (isset($categoryModel->filter_ids)) {
             $filter_ids = explode(',', $categoryModel->filter_ids);
             $label_group = Filtering::categoryLabel($filter_ids)->get();
@@ -145,11 +151,12 @@ class CategoryController extends BaseController
                 }
             }
         }
-        
+
         return view('goods.category.info', [
             'item' => $categoryModel,
             'level' => $categoryModel->level,
             'label_group' => $label_group,
+            'parent' => $parent,
         ])->render();
     }
 

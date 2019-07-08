@@ -143,6 +143,28 @@
     </div>
 </div>
 
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分全额抵扣</label>
+    <div class="col-sm-9 col-xs-12">
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[sale][has_all_point_deduct]' value='1' @if($item->has_all_point_deduct == '1') checked @endif/>
+            开启
+        </label>
+        <label class='radio-inline'>
+            <input type='radio' name='widgets[sale][has_all_point_deduct]' value='0' @if( $item->has_all_point_deduct == 0) checked @endif/>
+            关闭
+        </label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+    <div class="col-xs-12 col-sm-9 col-md-10">
+        <div class='input-group col-md-3'>
+            <input type="text" name="widgets[sale][all_point_deduct]" value="{{ $item->all_point_deduct }}" class="form-control" onkeyup="this.value= this.value.match(/\d+(\.\d{0,2})?/) ? this.value.match(/\d+(\.\d{0,2})?/)[0] : ''"/>
+            <span class="input-group-addon">积分</span>
+        </div>
+    </div>
+</div>
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">不参与单品包邮地区</label>

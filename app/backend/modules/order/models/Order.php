@@ -10,6 +10,7 @@ namespace app\backend\modules\order\models;
 
 use app\backend\modules\member\models\MemberParent;
 use app\backend\modules\order\services\OrderService;
+use app\common\models\order\FirstOrder;
 use Illuminate\Database\Eloquent\Builder;
 use \Illuminate\Support\Facades\DB;
 use app\common\models\PayTypeGroup;
@@ -34,8 +35,17 @@ class Order extends \app\common\models\Order
         return $this->hasMany(OrderGoods::class, 'order_id', 'id');
     }
 
+    public function hasManyFirstOrder()
+    {
+        return $this->hasMany(FirstOrder::class, 'order_id', 'id');
+    }
+
     public function scopeExportOrders(Order $query, $search)
     {
+        if ($search['first_order']) {
+            $query->whereHas('hasManyFirstOrder');
+        }
+
         $order_builder = $query->search($search);
 
         $orders = $order_builder->with([
@@ -46,13 +56,17 @@ class Order extends \app\common\models\Order
             'hasOneOrderRemark',
             'express',
             'hasOnePayType',
-            'hasOneOrderPay'
+            'hasOneOrderPay',
+            'hasManyFirstOrder'
         ]);
         return $orders;
     }
 
     public function scopeOrders(Builder $order_builder, $search)
     {
+        if ($search['first_order']) {
+            $order_builder->whereHas('hasManyFirstOrder');
+        }
         $order_builder->search($search);
 
         $orders = $order_builder->with([
@@ -68,7 +82,7 @@ class Order extends \app\common\models\Order
             'hasOneOrderPay'=> function (Builder $query) {
                 $query->orderPay();
             },
-
+            'hasManyFirstOrder'
         ]);
         return $orders;
     }

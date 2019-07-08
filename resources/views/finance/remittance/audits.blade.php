@@ -142,7 +142,7 @@
                 search() {
                     this.loading = true;
 
-                    this.$http.post("` yzWebUrl('finance.remittance-audit.ajax')!!}", {...this.searchParams}).then(response => {
+                    this.$http.post("{!! yzWebUrl('finance.remittance-audit.ajax')!!}", {...this.searchParams}).then(response => {
                         this.data = response.data.data.remittanceAudits;
                         this.loading = false;
                     }, response => {

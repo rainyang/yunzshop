@@ -64,6 +64,7 @@ class BalanceWithdrawController extends BaseController
                 }
                 return $this->message('提现成功', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]));
             }
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);//提现失败通知
 
             return $this->message('提现失败', yzWebUrl('finance.balance-withdraw.detail', ['id'=>\YunShop::request()->id]), 'error');
         }
@@ -181,6 +182,9 @@ class BalanceWithdrawController extends BaseController
             case 'yop_pay': //易宝余额提现
                 return $this->yopPayment();
                 break;
+            case 'converge_pay': //汇聚余额提现
+                return $this->convergePayment($this->paymentRemark());
+                break;
             default:
                 throw new AppException('未知打款方式！！！');
         }
@@ -287,6 +291,24 @@ class BalanceWithdrawController extends BaseController
     }
 
     /**
+     * 汇聚余额提现
+     *
+     * @param $remark
+     * @return array|mixed
+     * @throws AppException
+     */
+    private function convergePayment($remark)
+    {
+        $result = WithdrawService::convergePayMent($this->withdrawModel, $remark);
+
+        if ($result['data']['errorCode'] && !$result['hmac']) {
+            return $this->paymentError($result['data']['errorDesc']);
+        }
+
+        return $result;
+    }
+
+    /**
      * 手动打款
      * @return mixed
      */
@@ -317,6 +339,8 @@ class BalanceWithdrawController extends BaseController
     {
         $this->withdrawModel->status = 1;
         $this->withdrawUpdate();
+        //发送打款失败通知 
+        BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);
 
         throw new AppException($message ?: '打款失败，请重试');
     }
@@ -373,6 +397,9 @@ class BalanceWithdrawController extends BaseController
 
                 if (!is_null($withdraw_modle)) {
                     if ($withdraw_modle->status != '1') {
+                        
+                        BalanceNoticeService::withdrawFailureNotice($withdraw_modle);
+
                         return $this->message('打款失败,数据不存在或不符合打款规则!', yzWebUrl("finance.balance-withdraw.detail", ['id' => $id]), 'error');
                     }
 

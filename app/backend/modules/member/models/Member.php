@@ -84,6 +84,7 @@ class Member extends \app\common\models\Member
             })
             ->with('yzMember')
             ->with('hasOneFans')
+            ->with('hasOneMiniApp')
             ->get();
     }
 

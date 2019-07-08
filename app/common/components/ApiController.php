@@ -37,6 +37,10 @@ class ApiController extends BaseController
             throw new UniAccountNotFoundException('无此公众号', ['login_status' => -2]);
         }
 
+        if(\YunShop::request()->type == 1 && \Setting::get('shop.member.wechat_login_mode') == 1){
+            \YunShop::request()->type = 5;
+        }
+
         $relaton_set = MemberRelation::getSetInfo()->first();
 
         $type = \YunShop::request()->type;
@@ -52,6 +56,12 @@ class ApiController extends BaseController
         }
 
         if (!MemberService::isLogged()) {
+            if ($mid && $this->controller == 'HomePage'
+                  && ($this->action == 'index' || $this->action == 'getParams')
+            ) {
+               return $this->jumpUrl($type, $mid);
+            }
+
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {

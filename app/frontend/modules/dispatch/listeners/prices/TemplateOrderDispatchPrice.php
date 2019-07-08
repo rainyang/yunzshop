@@ -56,7 +56,7 @@ class TemplateOrderDispatchPrice
         $uniqueOrderGoods = $this->order->orderGoods->unique('goods_id');
         $dispatch_prices = [];
         $dispatch_ids = $this->getDispatchIds($uniqueOrderGoods);
-
+        trace_log()->freight('订单模板运费模板id',json_encode($dispatch_ids));
         foreach ($dispatch_ids as $dispatch_id) {
             $dispatch_prices[] = $this->getDispatchPrice($dispatch_id, $uniqueOrderGoods);
         }
@@ -103,6 +103,7 @@ class TemplateOrderDispatchPrice
         $defaultDispatch = Dispatch::getOneByDefault();
 
         //todo 如果没有默认配送模版 如何处理
+        trace_log()->freight('订单模板运费','不存在默认的配送模板');
 
         return $defaultDispatch->id ?: 0;
     }
@@ -121,6 +122,8 @@ class TemplateOrderDispatchPrice
              */
             //商品满额、满件减免运费
             if ($aOrderGoods->isFreeShipping()) {
+                trace_log()->freight('订单模板运费','商品'.$aOrderGoods->goods_id.'免运费');
+
                 continue;
             }
 
@@ -128,6 +131,8 @@ class TemplateOrderDispatchPrice
 
             //配送模版不存在
             if (!isset($dispatchModel)) {
+
+                trace_log()->freight('111111订单模板运费','商品'.$aOrderGoods->goods_id.'运费模板不存在');
                 continue;
             }
 
@@ -137,10 +142,8 @@ class TemplateOrderDispatchPrice
             }
 
             if ($dispatchModel->dispatch_type != GoodsDispatch::TEMPLATE_TYPE) {
-                continue;
-            }
+                trace_log()->freight('订单模板运费','商品'.$aOrderGoods->goods_id.'配送费计算方式不是运费模板');
 
-            if ($dispatchModel->dispatch_id != $dispatch_id) {
                 continue;
             }
 
@@ -148,7 +151,9 @@ class TemplateOrderDispatchPrice
             $dispatch_good_weight += $this->getGoodsTotalWeightInOrder($aOrderGoods);
         }
 
-        return $this->calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight);
+        $amount =  $this->calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight);
+        trace_log()->freight('订单模板运费','配送费'.$amount.'元');
+        return $amount;
     }
 
     /**
@@ -183,12 +188,14 @@ class TemplateOrderDispatchPrice
     {
         $price = 0;
         if (!$dispatch_id) {
+            trace_log()->freight('订单模板运费','配送模板id'.$dispatch_id.'不存在');
             return $price;
         }
 
         $dispatchModel = Dispatch::getOne($dispatch_id);
 
         if (!$dispatch_id) {
+            trace_log()->freight('订单模板运费','配送模板id'.$dispatch_id.'不存在');
             return $price;
         }
 
@@ -202,6 +209,7 @@ class TemplateOrderDispatchPrice
         }
 
         $price = $this->verify($price);
+
         return $price;
     }
 

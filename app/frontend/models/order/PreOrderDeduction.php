@@ -223,7 +223,7 @@ class PreOrderDeduction extends OrderDeduction
     public function getOrderGoodsDeductionAmount()
     {
 
-        $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / $this->getMaxDeduction()->getMoney()) * $this->amount;
+        $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / ($this->getMaxDeduction()->getMoney()+$this->getMaxDispatchPriceDeduction()->getMoney())) * $this->amount;
         return $amount;
     }
 
@@ -296,7 +296,7 @@ class PreOrderDeduction extends OrderDeduction
     {
         $result = $this->newCoin();
 
-        trace_log()->freight("监听抵扣", $this->getDeduction()->getName() .'运费抵扣开启状态'.$this->getDeduction()->isEnableDeductDispatchPrice());
+        trace_log()->freight("监听抵扣", $this->getDeduction()->getName() . '运费抵扣开启状态' . $this->getDeduction()->isEnableDeductDispatchPrice());
         //开关
         if ($this->getDeduction()->isEnableDeductDispatchPrice()) {
 
@@ -304,7 +304,7 @@ class PreOrderDeduction extends OrderDeduction
             $amount = $this->order->getDispatchAmount();
 
             $result->setMoney($amount);
-            trace_log()->freight("监听抵扣运费", $this->getDeduction()->getName() .'运费可抵扣金额');
+            trace_log()->freight("监听抵扣运费", $this->getDeduction()->getName() . '运费可抵扣金额');
         }
         return $result;
     }
@@ -395,6 +395,15 @@ class PreOrderDeduction extends OrderDeduction
         $this->amount = sprintf('%.2f', $this->amount);
         $this->coin = sprintf('%.2f', $this->coin);
         return parent::toArray();
+    }
+
+    /**
+     * @throws \app\common\exceptions\AppException
+     */
+    public function lock()
+    {
+        // 抵扣被选中后,锁定要使用的虚拟币额度
+        $this->getMemberCoin()->lockCoin($this->coin);
     }
 
     /**

@@ -13,16 +13,18 @@ class CreateMembershipInfomattionLog extends Migration
      */
     public function up()
     {
-        Schema::create('yz_membership_infomattion_log', function (Blueprint $table) {
-            $table->increments('id');
-            $table->integer('uniacid');
-            $table->integer('uid');
-            $table->string('old_data')->nullable()->comment('用户修改前信息');
-            $table->string('session_id')->nullable()->comment('session_id');
-            $table->integer('created_at')->nullable();
-            $table->integer('updated_at')->nullable();
-            $table->integer('deleted_at')->nullable();
-        });
+        if (!Schema::hasTable('yz_membership_infomattion_log')) {
+            Schema::create('yz_membership_infomattion_log', function (Blueprint $table) {
+                $table->increments('id');
+                $table->integer('uniacid');
+                $table->integer('uid');
+                $table->string('old_data')->nullable()->comment('用户修改前信息');
+                $table->string('session_id')->nullable()->comment('session_id');
+                $table->integer('created_at')->nullable();
+                $table->integer('updated_at')->nullable();
+                $table->integer('deleted_at')->nullable();
+            });
+        }
     }
 
     /**

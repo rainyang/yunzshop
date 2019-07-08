@@ -8,11 +8,12 @@
 
 namespace app\frontend\modules\member\models;
 
+use app\common\models\Goods;
 
 class MemberLevel extends \app\common\models\MemberLevel
 {
 
-    protected $hidden = ['goods_id', 'uniacid'];
+    protected $hidden = ['uniacid'];
 
     /**
      * 获取会员等级信息
@@ -40,11 +41,24 @@ class MemberLevel extends \app\common\models\MemberLevel
     public function getLevelGoods()
     {
 
-        $data = self::select('id', 'level_name','goods_id', 'discount', 'freight_reduction')->uniacid()
-        ->with(['goods' => function($query) {
-            return $query->select('id','title','thumb','price');
-        }])->orderBy('level')->get()->toArray();
+        $data = self::select('id', 'level_name','goods_id', 'discount', 'freight_reduction')->uniacid()->orderBy('level')->get()->toArray();
 
+        foreach ($data as $k => $v) {
+            
+            if ($v['goods_id']) {
+                
+                $goods_ids = array_unique(explode(',', $v['goods_id']));   
+               
+                foreach ($goods_ids as $key => $value) {
+                    
+                    $goods = Goods::where('uniacid', \YunShop::app()->uniacid)->where('id', $value)->select(['id', 'thumb', 'price', 'title'])->first();
+                    $data[$k]['goods'][$key]['id'] = $goods['id'];
+                    $data[$k]['goods'][$key]['thumb'] = yz_tomedia($goods['thumb']);
+                    $data[$k]['goods'][$key]['price'] = $goods['price'];
+                    $data[$k]['goods'][$key]['title'] = $goods['title'];
+                }
+            }
+        }
         return $data;
     }
 

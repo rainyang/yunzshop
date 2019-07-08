@@ -178,23 +178,17 @@
                     @elseif($item['pay_way'] == 'yop_pay')
                         <input type="hidden" name="pay_way" value="7">
                         <input type="submit" name="submit_pay" value="易宝提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
+                    @elseif($item['pay_way'] == 'converge_pay')
+                        <input type="hidden" name="pay_way" value="8">
+                        <input type="submit" name="submit_pay" value="汇聚提现" class="btn btn-primary " style='margin-left:10px;' onclick='return '/>
                     @endif
                 @endif
 
                 @if($item['status'] == '-1')
                     <input type="submit" name="submit_cancel" value="重新审核" class="btn btn-default col-lg-1" onclick='return '/>
                 @endif
-
-
-                <input type="button" class="btn btn-default" name="submit" onclick="goBack()" value="返回" style='margin-left:10px;'/>
-
+                    <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回列表" style='margin-left:10px;'/>
             </div>
         </form>
-
     </div>
-    <script language='javascript'>
-        function goBack() {
-            window.location.href = "{!! yzWebUrl('finance.withdraw-records') !!}";
-        }
-    </script>
 @endsection

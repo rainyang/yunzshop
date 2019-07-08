@@ -1,23 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/10/31
- * Time: 14:55
- */
 
 namespace app\Jobs;
 
-
-use app\backend\modules\charts\modules\member\services\TeamOrderService;
+use app\backend\modules\charts\modules\member\services\DistributionOrderService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class TeamOrderJob implements ShouldQueue
+class CountCommissionOrderJob implements ShouldQueue
 {
-    use InteractsWithQueue, Queueable, SerializesModels;
+	use InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct()
     {
@@ -30,6 +23,6 @@ class TeamOrderJob implements ShouldQueue
      */
     public function handle()
     {
-        (new TeamOrderService())->memberOrder();
+        (new DistributionOrderService())->getCommissionOrderNum();
     }
 }

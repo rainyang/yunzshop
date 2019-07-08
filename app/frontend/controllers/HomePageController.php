@@ -24,6 +24,7 @@ use Yunshop\Designer\models\GoodsGroupGoods;
 use Yunshop\Love\Common\Models\GoodsLove;
 use Yunshop\Love\Common\Services\SetService;
 use Yunshop\Designer\Backend\Modules\Page\Controllers\RecordsController;
+use app\common\models\Goods;
 
 class HomePageController extends ApiController
 {
@@ -179,17 +180,28 @@ class HomePageController extends ApiController
                     } else {
                         $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
-
+                    $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
                     if ($is_love){
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
+                                    $goode_award['stock'] = $this ->getGoodsStock($goode_award['goodid']);
                                 }
                             }
                         }
                     }else{
                         foreach ($designer['data'] as &$data){
+                            //替换积分字样
+                            if ($data['temp'] == 'sign'){
+                                foreach ($data['params'] as &$award_content){
+                                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                                }
+                            }
                             if ($data['temp']=='goods'){
                                 foreach ($data['data'] as &$goode_award){
                                     $goode_award['award'] = 0;
@@ -431,6 +443,13 @@ class HomePageController extends ApiController
         $goodsModel = GoodsLove::select('award')->where('uniacid',\Yunshop::app()->uniacid)->where('goods_id',$goods_id)->first();
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
+    }
+    
+    private function getGoodsStock($goods_id)
+    {
+        $goodsModel = Goods::select('stock')->where('uniacid',\Yunshop::app()->uniacid)->where('id',$goods_id)->first();
+        $stock = $goodsModel ? $goodsModel->stock : 0;
+        return $stock;
     }
     /*
      * 获取分页数据
@@ -779,7 +798,7 @@ class HomePageController extends ApiController
                     $invitation_log = 1;
                 } else {
                     $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member->parent_id)->where('mid',$member_id)->first();
+                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member_id)->where('mid', $member->parent_id)->first();
                 }
             }
 
@@ -863,6 +882,10 @@ class HomePageController extends ApiController
                 'area_dividend_center' => '',
                 'area_dividend' => '',
                 'dividend_amount' => '',
+            ],
+            'income' => [
+                'income_name' => '收入',
+                'special_service_tax' => '劳务税',
             ]
         ];
 
@@ -872,6 +895,12 @@ class HomePageController extends ApiController
             $langData = $data;
         }
 
+        if($langData['income']['income_name'] == ''){
+            $langData['income']['income_name'] = '收入';
+        }
+        if($langData['income']['special_service_tax'] == ''){
+            $langData['income']['special_service_tax'] = '劳务税';
+        }
         return show_json(1, $langData);
     }
 
@@ -905,9 +934,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-            return show_json(1, []);
-        }
+        // if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+        //     return show_json(1, []);
+        // }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
@@ -932,15 +961,15 @@ class HomePageController extends ApiController
         ));
         $config = json_decode($config, 1);
 
-        $info = [];
+        $info['uid'] = \YunShop::app()->getMemberId();
 
-        if (\YunShop::app()->getMemberId()) {
-            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
-
-            if (!empty($info)) {
-                $info = $info->toArray();
-            }
-        }
+//        if (\YunShop::app()->getMemberId()) {
+//            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+//
+//            if (!empty($info)) {
+//                $info = $info->toArray();
+//            }
+//        }
 
         $share = \Setting::get('shop.share');
 
@@ -950,7 +979,10 @@ class HomePageController extends ApiController
             }
         }
 
-        $shop = \Setting::get('shop');
+        $shop['shop'] = \Setting::get('shop.shop');
+        if (is_null($shop)) {
+            $shop['shop']['name'] = '商家分享';
+        }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {

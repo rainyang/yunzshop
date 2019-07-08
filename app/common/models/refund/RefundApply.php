@@ -138,12 +138,26 @@ class RefundApply extends BaseModel
 
     public function getRefundTypeNameAttribute()
     {
+
+
+       return  $this->getRefundTypeName()[$this->refund_type];
+        /*
         $mapping = [
             self::REFUND_TYPE_REFUND_MONEY => '退款',
             self::REFUND_TYPE_RETURN_GOODS => '退货',
             self::REFUND_TYPE_EXCHANGE_GOODS => '换货',
         ];
         return $mapping[$this->refund_type];
+        */
+    }
+
+    protected function getRefundTypeName()
+    {
+        return [
+            self::REFUND_TYPE_REFUND_MONEY => '退款',
+            self::REFUND_TYPE_RETURN_GOODS => '退货',
+            self::REFUND_TYPE_EXCHANGE_GOODS => '换货',
+        ];
     }
 
     protected function getStatusNameMapping()
@@ -157,7 +171,7 @@ class RefundApply extends BaseModel
             self::WAIT_RESEND_GOODS => '待商家重新发货',
             self::WAIT_RECEIVE_RESEND_GOODS => '待买家收货',
             self::WAIT_REFUND => '待退款',
-            self::COMPLETE => '已退款',
+            self::COMPLETE => '已'.$this->getRefundTypeName()[$this->refund_type],
             self::CONSENSUS => '已手动退款',
         ];
 

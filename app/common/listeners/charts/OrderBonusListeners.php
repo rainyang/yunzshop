@@ -22,6 +22,7 @@ use app\Jobs\OrderCountContentJob;
 use app\Jobs\OrderCountIncomeJob;
 use app\Jobs\OrderCountStatusJob;
 use app\Jobs\OrderMemberMonthJob;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Yunshop\StoreCashier\common\models\CashierOrder;
 use Yunshop\StoreCashier\common\models\StoreOrder;
@@ -33,49 +34,49 @@ class OrderBonusListeners
     use DispatchesJobs;
     protected $orderModel;
 
-    public function subscribe($events)
+    public function subscribe(Dispatcher $events)
     {
         //下单
-        $events->listen(AfterOrderCreatedImmediatelyEvent::class, OrderBonusListeners::class. '@addCount');
+        $events->listen(AfterOrderCreatedEvent::class, self::class . '@addCount', 2);
 
-        $events->listen(AfterOrderPaidImmediatelyEvent::class, OrderBonusListeners::class . '@orderPay');
+        $events->listen(AfterOrderPaidEvent::class, self::class . '@orderPay');
 
         //收货之后 更改订单状态
-        $events->listen(AfterOrderReceivedEvent::class, OrderBonusListeners::class . '@updateBonus');
-        //收货之后 更改订单状态
-        $events->listen(AfterOrderReceivedImmediatelyEvent::class, OrderBonusListeners::class . '@receivedBonus');
+        $events->listen(AfterOrderReceivedEvent::class, self::class . '@updateBonus');
 
         //订单取消
-        $events->listen(AfterOrderCanceledEvent::class, OrderBonusListeners::class. '@cancel');
+        $events->listen(AfterOrderCanceledEvent::class, self::class . '@cancel');
 
         //订单退款
-        $events->listen(AfterOrderRefundedEvent::class, OrderBonusListeners::class. '@refunded');
+        $events->listen(AfterOrderRefundedEvent::class, self::class . '@refunded');
 
     }
 
-    public function orderPay(AfterOrderPaidImmediatelyEvent $event)
+    public function orderPay(AfterOrderPaidEvent $event)
     {
         OrderIncomeCount::updateByOrderId($event->getOrderModel()->id, ['status' => $event->getOrderModel()->status]);
     }
 
-
-    public function addCount(AfterOrderCreatedImmediatelyEvent $event)
+    public function addCount(AfterOrderCreatedEvent $event)
     {
-        $orderModel = Order::find($event->getOrderModel()->id);
-        $this->dispatch(new OrderCountContentJob($orderModel));
+        $orderModel = $event->getOrderModel();
+        $build = OrderIncomeCount::where('order_id',$orderModel->id)->first();
+        if (!$build) {
+            (new OrderCountContentJob($orderModel))->handle();
+        }
     }
 
     public function updateBonus(AfterOrderReceivedEvent $event)
     {
-        $this->dispatch(new OrderMemberMonthJob($event->getOrderModel()));
-        $this->dispatch(new OrderBonusStatusJob($event->getOrderModel()->id));
+        $orderModel = $event->getOrderModel();
+        $this->dispatch(new OrderMemberMonthJob($orderModel));
+        $this->dispatch(new OrderBonusStatusJob($orderModel->id));
+        $this->receivedBonus($orderModel);
 //        $this->dispatch((new OrderCountIncomeJob($event->getOrderModel())));
     }
     
-    public function receivedBonus(AfterOrderReceivedImmediatelyEvent $event)
+    public function receivedBonus($orderModel)
     {
-        $orderModel = $event->getOrderModel();
-
         $data = [];
 
         if ($orderModel->is_plugin == 1 || $orderModel->plugin_id == 92) {
@@ -88,7 +89,7 @@ class OrderBonusListeners
             $data['cost_price'] = $data['store'] = StoreOrder::where('order_id', $orderModel->id)->sum('amount');
         }
         $data['status'] = $orderModel->status;
-        OrderIncomeCount::updateByOrderId($event->getOrderModel()->id, $data);
+        OrderIncomeCount::updateByOrderId($orderModel->id, $data);
     }
 
     public function cancel(AfterOrderCanceledEvent $event)

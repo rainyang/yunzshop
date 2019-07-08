@@ -108,7 +108,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 col-xs-12">
         <br/>
-        <button name='saveremark' onclick="sub()" class='btn btn-default'>保存发票</button>
+        <button name='saveremark' onclick="sub('invoice')" class='btn btn-default'>保存发票</button>
     </div>
 </div>
 <div class="form-group">
@@ -129,7 +129,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-9 col-xs-12">
         <br/>
-        <button name='saveremark' onclick="sub()" class='btn btn-default'>保存备注</button>
+        <button name='saveremark' onclick="sub('remark')" class='btn btn-default'>保存备注</button>
     </div>
 </div>
 
@@ -172,6 +172,13 @@
 @if(!empty($order['collect_name']))
     @include('invoice.display')
 @endif
+
+@if (app('plugins')->isEnabled('delivery-station'))
+
+    {!! (new\Yunshop\DeliveryStation\widgets\OrderWidget())->run($order['id']) !!}
+
+@endif
+
 @if (count($order['discounts']))
     <div class="panel panel-default">
         <div class="panel-heading">

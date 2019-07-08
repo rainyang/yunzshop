@@ -10,12 +10,10 @@ namespace app\backend\modules\setting\controllers;
 
 use app\common\components\BaseController;
 use app\common\facades\Setting;
-use app\common\helpers\Url;
 use app\common\models\Address;
-use app\common\services\AutoUpdate;
-use app\common\services\MyLink;
-use Ixudra\Curl\Facades\Curl;
 use app\common\models\Setting as SettingModel;
+use app\common\services\AutoUpdate;
+use Ixudra\Curl\Facades\Curl;
 
 class KeyController extends BaseController
 {
@@ -33,7 +31,7 @@ class KeyController extends BaseController
     public function index()
     {
         $requestModel = request()->upgrade;
-        $upgrade      = Setting::get('shop.key');
+        $upgrade = Setting::get('shop.key');
         $page = 'auth';
 
         if (empty($upgrade['key']) && empty($upgrade['secret'])) {
@@ -60,8 +58,8 @@ class KeyController extends BaseController
             }
         }
 
-        $auth_url = '';//yzWebFullUrl('setting.key.index', ['page' => 'auth']);
-        $free_url = '';//yzWebFullUrl('setting.key.index', ['page' => 'free']);
+        $auth_url = ''; //yzWebFullUrl('setting.key.index', ['page' => 'auth']);
+        $free_url = ''; //yzWebFullUrl('setting.key.index', ['page' => 'free']);
 
         $type = request()->type;
         //$page = request()->page ?: 'register';
@@ -71,14 +69,16 @@ class KeyController extends BaseController
 
         if ($requestModel) {
             //检测数据是否存在
-            $res = $this ->isExist($requestModel);
+            $res = $this->isExist($requestModel);
 
             //var_dump($res);exit();
-            if(!$res['isExists']) {
-                if($res['message'] == 'amount exceeded')
+            if (!$res['isExists']) {
+                if ($res['message'] == 'amount exceeded') {
                     $this->errorJson('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
-                else
+                } else {
                     $this->errorJson('Key或者密钥出错了！');
+                }
+
             } else {
                 if ($this->processingKey($requestModel, $type)) {
                     return $this->successJson("站点{$message}成功", ['url' => $auth_url]);
@@ -93,39 +93,39 @@ class KeyController extends BaseController
         return view('setting.key.index', [
             'province' => json_encode(['data' => $province->toArray()]),
             'page' => json_encode(['type' => $page]),
-            'url' => json_encode(['free' => $free_url, 'auth' =>$auth_url]),
-            'set' => json_encode(['key' => $upgrade['key'], 'secret' => $upgrade['secret'], 'btn' => $btn])
+            'url' => json_encode(['free' => $free_url, 'auth' => $auth_url]),
+            'set' => json_encode(['key' => $upgrade['key'], 'secret' => $upgrade['secret'], 'btn' => $btn]),
         ])->render();
     }
 
-      /*
+    /*
      * 处理信息
      */
     private function processingKey($requestModel, $type)
     {
         $domain = request()->getHttpHost();
         $data = [
-            'uniacid' =>$this->uniacid,
+            'uniacid' => $this->uniacid,
             'key' => $requestModel['key'],
             'secret' => $requestModel['secret'],
-            'domain' => $domain
+            'domain' => $domain,
         ];
 
-        if($type == 'create') {
+        if ($type == 'create') {
 
-            $content = Curl::to(config('auto-update.checkUrl').'/app-account/create')
+            $content = Curl::to(config('auto-update.checkUrl') . '/app-account/create')
                 ->withData($data)
                 ->get();
-           // dd($content);exit();
+            // dd($content);exit();
             $writeRes = Setting::set('shop.key', $requestModel);
 
             \Cache::forget('app_auth' . $this->uniacid);
 
             return $writeRes && $content;
 
-        } else if($type == 'cancel') {
+        } else if ($type == 'cancel') {
 
-            $content = Curl::to(config('auto-update.checkUrl').'/app-account/cancel')
+            $content = Curl::to(config('auto-update.checkUrl') . '/app-account/cancel')
                 ->withData($data)
                 ->get();
             //var_dump($content);exit();
@@ -134,25 +134,26 @@ class KeyController extends BaseController
 
             \Cache::forget('app_auth' . $this->uniacid);
 
-            return $writeRes && $content ;
+            return $writeRes && $content;
         }
     }
 
     /*
      * 检测是否有数据存在
      */
-    public function isExist($data) {
+    public function isExist($data)
+    {
 
         $type = request()->type;
         $domain = request()->getHttpHost();
 
-        $filename = config('auto-update.checkUrl').'/check_isKey.json';
+        $filename = config('auto-update.checkUrl') . '/check_isKey.json';
         $postData = [
             'type' => $type,
-            'domain' => $domain
+            'domain' => $domain,
         ];
         $update = new AutoUpdate();
-        $res = $update -> isKeySecretExists($filename, $data, $postData, 'auto_update ' . $this->uniacid . ' ');
+        $res = $update->isKeySecretExists($filename, $data, $postData, 'auto_update ' . $this->uniacid . ' ');
         return $res;
     }
 
@@ -195,13 +196,15 @@ class KeyController extends BaseController
         if (!is_null($register) && 1 == $register['result']) {
             if ($register['data']) {
                 //检测数据是否存在
-                $res = $this ->isExist($register['data']['shop']);
+                $res = $this->isExist($register['data']['shop']);
                 //var_dump($res);exit();
-                if(!$res['isExists']) {
-                    if($res['message'] == 'amount exceeded')
+                if (!$res['isExists']) {
+                    if ($res['message'] == 'amount exceeded') {
                         $this->errorJson('您已经没有剩余站点数量了，如添加新站点，请取消之前的站点或者联系我们的客服人员！');
-                    else
+                    } else {
                         $this->errorJson('Key或者密钥出错了！');
+                    }
+
                 } else {
                     if ($this->processingKey($register['data']['shop'], 'create')) {
                         if ($register['data']['plugins']) {
@@ -232,5 +235,22 @@ class KeyController extends BaseController
             ->get();
 
         return $this->successJson('ok', $res);
+    }
+
+    public function reset()
+    {
+        $data = request()->data;
+
+        $setting = Setting::get('shop.key');
+
+        if ($data['key'] && $data['secret']) {
+             try {
+                 Setting::set('shop.key', $data);
+             }  catch (\Exception $e) {
+                 return $this->errorJson($e->getMessage());
+             }
+        }
+
+        return $this->successJson('成功', $setting);
     }
 }

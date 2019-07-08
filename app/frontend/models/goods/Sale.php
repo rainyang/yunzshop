@@ -20,6 +20,8 @@ use app\frontend\modules\orderGoods\models\PreOrderGoods;
  * @property string ed_areaids
  * @property int ed_num
  * @property float ed_money
+ * @property int has_all_point_deduct
+ * @property float all_point_deduct
  */
 class Sale extends \app\common\models\Sale
 {

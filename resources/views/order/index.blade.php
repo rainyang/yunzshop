@@ -138,6 +138,20 @@
                                                 </option>
                                             </select>
                                         </div>
+
+                                        <div class="form-group form-group col-sm-8 col-lg-2 col-xs-12">
+                                            <select name="search[first_order]" class="form-control">
+                                                <option value=""
+                                                        @if(!$requestSearch['first_order'])  selected="selected"@endif>
+                                                    不搜索首单
+                                                </option>
+                                                <option value="1"
+                                                        @if($requestSearch['first_order'] == '1')  selected="selected"@endif>
+                                                    搜索首单
+                                                </option>
+                                            </select>
+                                        </div>
+
                                         <div class="form-group col-sm-12 col-lg-12 col-xs-12"></div>
                                         <div class="form-group col-sm-8 col-lg-5 col-xs-12">
 
@@ -241,6 +255,9 @@
                                         @if(!empty($order['has_one_refund_apply']))
                                             <label class="label label-danger">{{$order['has_one_refund_apply']['refund_type_name']}}
                                                 :{{$order['has_one_refund_apply']['status_name']}}</label>
+                                    @endif
+                                    @if($order['has_many_first_order'])
+                                        <label class='label label-primary'>首单</label>
                                     @endif
 
 

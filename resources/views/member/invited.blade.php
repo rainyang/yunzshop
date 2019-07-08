@@ -24,47 +24,39 @@
                             <!--<label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>-->
                             <div class="">
                                 <input type="text" placeholder="邀请码" class="form-control" name="search[code]"
-                                       value="{{$request['search']['code']}}"/>
+                                       @if($search['code'])  value="{{$search['code']}}" @endif/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <!-- <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>-->
                             <div class="">
                                 <input type="text" onkeyup="(this.v=function(){this.value=this.value.replace(/[^0-9-]+/,'');}).call(this)" onblur="this.v();" class="form-control" name="search[mid]"
-                                       value="{{$request['search']['mid']}}" placeholder="可搜索邀请人id或被邀请人id"/>
+                                       @if($search['mid'])  value="{{$search['search']['mid']}}" @endif  placeholder="可搜索邀请人id或被邀请人id"/>
                             </div>
                         </div>
                         <div class="form-group col-xs-12 col-sm-12 col-md-4 col-lg">
                             <div class="time">
                                 <select name='search[searchtime]' class='form-control'>
                                     <option value='0'
-                                            @if($request['search']['searchtime']=='0')
+                                            @if($search['searchtime']=='0')
                                             selected
                                             @endif>注册时间不限
                                     </option>
                                     <option value='1'
-                                            @if($request['search']['searchtime']=='1')
+                                            @if($search['searchtime']=='1')
                                             selected
                                             @endif>搜索注册时间
                                     </option>
                                 </select>
                             </div>
                             <div class="search-select">
-                                @if($starttime && $endtime)
-                                    {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
-                                    'starttime'=>date('Y-m-d H:i', $starttime),
-                                    'endtime'=>date('Y-m-d H:i',$endtime),
-                                    'start'=>0,
-                                    'end'=>0
-                                    ], true) !!}
-                                @else
+
                                     {!! app\common\helpers\DateRange::tplFormFieldDateRange('search[times]', [
                                     'starttime'=>date('Y-m-d H:i'),
                                     'endtime'=>date('Y-m-d H:i'),
                                     'start'=>0,
                                     'end'=>0
                                     ], true) !!}
-                                @endif
                             </div>
                         </div>
                         <div class="form-group  col-xs-12 col-md-12 col-lg-6">

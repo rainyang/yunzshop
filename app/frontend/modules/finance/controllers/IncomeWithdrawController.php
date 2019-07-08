@@ -107,7 +107,7 @@ class IncomeWithdrawController extends ApiController
             $data = [
                 'data' => $income_data,
                 'setting' => ['balance_special' => $this->getBalanceSpecialSet()],
-                'special_type' => $this->special_poundage_type
+                'special_type' => $this->special_poundage_type,
             ];
             return $this->successJson('获取数据成功!', $data);
         }
@@ -312,8 +312,11 @@ class IncomeWithdrawController extends ApiController
             }
         }*/
 
-
-        $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
+        if(array_get($this->withdraw_set,'service_tax_calculation',0) == 1){
+            $service_tax =  $this->poundageMath($this->withdraw_amounts, $this->service_tax_rate);
+        }else{
+            $service_tax = $this->poundageMath($this->withdraw_amounts - $poundage, $this->service_tax_rate);
+        }
 
         $special_poundage = $this->poundageMath($this->withdraw_amounts, $this->special_poundage_rate);
         if ($this->isUseBalanceSpecialSet()) {
@@ -322,7 +325,12 @@ class IncomeWithdrawController extends ApiController
             }
         }
 
-        $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
+        if(array_get($this->withdraw_set, 'service_tax_calculation', 0) == 1){
+            $special_service_tax = $this->poundageMath($this->withdraw_amounts , $this->special_service_tax_rate);
+        }else{
+            $special_service_tax = $this->poundageMath(($this->withdraw_amounts - $special_poundage), $this->special_service_tax_rate);
+        }
+
         $can = $this->incomeIsCanWithdraw();
        /* if (in_array($income['type'], ['StoreCashier', 'StoreWithdraw'])) {
             $can = true;

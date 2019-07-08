@@ -29,10 +29,13 @@ class PointService
             $this->error('商品最高抵扣积分不能超过100%');
         } elseif ($point_data['transfer_love_rate'] > 100) {
             $this->error('自动转入比例不能大于100');
+        } elseif ($point_data['point_transfer_poundage'] > 100) {
+            $this->error('手续费比例不能大于100');
         } else {
             Setting::set('point.set', $point_data);
             return '积分基础设置保存成功';
         }
+
         return false;
     }
 

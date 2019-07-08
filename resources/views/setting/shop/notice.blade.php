@@ -253,6 +253,34 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请退款/退货/换货申请通知[卖家]</label>
+                            <div class="col-sm-8 col-xs-12">
+                                <select name='yz_notice[order_refund_apply_to_saler]' class='form-control diy-notice'>
+                                    <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply_to_saler'])) value="{{$set['order_refund_apply_to_saler']}}"
+                                            selected @else value=""
+                                            @endif
+                                    >
+                                        默认消息模板
+                                    </option>
+                                    @foreach ($temp_list as $item)
+                                        <option value="{{$item['id']}}"
+                                                @if($set['order_refund_apply_to_saler'] == $item['id'])
+                                                selected
+                                                @endif>{{$item['title']}}</option>
+                                    @endforeach
+                                </select>
+                                <div class="help-block">通知公众平台模板消息编号: OPENTM414174084</div>
+                            </div>
+                            <div class="col-sm-2 col-xs-6">
+                                <input class="mui-switch mui-switch-animbg" id="order_refund_apply_to_saler" type="checkbox"
+                                       @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['order_refund_apply_to_saler']))
+                                       checked
+                                       @endif
+                                       onclick="message_default(this.id)"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6 col-xs-12">
                                 <div class='input-group'>

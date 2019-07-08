@@ -24,6 +24,9 @@ class PointTransferController extends ApiController
 
     private $transferModel;
 
+    private $poundage;
+
+    private $request_point;
     /**
      * 积分转让接口
      * @return \Illuminate\Http\JsonResponse
@@ -73,6 +76,7 @@ class PointTransferController extends ApiController
         if ($result !== true) {
             return '转让失败，记录出错';
         }
+
         DB::beginTransaction();
         (new PointService($this->getTransferRecordData()))->changePoint();
         (new PointService($this->getRecipientRecordData()))->changePoint();
@@ -100,6 +104,7 @@ class PointTransferController extends ApiController
         if ($validator->fails()) {
             return $validator->messages();
         }
+
         return $this->transferModel->save();
     }
 
@@ -125,7 +130,8 @@ class PointTransferController extends ApiController
             'recipient'     => $this->getPostRecipient(),
             'value'         => $this->getPostTransferPoint(),
             'status'        => ConstService::STATUS_FAILURE,
-            'order_sn'      => PointTransfer::createOrderSn('PT')
+            'order_sn'      => PointTransfer::createOrderSn('PT'),
+            'poundage'      => $this->poundage,
         ];
     }
 
@@ -135,8 +141,8 @@ class PointTransferController extends ApiController
             'point_income_type' => PointService::POINT_INCOME_LOSE,
             'point_mode'        => PointService::POINT_MODE_TRANSFER,
             'member_id'         => $this->transferModel->transferor,
-            'point'             => -$this->transferModel->value,
-            'remark'            => '积分转让-转出：' . -$this->transferModel->value,
+            'point'             => -$this->request_point,
+            'remark'            => '积分转让-转出：' . -$this->request_point,
         ];
     }
     private function getRecipientRecordData()
@@ -162,7 +168,14 @@ class PointTransferController extends ApiController
 
     private function getPostTransferPoint()
     {
-        return trim(\YunShop::request()->transfer_point);
+        $this->request_point = trim(\YunShop::request()->transfer_point);
+        if ($this->getRateSet() > 0) {
+            $point = round($this->request_point - $this->request_point * $this->getRateSet(), 2);
+            $this->poundage = round($this->request_point * $this->getRateSet(), 2);
+            return $point;
+        }else{
+            return $this->request_point;
+        }
     }
 
     private function getPostRecipient()
@@ -170,8 +183,9 @@ class PointTransferController extends ApiController
         return trim(\YunShop::request()->recipient);
     }
 
-
-
-
+    public function getRateSet()
+    {
+        return round(Setting::get('point.set.point_transfer_poundage')/100, 4) ?: 0;
+    }
 
 }

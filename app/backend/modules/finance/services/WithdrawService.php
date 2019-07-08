@@ -96,4 +96,17 @@ class WithdrawService extends Withdraw
     {
         return  PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts);
     }
+
+    /**
+     * 汇聚余额提现
+     *
+     * @param $withdraw
+     * @param $remark
+     * @return array|mixed
+     * @throws AppException
+     */
+    public static function convergePayMent($withdraw, $remark)
+    {
+        return  PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($withdraw->member_id, $withdraw->withdraw_sn, $withdraw->actual_amounts, $remark);
+    }
 }

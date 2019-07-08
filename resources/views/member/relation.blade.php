@@ -29,6 +29,8 @@
                                 <label class="radio-inline"><input type="radio"  name="setdata[status]" value="0" @if($set['status'] ==0)
                                     checked="checked"
                                             @endif/> 关闭</label>
+                                <span class='help-block'>开启后首页也需要授权登录</span>
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -177,6 +179,25 @@
                                 <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="0" @if($set['become_check'] ==0) checked="checked"
                                             @endif /> 不需要</label>
                                 <span class="help-block">以上条件达到后，是否需要审核才能发展下线</span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 推荐一个人奖励积分</label>
+                            <div class="col-sm-6">
+                                <div class='input-group become' >
+                                    <input type='text' class='form-control' name='setdata[reward_points]' value="{{$set['reward_points']}}" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> 赠送积分最大人数</label>
+                            <div class="col-sm-6">
+                                <div class='input-group become' >
+                                    <input type='text' class='form-control' name='setdata[maximum_number]' value="{{$set['maximum_number']}}" />
+                                    <span class="help-block">不填或为0则不限制</span>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">

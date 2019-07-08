@@ -100,17 +100,13 @@ class OrderBonusJob implements  ShouldQueue
 
     public function addCount($sum, $undividend)
     {
-        $count = 1;
+//        $count = 1;
         $field = str_replace('-','_',$this->code);
         $order_income = OrderIncomeCount::where('order_id', $this->orderModel->id)->first();
 
         if (!$order_income) {
             \Log::debug('订单分红统计，缺少订单ID'.$this->orderModel->id.'的数据');
-            //todo 防止万一订单数据没插入成功，先执行这个执行的队列
-            $job = new OrderCountAddJob($this->code, $sum, $undividend, $this->orderModel->id, $count);
-            $job = $job->delay(60);
-            dispatch($job);
-            return true;
+            $order_income = (new OrderCountContentJob($this->orderModel))->handle();
         }
         $order_income->$field = $sum;
         $order_income->undividend += $undividend;

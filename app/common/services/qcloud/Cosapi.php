@@ -560,7 +560,7 @@ class Cosapi {
         $endPoint = Conf::API_COSAPI_END_POINT;
         $endPoint = str_replace('region', self::$region, $endPoint);
 
-        return $endPoint . Conf::APP_ID . '/' . $bucket . $dstPath;
+        return $endPoint . Conf::config()['APP_ID'] . '/' . $bucket . $dstPath;
     }
 
 	/*

@@ -85,7 +85,8 @@
     <input type="hidden" name="a" value="entry" />
     <input type="hidden" name="m" value="yun_shop" />
     <input type="hidden" name="do" value="5201" />
-    <input type="hidden" name="route" value="finance.withdraw-records" id="route" />
+    <input type="hidden" name="export" value="0" id="isExport"/>
+    <input type="hidden" name="route" value="{{ \YunShop::request()->route }}" id="route" />
     <div class="panel panel-info">
         <div class="panel-body">
             <input type="hidden" name="search[status]" value="{{$search['status']}}">
@@ -231,10 +232,10 @@
                     <td>
                         @if($row->type == 'balance')
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}" target = "_blank">详情</a>
+                               href="{{yzWebUrl('finance.balance-withdraw.detail', ['id' => $row->id])}}">详情</a>
                         @else
                             <a class='btn btn-default'
-                               href="{{yzWebUrl('withdraw.detail.index', ['id' => $row->id])}}" target = "_blank">详情</a>
+                               href="{{yzWebUrl('withdraw.detail.index', ['id' => $row->id])}}">详情</a>
                         @endif
                     </td>
                 </tr>
@@ -268,12 +269,11 @@
 <script language='javascript'>
     $(function () {
         $('#export').click(function () {
-            $('#route').val("finance.withdraw-records.export");
+            $('#isExport').val("1");
             $('#form1').submit();
-            $('#route').val("finance.withdraw-records");
+            $('#isExport').val("0");
         });
         $('#search').click(function () {
-            $('#form1').attr('action', '{!! yzWebUrl('finance.withdraw-records.index') !!}');
             $('#form1').submit();
         });
 

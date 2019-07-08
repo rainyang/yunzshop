@@ -174,8 +174,8 @@ class UpdateController extends BaseController
                             }
                         }
 
-                        //忽略前端版本号记录文件
-                        if ($file['path'] == 'config/front-version.php' && is_file(base_path() . '/' . $file['path'])) {
+                        //忽略前后端版本号记录文件
+                        if (($file['path'] == 'config/front-version.php' || $file['path'] == 'config/backend_version.php') && is_file(base_path() . '/' . $file['path'])) {
                             continue;
                         }
 
@@ -214,7 +214,7 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log']))
+                    'log' => $ret['log']
                 ];
             } else {
                 preg_match('/"[\d\.]+"/', file_get_contents(base_path('config/') . 'version.php'), $match);
@@ -352,6 +352,9 @@ class UpdateController extends BaseController
             //清理缓存
             \Log::debug('----Cache Flush----');
             \Cache::flush();
+
+            \Log::debug('----Queue Restarth----');
+            \Artisan::call('queue:restart');
 
             $status = 2;
 

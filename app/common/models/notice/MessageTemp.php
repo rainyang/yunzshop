@@ -31,7 +31,7 @@ class MessageTemp extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope( new UniacidScope);
+        static::addGlobalScope(new UniacidScope);
     }
 
 

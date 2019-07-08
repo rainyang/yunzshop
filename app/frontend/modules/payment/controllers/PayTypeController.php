@@ -19,7 +19,7 @@ class PayTypeController extends BaseController
     public function index()
     {
         $buttons = [];
-        $filter_minPayType = [1, 3, 'cashPay'];
+        $filter_minPayType = [1, 3, 28, 'cashPay'];
         $client_type = \YunShop::request()->type;
         $orderPay = new OrderPay(['amount' => request()->input('price', 0.01)]);
         // todo 可以将添加订单的方法添加到收银台model中

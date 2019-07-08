@@ -509,7 +509,7 @@ return [
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "您于[时间]申请提现[金额]元，其中手续费[手续费]元，未能成功提现。",
+                "value" => "您于[时间]申请提现[金额]元，其中手续费[手续费]元，提现单号为[提现单号], 未能成功提现。",
                 "color" => "#000000",
             ],
         ],
@@ -1890,5 +1890,56 @@ return [
         ],
         'remark' => '请尽快处理这笔会员提现记录！！',
     ],
+    'order_refund_apply_to_saler' => [
+        'template_id_short' => 'OPENTM414174084',
+        'title' => '退款申请通知[卖家]',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '您好，[商城名称]产生了一笔退款申请！！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "[退款金额]元",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "[商品详情（含规格）]",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "[订单编号]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '请及时处理！！！',
+    ],
 
+    'income_withdraw_fail' => [
+        'template_id_short' => 'OPENTM207574677',
+        'title' => '收入提现失败通知',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '感谢您的支持！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value" => "提现",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value" => "收入提现失败",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value" => "您于[时间]申请提现[金额]元, 由于[失败原因], 未能成功提现。",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '如有疑问，请联系客服！',
+
+    ],
 ];

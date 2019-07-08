@@ -51,6 +51,7 @@ class BalanceWithdrawController extends BalanceController
             'manual'        => $this->balanceSet->withdrawManual(),
             'huanxun'       => $this->balanceSet->withdrawHuanxun(),
             'eup_pay'       => $this->balanceSet->withdrawEup(),
+            'converge_pay'  => $this->balanceSet->withdrawConverge(),
             'poundage'      => $this->getPagePoundage(),
         ];
 
@@ -111,9 +112,11 @@ class BalanceWithdrawController extends BalanceController
         if ($withdrawType == 'manual' && !$this->balanceSet->withdrawManual()) {
             return $this->errorJson('未开启余额手动提现');
         }
-
         if ($withdrawType == 'eup_pay' && !$this->balanceSet->withdrawEup()) {
             return $this->errorJson('未开启余额EUP提现');
+        }
+        if ($withdrawType == 'converge_pay' && !$this->balanceSet->withdrawConverge()) {
+            return $this->errorJson('未开启余额汇聚提现');
         }
 
         $manual_result = $this->manualIsCanSubmit();
@@ -307,6 +310,9 @@ class BalanceWithdrawController extends BalanceController
                 break;
             case 5:
                 return 'huanxun';
+                break;
+            case 6:
+                return 'converge_pay';
                 break;
             default:
                 throw new AppException('未找到提现类型');

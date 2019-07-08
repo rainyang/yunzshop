@@ -58,17 +58,28 @@ class CalculationPointService
         $point_data = [];
         if (isset($point_set['enoughs'])) {
             foreach (collect($point_set['enoughs'])->sortBy('enough') as $enough) {
-                if ($order_model->price - $order_model->dispatch_price - $order_model->fee_amount  >= $enough['enough'] && $enough['give'] > 0) {
-                    $point_data['point'] = $enough['give'];
+                $orderPrice = $order_model->price - $order_model->dispatch_price - $order_model->fee_amount;
+                if ($orderPrice >= $enough['enough'] && $enough['give'] > 0) {
                     $point_price = $enough['enough'];
+                    $point_data['point'] = $enough['give'];
                     $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $enough['enough'] . ']元赠送[' . $enough['give'] . ']积分';
+                    if ($point_set['point_award_type'] == 1) {
+                        $point_data['point'] = $orderPrice * $enough['give'] / 100;
+                        $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $enough['enough'] . ']元赠送[' . $enough['give'] . '%]积分';
+                    }
                 }
             }
         }
         if (!empty($point_set['enough_money']) && !empty($point_set['enough_point'])) {
-            if ($order_model->price - $order_model->dispatch_price - $order_model->fee_amount >= $point_set['enough_money'] && $point_set['enough_point'] > 0 && $point_set['enough_money'] > $point_price) {
+            $orderPrice = $order_model->price - $order_model->dispatch_price - $order_model->fee_amount;
+            if ($orderPrice >= $point_set['enough_money'] && $point_set['enough_point'] > 0 && $point_set['enough_money'] > $point_price) {
                 $point_data['point'] = $point_set['enough_point'];
                 $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $point_set['enough_money'] . ']元赠送[' . $point_data['point'] . ']积分';
+
+                if ($point_set['point_award_type'] == 1) {
+                    $point_data['point'] = $orderPrice * $point_set['enough_point'] / 100;
+                    $point_data['remark'] = '订单[' . $order_model->order_sn . ']消费满[' . $point_set['enough_money'] . ']元赠送[' . $point_data['point'] . '%]积分';
+                }
             }
         }
         return $point_data;

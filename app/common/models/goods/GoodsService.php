@@ -16,6 +16,7 @@ class GoodsService extends BaseModel
 	public $attributes = [
 		'is_refund' => 1,
 		'is_automatic' => 0,
+        'serviceFee' => 0,
 	];
 
     public $timestamps = false;

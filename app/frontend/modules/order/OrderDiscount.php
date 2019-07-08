@@ -12,6 +12,7 @@ use app\frontend\models\order\PreOrderDiscount;
 use app\frontend\modules\order\discount\BaseDiscount;
 use app\frontend\modules\order\discount\CouponDiscount;
 use app\frontend\modules\order\models\PreOrder;
+use app\frontend\modules\orderGoods\models\PreOrderGoods;
 use Illuminate\Support\Collection;
 
 class OrderDiscount
@@ -70,12 +71,10 @@ class OrderDiscount
     private function setOrderDiscounts()
     {
         // 将所有订单商品的优惠
-        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function (Collection $result, $aOrderGoods) {
-            if (isset($aOrderGoods->orderGoodsDiscounts)) {
-                return $result->merge($aOrderGoods->orderGoodsDiscounts);
-            }
-            return $result;
+        $orderGoodsDiscounts = $this->order->orderGoods->reduce(function (Collection $result, PreOrderGoods $aOrderGoods) {
+            return $result->merge($aOrderGoods->getOrderGoodsDiscounts());
         }, collect());
+
         // 按每个种类的优惠分组 求金额的和
         $orderGoodsDiscounts->each(function ($orderGoodsDiscount) {
             // 新类型添加

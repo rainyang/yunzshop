@@ -19,6 +19,13 @@ class Receive extends OrderOperation
         if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY, DispatchType::STORE_DELIVERY])) {
             return 'plugin.store-cashier.frontend.store.orderDetail.qrCodeUrl';
         }
+
+        //配送站自提、核销
+        if (in_array($this->order->dispatch_type_id, [DispatchType::DELIVERY_STATION_SELF, DispatchType::DELIVERY_STATION_SEND])) {
+
+            return 'plugin.delivery-station.frontend.order.detail.qr-code-url';
+        }
+
         return 'order.operation.receive';
     }
     public function getName()
@@ -32,6 +39,13 @@ class Receive extends OrderOperation
             // 商家配送
             return '确认核销';
         }
+
+        //配送站自提、核销
+        if (in_array($this->order->dispatch_type_id, [DispatchType::DELIVERY_STATION_SELF, DispatchType::DELIVERY_STATION_SEND])) {
+
+            return '确认核销';
+        }
+
         return '确认收货';
     }
 
@@ -41,6 +55,11 @@ class Receive extends OrderOperation
         if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY, DispatchType::STORE_DELIVERY])) {
             return 'verification_code';
         }
+
+        if (in_array($this->order->dispatch_type_id, [DispatchType::DELIVERY_STATION_SELF, DispatchType::DELIVERY_STATION_SEND])) {
+            return 'clerk_code';
+        }
+
         return static::COMPLETE;
     }
 

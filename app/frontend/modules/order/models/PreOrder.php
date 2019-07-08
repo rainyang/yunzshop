@@ -2,6 +2,7 @@
 
 namespace app\frontend\modules\order\models;
 
+use app\frontend\modules\order\coinExchange\OrderCoinExchangeManager;
 use app\frontend\modules\order\OrderFee;
 use Illuminate\Http\Request;
 use app\common\models\BaseModel;
@@ -61,7 +62,10 @@ class PreOrder extends Order
     use PriceNodeTrait;
 
     protected $appends = ['pre_id'];
-    protected $hidden = ['belongsToMember'];
+    /**
+     * @var Member $belongsToMember
+     */
+    public $belongsToMember;
     /**
      * @var OrderDispatch 运费类
      */
@@ -78,6 +82,10 @@ class PreOrder extends Order
      * @var OrderDeductManager 抵扣类
      */
     protected $orderDeductManager;
+    /**
+     * @var OrderCoinExchangeManager
+     */
+    protected $orderCoinExchangeManager;
 
     /**
      * @var Request
@@ -154,6 +162,19 @@ class PreOrder extends Order
         return $this->orderFeeManager;
     }
 
+    public function getOrderCoinExchangeManager()
+    {
+        if (!isset($this->orderCoinExchangeManager)) {
+            $this->orderCoinExchangeManager = new OrderCoinExchangeManager($this);
+        }
+        return $this->orderCoinExchangeManager;
+    }
+
+    public function getOrderCoinExchanges()
+    {
+        return $this->getOrderCoinExchangeManager()->getOrderCoinExchangeCollection();
+    }
+
     public function getDiscount()
     {
         if (!isset($this->discount)) {
@@ -212,7 +233,7 @@ class PreOrder extends Order
      */
     public function setMember($member)
     {
-        $this->setRelation('belongsToMember', $member);
+        $this->belongsToMember = $member;
         $this->uid = $this->belongsToMember->uid;
         $this->uniacid = $this->getUniacid();
     }

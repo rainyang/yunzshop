@@ -66,6 +66,17 @@ class BalanceService
         return $this->_recharge_set['transfer'] ? true : false;
     }
 
+    //余额转化爱心值
+    public function convertSet()
+    {
+        return $this->_recharge_set['love_swich'] ? true :false;
+    }
+
+     // 余额转化爱心值，为0或为空 按100计算
+    public function convertRate()
+    {
+        return $this->_recharge_set['love_rate'] ?: 100;
+    }
     //余额提现设置
     public function withdrawSet()
     {
@@ -111,12 +122,20 @@ class BalanceService
         return false;
     }
 
-
-    //余额EUP提现
+    //余额环迅提现
     public function withdrawHuanxun()
     {
         if (app('plugins')->isEnabled('huanxun')) {
             return $this->_withdraw_set['huanxun'] ? true : false;
+        }
+        return false;
+    }
+
+    //余额汇聚提现
+    public function withdrawConverge()
+    {
+        if (app('plugins')->isEnabled('converge_pay')) {
+            return $this->_withdraw_set['converge_pay'] ? true : false;
         }
         return false;
     }
@@ -166,6 +185,5 @@ class BalanceService
     {
         return $this->_recharge_set['recharge_activity_fetter'];
     }
-
 
 }

@@ -35,7 +35,6 @@ class MemberLevelController extends ApiController
     {
         //会员等级的升级的规则
         $this->settinglevel = \Setting::get('shop.member');
-
         if (!$this->settinglevel) {
             return $this->errorJson('未进行等级设置');
         }
@@ -59,9 +58,9 @@ class MemberLevelController extends ApiController
                         $value['deposit_free'] = $levelRights->deposit_free ? $levelRights->deposit_free : 0;
                     }
                 }
-                if ($value['goods']) {
-                    $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
-                }
+                // if ($value['goods']) {
+                //     $value['goods']['thumb'] = replace_yunshop(yz_tomedia($value['goods']['thumb']));
+                // }
             }
         } else {
             $data = MemberLevel::getLevelData($this->settinglevel['level_type']);
@@ -112,7 +111,7 @@ class MemberLevelController extends ApiController
     }
 
     /**
-     * 会员升级详情
+     * 会员升级详情  //等待修改
      * @return [json] [detail]
      */
     public function upgradeDetail()
@@ -186,6 +185,28 @@ class MemberLevelController extends ApiController
         $info['level_type'] = $this->settinglevel['level_type']?:'0';
         return $this->successJson('是否开启', $info);
 
+    }
+
+    public function getLevelsGoods()
+    {
+        $id = intval(\YunShop::request()->id);
+
+        $data = MemberLevel::uniacid()->where('id', $id)->select('goods_id')->first();
+        
+        if (!$data) {
+            return $this->errorJson('暂无商品数据');
+        }
+
+        foreach (explode(',', $data->goods_id) as $k => $v) {
+            
+            $goods = \app\common\models\Goods::select(['id', 'title', 'thumb', 'price'])->find($v);
+
+            $info[$k]['id'] = $goods['id'];
+            $info[$k]['title'] = $goods['title'];
+            $info[$k]['price'] = $goods['price'];
+            $info[$k]['thumb'] = yz_tomedia($goods['thumb']);
+        }
+        return $this->successJson('ok', $info);
     }
 }
 

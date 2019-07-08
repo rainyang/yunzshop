@@ -14,9 +14,12 @@ use app\platform\modules\system\models\SystemSetting;
 use app\platform\modules\user\models\AdminUser;
 use app\common\services\Utils;
 use app\platform\modules\user\models\YzUserProfile;
+use app\common\traits\JsonTrait;
 
 class InstallController
 {
+    use JsonTrait;
+
     public $user_txt;
 
     public function __construct()
@@ -68,7 +71,53 @@ class InstallController
         // 上传限制
         $ret['upload_size'] = @ini_get('file_uploads') ? ini_get('upload_max_filesize') : 'unknow';
 
-        $server_info = [
+
+        // 检测PHP版本必须为5.6
+        $ret['php_version_remark'] = true;
+        if(version_compare(PHP_VERSION, '5.6.0') == -1 && version_compare(PHP_VERSION, '5.7') == 1 ) {
+            $ret['php_version_remark'] = false;
+        }
+        // 检测 cURL
+        $ret['php_curl'] = extension_loaded('curl') && function_exists('curl_init');
+        // cURL 版本
+        $ret['php_curl_version'] = curl_version()['version'];
+        // 检测 PDO
+        $ret['php_pdo'] = extension_loaded('pdo') && extension_loaded('pdo_mysql');
+        // 检测 openSSL
+        $ret['php_openssl'] = extension_loaded('openssl');
+        // 检测 GD
+        $ret['php_gd'] = extension_loaded('gd');
+        // GD 库版本
+        $ret['php_gd_version'] = gd_info()['GD Version'];
+        // 检测 session.auto_start开启
+        $ret['php_session_auto_start'] = strtolower(ini_get('session.auto_start')) == '0' || 'off' ? true : false;
+        // 检测 json
+        $ret['json'] = extension_loaded('json') && function_exists('json_decode') && function_exists('json_encode');
+
+
+        // 检测 mysql_connect
+        $ret['mysql_connect'] = function_exists('mysql_connect');
+        // 检测 file_get_content
+        $ret['file_get_content'] = function_exists('file_get_contents');
+
+        $result = $this->returnData($ret);
+
+        return $this->successJson('成功', [
+            'server_info'=> $result['server_info'],
+            'sysytem_environment' => $result['sysytem_environment'],
+            'check_function' => $result['check_function']
+        ]);
+    }
+
+    /**
+     * 运行环境检测 返回数据
+     *
+     * @param $ret
+     * @return mixed
+     */
+    public function returnData($ret)
+    {
+        $result['server_info'] = [
             [
                 'name' => '服务器操作系统',
                 'value' => $ret['server_os'],
@@ -95,29 +144,7 @@ class InstallController
             ],
         ];
 
-        // 检测PHP版本必须为5.6
-        $ret['php_version_remark'] = true;
-        if(version_compare(PHP_VERSION, '5.6.0') == -1 && version_compare(PHP_VERSION, '5.7') == 1 ) {
-            $ret['php_version_remark'] = false;
-        }
-        // 检测 cURL
-        $ret['php_curl'] = extension_loaded('curl') && function_exists('curl_init');
-        // cURL 版本
-        $ret['php_curl_version'] = curl_version()['version'];
-        // 检测 PDO
-        $ret['php_pdo'] = extension_loaded('pdo') && extension_loaded('pdo_mysql');
-        // 检测 openSSL
-        $ret['php_openssl'] = extension_loaded('openssl');
-        // 检测 GD
-        $ret['php_gd'] = extension_loaded('gd');
-        // GD 库版本
-        $ret['php_gd_version'] = gd_info()['GD Version'];
-        // 检测 session.auto_start开启
-        $ret['php_session_auto_start'] = strtolower(ini_get('session.auto_start')) == '0' || 'off' ? true : false;
-        // 检测 json
-        $ret['json'] = extension_loaded('json') && function_exists('json_decode') && function_exists('json_encode');
-
-        $sysytem_environment = [
+        $result['sysytem_environment'] = [
             [
                 'name' => 'PHP版本',
                 'need' => '5.6',
@@ -169,12 +196,7 @@ class InstallController
             ],
         ];
 
-        // 检测 mysql_connect
-        $ret['mysql_connect'] = function_exists('mysql_connect');
-        // 检测 file_get_content
-        $ret['file_get_content'] = function_exists('file_get_contents');
-
-        $check_function = [
+        $result['check_function'] = [
             [
                 'name' => 'mysql_connect',
                 'need' => '支持',
@@ -187,12 +209,7 @@ class InstallController
             ],
         ];
 
-
-        return $this->successJson('成功', [
-            'server_info'=> $server_info,
-            'sysytem_environment' => $sysytem_environment,
-            'check_function' => $check_function
-        ]);
+        return $result;
     }
 
     /**
@@ -242,6 +259,7 @@ class InstallController
                 $writeable = 0;
             }
         }
+
         return $writeable;
     }
 
@@ -271,18 +289,18 @@ class InstallController
             }
         }
 
-        $result = file_put_contents($filename, $env);
-
-        if (!$result) {
-            return $this->errorJson('保存mysql配置数据有误');
-        }
-
         try{
             $link = new \PDO("mysql:host=".$set['DB_HOST'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
             $link->exec("CREATE DATABASE IF NOT EXISTS `{$set['DB_DATABASE']}` DEFAULT CHARACTER SET utf8");
             new \PDO("mysql:host=".$set['DB_HOST'].";dbname=".$set['DB_DATABASE'].";post=".$set['DB_PORT'], $set['DB_USERNAME'], $set['DB_PASSWORD']);
         } catch (\Exception $e){
             return $this->errorJson($e->getMessage());
+        }
+
+        $result = file_put_contents($filename, $env);
+
+        if (!$result) {
+            return $this->errorJson('保存mysql配置数据有误');
         }
 
         fopen($this->user_txt, 'w+');
@@ -308,13 +326,8 @@ class InstallController
 
         try {
             \Log::debug('安装初始数据迁移');
-            $filesystem = app(\Illuminate\Filesystem\Filesystem::class);
-            $update     = new \app\common\services\AutoUpdate(null, null, 300);
-            $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
-            if (!empty($plugins_dir)) {
-                \Artisan::call('update:version', ['version' => $plugins_dir]);
-            }
-            \Artisan::call('db:seed', ['--class' => 'YzSystemSettingTableSeeder']);
+            \Artisan::call('migrate',['--force' => true]);
+            \Artisan::call('db:seed', ['--force' => true, '--class' => 'YzSystemSettingTableSeeder']);
         }catch (\Exception $e) {
             return $this->errorJson($e->getMessage());
         }
@@ -363,31 +376,16 @@ class InstallController
         @unlink(base_path().'/app/platform/controllers/user.txt');
 
         fopen(base_path()."/bootstrap/install.lock", "w+");
+
         return $this->successJson('成功');
-    }
-
-    private function successJson($message = '成功', $data = [])
-    {
-        return response()->json([
-            'result' => 1,
-            'msg' => $message,
-            'data' => $data
-        ], 200, ['charset' => 'utf-8']);
-    }
-
-    private function errorJson($message = '失败', $data = [])
-    {
-        return response()->json([
-            'result' => 0,
-            'msg' => $message,
-            'data' => $data
-        ], 200, ['charset' => 'utf-8']);
     }
 
     public function delete()
     {
-        @unlink(base_path().'/app/platform/controllers/InstallController.php');
-        
+        if (env('APP_ENV') == 'production') {
+            @unlink(base_path().'/app/platform/controllers/InstallController.php');
+        }
+
         return $this->successJson('成功');
     }
 }

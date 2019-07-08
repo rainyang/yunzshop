@@ -21,6 +21,8 @@ use app\frontend\modules\payment\orderPayments\CODPayment;
 use app\frontend\modules\payment\orderPayments\CreditPayment;
 use app\frontend\modules\payment\orderPayments\RemittancePayment;
 use app\frontend\modules\payment\orderPayments\UsdtPayment;
+use app\frontend\modules\payment\orderPayments\AlipayPayHjment;
+use app\frontend\modules\payment\orderPayments\WechatPayHjment;
 use app\frontend\modules\payment\orderPayments\WebPayment;
 use app\frontend\modules\payment\orderPayments\WftAlipayPayment;
 use app\frontend\modules\payment\orderPayments\YopPayment;
@@ -41,6 +43,8 @@ use app\frontend\modules\payment\paymentSettings\shop\CODSetting;
 use app\frontend\modules\payment\paymentSettings\shop\HuanxunWxPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\RemittanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\UsdtPaySetting;
+use app\frontend\modules\payment\paymentSettings\shop\WechatPayHjSetting;
+use app\frontend\modules\payment\paymentSettings\shop\AlipayPayHjSetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatAppPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WechatPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\WftAlipaySetting;
@@ -226,6 +230,26 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPay $orderPay) {
                         return new UsdtPaySetting($orderPay);
+                    }
+                ],
+            ],
+            'convergePayWechat' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new WechatPayHjment($orderPay, $payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPay $orderPay) {
+                        return new WechatPayHjSetting($orderPay);
+                    }
+                ],
+            ],
+            'convergePayAlipay' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new AlipayPayHjment($orderPay, $payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPay $orderPay) {
+                        return new AlipayPayHjSetting($orderPay);
                     }
                 ],
             ],

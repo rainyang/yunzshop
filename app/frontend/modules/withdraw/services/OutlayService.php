@@ -90,12 +90,12 @@ class OutlayService
     public function getServiceTax()
     {
         $rate = $this->getServiceTaxRate();
-
-        $withdraw_amount = $this->getWithdrawAmount();
-        $withdraw_poundage = $this->getPoundage();
-
-        $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
-
+        $amount = $this->getWithdrawAmount();
+        if(!(\Setting::get('withdraw.income.service_tax_calculation'))){
+            $withdraw_poundage = $this->getPoundage();
+            $amount = bcsub($amount, $withdraw_poundage, 2);
+        }
+        
         return $this->calculate($amount, $rate);
     }
 
@@ -144,19 +144,18 @@ class OutlayService
 
 
     /**
-     * 劳务税 = （提现金额 - 手续费）* 劳务税比例
-     *
+     * 余额独立
+     * 劳务税  = （提现金额 - 手续费）* 劳务税比例
      * @return float
      */
     public function getToBalanceServiceTax()
     {
         $rate = $this->getToBalanceServiceTaxRate();
-
-        $withdraw_amount = $this->getWithdrawAmount();
-        $withdraw_poundage = $this->getToBalancePoundage();
-
-        $amount = bcsub($withdraw_amount, $withdraw_poundage, 2);
-
+        $amount = $this->getWithdrawAmount();
+        if(!(\Setting::get('withdraw.income.service_tax_calculation'))){
+            $withdraw_poundage = $this->getToBalancePoundage();
+            $amount = bcsub($amount, $withdraw_poundage, 2);
+        }
         return $this->calculate($amount, $rate);
     }
 

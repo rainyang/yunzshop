@@ -9,6 +9,7 @@
 namespace app\common\models;
 
 use app\common\exceptions\AppException;
+use app\common\exceptions\GoodsStockNotEnough;
 use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
 use app\common\models\goods\Privilege;
@@ -474,13 +475,13 @@ class Goods extends BaseModel
      * @author shenyang
      * 减库存
      * @param $num
-     * @throws AppException
+     * @throws GoodsStockNotEnough
      */
     public function reduceStock($num)
     {
         if ($this->reduce_stock_method != 2) {
             if (!$this->stockEnough($num)) {
-                throw new AppException('下单失败,商品:' . $this->title . ' 库存不足');
+                throw new GoodsStockNotEnough('下单失败,商品:' . $this->title . ' 库存不足');
 
             }
             $this->stock -= $num;

@@ -20,6 +20,11 @@ class DispatchType extends BaseModel
     const SELF_DELIVERY = 2; // 自提
     const STORE_DELIVERY = 3; // 门店配送
     const HOTEL_CHECK_IN  = 4; // 酒店入住
+
+    const DELIVERY_STATION_SELF  = 5; // 配送站自提
+
+    const DELIVERY_STATION_SEND  = 6; // 配送站送货
+
     public function needSend(){
         return $this->need_send;
     }

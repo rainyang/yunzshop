@@ -219,29 +219,6 @@
 
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                                <div class="col-sm-9 col-xs-12">
-
-                                    <div style="float:left; width:15%; height:30px;">
-                                        <label class='radio-inline' style="padding-left:0px">ROOT文件：</label>
-                                    </div>
-                                    <div style="float:left; width:85%; height:30px;">
-                                        <input type="hidden" name="pay[weixin_root]" value="{{ $set['weixin_root'] }}"/>
-
-                                        <input type="file" name="weixin_root" class="form-control"/>
-                                        <span class="help-block">
-                                        @if (!empty($set['weixin_root']))
-                                                <span class='label label-success'>已上传</span>
-                                            @else
-                                                <span class='label label-danger'>未上传</span>
-                                            @endif
-                                            下载证书 cert.zip 中的 rootca.pem 文件
-                                    </span>
-                                    </div>
-
-                                </div>
-                            </div>
                         </div>
                     </div>
                     <!-- 借用微信支付设置 _start -->

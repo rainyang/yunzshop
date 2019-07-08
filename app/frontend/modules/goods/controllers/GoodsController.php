@@ -499,6 +499,14 @@ class GoodsController extends ApiController
             array_push($sale, $data);
             $data = [];
         }
+        if($goodsModel->hasOneSale->all_point_deduct && $goodsModel->hasOneSale->has_all_point_deduct){
+            $data['name'] = '积分全额抵扣';
+            $data['key'] = 'all_point_deduct';
+            $data['type'] = 'string';
+            $data['value'] = '可使用' . $goodsModel->hasOneSale->all_point_deduct . '个积分全额抵扣购买';
+            array_push($sale, $data);
+            $data = [];
+        }
 
         if (ceil($goodsModel->hasOneSale->ed_full) && ceil($goodsModel->hasOneSale->ed_reduction)) {
             $data['name'] = '满减';

@@ -8,6 +8,7 @@
 
 namespace app\frontend\modules\finance\models;
 
+use app\common\exceptions\AppException;
 use app\common\models\VirtualCoin;
 use app\common\services\finance\PointService;
 use app\frontend\models\MemberCoin;
@@ -23,7 +24,22 @@ class MemberPointCoin extends MemberCoin
         return (new PointCoin)->setCoin($this->member->credit1);
     }
 
-    function consume(VirtualCoin $coin,$data)
+    public function lockCoin($coin)
+    {
+        if (bccomp($coin,$this->member->credit1) == 1) {
+            throw new AppException("用户(ID:{$this->member->uid})积分余额不足");
+        }
+
+        $this->member->credit1 -= $coin;
+    }
+
+    /**
+     * @param VirtualCoin $coin
+     * @param $data
+     * @return bool
+     * @throws \app\common\exceptions\ShopException
+     */
+    function consume(VirtualCoin $coin, $data)
     {
         $point_service = new PointService([
             'point_income_type' => -1,
@@ -34,7 +50,6 @@ class MemberPointCoin extends MemberCoin
         ]);
         $point_service->changePoint();
 
-        $this->member->credit1 -= $coin->getCoin();
-        return $this->member->save();
+        return true;
     }
 }

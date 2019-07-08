@@ -36,7 +36,6 @@ class SettingCache
      */
     public function has($key)
     {
-        //dd(array_has($this->getSetting(), $key));
         return array_has($this->getSetting(), $key);
     }
 

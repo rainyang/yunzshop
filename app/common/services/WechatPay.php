@@ -122,7 +122,7 @@ class WechatPay extends Pay
             throw new AppException('没有设定支付参数');
         }
 
-        if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
+        if (empty($pay['weixin_cert']) || empty($pay['weixin_key'])) {
             throw new AppException('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!');
         }
         $notify_url = '';
@@ -164,7 +164,7 @@ class WechatPay extends Pay
             throw new AppException('没有设定支付参数');
         }
 
-        if (empty($pay['weixin_cert']) || empty($pay['weixin_key']) || empty($pay['weixin_root'])) {
+        if (empty($pay['weixin_cert']) || empty($pay['weixin_key'])) {
             throw new AppException('\'未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!\'');
         }
 

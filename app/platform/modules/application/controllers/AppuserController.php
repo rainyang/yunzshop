@@ -102,10 +102,26 @@ class AppuserController extends BaseController
             return '不能添加自己';
         }
 
+        switch ($data['role']) {
+            case 'manager':
+                $name = '管理员';
+                break;
+            case 'clerk':
+                $name = '店员';
+                break;
+            case 'operator':
+                $name = '操作员';
+                break;
+            default:
+                $name = '创始人';
+                break;
+        }
+
         return [
          		'uniacid' => $data['uniacid'],
          		'uid' => $data['uid'],
          		'role' => $data['role'] ? : 'manager',
+                'role_name' => $name
         ];
     }
 

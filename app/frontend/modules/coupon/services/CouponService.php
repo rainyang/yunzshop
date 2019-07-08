@@ -4,13 +4,11 @@ namespace app\frontend\modules\coupon\services;
 
 use app\common\helpers\ArrayHelper;
 use app\common\models\goods\GoodsCoupon;
-use app\framework\Log\Log;
 use app\frontend\modules\coupon\services\models\Coupon;
 use app\frontend\modules\order\models\PreOrder;
 use app\Jobs\addGoodsCouponQueueJob;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Collection;
-use app\backend\modules\coupon\services\MessageNotice;
 
 class CouponService
 {
@@ -22,7 +20,8 @@ class CouponService
     private $orderGoods;
     private $coupon_method;
     private $selectedMemberCoupon;
-    public function __construct( $order, $coupon_method = null, $orderGoods = [])
+
+    public function __construct($order, $coupon_method = null, $orderGoods = [])
     {
         $this->order = $order;
         $this->orderGoods = $orderGoods;
@@ -36,7 +35,7 @@ class CouponService
     public function getOrderDiscountPrice()
     {
         return $this->getAllValidCoupons()->sum(function (Coupon $coupon) {
-            if(!$coupon->valid()){
+            if (!$coupon->valid()) {
                 return 0;
             }
             /**
@@ -65,18 +64,18 @@ class CouponService
              */
             //不可选
             if (!$coupon->isOptional()) {
-                trace_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}",'不可选');
+                trace_log()->coupon("优惠券{$coupon->getMemberCoupon()->id}", '不可选');
                 return false;
             }
             //商城开启了多张优惠券 并且当前优惠券组合可以继续添加这张
-            $coupon->getMemberCoupon()->valid = (!\Setting::get('coupon.is_singleton')||$this->order->orderCoupons->isEmpty()) && $coupon->valid();//界面标蓝
+            $coupon->getMemberCoupon()->valid = (!\Setting::get('coupon.is_singleton') || $this->order->orderCoupons->isEmpty()) && $coupon->valid();//界面标蓝
             $coupon->getMemberCoupon()->checked = false;//界面选中
 
             return true;
         })->values();
 
         //已选的优惠券
-        $coupons = collect($this->order->orderCoupons)->map(function($orderCoupon){
+        $coupons = collect($this->order->orderCoupons)->map(function ($orderCoupon) {
             // 已参与订单价格计算的优惠券
             $orderCoupon->coupon->getMemberCoupon()->valid = true;
             $orderCoupon->coupon->getMemberCoupon()->checked = true;
@@ -84,7 +83,7 @@ class CouponService
         })->merge($coupons);
 
         //按member_coupon的id倒序
-        $coupons = $coupons->sortByDesc(function($coupon){
+        $coupons = $coupons->sortByDesc(function ($coupon) {
             return $coupon->getMemberCoupon()->id;
         })->values();
 
@@ -135,11 +134,11 @@ class CouponService
      */
     private function getSelectedMemberCoupon()
     {
-        if(!isset($this->selectedMemberCoupon)){
+        if (!isset($this->selectedMemberCoupon)) {
             $member_coupon_ids = ArrayHelper::unreliableDataToArray(\Request::input('member_coupon_ids'));
 
-            if(\Setting::get('coupon.is_singleton')){
-                $member_coupon_ids = array_slice($member_coupon_ids,0,1);
+            if (\Setting::get('coupon.is_singleton')) {
+                $member_coupon_ids = array_slice($member_coupon_ids, 0, 1);
             }
             $this->selectedMemberCoupon = $this->getMemberCoupon()->filter(function ($memberCoupon) use ($member_coupon_ids) {
                 return in_array($memberCoupon->id, $member_coupon_ids);
@@ -157,7 +156,7 @@ class CouponService
 
             //dump($goodsCoupon);
             //未开启 或 已关闭 或 未设置优惠券
-            if(!$goodsCoupon || !$goodsCoupon->is_give || !$goodsCoupon->coupon){
+            if (!$goodsCoupon || !$goodsCoupon->is_give || !$goodsCoupon->coupon) {
                 continue;
             }
 
@@ -168,8 +167,7 @@ class CouponService
 
             for ($i = 1; $i <= $goods->total; $i++) {
 
-                switch ($goodsCoupon->send_type)
-                {
+                switch ($goodsCoupon->send_type) {
                     //订单完成立即发送
                     case '1':
                         $this->promptlySendCoupon($goodsCoupon);
@@ -196,7 +194,7 @@ class CouponService
             }
         }
 
-        (new CouponSendService())->sendCouponsToMember($this->order->uid,$coupon_ids,4,$this->order->order_sn);
+        (new CouponSendService())->sendCouponsToMember($this->order->uid, $coupon_ids, 4, $this->order->order_sn);
     }
 
     public function everyMonthSendCoupon($goodsCoupon)
@@ -215,14 +213,14 @@ class CouponService
     public function addSendCouponQueue($goodsCoupon, $coupon_id)
     {
         $queueData = [
-            'uniacid'       => \YunShop::app()->uniacid,
-            'goods_id'      => $goodsCoupon->goods_id,
-            'uid'           => $this->order->uid,
-            'coupon_id'     => $coupon_id,
-            'send_num'      => $goodsCoupon->send_num,
-            'end_send_num'  => 0,
-            'status'        => 0,
-            'created_at'    => time()
+            'uniacid' => \YunShop::app()->uniacid,
+            'goods_id' => $goodsCoupon->goods_id,
+            'uid' => $this->order->uid,
+            'coupon_id' => $coupon_id,
+            'send_num' => $goodsCoupon->send_num,
+            'end_send_num' => 0,
+            'status' => 0,
+            'created_at' => time()
         ];
         $this->dispatch((new addGoodsCouponQueueJob($queueData)));
     }

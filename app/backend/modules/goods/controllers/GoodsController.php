@@ -28,6 +28,7 @@ use app\common\helpers\Cache;
 use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
+use app\common\models\MemberFavorite;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
@@ -36,7 +37,6 @@ use Yunshop\Designer\models\Store;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
-
 
 class GoodsController extends BaseController
 {
@@ -434,6 +434,10 @@ class GoodsController extends BaseController
     {
         $id = \YunShop::request()->id;
         $goods = Goods::destroy($id);
+
+        //删除用户收藏商品
+        MemberFavorite::uniacid()->where('goods_id', $id)->delete();
+
         return $this->message('商品删除成功', Url::absoluteWeb($this->success_url));
     }
 
@@ -442,6 +446,8 @@ class GoodsController extends BaseController
         $ids = \YunShop::request()->ids;
         foreach ($ids as $id) {
             $goods = Goods::destroy($id);
+            //删除用户收藏商品
+            MemberFavorite::uniacid()->where('goods_id', $id)->delete();
         }
         echo json_encode([
             "result" => $goods,
@@ -513,7 +519,12 @@ class GoodsController extends BaseController
     public function getSearchGoods()
     {
         $keyword = \YunShop::request()->keyword;
-        $goods = Goods::getGoodsByName($keyword);
+        $goods = Goods::select('id', 'title', 'thumb')
+            ->where('title', 'like', '%' . $keyword . '%')
+            ->where('status', 1)
+            ->where('is_plugin', 0)
+            ->where('plugin_id', 0)
+            ->get();
         if (!$goods->isEmpty()) {
             $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
         }

@@ -15,7 +15,7 @@ class AddSharePageDeailMemberRelation extends Migration
     {
         if (Schema::hasTable('yz_member_relation')) {
             Schema::table('yz_member_relation', function (Blueprint $table) {
-                if (!Schema::hasColumn('ims_yz_member_relation', 'share_page_deail')) {
+                if (!Schema::hasColumn('yz_member_relation', 'share_page_deail')) {
                     $table->tinyInteger('share_page_deail')->default(0)->comment('0:显示1:不显示');
                 }
             });

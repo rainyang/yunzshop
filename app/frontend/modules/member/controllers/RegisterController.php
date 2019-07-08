@@ -31,6 +31,7 @@ use app\common\exceptions\AppException;
 use Mews\Captcha\Captcha;
 use app\common\facades\Setting;
 use app\common\services\alipay\OnekeyLogin;
+use app\common\models\McMappingFans;
 
 
 class RegisterController extends ApiController
@@ -225,13 +226,29 @@ class RegisterController extends ApiController
             $type = Client::getType();
         }
 
-        if (!OnekeyLogin::alipayPluginMobileState() || $type == 5) {
+        //微信登录绑定已存在的手机号
+        if ($type == 1){
+            $memberinfo = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
+
+            if (!empty($memberinfo['uid'])) {
+
+                $fansinfo = McMappingFans::getFansById($memberinfo['uid']);
+
+                if($fansinfo){
+
+                    return $this->errorJson('该手机号已被绑定！不能获取验证码');
+                }
+            }
+        }
+
+        if ((!OnekeyLogin::alipayPluginMobileState() || $type == 5) && $type != 1) {
             $info = MemberModel::getId(\YunShop::app()->uniacid, $mobile);
 
             if (!empty($info) && empty($reset_pwd)) {
                 return $this->errorJson('该手机号已被注册！不能获取验证码');
             }
         }
+
         $code = rand(1000, 9999);
 
         Session::set('codetime', time());

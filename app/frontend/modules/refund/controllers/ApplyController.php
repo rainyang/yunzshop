@@ -106,6 +106,7 @@ class ApplyController extends ApiController
 
         //通知买家
         RefundMessageService::applyRefundNotice($refundApply);
+        RefundMessageService::applyRefundNoticeBuyer($refundApply);
         return $this->successJson('成功', $refundApply->toArray());
     }
 }

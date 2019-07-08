@@ -51,6 +51,56 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">首单商品</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div class="input-group">
+                                    <input type='text'
+                                           class='form-control'
+                                           id="many_good"
+                                           value="@foreach($goods as $item){{$item['title']}};@endforeach"
+                                           readonly/
+                                    >
+                                    <div class="input-group-btn">
+                                        <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
+                                    </div>
+                                </div>
+                                <div class="input-group multi-img-details" id='goods_id'>
+                                    @foreach ($goods as $item)
+                                        <div class="multi-item saler-item" style="height: 220px" openid="{{ $item['id'] }}">
+                                            <img class="img-responsive img-thumbnail" src='{{ tomedia($item['thumb']) }}'
+                                                 onerror="this.src='{{static_url('resource/images/nopic.jpg')}}'; this.title='图片未找到.'">
+                                            <div class='img-nickname'>
+                                                {{ $item['title'] }}[ID:{{$item['id']}}]
+                                            </div>
+                                            <input type="hidden" value="{{ $item['id'] }}"
+                                                   name="order[goods][{{ $item['id'] }}]">
+                                            <em onclick="remove_goods(this)" class="close">×</em>
+                                        </div>
+                                    @endforeach
+                                </div>
+
+                                <div id="modal-goods"  class="modal fade" tabindex="-1">
+                                    <div class="modal-dialog" style='width: 920px;'>
+                                        <div class="modal-content">
+                                            <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择商品</h3></div>
+                                            <div class="modal-body" >
+                                                <div class="row">
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd-goods" placeholder="请输入商品名称" />
+                                                        <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_goods();">搜索</button></span>
+                                                    </div>
+                                                </div>
+                                                <div id="module-menus-goods" style="padding-top:5px;"></div>
+                                            </div>
+                                            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-9 col-xs-12">
                                 <input type="submit" name="submit" value="提交" class="btn btn-success"
@@ -68,6 +118,42 @@
 
             return true;
 
+        }
+
+        function search_goods() {
+            if( $.trim($('#search-kwd-goods').val())==''){
+                Tip.focus('#search-kwd-goods','请输入关键词');
+                return;
+            }
+            $("#module-goods").html("正在搜索....")
+            $.get('{!! yzWebUrl('goods.goods.getSearchGoods') !!}', {
+                keyword: $.trim($('#search-kwd-goods').val())
+            }, function(dat){
+                $('#module-menus-goods').html(dat);
+            });
+        }
+
+        function select_good(o) {
+            var html = '<div class="multi-item" style="height: 220px" openid="' + o.id + '">';
+            html += '<img class="img-responsive img-thumbnail" src="' + o.thumb + '" onerror="this.src=\'{{static_url('resource/images/nopic.jpg')}}\'; this.title=\'图片未找到.\'">';
+            html += '<div class="img-nickname" style="max-height: 58px;overflow: hidden">' + o.title + "[ID:"+ o.id +"]" + '</div>';
+            html += '<input type="hidden" value="' + o.id + '" name="order[goods][' + o.id + ']">';
+            html += '<em onclick="remove_goods(this)"  class="close">×</em>';
+            html += '</div>';
+            $("#goods_id").append(html);
+            refresh_goods();
+        }
+
+        function remove_goods(obj) {
+            $(obj).parent().remove();
+            refresh_goods();
+        }
+        function refresh_goods() {
+            var nickname = "";
+            $('.multi-item').each(function () {
+                nickname += " " + $(this).find('.img-nickname').html() + "; ";
+            });
+            $('#many_good').val(nickname);
         }
     </script>
     @include('public.admin.mylink')

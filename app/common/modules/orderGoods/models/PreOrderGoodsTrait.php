@@ -211,7 +211,7 @@ trait PreOrderGoodsTrait
      * 获取价格计算者
      * @return NormalOrderGoodsPrice
      */
-    protected function getPriceCalculator()
+    public function getPriceCalculator()
     {
         if (!isset($this->priceCalculator)) {
             $this->priceCalculator = $this->_getPriceCalculator();

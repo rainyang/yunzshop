@@ -26,6 +26,8 @@ class PointPageController extends ApiController
             $result['credit1'] = $this->memberModel->credit1;
             $result['transfer'] = $this->getTransferStatus();
             $result['activity'] = $this->getActivityStatus();
+            $result['rate'] = $this->getRateSet();
+
 
             return $this->successJson('ok',$result);
         }
@@ -52,4 +54,8 @@ class PointPageController extends ApiController
         return \YunShop::app()->getMemberId();
     }
 
+    private function getRateSet()
+    {
+        return intval(Setting::get('point.set.point_transfer_poundage'))/100 ?: 0;
+    }
 }

@@ -17,6 +17,9 @@ use app\common\exceptions\ShopException;
 use app\common\models\Income;
 use app\common\models\Withdraw;
 use Illuminate\Support\Facades\DB;
+use app\common\services\finance\BalanceNoticeService;
+use app\common\services\finance\MessageService;
+// use app\frontend\modules\withdraw\services\WithdrawMessageService;
 
 class AuditService
 {
@@ -28,11 +31,14 @@ class AuditService
 
     private $audit_amount;
 
+    private $uids;
 
     public function __construct(Withdraw $withdrawModel)
     {
         $this->withdrawModel = $withdrawModel;
         $this->setAuditAmount();
+
+        $this->uids = \Setting::get('withdraw.notice.withdraw_user');
     }
 
 
@@ -47,6 +53,9 @@ class AuditService
         if ($this->withdrawModel->status == Withdraw::STATUS_INITIAL || $this->withdrawModel->status == Withdraw::STATUS_INVALID) {
             return $this->_withdrawAudit();
         }
+        
+        $this->sendMessage('不符合审核规则');
+
         throw new ShopException("提现审核：ID{$this->withdrawModel->id}，不符合审核规则");
     }
 
@@ -119,9 +128,18 @@ class AuditService
     {
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
-            throw new ShopException($validator->messages()->first());
+            
+            $msg = $validator->messages()->first();
+            
+            $this->sendMessage($msg);
+
+            throw new ShopException($msg);
         }
+
         if (!$this->withdrawModel->save()) {
+            
+            $this->sendMessage('记录更新失败');
+
             throw new ShopException("提现审核：ID{$this->withdrawModel->id}，记录更新失败");
         }
         event(new WithdrawAuditedEvent($this->withdrawModel));
@@ -150,33 +168,36 @@ class AuditService
         return bcdiv(bcmul($amount, $rate, 4), 100, 2);
     }
 
-
     /**
      * 审核后最终劳务税
-     *
-     * @return float
+     * @return string
+     * @throws ShopException
      */
     private function getActualServiceTax()
     {
-        $audit_amount = $this->audit_amount;
-        $poundage = $this->getActualPoundage();
+        $withdraw_set = \Setting::get('withdraw.income');
 
-        $amount = bcsub($audit_amount, $poundage, 2);
+        $audit_amount = $this->audit_amount;   //收入总和
+        if(!$withdraw_set['service_tax_calculation']){
+            $poundage = $this->getActualPoundage(); //手续费
+            $audit_amount = bcsub($audit_amount, $poundage, 2); //收入总和减去手续费
+        }
 
-        if($amount < 0 && $amount!=0){
+        if($audit_amount < 0 && $audit_amount != 0){
+            
+            $this->sendMessage('提现金额小于手续费');
+
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
+
         //计算劳务税
+//       $rate = $this->withdrawModel->servicetax_rate;
 
-//        $rate = $this->withdrawModel->servicetax_rate;
-
-        $rate  = $this->getLastActualServiceTax($amount);
-
+        $rate  = $this->getLastActualServiceTax($audit_amount,$withdraw_set);
         $this->withdrawModel->servicetax_rate = $rate;
 
-        return bcdiv(bcmul($amount, $rate, 4), 100, 2);
+        return   bcdiv(bcmul($audit_amount, $rate, 4), 100, 2);
     }
-
 
     /**
      * 审核后最终金额
@@ -218,10 +239,8 @@ class AuditService
      * @param $amount
      * @return mixed
      */
-    private function getLastActualServiceTax($amount)
+    private function getLastActualServiceTax($amount ,$withdraw_set)
     {
-        $withdraw_set = \Setting::get('withdraw.income');
-
         $servicetax_rate = $withdraw_set['servicetax_rate'];
         if ($this->withdrawModel->servicetax_rate != $servicetax_rate) {
             return $this->withdrawModel->servicetax_rate;
@@ -240,8 +259,22 @@ class AuditService
                 break;
             }
         }
-
         return $servicetax_rate;
     }
 
+    private function sendMessage($msg)
+    {
+        if ($this->withdrawModel->type == 'balance') {
+
+            return BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
+        
+        } else {
+            
+            foreach ($this->uids as $k => $v) {
+                //收入提现失败通知
+                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
+            }
+            return ;
+        }
+    }
 }

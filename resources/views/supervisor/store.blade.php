@@ -4,6 +4,7 @@
     <style>
 
     </style>
+    @include('layouts.tabs')
     <div id="app-vue">
         <template>
             <div class="right-titpos">
@@ -28,7 +29,6 @@
                         <el-form-item>
                             <el-button type="success" @click.native.prevent="onSubmit" v-loading="formLoading">提交
                             </el-button>
-                            <el-button @click="goBack()">取消</el-button>
                         </el-form-item>
                     </el-form>
                 </div>

@@ -28,8 +28,8 @@ class UpdateController extends BaseController
         //执行迁移文件
         $this->runMigrate();
 
-        $key = Setting::getNotUniacid('shop.key')['key'];
-        $secret = Setting::getNotUniacid('shop.key')['secret'];
+        $key = Setting::getNotUniacid('platform_shop.key')['key'];
+        $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -71,8 +71,8 @@ class UpdateController extends BaseController
     public function check()
     {
         $result = ['msg' => '', 'last_version' => '', 'updated' => 0];
-        $key = Setting::getNotUniacid('shop.key')['key'];
-        $secret = Setting::getNotUniacid('shop.key')['secret'];
+        $key = Setting::getNotUniacid('platform_shop.key')['key'];
+        $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
         if(!$key || !$secret) {
             return;
         }
@@ -127,10 +127,10 @@ class UpdateController extends BaseController
         $plugins_dir = $update->getDirsByPath('plugins', $filesystem);
 
         $result = ['result' => 0, 'msg' => '网络请求超时', 'version' => ''];
-        $key = Setting::getNotUniacid('shop.key')['key'];
-        $secret = Setting::getNotUniacid('shop.key')['secret'];
+        $key = Setting::getNotUniacid('platform_shop.key')['key'];
+        $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
         if(!$key || !$secret) {
-            return response()->json(['result' => -1, 'msg' => '商城未授权', 'data' => []])->send();
+            return response()->json(['result' => -1, 'msg' => '商城未授权', 'data' => []]);
         }
 
         //前端更新文件检测
@@ -179,8 +179,8 @@ class UpdateController extends BaseController
                             }
                         }
 
-                        //忽略前端版本号记录文件
-                        if ($file['path'] == 'config/front-version.php' && is_file(base_path() . '/' . $file['path'])) {
+                        //忽略前后端版本号记录文件
+                        if (($file['path'] == 'config/front-version.php' || $file['path'] == 'config/backend_version.php') && is_file(base_path() . '/' . $file['path'])) {
                             continue;
                         }
 
@@ -219,7 +219,7 @@ class UpdateController extends BaseController
                     'version' => $version,
                     'files' => $ret['files'],
                     'filecount' => count($files),
-                    'log' => nl2br(base64_decode($ret['log'])),
+                    'log' => $ret['log'],
                     'frontendUpgrad' => count($frontendUpgrad),
                     'list' => $frontendUpgrad
                 ];
@@ -278,8 +278,8 @@ class UpdateController extends BaseController
                 }
             }
 
-            $key = Setting::getNotUniacid('shop.key')['key'];
-            $secret = Setting::getNotUniacid('shop.key')['secret'];
+            $key = Setting::getNotUniacid('platform_shop.key')['key'];
+            $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
             if(!$key || !$secret) {
                 return;
             }
@@ -363,6 +363,9 @@ class UpdateController extends BaseController
             \Log::debug('----Cache Flush----');
             \Cache::flush();
 
+            \Log::debug('----Queue Restarth----');
+            \Artisan::call('queue:restart');
+
             $status = 2;
 
             $success = $total;
@@ -385,8 +388,8 @@ class UpdateController extends BaseController
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = Setting::getNotUniacid('shop.key')['key'];
-        $secret = Setting::getNotUniacid('shop.key')['secret'];
+        $key = Setting::getNotUniacid('platform_shop.key')['key'];
+        $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_app.json');
@@ -442,8 +445,8 @@ class UpdateController extends BaseController
         $resultArr = ['msg'=>'','status'=>0,'data'=>[]];
         set_time_limit(0);
 
-        $key = Setting::getNotUniacid('shop.key')['key'];
-        $secret = Setting::getNotUniacid('shop.key')['secret'];
+        $key = Setting::getNotUniacid('platform_shop.key')['key'];
+        $secret = Setting::getNotUniacid('platform_shop.key')['secret'];
 
         $update = new AutoUpdate(null, null, 300);
         $update->setUpdateFile('check_fromework.json');
@@ -462,6 +465,11 @@ class UpdateController extends BaseController
             $result = $update->update(2);
 
             if ($result === true) {
+                $list = $update->getUpdates();
+                if (!empty($list)) {
+                    $this->setSystemVersion($list, 2);
+                }
+
                 $resultArr['status'] = 1;
                 $resultArr['msg'] = '-----------后台框架更新成功---------';
                 \Log::debug($resultArr['msg']);
@@ -484,13 +492,21 @@ class UpdateController extends BaseController
      *
      * @param $updateList
      */
-    private function setSystemVersion($updateList)
+    private function setSystemVersion($updateList, $type =1)
     {
         $version = $this->getFrontVersion($updateList);
 
         $str = file_get_contents(base_path('config/') . 'front-version.php');
         $str = preg_replace('/"[\d\.]+"/', '"'. $version . '"', $str);
-        file_put_contents(base_path('config/') . 'front-version.php', $str);
+
+        switch ($type) {
+            case 1:
+                file_put_contents(base_path('config/') . 'front-version.php', $str);
+                break;
+            case 2:
+                file_put_contents(base_path('config/') . 'backend_version.php', $str);
+                break;
+        }
     }
 
     /**
@@ -575,7 +591,7 @@ class UpdateController extends BaseController
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
 
-            $pay = \Setting::get('shop.pay');
+            $pay = \Setting::get('platform_shop.pay');
 
             if (!isset($pay['secret'])) {
                 foreach ($pay as $key => &$val) {
@@ -593,7 +609,7 @@ class UpdateController extends BaseController
                 }
 
                 $pay['secret'] = 1;
-                \Setting::set('shop.pay', $pay);
+                \Setting::set('platform_shop.pay', $pay);
             }
         }
     }

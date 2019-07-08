@@ -49,6 +49,18 @@ class Setting extends Facade
     }
 
     /**
+     * 设置不区分公众号配置信息
+     *
+     * @param $key
+     * @param null $value
+     * @return mixed
+     */
+    public static function setNotUniacid($key, $value = null)
+    {
+        return self::getInstance()->setValue(0, $key, $value);
+    }
+
+    /**
      * 获取配置信息
      *
      * @param $key
@@ -69,7 +81,7 @@ class Setting extends Facade
      */
     public static function getNotUniacid($key, $default = null)
     {
-        return self::getInstance()->getNotUniacidValue($key, $default);
+        return self::getInstance()->getValue(0, $key, $default);
     }
 
     /**

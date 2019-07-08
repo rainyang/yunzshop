@@ -134,6 +134,16 @@ class PayFactory
      */
     const PAY_Usdt = 27;
 
+    /**
+     *  微信支付-HJ(汇聚)
+     */
+    const PAY_WECHAT_HJ = 28;
+
+    /**
+     *  支付宝支付-HJ(汇聚)
+     */
+    const PAY_ALIPAY_HJ = 29;
+
 
     public static function create($type = null)
     {
@@ -248,10 +258,25 @@ class PayFactory
                 break;
             case self::PAY_Usdt:
                 if (!app('plugins')->isEnabled('usdtpay')) {
-
                     throw new AppException('Usdt插件未开启');
                 }
+
                 $className = new \Yunshop\Usdtpay\services\UsdtpayService();
+                break;
+            case self::PAY_WECHAT_HJ:
+                if (!app('plugins')->isEnabled('converge_pay') && \Setting::get('plugin.convergePay_set.wechat') == false) {
+                    throw new AppException('商城未开启汇聚支付插件中微信支付');
+                }
+
+                $className = new \Yunshop\ConvergePay\services\WechatService();
+                break;
+            case self::PAY_ALIPAY_HJ:
+                if (!app('plugins')->isEnabled('converge_pay') && \Setting::get('plugin.convergePay_set.alipay') == false) {
+
+                    throw new AppException('商城未开启汇聚支付插件中支付宝支付');
+                }
+
+                $className = new \Yunshop\ConvergePay\services\AlipayService();
                 break;
             default:
                 $className = null;

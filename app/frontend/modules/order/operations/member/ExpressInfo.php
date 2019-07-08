@@ -31,8 +31,8 @@ class ExpressInfo extends OrderOperation
         if ($this->order->isVirtual()) {
             return false;
         }
-        // 门店自提
-        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY])) {
+        // 门店自提、配送站自提、配送站送货
+        if (in_array($this->order->dispatch_type_id, [DispatchType::SELF_DELIVERY, DispatchType::DELIVERY_STATION_SELF, DispatchType::DELIVERY_STATION_SEND])) {
             return false;
         }
         return true;

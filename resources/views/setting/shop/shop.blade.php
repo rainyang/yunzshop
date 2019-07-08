@@ -52,6 +52,19 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制https跳转</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class="radio radio-inline">
+                            <input type="radio" name="shop[https]" value="0"
+                                   @if (empty($set['https'])) checked @endif/> 否
+                        </label>
+                        <label class="radio radio-inline">
+                            <input type="radio" name="shop[https]" value="1"
+                                   @if ($set['https'] == 1) checked @endif/> 是
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城名称</label>
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="shop[name]" class="form-control" value="{{ $set['name']}}" />

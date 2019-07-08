@@ -54,6 +54,6 @@ class GoodsMemberLevelDiscountCalculator extends BaseGoodsMemberLevelDiscountCal
     }
     public function getName()
     {
-        return '商品独立会员等级优惠';
+        return '商品会员等级优惠';
     }
 }
