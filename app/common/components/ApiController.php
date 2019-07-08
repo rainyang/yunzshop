@@ -92,10 +92,11 @@ class ApiController extends BaseController
             $type = Client::getType();
         }
 
-        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+        $scope   = \YunShop::request()->scope ?: '';
+
+        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid, 'scope' => $scope];
 
         if ($this->controller == 'Login' && $this->action == 'checkLogin') {
-            $scope   = \YunShop::request()->scope;
             \Log::debug('-------no login scope-----', [$scope]);
 
             if ($scope == 'home') {
@@ -108,7 +109,7 @@ class ApiController extends BaseController
 
 \Log::debug('-------no login-----', [$this->controller, $this->action, session_id()]);
             if (5 == $type || 7 == $type) {
-                throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
+                throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'i' => \YunShop::app()->uniacid, 'mid' => $mid, 'scope' => $scope]);
             }
 
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
