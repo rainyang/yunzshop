@@ -39,9 +39,12 @@ class EditGoodsService
     public function edit()
     {
         // 检测商品是否可以编辑
-        $goodsEditDisable = GoodsEditDisable::uniacid()->where('goods_id', $this->goods_model->id)->first();
+        //$goodsEditDisable = GoodsEditDisable::uniacid()->where('goods_id', $this->goods_model->id)->first();
+        $goodsEditDisable = GoodsEditDisable::uniacid()->where('goods_id', $this->goods_model->id)->get();
+        $goodsEditDisable = $goodsEditDisable->toArray();
         if (!empty($goodsEditDisable)) {
-            return ['status' => -1, 'msg' => $goodsEditDisable->message];
+            $stringMessage = implode('|', array_column($goodsEditDisable, 'message'));
+            return ['status' => -1, 'msg' => $stringMessage];
         }
 
         //商品属性默认值
