@@ -28,7 +28,7 @@ class GoodsOptionPriceManager
 
     private function _getDealPrice()
     {
-        $dealPrices = collect(config('shop-foundation.goodsOption.dealPrice'))->map(function (array $dealPriceStrategy) {
+        $dealPrices = collect(config('shop-foundation.goods-option.dealPrice'))->map(function (array $dealPriceStrategy) {
 
             return call_user_func($dealPriceStrategy['class'], $this->goodsOption);
         });
