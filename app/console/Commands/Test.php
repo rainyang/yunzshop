@@ -2,14 +2,9 @@
 
 namespace app\Console\Commands;
 
-use app\common\events\order\AfterOrderReceivedEvent;
-use app\common\facades\Setting;
-use app\common\models\Income;
-use app\common\models\Order;
-use app\common\models\Withdraw;
+
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Log;
+
 
 class Test extends Command
 {
@@ -41,7 +36,7 @@ class Test extends Command
     public function handle()
     {
 
-        dump(app()->runningInConsole());
+        dump(request()->getSchemeAndHttpHost());
     }
 
 }

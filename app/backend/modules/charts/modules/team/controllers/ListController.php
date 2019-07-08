@@ -79,7 +79,7 @@ class ListController extends BaseController
 
        foreach ($list as $key => $item) {
            $export_data[$key + 1] = [
-               $item['rank'],
+               $key + 1,
                $item['member_id'],
                $item['nickname'],
                $item['realname'],

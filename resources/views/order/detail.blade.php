@@ -15,17 +15,23 @@
                 $(this).css("background","#f15353").parent().siblings().children().css("background","none")
             })
         });
-        function sub() {
+        function sub(url_status) {
             var order_id = $('.order_id').val();
             var remark = $('#remark').val();
             var invoice = $("[name='basic-detail[invoice]']").val();//获取发票
-            //$.post("{!! yzWebUrl('order.edit') !!}", {
-            $.post("{!! yzWebUrl('order.operation.remark') !!}", {
-                 {{--$.post("{!! yzWebUrl('setting.small-program.add') !!}", {--}}
-                order_id: order_id,
-                remark: remark,
-                invoice: invoice,
-            }, function (json) {
+            
+            if (url_status == 'invoice') {
+                var url = "{!! yzWebUrl('order.operation.invoice') !!}";
+            } 
+            if (url_status == 'remark') {
+                var url = "{!! yzWebUrl('order.operation.remark') !!}";
+            }
+            $.post(url, {
+                     {{--$.post("{!! yzWebUrl('setting.small-program.add') !!}", {--}}
+                    order_id: order_id,
+                    remark: remark,
+                    invoice: invoice,
+                }, function (json) {
                 var json = $.parseJSON(json);
                 if (json.result == 1) {
                     window.location.reload();
