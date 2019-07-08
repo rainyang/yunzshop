@@ -517,7 +517,7 @@ class MemberOfficeAccountService extends MemberService
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
                     \Log::debug('----step5.9------');
-                    Session::set('member_id', $yz_member->member_id);
+                    Session::set('member_id', $openid_member->member_id);
 
                     return true;
                 }
