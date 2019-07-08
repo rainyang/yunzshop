@@ -59,12 +59,10 @@ class ApplyController extends ApiController
         $this->withdraw_set = $this->getWithdrawSet();
     }
 
-
     //提现接口
     public function index()
     {
         list($amount, $pay_way, $poundage, $withdraw_data) = $this->getPostValue();
-
         $this->amount = $amount;
         $this->pay_way = $pay_way;
         $this->poundage = $poundage;

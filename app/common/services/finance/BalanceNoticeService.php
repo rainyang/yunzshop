@@ -61,6 +61,7 @@ class BalanceNoticeService
             ['name' => '时间', 'value' => date('Y-m-d H:i:s', $withdrawModel->audit_at)],
             ['name' => '金额', 'value' => $withdrawModel->amounts],
             ['name' => '手续费', 'value' => $withdrawModel->actual_poundage],
+            ['name' => '提现单号', 'value' => $withdrawModel->withdraw_sn],
         ];
         static::notice($template_id,$params,$withdrawModel->member_id);
     }

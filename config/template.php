@@ -207,7 +207,7 @@ return [
         'subtitle' => '余额提现失败通知',
         'value' => 'finance_balance_withdraw_fail',
         'param' => [
-            '时间', '金额', '手续费'
+            '时间', '金额', '手续费', '提现单号'
         ]
     ],
     'coupon_expire' => [
