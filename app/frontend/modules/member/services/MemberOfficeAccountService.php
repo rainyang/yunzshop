@@ -78,9 +78,9 @@ class MemberOfficeAccountService extends MemberService
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-\Log::debug('-----member office-----', [$member_id, $userinfo['openid'], $userinfo['access_token'], encrypt($userinfo['access_token'])]);
+\Log::debug('-----member office-----', [$member_id, $userinfo['openid'], ($userinfo['expires_in'] + time()), $userinfo['access_token'], encrypt($userinfo['access_token'])]);
             Session::set('member_id', $member_id);
-            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
 
@@ -500,8 +500,8 @@ class MemberOfficeAccountService extends MemberService
             try {
                 $yz_token = decrypt($_COOKIE['Yz-Token']);
 
-                list($token, $openid) = explode('\t', $yz_token);
-                \Log::debug('----step4------', [$token, $openid]);
+                list($token, $expires, $openid) = explode('\t', $yz_token);
+                \Log::debug('----step4------', [$token, $expires, $openid]);
             } catch (DecryptException $e) {
                 \Log::debug('----step4.5------');
                 return false;
@@ -513,6 +513,15 @@ class MemberOfficeAccountService extends MemberService
 
             if (is_null($yz_member)) {
                 \Log::debug('----step5.5------');
+                $openid_member = SubMemberModel::getMemberByOpenid($openid);
+
+                if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
+                    \Log::debug('----step5.9------');
+                    Session::set('member_id', $yz_member->member_id);
+
+                    return true;
+                }
+
                 return false;
             }
 
@@ -533,6 +542,7 @@ class MemberOfficeAccountService extends MemberService
                         ->get();
                     \Log::debug('----step8------', [$refresh_info]);
                     if (!isset($refresh_info['errcode'])) {
+                        $yz_member->yz_openid = $refresh_info['openid'];
                         $yz_member->access_token_1 = $refresh_info['access_token'];
                         $yz_member->access_expires_in_1 = time() + 7200;
                         $yz_member->refresh_token_1 = $refresh_info['refresh_token'];
@@ -540,7 +550,7 @@ class MemberOfficeAccountService extends MemberService
                         $yz_member->save();
 
                         Session::set('member_id', $yz_member->member_id);
-                        setcookie('Yz-Token', encrypt($refresh_info['access_token'] . '\t' . $refresh_info['openid']), time() + self::TOKEN_EXPIRE);
+                        setcookie('Yz-Token', encrypt($refresh_info['access_token'] . '\t' . $yz_member->access_expires_in_1 . '\t' . $refresh_info['openid']), time() + self::TOKEN_EXPIRE);
                         \Log::debug('----step9------');
                         return true;
                     }

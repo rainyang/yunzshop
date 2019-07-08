@@ -66,4 +66,11 @@ class SubMemberModel extends MemberShopInfo
             })
             ->first();
     }
+
+    public static function getMemberByOpenid($openid)
+    {
+        return self::uniacid()
+            ->where('yz_openid', $openid)
+            ->first();
+    }
 }

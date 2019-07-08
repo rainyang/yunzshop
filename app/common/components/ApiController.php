@@ -114,6 +114,5 @@ class ApiController extends BaseController
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         }
         \Log::debug('-------no login2-----', [$this->controller, $this->action, session_id()]);
-        throw new MemberNotLoginException('请登录');
     }
 }
