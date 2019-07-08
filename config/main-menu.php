@@ -1979,7 +1979,7 @@ return [
                             'order_operation_remark' => [
                                 'name'       => '订单备注',
                                 // 'url'               => 'order.remark.index',
-                                'url'        => 'order.operation.remark',
+                                'url'        => 'order.operation.remarks',
                                 'url_params' => '',
                                 'permit'     => 1,
                                 'menu'       => 0,
