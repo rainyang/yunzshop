@@ -218,10 +218,6 @@ class MessageService
             ['name' => '状态', 'value' => $data['status']],
             ['name' => '审核通过金额', 'value' => $data['actual_amounts']],
             ['name' => '提现单号', 'value' => $data['withdraw_sn']],
-<<<<<<< HEAD
-=======
-            ['name' => '失败原因', 'value' => $data['reason']],
->>>>>>> master
         ];
 
         $msg = MessageTemp::getSendMsg($temp_id, $params);
