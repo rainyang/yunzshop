@@ -123,7 +123,8 @@ class BalanceWithdrawController extends BalanceController
         if ($withdrawType == 'manual' && !$manual_result['status']) {
             return $this->errorJson('需要完善信息',$manual_result);
         }
-
+//        $wechat_limit = $this->balanceSet->withdrawWechatLimit();
+//        $alipay_limit = $this->balanceSet->withdrawAlipayLimit();
 
         $withdrawFetter = $this->balanceSet->withdrawAstrict();
         if ($withdrawFetter > $this->getWithdrawMoney()) {

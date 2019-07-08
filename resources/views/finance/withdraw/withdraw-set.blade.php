@@ -62,6 +62,7 @@
                                 <span class='help-block'>是否允许用户将余额提出</span>
                             </div>
                         </div>
+
                         <div id='withdraw' @if(empty($set['status']))style="display:none"@endif>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -83,6 +84,47 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id='withdraw_balance_wechat' @if(empty($set['wechat']))style="display:none"@endif>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">单笔最低金额</div>
+                                                <input type="text" name="withdraw[balance][wechat_min]" class="form-control"
+                                                       value="{{$set['wechat_min']}}" placeholder=""/>
+                                                <div class="input-group-addon">单笔最高金额</div>
+                                                <input type="text" name="withdraw[balance][wechat_max]" class="form-control"
+                                                       value="{{$set['wechat_max']}}" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            可设置区间:1-20000,不设置或为空,单笔最低则为1最高为20000
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group">
+
+                                                <input type="text" name="withdraw[balance][wechat_frequency]" class="form-control"
+                                                       value="{{$set['wechat_frequency']}}" placeholder=""/>
+                                                <div class="input-group-addon">次</div>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            可设置1-10次,不设置或为空默认为10
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                 <div class="col-sm-9 col-xs-12">
@@ -103,6 +145,46 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id='withdraw_balance_alipay' @if(empty($set['alipay']))style="display:none"@endif>
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group">
+                                                <div class="input-group-addon">单笔最低金额</div>
+                                                <input type="text" name="withdraw[balance][alipay_min]" class="form-control"
+                                                       value="{{$set['alipay_min']}}" placeholder=""/>
+                                                <div class="input-group-addon">单笔最高金额</div>
+                                                <input type="text" name="withdraw[balance][alipay_max]" class="form-control"
+                                                       value="{{$set['alipay_max']}}" placeholder=""/>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            可设置区间:1-20000,不设置或为空,单笔最低则为1最高为20000
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group">
+                                                <input type="text" name="withdraw[balance][alipay_frequency]" class="form-control"
+                                                       value="{{$set['alipay_frequency']}}" placeholder=""/>
+                                                <div class="input-group-addon">次</div>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            可设置1-10次,不设置或为空默认为10
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
                             @if(app('plugins')->isEnabled('huanxun'))
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -343,6 +425,24 @@
                 $("#withdraw").hide();
             }
         });
+
+        $(":radio[name='withdraw[balance][wechat]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_balance_wechat").show();
+            }
+            else {
+                $("#withdraw_balance_wechat").hide();
+            }
+        });
+        $(":radio[name='withdraw[balance][alipay]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_balance_alipay").show();
+            }
+            else {
+                $("#withdraw_balance_alipay").hide();
+            }
+        });
+
 
         $(":radio[name='withdraw[balance][poundage_type]']").click(function () {
             if ($(this).val() == 1) {
