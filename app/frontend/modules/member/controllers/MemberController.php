@@ -135,6 +135,9 @@ class MemberController extends ApiController
             $data['inviteCode'] = 0;
         }
 
+        // 汇聚支付是否开启
+        $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
+
         if (is_null($integrated)) {
             return $this->successJson('', $data);
         } else {
