@@ -32,7 +32,7 @@ class MemberMobileService extends MemberService
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 
             } else {
-                return show_json(7, "用户不存在");
+                return show_json(7, '',"用户不存在");
             }
 
             if(!empty($member_info)){
@@ -55,10 +55,10 @@ class MemberMobileService extends MemberService
 
                 return show_json(1, $data);
             } {
-                return show_json(6, "手机号或密码错误");
+                return show_json(6, '', "手机号或密码错误");
             }
         } else {
-            return show_json(6, "手机号或密码错误");
+            return show_json(6, '',"手机号或密码错误");
         }
 
     }

@@ -56,9 +56,9 @@ class LoginController extends ApiController
                                 $url = $msg['json']['redirect_url'];
                             }
 
-                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
+                            return $this->successJson($msg['variable'], ['status' =>$msg['status'], 'token' => $msg['json']['token'], 'url' => $url]);
                         } else {
-                            return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
+                            return $this->errorJson($msg['variable'], ['status' =>$msg['status'], $msg['json']]);
                         }
                     } else {
                         return $this->errorJson('登录失败', ['status' => 3]);

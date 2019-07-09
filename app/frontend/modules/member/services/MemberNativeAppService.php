@@ -45,25 +45,23 @@ class MemberNativeAppService extends MemberService
                 if (!empty($yz_member)) {
                     //生成分销关系链
                     Member::createRealtion($member_info['uid']);
-
-                    $yz_member = $yz_member->toArray();
-
+\Log::debug('------HTTP_USER_AGENT--------', strtolower($_SERVER['HTTP_USER_AGENT']));
                     $data['token'] = Client::create_token('yz');
                     \Log::debug('---------m token-------', $data['token']);
                     $yz_member->access_token_2 = $data['token'];
 
                     $yz_member->save();
                 } else {
-                    return show_json(7, "用户不存在");
+                    return show_json(7, '',"用户不存在");
                 }
 
                 return show_json(1, $data);
             }
             {
-                return show_json(6, "手机号或密码错误");
+                return show_json(6, '',"手机号或密码错误");
             }
         } else {
-            return show_json(6, "手机号或密码错误");
+            return show_json(6, '',"手机号或密码错误");
         }
     }
 
