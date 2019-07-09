@@ -105,7 +105,7 @@ class BalanceService
     public function withdrawWechatLimit()
     {
         $wechat_min = $this->_withdraw_set['wechat_min'] ?: 1;
-        $wechat_max = $this->_withdraw_set['wechat_max'] ?: 2000;
+        $wechat_max = $this->_withdraw_set['wechat_max'] ?: 20000;
         $wechat_frequency = $this->_withdraw_set['wechat_frequency'] ?: 10;
         $data = [
             'wechat_min' => $wechat_min,
@@ -119,7 +119,7 @@ class BalanceService
     public function withdrawAlipayLimit()
     {
         $alipay_min = $this->_withdraw_set['alipay_min'] ?: 1;
-        $alipay_max = $this->_withdraw_set['alipay_max'] ?: 2000;
+        $alipay_max = $this->_withdraw_set['alipay_max'] ?: 20000;
         $alipay_frequency = $this->_withdraw_set['alipay_frequency'] ?: 10;
         $data = [
             'alipay_min' => $alipay_min,

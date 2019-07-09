@@ -128,7 +128,7 @@ class BalanceWithdrawController extends BalanceController
 
 
         $withdrawFetter = $this->balanceSet->withdrawAstrict();
-        if ($withdrawFetter > $this->getWithdrawMoney()) {
+        if ($withdrawFetter > $this->getWithdrawMoney() && $withdrawType != 'wechant' && $withdrawType != 'alipay' ) {
             return $this->errorJson('提现金额不能小于' . $withdrawFetter . '元');
         }
 
@@ -189,7 +189,7 @@ class BalanceWithdrawController extends BalanceController
         $withdrawType = $this->getWithdrawType();
         //提现金额
         $amount = $this->getWithdrawMoney();
-        if( $withdrawType == 'wechant'){
+        if( $withdrawType == 'wechat'){
             //微信提现限制设置
             $set = $this->balanceSet->withdrawWechatLimit();
 
