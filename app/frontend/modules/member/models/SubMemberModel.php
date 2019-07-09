@@ -73,4 +73,14 @@ class SubMemberModel extends MemberShopInfo
             ->where('yz_openid', $openid)
             ->first();
     }
+
+    public static function getMemberByNativeToken($token)
+    {
+        return self::uniacid()
+            ->where('access_token_2', $token)
+            ->join('mc_members', function ($join) {
+                $join->on('yz_member.member_id', '=' , 'mc_members.uid');
+            })
+            ->first();
+    }
 }
