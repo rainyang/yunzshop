@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services;
 
 
 use app\common\helpers\Client;
+use app\common\models\Store;
 use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\models\MemberModel;
@@ -34,7 +35,7 @@ class MemberNativeAppService extends MemberService
                 $member_info = MemberModel::getUserInfo($uniacid, $mobile, $password)->first();
 
             } else {
-                return show_json(7, "用户不存在");
+                return show_json(7, '',"用户不存在");
             }
 
             if (!empty($member_info)) {
@@ -43,6 +44,12 @@ class MemberNativeAppService extends MemberService
                 $yz_member = MemberShopInfo::getMemberShopInfo($member_info['uid']);
 
                 if (!empty($yz_member)) {
+                    $store_member = Store::uniacid()->where('uid', $yz_member->member_id)->count();
+
+                    if (!$store_member) {
+                        return show_json(-1, '',"您不是店长");
+                    }
+
                     //生成分销关系链
                     Member::createRealtion($member_info['uid']);
 \Log::debug('------HTTP_USER_AGENT--------', strtolower($_SERVER['HTTP_USER_AGENT']));
