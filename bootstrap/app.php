@@ -45,7 +45,7 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     app\common\exceptions\Handler::class
 );
-$app->bind(\Illuminate\Http\Request::class, \app\framework\Http\Request::class);
+
 
 /*
 |--------------------------------------------------------------------------

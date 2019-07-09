@@ -53,7 +53,7 @@ $app->singleton('Log.error', function (){
 */
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
-    $request = $app->make(\Illuminate\Http\Request::class)->capture()
+    $request = \app\framework\Http\Request::capture()
 );
 $response->send();
 $kernel->terminate($request, $response);
