@@ -144,7 +144,7 @@ class DataValidatorService
             if( $this->withdrawModel->amounts <= $alipay_min && !empty($alipay_min)){
                 throw new AppException("{$type_name}提现到支付宝单笔提现额度最低{$alipay_min}元");
             }elseif( $this->withdrawModel->amounts >= $alipay_max && !empty($alipay_max)){
-                throw new AppException("{$type_name}提现到支付宝单笔提现额度最低{$alipay_max}元");
+                throw new AppException("{$type_name}提现到支付宝单笔提现额度最高{$alipay_max}元");
             }
         }
     }

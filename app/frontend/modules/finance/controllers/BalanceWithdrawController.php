@@ -195,7 +195,7 @@ class BalanceWithdrawController extends BalanceController
 
             $wechat_min =  $set['wechat_min'];
             $wechat_max =  $set['wechat_max'];
-            $wechat_frequency =  floor($set['wechat_frequency']);
+            $wechat_frequency =  floor($set['wechat_frequency'] ?: 10);
 
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
@@ -213,7 +213,7 @@ class BalanceWithdrawController extends BalanceController
             $set= $this->balanceSet->withdrawAlipayLimit();
             $alipay_min =  $set['alipay_min'] ;
             $alipay_max =  $set['alipay_max'] ;
-            $alipay_frequency = floor($set['alipay_frequency']);
+            $alipay_frequency = floor($set['alipay_frequency'] ?: 10);
 
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;

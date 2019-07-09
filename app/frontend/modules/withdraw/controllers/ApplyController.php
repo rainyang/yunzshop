@@ -86,7 +86,7 @@ class ApplyController extends ApiController
         $number_of_submissions = count($this->withdraw_data);
 
         if( $this->pay_way == 'wechat'){
-            $wechat_frequency = floor($set['wechat_frequency'] );
+            $wechat_frequency = floor($set['wechat_frequency'] ?: 10 );
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat');
@@ -96,7 +96,7 @@ class ApplyController extends ApiController
                 return $this->errorJson('提现失败,每日提现到微信次数不能超过'.$wechat_frequency.'次');
             }
         }elseif($this->pay_way == 'alipay'){
-            $alipay_frequency = floor($set['alipay_frequency'] );
+            $alipay_frequency = floor($set['alipay_frequency'] ?: 10);
             //统计用户今天提现的次数  + 供应商提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay');
