@@ -1876,6 +1876,16 @@ class MemberController extends ApiController
             }
         }
 
+        //拼团插件开启关闭
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $data[] = [
+                'name'  => 'fight-groups',
+                'title' => '我的拼团',
+                'class' => 'icon-member_mygroup',
+                'url'   => 'MyGroups',
+            ];
+        }
+
         foreach ($data as $k => $v) {
 
             if (in_array($v['name'], $diyarr['tool'])) {
@@ -1910,6 +1920,7 @@ class MemberController extends ApiController
             'yop' => app('plugins')->isEnabled('yop-pay') ? 1 : 0,
             'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
             'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
+            'is_open_fight_groups' => app('plugins')->isEnabled('fight-groups') ? 1 : 0,
             'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
             'is_store' => $store && $store->is_black != 1 ? 1 : 0,
         ];
@@ -2240,6 +2251,10 @@ class MemberController extends ApiController
         $order['order'] = $order_info;
         if (app('plugins')->isEnabled('hotel')) {
             $order['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+        // 拼团订单
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $order['fight_groups_order'] = \Yunshop\FightGroups\common\models\Order::getFightGroupsOrderCountStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
 
         if (is_null($integrated)) {
