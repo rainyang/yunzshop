@@ -1561,7 +1561,7 @@ class MemberController extends ApiController
             $data[] = [
                 'name' => 'love',
                 'title' => \Yunshop\Love\Common\Services\SetService::getLoveName() ?: '爱心值',
-                'class' => 'icon-wealth-c',
+                'class' => 'icon-member-exchange1',
                 'url' => 'love_index'
             ];
         }
