@@ -27,7 +27,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        dd(Setting::get('withdraw.balance'));
+
     }
 
     private $amountItems;

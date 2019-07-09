@@ -22,6 +22,8 @@ use app\frontend\modules\finance\models\WithdrawSetLog;
 use app\frontend\modules\finance\services\WithdrawManualService;
 use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use Illuminate\Support\Facades\DB;
+use app\frontend\modules\withdraw\services\StatisticalPresentationService;
+
 
 class BalanceWithdrawController extends BalanceController
 {
@@ -123,8 +125,7 @@ class BalanceWithdrawController extends BalanceController
         if ($withdrawType == 'manual' && !$manual_result['status']) {
             return $this->errorJson('需要完善信息',$manual_result);
         }
-//        $wechat_limit = $this->balanceSet->withdrawWechatLimit();
-//        $alipay_limit = $this->balanceSet->withdrawAlipayLimit();
+
 
         $withdrawFetter = $this->balanceSet->withdrawAstrict();
         if ($withdrawFetter > $this->getWithdrawMoney()) {
@@ -135,6 +136,7 @@ class BalanceWithdrawController extends BalanceController
             return $this->errorJson('扣除手续费后的金额不能小于1元');
         }
 
+        $this->cashLimitation();
 
         DB::beginTransaction();
 
@@ -178,6 +180,55 @@ class BalanceWithdrawController extends BalanceController
 
         DB::rollBack();
         return $this->errorJson('提现写入失败，请联系管理员');
+    }
+
+    //提现限制
+    private function cashLimitation(){
+        $start = strtotime(date("Y-m-d"),time());
+        $end   = $start+60*60*24;
+        $withdrawType = $this->getWithdrawType();
+        //提现金额
+        $amount = $this->getWithdrawMoney();
+        if( $withdrawType == 'wechant'){
+            //微信提现限制设置
+            $set = $this->balanceSet->withdrawWechatLimit();
+
+            $wechat_min =  $set['wechat_min'] ?: 1;
+            $wechat_max =  $set['wechat_max'] ?: 20000;
+            $wechat_frequency =  floor($set['wechat_frequency'] ?: 10);
+
+            //统计用户今天提现的次数
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat') + 1;
+            if( $today_withdraw_count <= $wechat_frequency ){
+                if( $amount < $wechat_min){
+                    throw new AppException("提现到微信单笔提现额度最低{$wechat_min}元");
+                }elseif( $amount > $wechat_max){
+                    throw new AppException("提现到微信单笔提现额度最高{$wechat_max}元");
+                }
+            }else{
+                return $this->errorJson('提现失败,每日提现到微信次数不能超过'.$wechat_frequency.'次');
+            }
+        }elseif($withdrawType == 'alipay'){
+            $set= $this->balanceSet->withdrawAlipayLimit();
+            $alipay_min =  $set['alipay_min'] ?: 1;
+            $alipay_max =  $set['alipay_max'] ?: 20000;
+            $alipay_frequency = floor($set['alipay_frequency'] ?: 10);
+
+            //统计用户今天提现的次数
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay') + 1;
+            if( $today_withdraw_count <= $alipay_frequency ){
+                if( $amount  < $alipay_min){
+                    throw new AppException("提现到支付宝单笔提现额度最低{$alipay_min}元");
+                }elseif( $amount  > $alipay_max){
+                    throw new AppException("提现到支付宝单笔提现额度最高{$alipay_max}元");
+                }
+            }else{
+                return $this->errorJson('提现失败,每日提现到支付宝次数不能超过'.$alipay_frequency.'次');
+            }
+
+        }
     }
 
 
