@@ -403,7 +403,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="success-btn col-sm-9 col-xs-12">
-                        <input type="submit" name="submit" value="提交" class="btn btn-success"/>
+                        <input type="submit" name="submit" value="提交" class="btn btn-success" onclick='return formcheck()'  />
                     </div>
                 </div>
             </div>
@@ -463,6 +463,58 @@
             }
         });
     })
+
+
+    // function formcheck(){
+    //     var balance_wechat_min        = $("input[name='withdraw[balance][wechat_min]']").val() ;
+    //     var balance_wechat_max        = $("input[name='withdraw[balance][wechat_max]']").val() ;
+    //     var balance_wechat_frequency  = $("input[name='withdraw[balance][wechat_frequency]']").val() ;
+    //     var balance_alipay_min        = $("input[name='withdraw[balance][alipay_min]']").val() ;
+    //     var balance_alipay_max        = $("input[name='withdraw[balance][alipay_max]']").val() ;
+    //     var balance_alipay_frequency  = $("input[name='withdraw[balance][alipay_frequency]']").val() ;
+    //     // var income_wechat_min        = $("input[name='withdraw[income][wechat_min]']").val() ? $("input[name='withdraw[income][wechat_min]']").val() : 1;
+    //     // var income_wechat_max        = $("input[name='withdraw[income][wechat_max]']").val() ? $("input[name='withdraw[income][wechat_max]']").val() : 20000;
+    //     // var income_wechat_frequency  = $("input[name='withdraw[income][wechat_frequency]']").val() ? $("input[name='withdraw[income][wechat_frequency]']").val() : 10;
+    //     // var income_alipay_min        = $("input[name='withdraw[income][alipay_min]']").val() ? $("input[name='withdraw[income][alipay_min]']").val() :1;
+    //     // var income_alipay_max        = $("input[name='withdraw[income][alipay_max]']").val() ? $("input[name='withdraw[income][alipay_max]']").val() :20000;
+    //     // var income_alipay_frequency  = $("input[name='withdraw[income][alipay_frequency]']").val() ? $("input[name='withdraw[income][alipay_frequency]']").val() : 10;
+    //
+    //     if($(":radio[name='withdraw[balance][wechat]']").val() == 1){
+    //         if(balance_wechat_min < 1 && balance_wechat_min != ''  ){
+    //             showPopover($("input[name='withdraw[balance][wechat_min]']"),'不能小于1');
+    //             return false;
+    //         }
+    //         if(balance_wechat_max > 20000){
+    //             showPopover($("input[name='withdraw[balance][wechat_max]']"),'不能大于20000');
+    //             return false;
+    //         }
+    //         if( balance_wechat_frequency < 1 || balance_wechat_frequency > 10){
+    //             showPopover($("input[name='withdraw[balance][wechat_frequency]']"),'可设置区间为1-10');
+    //             return false;
+    //         }
+    //     }
+    //
+    //     if($(":radio[name='withdraw[balance][alipay]']").val() == 1) {
+    //         if (balance_alipay_min < 1) {
+    //             showPopover($("input[name='withdraw[balance][alipay_min]']"), '不能小于1');
+    //             return false;
+    //         }
+    //         if (balance_alipay_max > 20000) {
+    //             showPopover($("input[name='withdraw[balance][alipay_max]']"), '不能大于20000');
+    //             return false;
+    //         }
+    //         if (balance_alipay_frequency < 1 || balance_alipay_frequency > 10) {
+    //             showPopover($("input[name='withdraw[balance][alipay_frequency]']"), '可设置区间为1-10');
+    //             return false;
+    //         }
+    //     }
+    //
+    //
+    //
+    //
+    //
+    //
+    // }
 </script>
 
 @endsection

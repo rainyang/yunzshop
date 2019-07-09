@@ -193,17 +193,17 @@ class BalanceWithdrawController extends BalanceController
             //微信提现限制设置
             $set = $this->balanceSet->withdrawWechatLimit();
 
-            $wechat_min =  $set['wechat_min'] ?: 1;
-            $wechat_max =  $set['wechat_max'] ?: 20000;
-            $wechat_frequency =  floor($set['wechat_frequency'] ?: 10);
+            $wechat_min =  $set['wechat_min'];
+            $wechat_max =  $set['wechat_max'];
+            $wechat_frequency =  floor($set['wechat_frequency']);
 
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat') + 1;
-            if( $today_withdraw_count <= $wechat_frequency ){
-                if( $amount < $wechat_min){
+            if( $today_withdraw_count <= $wechat_frequency && !empty($wechat_frequency) ){
+                if( $amount < $wechat_min && !empty($wechat_min)){
                     throw new AppException("提现到微信单笔提现额度最低{$wechat_min}元");
-                }elseif( $amount > $wechat_max){
+                }elseif( $amount > $wechat_max && !empty($wechat_max) ){
                     throw new AppException("提现到微信单笔提现额度最高{$wechat_max}元");
                 }
             }else{
@@ -211,17 +211,17 @@ class BalanceWithdrawController extends BalanceController
             }
         }elseif($withdrawType == 'alipay'){
             $set= $this->balanceSet->withdrawAlipayLimit();
-            $alipay_min =  $set['alipay_min'] ?: 1;
-            $alipay_max =  $set['alipay_max'] ?: 20000;
-            $alipay_frequency = floor($set['alipay_frequency'] ?: 10);
+            $alipay_min =  $set['alipay_min'] ;
+            $alipay_max =  $set['alipay_max'] ;
+            $alipay_frequency = floor($set['alipay_frequency']);
 
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay') + 1;
-            if( $today_withdraw_count <= $alipay_frequency ){
-                if( $amount  < $alipay_min){
+            if( $today_withdraw_count <= $alipay_frequency && !empty($alipay_frequency) ){
+                if( $amount  < $alipay_min && !empty($alipay_min) ){
                     throw new AppException("提现到支付宝单笔提现额度最低{$alipay_min}元");
-                }elseif( $amount  > $alipay_max){
+                }elseif( $amount  > $alipay_max && !empty($alipay_max)){
                     throw new AppException("提现到支付宝单笔提现额度最高{$alipay_max}元");
                 }
             }else{
