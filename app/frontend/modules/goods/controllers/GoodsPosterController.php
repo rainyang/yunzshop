@@ -106,8 +106,8 @@ class GoodsPosterController extends ApiController
 
         //return $this->successJson('ok', $urlPath);
 
-        $data['image_url'] = $urlPath;
         $data = $this->base64EncodeImage($urlPath);
+        $data['image_url'] = $urlPath;
 
         return $this->successJson('ok', $data);
 
@@ -167,8 +167,7 @@ class GoodsPosterController extends ApiController
         $imageInfo   = getimagesize($strTmpName);
         //$imageData   = fread(fopen($strTmpName , 'r'), filesize($strTmpName));
         //$base64Image = 'data:' . $imageInfo['mime'] . ';base64,' . chunk_split(base64_encode($imageData));
-        $imageData   = file_get_contents($strTmpName);
-        $base64Image = chunk_split(base64_encode($imageData));
+        $base64Image = base64_encode(file_get_contents($strTmpName));
         return [
             'mime' => $imageInfo['mime'],
             'base64Image' => $base64Image,
