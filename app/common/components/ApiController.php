@@ -24,6 +24,10 @@ use Yunshop\Designer\Common\Services\IndexPageService;
 
 class ApiController extends BaseController
 {
+    const MOBILE_TYPE = 5;
+    const WEB_APP     = 7;
+    const NATIVE_APP  = 9;
+
     protected $publicController = [];
     protected $publicAction = [];
     protected $ignoreAction = [];
@@ -108,7 +112,7 @@ class ApiController extends BaseController
             }
 
 \Log::debug('-------no login-----', [$this->controller, $this->action, session_id()]);
-            if (5 == $type || 7 == $type) {
+            if (self::MOBILE_TYPE == $type || self::WEB_APP == $type || self::NATIVE_APP == $type) {
                 throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'i' => \YunShop::app()->uniacid, 'mid' => $mid, 'scope' => $scope]);
             }
 

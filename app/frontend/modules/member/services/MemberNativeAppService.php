@@ -13,6 +13,7 @@ use app\common\helpers\Client;
 use app\frontend\models\Member;
 use app\frontend\models\MemberShopInfo;
 use app\frontend\modules\member\models\MemberModel;
+use app\frontend\modules\member\models\SubMemberModel;
 
 class MemberNativeAppService extends MemberService
 {
@@ -73,6 +74,18 @@ class MemberNativeAppService extends MemberService
      */
     public function checkLogged()
     {
-        return MemberService::isLogged();
+        $token = \Yunshop::request()->yz_token;
+
+        if (empty($token)) {
+            return false;
+        }
+
+        $member = SubMemberModel::getMemberByNativeToken($token);
+        \Log::debug('---------native checkLogged--------', [$token, $member->member_id]);
+        if (!is_null($member)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
