@@ -1367,7 +1367,7 @@ class MemberController extends ApiController
             'tool'         => ['separate','elive'],
             'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze','extension'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro', 'delivery_station', 'service_station'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'fight_groups', 'material-center'
                 , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order']
         ];
 
@@ -1879,7 +1879,7 @@ class MemberController extends ApiController
         //拼团插件开启关闭
         if (app('plugins')->isEnabled('fight-groups')) {
             $data[] = [
-                'name'  => 'fight-groups',
+                'name'  => 'fight_groups',
                 'title' => '我的拼团',
                 'class' => 'icon-member_mygroup',
                 'url'   => 'MyGroups',
