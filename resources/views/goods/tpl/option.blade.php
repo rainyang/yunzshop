@@ -80,19 +80,19 @@
 
 <script language="javascript">
     $(function () {
-        /*$('#specs').sortable({
-         stop: function(){
-         window.optionchanged = true;
-         }
-         });
-         $('.spec_item_items').sortable(
-         {
-         handle:'.fa-arrows',
-         stop: function(){
-         window.optionchanged = true;
-         }
-         }
-         );*/
+        require(['jquery.ui'], function () {
+            $('#specs').sortable({
+				 stop: function(){
+					window.optionchanged = true;
+				 }
+             });
+             $('.spec_item_items').sortable({
+				 handle:'.fa-arrows',
+				 stop: function(){
+					window.optionchanged = true;
+				 }
+             });
+        });
         $("#hasoption").click(function () {
             var obj = $(this);
             if (obj.get(0).checked) {
