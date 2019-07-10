@@ -31,7 +31,7 @@ class MemberGroup extends BaseModel
 
     public function scopeRecords($query)
     {
-        return $query->select('id','group_name');
+        return $query->uniacid()->select('id','group_name');
     }
 
 
@@ -45,7 +45,7 @@ class MemberGroup extends BaseModel
      * */
     protected static function getMemberGroupByGroupID($groupId)
     {
-        return static::where('id', $groupId)->first(1)->toArray();
+        return static::uniacid()->where('id', $groupId)->first(1)->toArray();
     }
 
     /**
