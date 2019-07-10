@@ -16,14 +16,15 @@ class Order
     {
         $order = $event->getOrder();
         $goods_ids = $order->orderGoods->pluck('goods_id');
-        if (is_array($goods_ids)) {
+
+        if ($goods_ids->isNotEmpty()) {
             app('OrderManager')->make('MemberCart')->uniacid()->whereIn('goods_id', $goods_ids)->delete();
         }
-        $goods_option_ids = $order->orderGoods->pluck('goods_option_id')->toArray();
+        $goods_option_ids = $order->orderGoods->pluck('goods_option_id')->filter();
         //过滤空值
-        $goods_option_ids = array_filter($goods_option_ids);
-        if (is_array($goods_option_ids)) {
+        if ($goods_option_ids->isNotEmpty()) {
             app('OrderManager')->make('MemberCart')->uniacid()->whereIn('option_id', $goods_option_ids)->delete();
+
         }
     }
 }
