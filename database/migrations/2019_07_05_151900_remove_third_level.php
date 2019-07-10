@@ -19,12 +19,12 @@ class RemoveThirdLevel extends Migration
             foreach ($uniAccount as $u) {
                 \YunShop::app()->uniacid = $u->uniacid;
                 \Setting::$uniqueAccountId = $u->uniacid;
-//                $this->updateCommission();
-//                $this->updateMicro();
-//                $this->updateClock();
-//                $this->updateCar();
-//                $this->updateHotel();
-//                $this->updateStore();
+                $this->updateCommission();
+                $this->updateMicro();
+                $this->updateClock();
+                $this->updateCar();
+                $this->updateHotel();
+                $this->updateStore();
                 $this->updateLove();
             }
         }
@@ -46,11 +46,14 @@ class RemoveThirdLevel extends Migration
             if (!$plugin) {
                 return;
             }
+            if ($plugin['goods_detail_level'] == 3) {
+                $plugin['goods_detail_level'] = 2;
+            }
             if ($plugin['level'] == 3) {
                 $plugin['level'] = 2;
                 unset($plugin['third_level']);
-                \Setting::set('plugin.commission', $plugin);
             }
+            \Setting::set('plugin.commission', $plugin);
         }
     }
 
