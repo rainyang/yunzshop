@@ -55,6 +55,9 @@ class RemoveThirdLevel extends Migration
                 unset($plugin['third_level']);
             }
             \Setting::set('plugin.commission', $plugin);
+            $commissionNotice = \Setting::get('plugin.commission_notice');
+            $temp_id = $commissionNotice['commission_upgrade'];
+            \app\common\models\notice\MessageTemp::find($temp_id)->delete();
         }
     }
 
