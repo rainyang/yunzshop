@@ -200,7 +200,7 @@ class BalanceWithdrawController extends BalanceController
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat') + 1;
-            if( $today_withdraw_count <= $wechat_frequency && !empty($wechat_frequency) ){
+            if( $today_withdraw_count <= $wechat_frequency ){
                 if( $amount < $wechat_min && !empty($wechat_min)){
                     throw new AppException("提现到微信单笔提现额度最低{$wechat_min}元");
                 }elseif( $amount > $wechat_max && !empty($wechat_max) ){
@@ -218,7 +218,7 @@ class BalanceWithdrawController extends BalanceController
             //统计用户今天提现的次数
             $statisticalPresentationService = new StatisticalPresentationService;
             $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay') + 1;
-            if( $today_withdraw_count <= $alipay_frequency && !empty($alipay_frequency) ){
+            if( $today_withdraw_count <= $alipay_frequency ){
                 if( $amount  < $alipay_min && !empty($alipay_min) ){
                     throw new AppException("提现到支付宝单笔提现额度最低{$alipay_min}元");
                 }elseif( $amount  > $alipay_max && !empty($alipay_max)){
