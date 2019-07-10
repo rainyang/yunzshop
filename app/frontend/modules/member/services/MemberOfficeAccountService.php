@@ -71,14 +71,13 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
+                \Log::debug('微信登陆授权失败-', $userinfo);
                 return show_json(-3, '微信登陆授权失败');
             }
 
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-\Log::debug('-----member office-----', [$member_id, $userinfo['openid'], ($userinfo['expires_in'] + time()), $userinfo['access_token'], encrypt($userinfo['access_token'])]);
             Session::set('member_id', $member_id);
             setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
         } else {
@@ -102,6 +101,7 @@ class MemberOfficeAccountService extends MemberService
      */
     public function getUserInfo($appId, $appSecret, $token)
     {
+        $scope     = \YunShop::request()->scope ?: '';
         $subscribe = 0;
 
         if (env('APP_Framework') == 'platform') {
@@ -120,8 +120,7 @@ class MemberOfficeAccountService extends MemberService
             $subscribe = $user_info['subscribe'];
         }
 
-
-        if (0 == $subscribe) { //未关注拉取不到用户信息
+        if (0 == $subscribe && $scope != 'base') { //未关注拉取不到用户信息
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
             $user_info = \Curl::to($userinfo_url)
@@ -131,7 +130,7 @@ class MemberOfficeAccountService extends MemberService
             $user_info['subscribe'] = $subscribe;
         }
 
-        return array_merge($user_info, $token);
+        return $scope != 'base' ? array_merge($user_info, $token) : $token;
     }
 
     /**
