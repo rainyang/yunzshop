@@ -82,7 +82,11 @@ class MemberMiniAppService extends MemberService
             //Login
             $member_id = $this->memberLogin($json_user);
 
-            $result = array('wx_token' => $json_user['access_token']);
+            Session::set('member_id', $member_id);
+
+            $random = $this->wx_app_session($user_info);
+
+            $result = array('token' => $json_user['access_token'], 'session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
             return show_json(1, '', $result);
         } else {
