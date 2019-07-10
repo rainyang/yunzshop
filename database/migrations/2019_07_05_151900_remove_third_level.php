@@ -26,6 +26,7 @@ class RemoveThirdLevel extends Migration
                 $this->updateHotel();
                 $this->updateStore();
                 $this->updateLove();
+                $this->updateAsset();
             }
         }
     }
@@ -188,6 +189,34 @@ class RemoveThirdLevel extends Migration
             foreach ($plugin as $key => $item) {
                 \Setting::set('love.' . $key, $item);
             }
+        }
+    }
+
+    public function updateAsset()
+    {
+        if (app('plugins')->isEnabled('asset')) {
+            $assets = \Yunshop\Asset\Common\Models\AssetDigitizationModel::select(['goods_id','sell_goods'])->uniacid()->get();
+            if (!$assets->isEmpty()) {
+                return;
+            }
+            $assets = $assets->toArray();
+            $goods_id = array_column($assets,'goods_id');
+            $sell_goods = array_column($assets, 'sell_goods');
+            $love_goods = array_merge($goods_id, $sell_goods);
+
+            if (app('plugins')->isEnabled('team-dividend')) {
+                \Yunshop\TeamDividend\models\GoodsTeamDividend::whereIn('goods_id',$goods_id)->delete();
+            }
+            if (app('plugins')->isEnabled('commission')) {
+                \Yunshop\Commission\models\Commission::whereIn('goods_id',$goods_id)->delete();
+            }
+            if (app('plugins')->isEnabled('area-dividend')) {
+                \Yunshop\AreaDividend\models\AreaDividendGoods::whereIn('goods_id',$goods_id)->delete();
+            }
+            if (app('plugins')->isEnabled('love')) {
+                \Yunshop\Love\Common\Models\GoodsLove::whereIn('goods_id',$love_goods)->delete();
+            }
+
         }
     }
 
