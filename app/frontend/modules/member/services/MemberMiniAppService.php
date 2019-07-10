@@ -223,48 +223,6 @@ class MemberMiniAppService extends MemberService
     }
 
     /**
-     * 商城会员
-     *
-     * @param $uniacid
-     * @param $member_id
-     * @param $userinfo
-     */
-    public function addSubMemberInfoV2($uniacid, $member_id, $userinfo)
-    {
-        //添加yz_member表
-        $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
-
-        if (!empty($default_sub_group_id)) {
-            $default_subgroup_id = $default_sub_group_id->id;
-        } else {
-            $default_subgroup_id = 0;
-        }
-
-        SubMemberModel::insertData(array(
-            'member_id' => $member_id,
-            'uniacid' => $uniacid,
-            'group_id' => $default_subgroup_id,
-            'level_id' => 0,
-            'pay_password' => '',
-            'salt' => '',
-            'yz_openid' => $userinfo['openid'],
-        ));
-    }
-
-    /**
-     * 更新会员
-     *
-     * @param $uid
-     * @param $userinfo
-     */
-    private function updateSubMemberInfoV2($uid, $userinfo)
-    {
-        SubMemberModel::updateOpenid(
-            $uid, ['yz_openid' => $userinfo['openid']]
-        );
-    }
-
-    /**
      * 验证登录状态
      *
      * @return bool

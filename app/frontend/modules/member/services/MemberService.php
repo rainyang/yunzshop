@@ -737,17 +737,9 @@ class MemberService
         );
     }
 
-    private function updateSubMemberInfoV2($uid, $userinfo)
+    protected function updateSubMemberInfoV2($uid, $userinfo)
     {
-        SubMemberModel::updateOpenid(
-            $uid, [
-                'yz_openid' => $userinfo['openid'],
-                'access_token_1' => $userinfo['access_token'],
-                'access_expires_in_1' => time() + $userinfo['expires_in'],
-                'refresh_token_1' => $userinfo['refresh_token'],
-                'refresh_expires_in_1' => time() + (28 * 24 * 3600)
-            ]
-        );
+
     }
 
     /**

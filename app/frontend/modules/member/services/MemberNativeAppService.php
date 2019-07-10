@@ -47,7 +47,7 @@ class MemberNativeAppService extends MemberService
                     $store_member = Store::uniacid()->where('uid', $yz_member->member_id)->count();
 
                     if (!$store_member) {
-                        return show_json(-1, '',"您不是店长");
+                        return show_json(-1,"您不是店长");
                     }
 
                     //生成分销关系链
@@ -59,16 +59,16 @@ class MemberNativeAppService extends MemberService
 
                     $yz_member->save();
                 } else {
-                    return show_json(7, '',"用户不存在");
+                    return show_json(7, '用户不存在');
                 }
 
-                return show_json(1, $data);
+                return show_json(1, '', $data);
             }
             {
-                return show_json(6, '',"手机号或密码错误");
+                return show_json(6, '手机号或密码错误');
             }
         } else {
-            return show_json(6, '',"手机号或密码错误");
+            return show_json(6, '手机号或密码错误');
         }
     }
 

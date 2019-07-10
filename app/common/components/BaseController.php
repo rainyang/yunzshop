@@ -114,12 +114,12 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        /*if (empty($session_id) && \YunShop::request()->session_id
+        if (empty($session_id) && \YunShop::request()->session_id
             && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
             setcookie(session_name(), $session_id);
-        }*/
+        }
 
         if (empty($session_id)) {
             $session_id = md5(\YunShop::app()->uniacid . ':' . random(20));
