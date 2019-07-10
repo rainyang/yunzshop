@@ -164,7 +164,7 @@ class MessageService
     public static function withdrawFailure($withdrawData, $member, $uniacid = '')
     {
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title')) {
-            \Log::debug('income_withdraw_arrival_title----not--send';
+            \Log::debug('income_withdraw_arrival_title----not--send');
             return;
         }
         if ($uniacid) {
