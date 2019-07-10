@@ -61,7 +61,7 @@ class MemberMiniAppService extends MemberService
             $pc = new \WXBizDataCrypt($min_set['key'], $user_info['session_key']);
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
-
+        \Log::debug('-------------min errcode-------', [$errCode]);
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {

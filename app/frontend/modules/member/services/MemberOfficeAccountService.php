@@ -34,7 +34,7 @@ class MemberOfficeAccountService extends MemberService
 
         $uniacid = \YunShop::app()->uniacid;
         $scope   = \YunShop::request()->scope;
-\Log::debug('-------scope------', $scope);
+
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
         }
@@ -503,32 +503,23 @@ class MemberOfficeAccountService extends MemberService
 
     public function checkLogged()
     {
-        \Log::debug('-----step1------', [$_SERVER['QUERY_STRING'], session_id()]);
         $uniacid = \YunShop::app()->uniacid;
-\Log::debug('----step2------');
 
-        \Log::debug('----step3------', [$_COOKIE['Yz-Token']]);
         if (isset($_COOKIE['Yz-Token'])) {
             try {
                 $yz_token = decrypt($_COOKIE['Yz-Token']);
 
                 list($token, $expires, $openid) = explode('\t', $yz_token);
-                \Log::debug('----step4------', [$token, $expires, $openid]);
             } catch (DecryptException $e) {
-                \Log::debug('----step4.5------');
                 return false;
             }
 
             $yz_member = SubMemberModel::getMemberByWechatTokenAndOpenid($token, $openid);
 
-            \Log::debug('----step5------', [$yz_member->member_id]);
-
             if (is_null($yz_member)) {
-                \Log::debug('----step5.5------');
                 $openid_member = SubMemberModel::getMemberByOpenid($openid);
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
-                    \Log::debug('----step5.9------');
                     Session::set('member_id', $openid_member->member_id);
 
                     return true;
@@ -539,10 +530,8 @@ class MemberOfficeAccountService extends MemberService
 
             if ($yz_member->access_expires_in_1 > time()) {
                 Session::set('member_id', $yz_member->member_id);
-                \Log::debug('---------step6-------');
                 return true;
             } else {
-                \Log::debug('----step7------', [$yz_member->refresh_expires_in_1]);
                 if ($yz_member->refresh_expires_in_1 > time()) {
                     $account = AccountWechats::getAccountByUniacid($uniacid);
                     $appId = $account->key;
@@ -552,7 +541,7 @@ class MemberOfficeAccountService extends MemberService
                     $refresh_info = \Curl::to($refresh_url)
                         ->asJsonResponse(true)
                         ->get();
-                    \Log::debug('----step8------', [$refresh_info]);
+
                     if (!isset($refresh_info['errcode'])) {
                         $yz_member->yz_openid = $refresh_info['openid'];
                         $yz_member->access_token_1 = $refresh_info['access_token'];
@@ -563,17 +552,14 @@ class MemberOfficeAccountService extends MemberService
 
                         Session::set('member_id', $yz_member->member_id);
                         setcookie('Yz-Token', encrypt($refresh_info['access_token'] . '\t' . $yz_member->access_expires_in_1 . '\t' . $refresh_info['openid']), time() + self::TOKEN_EXPIRE);
-                        \Log::debug('----step9------');
                         return true;
                     }
                 } else {
-                    \Log::debug('----step10------');
                     return false;
                 }
             }
         }
 
-        \Log::debug('----step11------');
          return false;
     }
 }

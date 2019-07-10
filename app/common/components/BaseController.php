@@ -104,7 +104,6 @@ class BaseController extends Controller
         }
 
         if (isset($_COOKIE[session_name()])) {
-            \Log::debug('---base ctrl1111111111---', [$_SERVER['QUERY_STRING'], $_COOKIE[session_name()]]);
             $session_id = $_COOKIE[session_name()];
         }
 
@@ -123,12 +122,10 @@ class BaseController extends Controller
 
         if (empty($session_id)) {
             $session_id = md5(\YunShop::app()->uniacid . ':' . random(20));
-            \Log::debug('---base ctrl2222222---', [$_SERVER['QUERY_STRING'], $session_id]);
             setcookie(session_name(), $session_id);
         }
 
         session_id($session_id);
-\Log::debug('---base ctrl333333333---', [$_SERVER['QUERY_STRING'], session_id()]);
         Session::factory(\YunShop::app()->uniacid);
     }
 

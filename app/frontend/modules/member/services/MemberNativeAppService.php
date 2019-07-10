@@ -52,9 +52,8 @@ class MemberNativeAppService extends MemberService
 
                     //生成分销关系链
                     Member::createRealtion($member_info['uid']);
-\Log::debug('------HTTP_USER_AGENT--------', strtolower($_SERVER['HTTP_USER_AGENT']));
+
                     $data['token'] = Client::create_token('yz');
-                    \Log::debug('---------m token-------', $data['token']);
                     $yz_member->access_token_2 = $data['token'];
 
                     $yz_member->save();

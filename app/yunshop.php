@@ -574,7 +574,7 @@ class YunApp extends YunComponent
             $token = \Yunshop::request()->yz_token;
 
             $member = \app\frontend\modules\member\models\SubMemberModel::getMemberByNativeToken($token);
-            \Log::debug('---------native member--------', [$token, $member->member_id]);
+
             if (!is_null($member)) {
                 return $member->member_id;
             } else {

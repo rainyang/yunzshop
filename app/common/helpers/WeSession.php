@@ -96,7 +96,7 @@ class WeSessionMemcache extends WeSession {
 
     public function read($sessionid) {
         $row = cache_read($this->key($sessionid));
-        \Log::debug('-------redis read------', [$sessionid, $row]);
+
         if ($row['expiretime'] < TIMESTAMP) {
             return '';
         }
@@ -118,7 +118,7 @@ class WeSessionMemcache extends WeSession {
         $row = array();
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + WeSession::$expire;
-        \Log::debug('-------redis write------', [$sessionid, $row]);
+
         return cache_write($this->key($sessionid), $row);
     }
 
@@ -180,7 +180,6 @@ class WeSessionMysql extends WeSession {
         $params[':time'] = TIMESTAMP;
         $row = pdo_fetch($sql, $params);
 
-\Log::debug('---------session table read-------', [$sessionid, $row]);
         if(is_array($row) && !empty($row['data'])) {
             return $row['data'];
         }
@@ -196,8 +195,6 @@ class WeSessionMysql extends WeSession {
             if (!empty($member_data = $this->chk_member_id_session($read_data))) {
                 $data .= $member_data;
             }
-
-            \Log::debug('---------session table write read-------', [$sessionid, $data]);
         }
 
         $row = array();
@@ -206,7 +203,7 @@ class WeSessionMysql extends WeSession {
         $row['openid'] = WeSession::$openid;
         $row['data'] = $data;
         $row['expiretime'] = TIMESTAMP + WeSession::$expire;
-        \Log::debug('---------session table write-------', [$sessionid, $row]);
+
         return pdo_insert('core_sessions', $row, true) >= 1;
     }
 
