@@ -980,7 +980,7 @@ class HomePageController extends ApiController
         }
 
         $shop['shop'] = \Setting::get('shop.shop');
-        if (is_null($shop)) {
+        if (is_null($shop['shop'])) {
             $shop['shop']['name'] = '商家分享';
         }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
