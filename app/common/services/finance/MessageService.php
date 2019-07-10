@@ -187,7 +187,7 @@ class MessageService
     {
         $payWay = WithdrawService::getPayWayService($data['pay_way']);
         $params = [
-            ['name' => '昵称', 'value' => $member['nickname']],
+            ['name' => '昵称', 'value' => $member->nickname],
             ['name' => '时间', 'value' => date('Y-m-d H:i:s', time())],
             ['name' => '收入类型', 'value' => $data['type_name']],
             ['name' => '金额', 'value' => $data['amounts']],

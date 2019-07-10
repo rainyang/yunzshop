@@ -457,7 +457,7 @@ class PayedService
 
                 if ($usermodel) {
                     //收入提现失败通知
-                    MessageService::withdrawFailure($this->withdrawModel->toArray(), $usermodel->toArray()); 
+                    MessageService::withdrawFailure($this->withdrawModel->toArray(), $usermodel); 
                 }
             }
             return ;
