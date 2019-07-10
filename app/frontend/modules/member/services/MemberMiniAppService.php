@@ -77,19 +77,14 @@ class MemberMiniAppService extends MemberService
             $json_user['nickname']   = $json_user['nickName'];
             $json_user['headimgurl'] = $json_user['avatarUrl'];
             $json_user['sex']        = $json_user['gender'];
+            $json_user['access_token']        = Client::create_token();
 
             //Login
             $member_id = $this->memberLogin($json_user);
 
-            Session::set('member_id', $member_id);
-            Session::set('openid', $json_user['openid']);
-            setcookie('Yz-Token', encrypt($json_user['access_token']));
+            $result = array('wx_token' => $json_user['access_token']);
 
-            $random = $this->wx_app_session($user_info);
-
-            $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
-
-            return show_json(1, $result);
+            return show_json(1, '', $result);
         } else {
             return show_json(0, '获取用户信息失败');
         }
@@ -191,6 +186,7 @@ class MemberMiniAppService extends MemberService
             'nickname' => $userinfo['nickname'],
             'avatar' => $userinfo['headimgurl'],
             'gender' => $userinfo['sex'],
+            'access_token' => $userinfo['access_token']
         ));
     }
 

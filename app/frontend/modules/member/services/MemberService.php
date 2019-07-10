@@ -426,6 +426,7 @@ class MemberService
         \Log::debug('----userinfo2----', $userinfo);
 
         $member_id = 0;
+        $scope = \YunShop::request()->scope ?: '';
 
         if (isset($userinfo['nickname'])) {
             $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -475,7 +476,10 @@ class MemberService
                 ));
             }
 
-            $this->updateMemberInfo($member_id, $userinfo);
+            if ($scope != 'base') {
+                $this->updateMemberInfo($member_id, $userinfo);
+            }
+
             $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
@@ -540,6 +544,7 @@ class MemberService
         \Log::debug('----userinfo1----', $userinfo);
 
         $member_id = 0;
+        $scope = \YunShop::request()->scope ?: '';
 
         if (isset($userinfo['nickname'])) {
             $userinfo['nickname'] = $this->filteNickname($userinfo);
@@ -566,7 +571,10 @@ class MemberService
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
             \Log::debug('微信登陆更新');
 
-            $this->updateMemberInfo($member_id, $userinfo);
+            if ($scope != 'base') {
+                $this->updateMemberInfo($member_id, $userinfo);
+            }
+
             $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
