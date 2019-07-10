@@ -570,23 +570,34 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (\app\common\helpers\Client::is_nativeApp()) {
-            $token = \Yunshop::request()->yz_token;
+        $type = \Yunshop::request()->type ?: '';
+        $token = \Yunshop::request()->yz_token ?: '';
+         switch ($type) {
+             case 2:
+                 $member = \app\frontend\modules\member\models\MemberMiniAppModel::getMemberByToken($token);
 
-            $member = \app\frontend\modules\member\models\SubMemberModel::getMemberByNativeToken($token);
+                 if (!is_null($member)) {
+                     return $member->member_id;
+                 } else {
+                     return 0;
+                 }
+                 break;
+             case 9:
+                 $member = \app\frontend\modules\member\models\SubMemberModel::getMemberByNativeToken($token);
 
-            if (!is_null($member)) {
-                return $member->member_id;
-            } else {
-                return 0;
-            }
-        } else {
-            if (Session::get('member_id')) {
-                return Session::get('member_id');
-            } else {
-                return 0;
-            }
-        }
+                 if (!is_null($member)) {
+                     return $member->member_id;
+                 } else {
+                     return 0;
+                 }
+                 break;
+             default:
+                 if (Session::get('member_id')) {
+                     return Session::get('member_id');
+                 } else {
+                     return 0;
+                 }
+         }
     }
 
 }
