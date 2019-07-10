@@ -202,6 +202,6 @@ class MessageService
         if (!$msg) {
             return;
         }
-        \app\common\services\MessageService::notice(MessageTemp::$template_id, $msg, $member->uid ? : $member, $uniacid);
+        \app\common\services\MessageService::notice(MessageTemp::$template_id, $msg, $member->uid, $uniacid);
     }
 }

@@ -271,8 +271,13 @@ class AuditService
         } else {
             
             foreach ($this->uids as $k => $v) {
-                //收入提现失败通知
-                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k); 
+                
+                $usermodel = \app\common\models\Member::uniacid()->where('uid', $k)->first();
+
+                if ($usermodel) {
+                    //收入提现失败通知
+                    MessageService::withdrawFailure($this->withdrawModel->toArray(), $usermodel->toArray()); 
+                }
             }
             return ;
         }

@@ -52,11 +52,14 @@ class ApplyController extends ApiController
 
     private $withdraw_item_data;
 
+    private $uids;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->withdraw_set = $this->getWithdrawSet();
+        $this->uids = \Setting::get('withdraw.notice.withdraw_user');
     }
 
     //提现接口
@@ -90,7 +93,14 @@ class ApplyController extends ApiController
         } catch (\Exception $exception) {
             
             if ($this->withdraw_set['free_audit'] == 1) {
-                MessageService::withdrawFailure($this->withdraw_item_data, \YunShop::app()->getMemberId());
+                
+                foreach ($this->uids as $k => $v) {
+                        
+                    if ($user_model = \app\common\models\Member::uniacid()->where('uid', $v['uid'])->first()) {
+                        MessageService::withdrawFailure($this->withdraw_item_data, $user_model);
+                    }
+                }
+                    
             }
             return $exception->getMessage();
         }

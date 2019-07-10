@@ -140,7 +140,7 @@
 @if(YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title'))
     <div class='panel-body'>
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败通知</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现失败管理员通知</label>
             <div class="col-sm-8 col-xs-12">
                 <select name='withdraw[notice][income_withdraw_fail]' class='form-control diy-notice'>
                     <option @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_fail'])) value="{{$set['income_withdraw_fail']}}"
@@ -155,13 +155,13 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-sm-2 col-xs-6">
+          <!--   <div class="col-sm-2 col-xs-6">
                 <input class="mui-switch mui-switch-animbg" id="income_withdraw_fail" type="checkbox"
                        @if(\app\common\models\notice\MessageTemp::getIsDefaultById($set['income_withdraw_fail']))
                        checked
                        @endif
                        onclick="message_default(this.id)"/>
-            </div>
+            </div> -->
         </div>
     </div>
 @endif
