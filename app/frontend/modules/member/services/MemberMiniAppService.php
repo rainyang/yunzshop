@@ -231,4 +231,23 @@ class MemberMiniAppService extends MemberService
     {
         return MemberService::isLogged();
     }
+
+    public function getMemberId($token)
+    {
+        $v = \Yunshop::request()->v ?: '';
+        $member = MemberMiniAppModel::getMemberByToken($token);
+
+        if ($v == '') {
+            if (Session::get('member_id')) {
+                return Session::get('member_id');
+            }
+        } else {
+            if (!is_null($member)) {
+                return $member->member_id;
+            }
+        }
+
+        return 0;
+    }
+
 }
