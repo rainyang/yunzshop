@@ -86,10 +86,10 @@
                             </div>
                             <div id='withdraw_balance_wechat' @if(empty($set['wechat']))style="display:none"@endif>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
-                                    <div class="col-sm-9 col-xs-12">
+                                    <label style="margin-left: 110px;" class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
                                         <div class="input-group">
-                                            <div class="input-group">
+                                            <div style="margin-left: 80px;" class="input-group">
                                                 <div class="input-group-addon">单笔最低金额</div>
                                                 <input type="text" name="withdraw[balance][wechat_min]" class="form-control"
                                                        value="{{$set['wechat_min']}}" placeholder=""/>
@@ -97,16 +97,18 @@
                                                 <input type="text" name="withdraw[balance][wechat_max]" class="form-control"
                                                        value="{{$set['wechat_max']}}" placeholder=""/>
                                             </div>
+                                            <div style="margin-left: 80px;" class="help-block">
+                                                可设置区间0.3-20000，设置为0为空则不限制，请参考微信商户平台--产品中心--企业付款到零钱--产品设置--额度设置中设置
+                                            </div>
                                         </div>
-                                        <div class="help-block">
-                                            可设置区间:1-20000,不设置或为空,则不限制
-                                        </div>
+
                                     </div>
+
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
-                                    <div class="col-sm-9 col-xs-12">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 215px;">每日向同一用户付款不允许超过</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
                                         <div class="input-group">
                                             <div class="input-group">
 
@@ -147,10 +149,10 @@
                             </div>
                             <div id='withdraw_balance_alipay' @if(empty($set['alipay']))style="display:none"@endif>
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
-                                    <div class="col-sm-9 col-xs-12">
+                                    <label  class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 110px;" >单笔付款金额</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
                                         <div class="input-group">
-                                            <div class="input-group">
+                                            <div class="input-group" style="margin-left: 80px;">
                                                 <div class="input-group-addon">单笔最低金额</div>
                                                 <input type="text" name="withdraw[balance][alipay_min]" class="form-control"
                                                        value="{{$set['alipay_min']}}" placeholder=""/>
@@ -158,16 +160,17 @@
                                                 <input type="text" name="withdraw[balance][alipay_max]" class="form-control"
                                                        value="{{$set['alipay_max']}}" placeholder=""/>
                                             </div>
+                                            <div  class="help-block" style="margin-left: 80px;">
+                                                不设置或为空,则不限制
+                                            </div>
                                         </div>
-                                        <div class="help-block">
-                                           不设置或为空,则不限制
-                                        </div>
+
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
-                                    <div class="col-sm-9 col-xs-12">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 215px;">每日向同一用户付款不允许超过</label>
+                                    <div class="col-sm-9 col-xs-12 col-md-6 ">
                                         <div class="input-group">
                                             <div class="input-group">
                                                 <input type="text" name="withdraw[balance][alipay_frequency]" class="form-control"
