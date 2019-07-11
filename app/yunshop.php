@@ -570,7 +570,9 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        if (\app\common\helpers\Client::is_nativeApp()) {
+        $type = \Yunshop::request()->type;
+
+        if ($type == 9) {
             $token = \Yunshop::request()->yz_token;
 
             $member = \app\frontend\modules\member\models\SubMemberModel::getMemberByNativeToken($token);
