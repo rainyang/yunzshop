@@ -182,17 +182,17 @@
     <div class="col-sm-9 col-xs-12 form-inline">
         <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">现价</span>
-            <input type="text" name="goods[price]" id="product_price" class="form-control" value="{{$goods['price']}}" />
+            <input type="text" name="goods[price]" id="product_price" class="form-control" value="{{$goods['price'] ? : 0}}" />
             <span class="input-group-addon">元</span>
         </div>
         <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">原价</span>
-            <input type="text" name="goods[market_price]" id="market_price" class="form-control" value="{{$goods['market_price']}}" />
+            <input type="text" name="goods[market_price]" id="market_price" class="form-control" value="{{$goods['market_price']? : 0}}" />
             <span class="input-group-addon">元</span>
         </div>
         <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">成本</span>
-            <input type="text" name="goods[cost_price]" id="costprice" class="form-control" value="{{$goods['cost_price']}}" />
+            <input type="text" name="goods[cost_price]" id="costprice" class="form-control" value="{{$goods['cost_price'] ? : 0}}" />
             <span class="input-group-addon">元</span>
         </div>
         <span class='help-block'>尽量填写完整，有助于于商品销售的数据分析</span>
