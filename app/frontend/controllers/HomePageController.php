@@ -944,9 +944,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        // if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-        //     return show_json(1, []);
-        // }
+         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+             return show_json(1, []);
+         }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
