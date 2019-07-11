@@ -92,4 +92,15 @@ class MemberNativeAppService extends MemberService
             return false;
         }
     }
+
+    public function getMemberId($token)
+    {
+        $member = SubMemberModel::getMemberByNativeToken($token);
+
+        if (!is_null($member)) {
+            return $member->member_id;
+        }
+
+        return 0;
+    }
 }

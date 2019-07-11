@@ -40,11 +40,10 @@ class MemberMiniAppModel extends \app\common\models\MemberMiniAppModel
             ->update($data);
     }
 
-    public static function getMemberByTokenAndUid($token, $uid)
+    public static function getMemberByToken($token)
     {
         return self::uniacid()
             ->where('access_token', $token)
-            ->where('member_id', $uid)
             ->first();
     }
 }
