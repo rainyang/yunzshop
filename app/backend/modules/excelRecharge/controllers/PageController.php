@@ -17,9 +17,10 @@ class PageController extends BaseController
     /**
      * @var string
      */
-    private $path = 'app/public/recharge';
+    protected $path = 'app/public/recharge';
 
 
+    //批量充值页面接口
     public function index()
     {
         $this->makeFilePath();
