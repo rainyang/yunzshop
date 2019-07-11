@@ -88,7 +88,7 @@ class MemberMiniAppService extends MemberService
 
             $result = array('token' => $json_user['access_token'], 'session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
-            return show_json(1, '', $result);
+            return show_json(1, $result, $result);
         } else {
             return show_json(0, '获取用户信息失败');
         }
@@ -245,11 +245,12 @@ class MemberMiniAppService extends MemberService
 
     public function getMemberId($token)
     {
-        $v = \Yunshop::request()->v ?: '';
+        $ver = \Yunshop::request()->ver ?: '';
         $member = MemberMiniAppModel::getMemberByToken($token);
-\Log::debug('--------mini member--------', [$v, $token, $member->member_id]);
-        if ($v == '') {
+\Log::debug('--------mini member--------', [$ver, $token, $member->member_id]);
+        if ($ver == '') {
             if (Session::get('member_id')) {
+                \Log::debug('--------mini session member--------', [session_id(), Session::get('member_id')]);
                 return Session::get('member_id');
             }
         } else {
