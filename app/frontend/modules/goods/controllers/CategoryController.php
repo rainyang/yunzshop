@@ -11,6 +11,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\models\Slide;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -35,11 +36,48 @@ class CategoryController extends BaseController
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
+        $recommend = $this->getRecommentCategoryList();
+
+        $data = [
+            'category' => $list,
+            'recommend' => $recommend,
+            'ads' => $this->getAds(),
+            'set' => $set
+        ];
 
         if($list['data']){
-            return $this->successJson('获取分类数据成功!', $list);
+            return $this->successJson('获取分类数据成功!', $data);
         }
-        return $this->errorJson('未检测到分类数据!',$list);
+        return $this->errorJson('未检测到分类数据!',$data);
+    }
+
+    public function getAds()
+    {
+        $slide = [];
+        $slide = Slide::getSlidesIsEnabled()->get();
+        if ($slide) {
+            $slide = $slide->toArray();
+            foreach ($slide as &$item) {
+                $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            }
+        }
+        return $slide;
+    }
+
+    public function getRecommentCategoryList()
+    {
+
+        $request = Category::getRecommentCategoryList()
+            ->where('is_home', '1')
+            ->pluginId()
+            ->get()
+            ->toArray();
+        foreach ($request as &$item) {
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
+        }
+
+        return $request;
     }
     
     public function getChildrenCategory()
