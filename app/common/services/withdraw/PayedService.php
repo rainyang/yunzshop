@@ -32,6 +32,8 @@ class PayedService
 
     private $uids;
 
+    private $set;
+
     public function __construct(Withdraw $withdrawModel)
     {
         $this->setWithdrawModel($withdrawModel);
@@ -45,7 +47,6 @@ class PayedService
             $this->_withdrawPay();
             return true;
         }
-        $this->sendMessage();
 
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
@@ -61,18 +62,27 @@ class PayedService
     public function confirmPay()
     {
         \Log::debug('---------进入确认打款接口-----------------');
+
         if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
 
             $this->withdrawModel->pay_at = time();
-            DB::transaction(function () {
-                $this->_payed();
-            });
-            return true;
+            try {
+                
+                DB::transaction(function () {
+                    $this->_payed();
+                });
+                return true;
+
+            } catch (\Exception $e) {
+                
+                if ($this->withdraw_set['free_audit'] == 1) {
+                    $this->sendMessage();
+                }
+                
+                throw new ShopException('提现记录不符合确认打款规则');
+            }
         }
         
-        $this->sendMessage();
-
-        throw new ShopException('提现记录不符合确认打款规则');
     }
 
 
@@ -84,10 +94,19 @@ class PayedService
     private function _withdrawPay()
     {
         \Log::debug('---------进入提现打款-----------------');
-        DB::transaction(function () {
-            $this->pay();
-        });
-        return $this->payed();
+        try {
+            
+            DB::transaction(function () {
+                $this->pay();
+            });
+            return $this->payed();
+            
+        } catch (\Exception $e) {
+            
+            if (\Setting::get('withdraw.income.free_audit') == 1) {
+                $this->sendMessage();
+            }
+        }
     }
 
 
@@ -159,7 +178,6 @@ class PayedService
 
             $this->updateWithdrawModel();
             
-            $this->sendMessage(); //发送消息
 
             throw new ShopException($exception->getMessage());
 
@@ -237,7 +255,6 @@ class PayedService
 
         if ($result !== true) {
             
-            $this->sendMessage();            
 
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result}");
         }
@@ -261,7 +278,6 @@ class PayedService
         $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
         if ($result['errno'] == 1) {
             
-            $this->sendMessage();            
 
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
@@ -306,7 +322,6 @@ class PayedService
         if ($result['result'] == 8) {
             return false;
         }
-        $this->sendMessage(); //发送消息
 
         throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
     }
