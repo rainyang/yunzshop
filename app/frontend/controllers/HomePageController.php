@@ -911,6 +911,9 @@ class HomePageController extends ApiController
         if($langData['income']['special_service_tax'] == ''){
             $langData['income']['special_service_tax'] = '劳务税';
         }
+        if($langData['income']['name_of_withdrawal'] == ''){
+            $langData['income']['name_of_withdrawal'] = '提现';
+        }
         return show_json(1, $langData);
     }
 
