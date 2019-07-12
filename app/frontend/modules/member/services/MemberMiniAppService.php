@@ -77,7 +77,6 @@ class MemberMiniAppService extends MemberService
             $json_user['nickname']   = $json_user['nickName'];
             $json_user['headimgurl'] = $json_user['avatarUrl'];
             $json_user['sex']        = $json_user['gender'];
-            $json_user['access_token']        = Client::create_token();
 
             //Login
             $member_id = $this->memberLogin($json_user);
@@ -86,7 +85,7 @@ class MemberMiniAppService extends MemberService
 
             $random = $this->wx_app_session($user_info);
 
-            $result = array('token' => $json_user['access_token'], 'session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
+            $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
             return show_json(1, $result, $result);
         } else {
@@ -131,7 +130,6 @@ class MemberMiniAppService extends MemberService
                 'nickname' => $json_user['nickname'],
                 'avatar' => $json_user['headimgurl'],
                 'gender' => $json_user['sex'],
-                'access_token' => $json_user['access_token'],
             ));
         }
     }
@@ -191,7 +189,6 @@ class MemberMiniAppService extends MemberService
             'nickname' => $userinfo['nickname'],
             'avatar' => $userinfo['headimgurl'],
             'gender' => $userinfo['sex'],
-            'access_token' => $userinfo['access_token']
         ));
     }
 
@@ -223,16 +220,6 @@ class MemberMiniAppService extends MemberService
         ));
     }
 
-    protected function updateSubMemberInfoV2($uid, $userinfo)
-    {
-        \Log::debug('-------update member------', $userinfo);
-        MemberMiniAppModel::updateData(
-            $uid, [
-                'access_token' => $userinfo['access_token']
-            ]
-        );
-    }
-
     /**
      * 验证登录状态
      *
@@ -242,24 +229,4 @@ class MemberMiniAppService extends MemberService
     {
         return MemberService::isLogged();
     }
-
-    public function getMemberId($token)
-    {
-        $ver = \Yunshop::request()->ver ?: '';
-        $member = MemberMiniAppModel::getMemberByToken($token);
-\Log::debug('--------mini member--------', [$ver, $token, $member->member_id]);
-        if ($ver == '') {
-            if (Session::get('member_id')) {
-                \Log::debug('--------mini session member--------', [session_id(), Session::get('member_id')]);
-                return Session::get('member_id');
-            }
-        } else {
-            if (!is_null($member)) {
-                return $member->member_id;
-            }
-        }
-
-        return 0;
-    }
-
 }
