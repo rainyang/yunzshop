@@ -182,7 +182,7 @@ class ShareCouponController extends ApiController
                 return $res;
                 break;
             case Coupon::COUPON_ONE_HOTEL_USE:
-                $res = '适用于酒店 :';
+                $res = '适用于酒店:';
                 if(app('plugins')->isEnabled('hotel')){
                     $coupon_hotel = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
                         $query->select('hotel_name');
