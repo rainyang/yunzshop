@@ -2052,7 +2052,7 @@ class MemberController extends ApiController
         return $this->successJson('成功');
     }
 
-    public function isValidatePage()
+    public function isValidatePage($request, $integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
 
@@ -2060,19 +2060,23 @@ class MemberController extends ApiController
         if (Cache::has('shop_member')) {
             $member_set = Cache::get('shop_member');
         } else {
-            $member_set = Setting::get('shop.member');
+            $member_set = \Setting::get('shop.member');
         }
 
         if (!is_null($member_set)) {
             $data = [
                 'is_bind_mobile' => $this->isBindMobile($member_set, $member_id),
-                'invite_page'    => 0,
-                'is_invite'      => 0,
-                'is_login'       => 0,
+                'invite_page' => 0,
+                'is_invite' => 0,
+                'is_login' => 0,
             ];
 
             if ($data['is_bind_mobile']) {
-                return $this->successJson('强制绑定手机开启', $data);
+                if (is_null($integrated)) {
+                    return $this->successJson('强制绑定手机开启', $data);
+                } else {
+                    return show_json(1, $data);
+                }
             }
 
             $type = \YunShop::request()->type;
@@ -2092,8 +2096,15 @@ class MemberController extends ApiController
 
             $data['is_invite'] = $invitation_log ? 1 : 0;
             $data['is_login'] = $member_id ? 1 : 0;
-            return $this->successJson('邀请页面开关', $data);
+
+            if (is_null($integrated)) {
+                return $this->successJson('邀请页面开关', $data);
+            } else {
+                return show_json(1, $data);
+            }
         }
+
+        return show_json(1, []);
     }
 
     public function confirmGoods()

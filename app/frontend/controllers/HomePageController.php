@@ -136,11 +136,11 @@ class HomePageController extends ApiController
                     $member_info = MemberModel::getUserInfos($member_id)->first();
 
                     if (!empty($member_info)) {
-                        $member_info = $member_info->toArray();
-                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
-                        $data        = MemberModel::addPlugins($data);
+//                        $member_info = $member_info->toArray();
+//                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
+//                        $data        = MemberModel::addPlugins($data);
 
-                        $result['memberinfo'] = $data;
+                        $result['memberinfo']['uid'] = $member_id;
                     }
                 }
             }
@@ -1037,7 +1037,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->isValidatePage($request, true), 'page');
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
-        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+//        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }
