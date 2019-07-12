@@ -99,9 +99,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ static_url('yunshop/vue/js/vue-resource.js') }}"></script>
 
     {{--<link href="https://cdn.bootcss.com/element-ui/2.3.1/theme-chalk/index.css" rel="stylesheet">--}}
-    <link href="{{ static_url('yunshop/element-ui/css/element-ui_2.3.1_theme-chalk_index.css') }}" rel="stylesheet">
+    <link href="{{ static_url('yunshop/element-ui/2.10.1/css/element-ui_2.10.1_theme-chalk_index.css') }}" rel="stylesheet">
     {{--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>--}}
-    <script src="{{ static_url('yunshop/element-ui/js/element-ui_2.4.0_index.js') }}"></script>
+    <script src="{{ static_url('yunshop/element-ui/2.10.1/js/element-ui_2.10.1_index.js') }}"></script>
 
     <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
     <!-- Library for adding dinamically elements -->

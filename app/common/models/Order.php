@@ -152,7 +152,7 @@ class Order extends BaseModel
     {
         if (empty($plugin_ids)) {
             //酒店订单、网约车订单、服务站补货订单
-            $plugin_ids = [33,41,43];
+            $plugin_ids = [33, 41, 43];
         }
 
         return $query->whereNotIn('plugin_id', $plugin_ids);
@@ -200,7 +200,7 @@ class Order extends BaseModel
 
     public function scopeNormal($query)
     {
-        return $query->where('refund_id', 0)->where('is_pending',0);
+        return $query->where('refund_id', 0)->where('is_pending', 0);
     }
 
     /**
@@ -286,6 +286,11 @@ class Order extends BaseModel
     public function orderGoods()
     {
         return $this->hasMany(self::getNearestModel('OrderGoods'), 'order_id', 'id');
+    }
+
+    public function getTestAttribute()
+    {
+        return 111;
     }
 
     /**
@@ -617,10 +622,12 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
+
     public function orderFees()
     {
         return $this->hasMany(OrderFee::class, 'order_id', 'id');
     }
+
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -797,6 +804,16 @@ class Order extends BaseModel
         return true;
     }
 
+    public function getAllAfterSaleStatusAttribute()
+    {
+        return collect([
+            [
+                'id' => '',
+                'name' => '',
+            ]
+        ]);
+    }
+
     public function getAllStatusAttribute()
     {
         return collect([
@@ -815,10 +832,7 @@ class Order extends BaseModel
             ], [
                 'id' => self::COMPLETE,
                 'name' => '已完成',
-            ], [
-                'id' => self::REFUND,
-                'name' => '已退款',
-            ],
+            ]
 
         ]);
     }
