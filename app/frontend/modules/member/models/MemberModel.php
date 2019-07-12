@@ -1029,6 +1029,7 @@ class MemberModel extends Member
 
         //显示积分
         $member_info['integral'] = [
+            'is_show' =>\Setting::get('shop.member.show_point') ? 0 : 1,
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
         ];

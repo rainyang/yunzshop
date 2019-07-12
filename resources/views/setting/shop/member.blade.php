@@ -182,6 +182,19 @@
                                 <span class="help-block">会员中心是否显示会员余额值</span>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示{{$shop['credit1']?:'积分'}}</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_point]" value="0" @if (empty($set['show_point'])) checked @endif/>显示
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_point]" value="1" @if ($set['show_point'] == 1) checked @endif/>不显示
+                                </label>
+                                <span class="help-block">会员中心是否显示会员{{$shop['credit1']?:'积分'}}</span>
+                            </div>
+                        </div>
                         {{--<div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">绑定手机</label>
                             <div class="col-sm-9 col-xs-12">
