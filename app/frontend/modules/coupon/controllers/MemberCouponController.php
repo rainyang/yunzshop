@@ -12,7 +12,7 @@ use app\frontend\modules\coupon\models\MemberCoupon;
 use app\common\models\MemberShopInfo;
 use Carbon\Carbon;
 use EasyWeChat\Foundation\Application;
-
+use Yunshop\Hotel\common\models\CouponHotel;
 
 
 class MemberCouponController extends ApiController
@@ -374,11 +374,27 @@ class MemberCouponController extends ApiController
                 return $res;
                 break;
             case Coupon::COUPON_ONE_HOTEL_USE:
-                $res = '适用于部分酒店: ';
+                $res = '适用于酒店 :';
+                if(app('plugins')->isEnabled('hotel')){
+                    $coupon_hotel = CouponHotel::uniacid()->where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->first();
+                    $res .= $coupon_hotel->hotel->hotel_name;
+                }
                 return $res;
                 break;
             case Coupon::COUPON_MORE_HOTEL_USE:
-                $res = '适用于部分酒店: ';
+                $res = '适用于下列酒店: ';
+                if(app('plugins')->isEnabled('hotel')){
+                    $hotel_arr = [];
+                    $coupon_hotels = CouponHotel::uniacid()->where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->get();
+                    foreach ($coupon_hotels as $v){
+                        $hotel_arr[] = $v->hotel->hotel_name;
+                    }
+                    $res .= implode(',', $hotel_arr);
+                }
                 return $res;
                 break;
             default:
