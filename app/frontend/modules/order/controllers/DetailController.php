@@ -74,7 +74,7 @@ class DetailController extends ApiController
 
 
         //租赁插件
-        $lease_enabled = LeaseToySet::whetherEnabled();
+       /* $lease_enabled = LeaseToySet::whetherEnabled();
         if ($lease_enabled && $order->plugin_id == 40) {
             $lease_toy = \Yunshop\LeaseToy\services\LeaseOrderDetail::detailInfo($order);
             foreach ($data['has_many_order_goods'] as &$goods) {
@@ -88,7 +88,7 @@ class DetailController extends ApiController
             }
             $data['lease_toy'] = $lease_toy['data'];
 
-        }
+        }*/
         //todo 临时解决
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);
