@@ -19,6 +19,6 @@ class SiteSettingCache extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return new \app\common\modules\site\SiteSettingCache();
+        return 'siteSettingCache';
     }
 }
