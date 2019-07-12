@@ -583,7 +583,7 @@ class GoodsController extends ApiController
                 $data['value'][] = '最高抵扣' . $love_goods['deduction_proportion'] . $data['name'];
             }
 
-            if ($love_goods['award']) {
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_style') ==1) {
                 $data['value'][] = '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
 
