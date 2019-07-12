@@ -201,7 +201,12 @@ class AllUploadController extends BaseController
      */
     public function getNewFileName($originalName, $ext, $file_type)
     {
-        return $file_type.'/0/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+        return $file_type.'/'.$this->getUniacid().'/'.date('Y').'/'.date('m').'/'.date('Ymd').md5($originalName . str_random(6)) . '.' . $ext;
+    }
+
+    public function getUniacid()
+    {
+        return \YunShop::app()->uniacid ? : 0;
     }
 
 	//获取本地已上传图片的列表
@@ -269,7 +274,8 @@ class AllUploadController extends BaseController
                 return $this->errorJson($e->getErrorMessage());
             }
 
-            $res = $oss->deleteObject($setting['alioss']['bucket'], $core['attachment']); //info['url'] 
+            $ossbucket = rtrim(substr($setting['alioss']['bucket'], 0, strrpos($setting['alioss']['bucket'],'@')), '@');
+            $res = $oss->deleteObject($ossbucket, $core['attachment']); //info['url'] 
 
             if (!$res['info']['url']) {
                 \Log::info('删除阿里云图片失败', [$core['id'], $res]);
@@ -332,7 +338,7 @@ class AllUploadController extends BaseController
         }
 
         $d = [
-            'uniacid' => 0,
+            'uniacid' => $this->getUniacid(),
             'uid' => \Auth::guard('admin')->user()->uid,
             'filename' => $originalName,
             'type' => $type, //类型1.图片; 2.音乐

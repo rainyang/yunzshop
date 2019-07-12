@@ -124,10 +124,13 @@ class BalanceController extends ApiController
 
         $type = \YunShop::request()->type;
         if ($type == 2) {
-            $button = array_first($result, function($value, $key) {
-                return $value['value'] == 1;
-            });
-            return [$button];
+            $button = [];
+            foreach ($result as $item) {
+                if ($item['value'] == 1 || $item['value'] == 28) {
+                    $button[] = $item;
+                }
+            }
+            return $button;
         }
 
         return $result;
@@ -168,6 +171,8 @@ class BalanceController extends ApiController
                 || $type == PayFactory::PAY_Huanxun_Wx
                 || $type == PayFactory::WFT_PAY
                 || $type == PayFactory::WFT_ALIPAY
+                || $type == PayFactory::PAY_WECHAT_HJ
+                || $type == PayFactory::PAY_ALIPAY_HJ
             ) {
                 return  $this->successJson('支付接口对接成功', array_merge(['ordersn' => $this->model->ordersn], $this->payOrder()));
             }

@@ -774,11 +774,9 @@ class MemberService
         return $member_id;
     }
 
-    public function memberInfoAttrStatus()
+    public function memberInfoAttrStatus($member)
     {
         $form   = [];
-        $member = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
-
         $set = \Setting::get('shop.form');
 
         if (!is_null($set)) {
@@ -789,8 +787,8 @@ class MemberService
                     return $value['sort'];
                 }));
 
-                if (!empty($member->member_form)) {
-                    $member_form = json_decode($member->member_form, true);
+                if (!empty($member['member_form'])) {
+                    $member_form = json_decode($member['member_form'], true);
                     $form = self::getMemberForm($form, $member_form);
                 }
             }
@@ -973,8 +971,10 @@ class MemberService
     }
 
     /**
-     *
      * @param $member_id
+     * @param string $key
+     * @param int $minute
+     * @throws MemberNotLoginException
      */
     public function chkAccount($member_id, $key = 'chekAccount', $minute = 30)
     {

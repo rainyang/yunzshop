@@ -40,6 +40,8 @@ Route::group(['prefix' => 'system/upload', 'namespace' => 'platform\modules\syst
 Route::group(['middleware' => ['auth:admin', 'authAdmin', 'globalparams', 'shopbootstrap', 'check']], function () {
 
     Route::get('index', ['as' => 'admin.index', 'uses' => '\app\platform\controllers\IndexController@index']);
+    //清除缓存
+    Route::get('clear', ['as' => 'admin.clear', 'uses' => '\app\platform\controllers\ClearController@index']); 
 
     //用户管理
     Route::group(['namespace' => 'platform\modules\user\controllers'], function () {

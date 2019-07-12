@@ -26,7 +26,7 @@ class MemberPointCoin extends MemberCoin
 
     public function lockCoin($coin)
     {
-        if ($coin > $this->member->credit1) {
+        if (bccomp($coin,$this->member->credit1) == 1) {
             throw new AppException("用户(ID:{$this->member->uid})积分余额不足");
         }
 

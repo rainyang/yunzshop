@@ -35,7 +35,7 @@ $app->singleton('Log.error', function (){
 });
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    App\Http\Kernel::class
+    app\Kernel::class
 );
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
@@ -45,6 +45,8 @@ $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
     app\common\exceptions\Handler::class
 );
+
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

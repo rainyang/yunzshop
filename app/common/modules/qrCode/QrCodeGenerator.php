@@ -29,12 +29,12 @@ class QrCodeGenerator extends BaconQrCodeGenerator
     public function cache($text,$time = 10080)
     {
         // 以内容的md5作为key名
-        $text = md5($text);
-        if (!\Cache::has('qrcode' . '/' . $text)) {
+        $key = md5($text.'v=1');
+        if (!\Cache::has('qrcode' . '/' . $key)) {
             // 二维码内容在缓存中保存一星期
-            \Cache::put('qrcode' . '/' . $text, $this->generate($text), $time);
+            \Cache::put('qrcode' . '/' . $key, $this->generate($text), $time);
         }
-        return \Cache::get('qrcode' . '/' . $text);
+        return \Cache::get('qrcode' . '/' . $key);
     }
 
     /**
@@ -47,7 +47,7 @@ class QrCodeGenerator extends BaconQrCodeGenerator
      */
     public function get($text, $path = 'app/public/qr',$force = false)
     {
-        $name = md5($text);
+        $name = md5($text.'&salt=1');
         if (!is_dir(storage_path($path))) {
             self::directory(storage_path($path));
             mkdir(storage_path($path), 0777);
@@ -59,15 +59,22 @@ class QrCodeGenerator extends BaconQrCodeGenerator
         if (!file_exists(storage_path($path . "/{$name}")) || $force) {
             unlink(storage_path($path . "/{$name}"));
             // 注意:format方法必须先调用,否则后续方法不生效
-
-            $this->generate($text, storage_path($path . "/{$name}"));
+            $this->format('png')->generate($text, storage_path($path . "/{$name}"));
         }
+
         if (!file_exists(storage_path($path . "/{$name}"))) {
             throw new ShopException('生成二维码失败');
         }
+
+        if (env('APP_Framework') == 'platform') {
+            $urlPath = '';
+        } else {
+            $urlPath = '/addons/yun_shop';
+        }
+
         return [
             'path' => $path . DIRECTORY_SEPARATOR . $name,
-            'url' => request()->getSchemeAndHttpHost() . "/addons/yun_shop" . \Storage::url($path . DIRECTORY_SEPARATOR . $name)
+            'url' => request()->getSchemeAndHttpHost() . $urlPath . \Storage::url($path . DIRECTORY_SEPARATOR . $name)
         ];
     }
 

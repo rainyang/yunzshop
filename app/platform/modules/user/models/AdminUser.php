@@ -99,7 +99,7 @@ class AdminUser extends Authenticatable
         if ($verify_res['sign'] == '0') {
             return $verify_res;
         }
-        $verify_res['password'] ? $verify_res['password'] = bcrypt($verify_res['password']) : null;
+        $verify_res['re_password'] ? $verify_res['password'] = bcrypt($verify_res['password']) : null;
         unset($verify_res['re_password']);
         \Log::info("----------管理员用户----------", "管理员:(uid:{$verify_res['uid']})-----用户信息-----".$verify_res.'-----参数-----'.json_encode($data));
         if ($verify_res->save()) {

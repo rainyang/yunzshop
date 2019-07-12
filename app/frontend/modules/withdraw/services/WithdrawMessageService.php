@@ -33,6 +33,7 @@ class WithdrawMessageService extends MessageService
             ['name' => '提现金额', 'value' => $withdrawModel->amounts],
             ['name' => '提现类型', 'value' => $withdrawModel->type_name],
             ['name' => '提现方式', 'value' => $withdrawModel->pay_way_name],
+            ['name' => '提现单号', 'value' => $withdrawModel->withdraw_sn],
         ];
         $this->transfer($temp_id, $params);
     }

@@ -23,7 +23,7 @@
                                 </div>
 
                                 <div class=''>
-                                    <p class="" align="center">注：每天凌晨1点执行数据统计，统计截止到前一天的数据；建议不要再同一时间设置数据自动备份、快照等计划任务！</p>
+                                    <p class="" align="center">注：该统计数据为点击那一刻开始统计，没有执行计划任务！</p>
                                 </div>
 
                             </div>
@@ -63,21 +63,21 @@
                                     <labe class='label label-default'  style='padding:8px;'>&nbsp;{{ $key + 1 }}&nbsp;</labe>
                                 @endif
                             </td>
-                            <td>{{ $item->uid?:$item->member_id }}</td>
+                            <td>{{ $item['member_id'] }}</td>
                             <td>
-                                @if(!empty($item->belongsToMember->avatar))
-                                    <img src='{{ $item->belongsToMember->avatar }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                                @if(!empty($item['avatar']))
+                                    <img src='{{ $item['avatar'] }}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                                 @endif
-                                @if(empty($item->belongsToMember->nickname))
+                                @if(empty($item['nickname']))
                                     未更新
                                 @else
-                                    {{ $item->belongsToMember->nickname }}
+                                    {{ $item['nickname'] }}
                                 @endif
                             </td>
-                            <td>{{ $item->team_count }}</td>
-                            <td>{{ $item->pay_count }}</td>
-                            <td>{{ $item->team_order_quantity }}</td>
-                            <td>{{ $item->team_order_amount }}</td>
+                            <td>{{ $item['team_next_count'] }}</td>
+                            <td>{{ $item['pay_count'] }}</td>
+                            <td>{{ $item['order_goods_total'] }}</td>
+                            <td>{{ $item['order_price'] }}</td>
 
                         </tr>
                     @endforeach

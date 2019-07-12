@@ -120,7 +120,11 @@ class PointLog extends BaseModel
                 $mode_attribute = PointService::POINT_MODE_TASK_REWARD_ATTACHED;
                 break;
             case (18):
-                $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                if (app('plugins')->isEnabled('love')) {
+                    $mode_attribute = '转入'.\Yunshop\Love\Common\Services\SetService::getLoveName();
+                } else {
+                    $mode_attribute = PointService::POINT_MODE_TRANSFER_LOVE_ATTACHED;
+                }
                 break;
             case (19):
                 if (app('plugins')->isEnabled('sign')) {
@@ -178,6 +182,16 @@ class PointLog extends BaseModel
                 break;
             case (31):
                 $mode_attribute = PointService::POINT_MODE_CARD_REGISTER_REWARD_ATTACHED;
+                break;
+            case (32):
+                $mode_attribute = PointService::POINT_MODE_PRESENTATION_ATTACHED;
+                break;
+            case (33):
+                if(app('plugins')->isEnabled('love')){
+                    $mode_attribute = \Yunshop\Love\Common\Services\SetService::getLoveName() ? \Yunshop\Love\Common\Services\SetService::getLoveName().'提现扣除' : PointService::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
+                }else {
+                    $mode_attribute = PointService::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
+                }
                 break;
         }
         return $mode_attribute;

@@ -4,7 +4,6 @@ namespace app;
 
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 class Kernel extends HttpKernel
 {

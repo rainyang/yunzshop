@@ -4,6 +4,8 @@ namespace app\common\providers;
 
 use App;
 use app\common\models\AccountWechats;
+use app\common\modules\site\SiteSetting;
+use app\common\modules\site\SiteSettingCache;
 use app\common\repositories\OptionRepository;
 use app\common\services\mews\captcha\src\Captcha;
 
@@ -97,7 +99,8 @@ class AppServiceProvider extends ServiceProvider
         \View::addExtension('tpl', 'blade');
         //配置表
         $this->app->singleton('options',  OptionRepository::class);
-
+        $this->app->singleton('siteSetting',  SiteSetting::class);
+        $this->app->singleton('siteSettingCache',  SiteSettingCache::class);
         /**
          * 设置
          */
