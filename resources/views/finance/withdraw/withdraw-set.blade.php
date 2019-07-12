@@ -306,6 +306,23 @@
                                 </div>
                             </div>
 
+                            <div class="tab-pane  active">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现免审核</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <label class='radio-inline'>
+                                            <input type='radio' name='withdraw[balance][audit_free]' value='1' @if($set['audit_free'] == 1) checked @endif />
+                                            开启
+                                        </label>
+                                        <label class='radio-inline'>
+                                            <input type='radio' name='withdraw[balance][audit_free]' value='0' @if($set['audit_free'] == 0) checked @endif />
+                                            关闭
+                                        </label>
+                                        <span class='help-block'>余额提现自动审核、自动打款（自动打款只支持提现到提现到汇聚支付一种方式！）</span>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
                         {{--余额提现 end--}}

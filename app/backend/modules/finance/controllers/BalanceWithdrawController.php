@@ -20,7 +20,7 @@ use app\backend\modules\withdraw\controllers\AuditRejectedController;
 
 class BalanceWithdrawController extends BaseController
 {
-    private $withdrawModel;
+    public $withdrawModel;
 
 
     /**
@@ -112,7 +112,7 @@ class BalanceWithdrawController extends BaseController
      * @return mixed
      * @throws AppException
      */
-    private function submitPay()
+    public function submitPay()
     {
         if ($this->withdrawModel->status !== 1) {
             throw new AppException('打款失败,数据不存在或不符合打款规则!');
@@ -125,12 +125,10 @@ class BalanceWithdrawController extends BaseController
             $this->withdrawModel->status = 2;
 
             $this->withdrawUpdate();
-        } elseif ($this->withdrawModel->pay_way == 'alipay') {
-            $this->withdrawModel->pay_at = time();
-            $this->withdrawModel->status = 4;
-
-            $this->withdrawUpdate();
-        } elseif ($this->withdrawModel->pay_way == 'yop_pay') { //易宝余额提现
+        } elseif ($this->withdrawModel->pay_way == 'alipay'
+            || $this->withdrawModel->pay_way == 'yop_pay'
+            || $this->withdrawModel->pay_way == 'converge_pay'
+        ) {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 4;
 

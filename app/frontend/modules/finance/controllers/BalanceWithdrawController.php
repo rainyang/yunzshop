@@ -22,6 +22,7 @@ use app\frontend\modules\finance\models\WithdrawSetLog;
 use app\frontend\modules\finance\services\WithdrawManualService;
 use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use Illuminate\Support\Facades\DB;
+use app\common\events\withdraw\WithdrawBalanceAppliedEvent;
 
 class BalanceWithdrawController extends BalanceController
 {
@@ -167,6 +168,8 @@ class BalanceWithdrawController extends BalanceController
         $result = (new BalanceChange())->withdrawal($this->getBalanceChangeData());
         if ($result === true) {
             DB::commit();
+            event(new WithdrawBalanceAppliedEvent($this->withdrawModel));
+
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
             //提现通知管理员
             (new WithdrawMessageService())->withdraw($this->withdrawModel);
