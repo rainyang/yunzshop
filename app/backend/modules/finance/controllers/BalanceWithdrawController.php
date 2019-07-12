@@ -125,10 +125,14 @@ class BalanceWithdrawController extends BaseController
             $this->withdrawModel->status = 2;
 
             $this->withdrawUpdate();
-        } elseif ($this->withdrawModel->pay_way == 'alipay'
-            || $this->withdrawModel->pay_way == 'yop_pay'
-            || $this->withdrawModel->pay_way == 'converge_pay'
-        ) {
+        } elseif ($this->withdrawModel->pay_way == 'alipay' || $this->withdrawModel->pay_way == 'yop_pay') {
+            $this->withdrawModel->pay_at = time();
+            $this->withdrawModel->status = 4;
+
+            $this->withdrawUpdate();
+        }
+
+        if ($this->withdrawModel->pay_way == 'converge_pay') {
             $this->withdrawModel->pay_at = time();
             $this->withdrawModel->status = 4;
 
@@ -304,7 +308,6 @@ class BalanceWithdrawController extends BaseController
         } elseif ($result['statusCode'] == 500) {
             return $this->paymentError($result['message']);
         }
-        $result['errno'] = 1;
 
         return $result;
     }
