@@ -376,7 +376,7 @@ class MemberCouponController extends ApiController
             case Coupon::COUPON_ONE_HOTEL_USE:
                 $res = '适用于酒店 :';
                 if(app('plugins')->isEnabled('hotel')){
-                    $coupon_hotel = CouponHotel::uniacid()->where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                    $coupon_hotel = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
                         $query->select('hotel_name');
                     })->first();
                     $res .= $coupon_hotel->hotel->hotel_name;
@@ -387,7 +387,7 @@ class MemberCouponController extends ApiController
                 $res = '适用于下列酒店: ';
                 if(app('plugins')->isEnabled('hotel')){
                     $hotel_arr = [];
-                    $coupon_hotels = CouponHotel::uniacid()->where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                    $coupon_hotels = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
                         $query->select('hotel_name');
                     })->get();
                     foreach ($coupon_hotels as $v){
