@@ -277,6 +277,7 @@ class GoodsController extends ApiController
 
         $goodsModel = Goods::uniacid()->find($id);
 
+        $data['title'] = $goodsModel->title;
         // 商品详情挂件
         if (\Config::get('goods_detail')) {
             foreach (\Config::get('goods_detail') as $key_name => $row) {
