@@ -373,6 +373,14 @@ class MemberCouponController extends ApiController
                 $res .= implode(',', $couponInArrayFormat['storenames']);
                 return $res;
                 break;
+            case Coupon::COUPON_ONE_HOTEL_USE:
+                $res = '适用于部分酒店: ';
+                return $res;
+                break;
+            case Coupon::COUPON_MORE_HOTEL_USE:
+                $res = '适用于部分酒店: ';
+                return $res;
+                break;
             default:
                 return ('Enjoy shopping');
         }
