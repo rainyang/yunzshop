@@ -301,7 +301,10 @@ class BalanceWithdrawController extends BaseController
 
         if ($result['data']['errorCode'] && !$result['hmac']) {
             return $this->paymentError($result['data']['errorDesc']);
+        } elseif ($result['statusCode'] == 500) {
+            return $this->paymentError($result['message']);
         }
+        $result['errno'] = 1;
 
         return $result;
     }

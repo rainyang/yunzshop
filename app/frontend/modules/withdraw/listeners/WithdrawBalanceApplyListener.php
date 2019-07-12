@@ -52,7 +52,7 @@ class WithdrawBalanceApplyListener
 
     private function getWithdrawSet()
     {
-        return Setting::get('withdraw.income');
+        return Setting::get('withdraw.balance');
     }
 
 }
