@@ -1125,7 +1125,7 @@ return [
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
-                            'goods_discount_set_update'      => [
+                            'goods_discount_set'      => [
                                 'name'       => '编辑页面',
                                 'url'        => 'discount.discount.set',
                                 'url_params' => '',
@@ -3047,7 +3047,7 @@ return [
                         'parents'    => ['finance', 'excelRecharge']
                     ],
                     'excelRechargeRecords' => [
-                        'name'       => '确认充值',
+                        'name'       => '充值记录',
                         'permit'     => 1,
                         'menu'       => 0,
                         'icon'       => '',
@@ -3057,7 +3057,7 @@ return [
                         'parents'    => ['finance', 'excelRecharge']
                     ],
                     'excelRechargeDetail'  => [
-                        'name'       => '确认充值',
+                        'name'       => '详情记录',
                         'permit'     => 1,
                         'menu'       => 0,
                         'icon'       => '',

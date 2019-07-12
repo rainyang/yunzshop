@@ -9,6 +9,7 @@
 namespace app\backend\modules\excelRecharge\controllers;
 
 
+use app\backend\models\excelRecharge\DetailModel;
 use app\backend\models\excelRecharge\RecordsModel;
 use app\common\helpers\Url;
 use app\common\services\credit\ConstService;
@@ -23,12 +24,12 @@ class ConfirmController extends PageController
     /**
      * @var int
      */
-    private $handleNum = 0;
+    private $handleTotal = 0;
 
     /**
      * @var int
      */
-    private $errorNum = 0;
+    private $failureTotal = 0;
 
     /**
      * @var string
@@ -71,18 +72,26 @@ class ConfirmController extends PageController
 
     private function rechargeStart()
     {
+        $recordsId = 0;
+        $positionId = &$recordsId;
+
         $recordsModel = new RecordsModel();
 
+        $handleRechargeData = $this->handleRecharge($positionId);
+        $recordsModel->fill([
+            'uniacid' => \YunShop::app()->uniacid,
+            'total'   => $this->handleTotal,
+            'amount'  => $this->handAmount,
+            'failure' => $this->failureTotal,
+            'success' => $this->successAmount,
+            'source'  => $this->rechargeType(),
+            'remark'  => ''
+        ]);
+        $recordsModel->save();
+        $positionId = $recordsModel->id;
 
-        $handleRechargeData = $this->handleRecharge($recordsModel->id);
-
-
-        //todo todo todo
-        //添加充值记录
-
-        //充值、插入详细记录
-
-        //更新充值记录
+        //插入充值详细记录
+        DetailModel::insert($handleRechargeData);
 
         return $this->message($this->messageContent(), Url::absoluteWeb('excelRecharge.records.index'));
     }
@@ -92,7 +101,7 @@ class ConfirmController extends PageController
      */
     private function messageContent()
     {
-        return "执行数量{$this->handleNum}，成功数量{$this->successNum}，失败数量{$this->errorNum}";
+        return "执行数量{$this->handleTotal}，成功数量{$this->successNum}，失败数量{$this->failureTotal}";
     }
 
     private function handleRecharge(&$recordsId)
@@ -111,9 +120,9 @@ class ConfirmController extends PageController
         return $data;
     }
 
-    private function _handleRecharge($recordsId, $memberId, $amount)
+    private function _handleRecharge(&$recordsId, $memberId, $amount)
     {
-        $this->handleNum += 1;
+        $this->handleTotal += 1;
         $this->handAmount += $amount;
 
 
@@ -132,7 +141,7 @@ class ConfirmController extends PageController
             $remark = '';
             $this->successAmount += $amount;
         } else {
-            $this->errorNum += 1;
+            $this->failureTotal += 1;
 
             $status = 0;
             $remark = "充值失败" . $result;
@@ -142,10 +151,11 @@ class ConfirmController extends PageController
             'uniacid'     => \YunShop::app()->uniacid,
             'amount'      => $amount,
             'member_id'   => $memberId,
-            'recharge_id' => $recordsId,
+            'recharge_id' => &$recordsId,
             'remark'      => $remark,
-            'status'      => $status
-
+            'status'      => $status,
+            'created_at'  => time(),
+            'updated_at'  => time()
         ];
     }
 
@@ -177,7 +187,6 @@ class ConfirmController extends PageController
      */
     private function errorMessage($message)
     {
-
         $this->error($message);
 
         return parent::index();
@@ -299,7 +308,6 @@ class ConfirmController extends PageController
             'point_income_type' => $rechargeValue < 0 ? PointService::POINT_INCOME_LOSE : PointService::POINT_INCOME_GET
         ]))->changePoint();
     }
-
 
 
     private function batchRechargeLove($memberId, $rechargeValue, $love_type)

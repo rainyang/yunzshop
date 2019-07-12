@@ -47,7 +47,13 @@
                                     {{ $list->member->nickname ?: '未更新'}}
                                 </td>
                                 <td style="text-align: center;">{{ $list->amount }}</td>
-                                <td style="text-align: center;">{{ $list->status }}</td>
+                                <td style="text-align: center;">
+                                    @if($list->status)
+                                        <label class="label label-success">成功</label>
+                                    @else
+                                        <label class="label label-danger">失败</label>
+                                    @endif
+                                </td>
                                 <td style="text-align: center;">{{ $list->remark }}</td>
                             </tr>
                         @endforeach
