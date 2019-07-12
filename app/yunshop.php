@@ -575,11 +575,6 @@ class YunApp extends YunComponent
         $token = \Yunshop::request()->yz_token ?: '';
 
          switch ($type) {
-             case 2:
-                 $min_app = new \app\frontend\modules\member\services\MemberMiniAppService();
-
-                 $member_id =  $min_app->getMemberId($token);
-                 break;
              case 9:
                  $native_app = new \app\frontend\modules\member\services\MemberNativeAppService();
 
