@@ -25,6 +25,9 @@ use app\frontend\modules\member\services\MemberService;
 class IncomePageController extends ApiController
 {
     private $relationSet;
+    private $is_agent;
+    private $grand_total;
+    private $usable_total;
 
 
     public function preAction()
@@ -44,18 +47,21 @@ class IncomePageController extends ApiController
         $member_id = \YunShop::app()->getMemberId();
         $memberService = app(MemberService::class);
         $memberService->chkAccount($member_id);
-        list($available, $unavailable) = $this->getIncomeInfo();
 
-        //添加跳转链接
+        //检测是否推广员
+        $this->is_agent = $this->isAgent();
+
+        //不是推广员且有设置跳转链接时
         $relation_set = \Setting::get('member.relation');
-
         $jump_link = '';
         if ($relation_set['is_jump'] && !empty($relation_set['jump_link'])) {
-            $is_agent = MemberShopInfo::uniacid()->where('member_id', $member_id)->where('is_agent',1)->first();
-            if (!$is_agent) {
+            if (!$this->is_agent) {
                 $jump_link = $relation_set['jump_link'];
+                return $this->successJson('ok', ['jump_link' => $jump_link]);
             }
         }
+
+        list($available, $unavailable) = $this->getIncomeInfo();
 
         //添加商城营业额
         $is_show_performance = OrderAllController::isShow();
@@ -100,8 +106,8 @@ class IncomePageController extends ApiController
             'avatar' => $avatar,
             'nickname' => $memberModel->nickname,
             'member_id' => $memberModel->uid,
-            'grand_total' => $this->getGrandTotal(),
-            'usable_total' => $this->getUsableTotal(),
+            'grand_total' => $this->grand_total,
+            'usable_total' => $this->usable_total,
             'auto_withdraw' => $autoWithdraw,
         ];
     }
@@ -124,11 +130,12 @@ class IncomePageController extends ApiController
     private function getIncomeInfo()
     {
         $lang_set = $this->getLangSet();
-        $is_agent = $this->isAgent();
+
         $is_relation = $this->isOpenRelation();
 
         $config = $this->getIncomePageConfig();
 
+        $total_income = $this->getTotalIncome();
 
         //是否显示推广插件入口
         $popularize_set = PortType::popularizeSet(\YunShop::request()->type);
@@ -137,7 +144,7 @@ class IncomePageController extends ApiController
         $unavailable = [];
         foreach ($config as $key => $item) {
 
-            $incomeFactory = new IncomePageFactory(new $item['class'], $lang_set, $is_relation, $is_agent);
+            $incomeFactory = new IncomePageFactory(new $item['class'], $lang_set, $is_relation, $this->is_agent, $total_income);
 
             if (!$incomeFactory->isShow()) {
                 continue;
@@ -203,6 +210,19 @@ class IncomePageController extends ApiController
     private function getRelationSet()
     {
         return MemberRelation::uniacid()->first();
+    }
+
+    private function getTotalIncome()
+    {
+        $total_income =Income::selectRaw('member_id, incometable_type, sum(amount) as total_amount, sum(if(status = 0, amount, 0)) as usable_total')
+            ->whereMember_id(\YunShop::app()->getMemberId())
+            ->groupBy('incometable_type')
+            ->get();
+
+        //计算累计收入
+        $this->grand_total = sprintf("%.2f",$total_income->sum('total_amount'));
+        $this->usable_total = sprintf("%.2f",$total_income->sum('usable_total'));
+        return $total_income;
     }
 
 

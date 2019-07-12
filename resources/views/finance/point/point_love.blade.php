@@ -31,7 +31,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">转入比例</label>
-                        <div class="col-sm-9 col-xs-12">
+                        <div class="col-sm-4 col-lg-3">
                             <div class='input-group' style="width: 260px;">
                                 <input type="text" name="rate" value="{{ $memberModel->pointLove->rate or '' }}" class="form-control" />
                                 <span class='input-group-addon'>%</span>
@@ -39,7 +39,22 @@
                             <span class='help-block'>自动转入{{ $love_name }}独立比例设置：为空、为零使用基础设置中自动转入比例，-1 此会员不自动转入</span>
                         </div>
                     </div>
-
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分转入爱心值比例设置</label>
+                        <div class="col-sm-4 col-lg-2">
+                            <div class='input-group recharge-item'>
+                                <span class="input-group-addon"></span>
+                                <input type="text" name="transfer_integral" value="{{ $memberModel->pointLove->transfer_integral or '' }}"
+                                       class="form-control wid100"/>
+                                <span class='input-group-addon'>:</span>
+                                <input type="text" name="transfer_love" value="{{ $memberModel->pointLove->transfer_love or '' }}"
+                                       class="form-control wid100"/>
+                            </div>
+                            <div class="help-block">
+                                如果积分转入爱心值比例设置为空、为零，则默认为1：1
+                            </div>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">

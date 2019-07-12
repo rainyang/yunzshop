@@ -3,6 +3,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberUnique;
 use app\common\events\member\BecomeAgent;
 
 use app\common\events\member\PluginCreateRelationEvent;
@@ -11,6 +12,7 @@ use app\common\models\member\MemberParent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
 use app\common\modules\memberCart\MemberCartCollection;
+use app\common\services\popularize\PortType;
 use app\framework\Database\Eloquent\Collection;
 use app\frontend\modules\member\models\MemberModel;
 use app\frontend\modules\member\models\MemberWechatModel;
@@ -298,6 +300,11 @@ class Member extends BackendModel
         return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
     }
 
+    public function hasOneMemberUnique()
+    {
+        return $this->hasOne(MemberUnique::class, 'member_id', 'uid');
+    }
+
     public function scopeOfUid($query, $uid)
     {
         return $query->where('uid', $uid);
@@ -336,9 +343,6 @@ class Member extends BackendModel
         return self::select(['*'])
             ->uniacid()
             ->where('uid', $member_id)
-            ->whereHas('yzMember', function ($query) use ($member_id) {
-                $query->where('member_id', $member_id)->whereNull('deleted_at');
-            })
             ->with([
                 'yzMember' => function ($query) {
                     return $query->select(['*'])->where('is_black', 0)
@@ -549,12 +553,14 @@ class Member extends BackendModel
     {
         $plugin_class = app('plugins');
 
+        //供应商
         if ($plugin_class->isEnabled('supplier')) {
             $data['supplier'] = VerifyButton::button();
         } else {
             $data['supplier'] = '';
         }
 
+        //微店
         if ($plugin_class->isEnabled('micro')) {
             $micro_set = \Setting::get('plugin.micro');
             if ($micro_set['is_open_miceo'] == 0) {
@@ -572,6 +578,7 @@ class Member extends BackendModel
             $data['gold'] = '';
         }
 
+        //爱心值
         if ($plugin_class->isEnabled('love')) {
             $data['love'] = [
                 'status' => true,
@@ -643,11 +650,11 @@ class Member extends BackendModel
 
         //快递单插件开启
         if ($plugin_class->isEnabled('courier')) {
-            $status = \Setting::get('courier.courier.radio');
+            $status = \Setting::get('courier.courier.radio') ? true : false;
 
             $data['courier'] = [
                 'button_name' => '快递',
-                'status' => $status ? true : false
+                'status' => $status
             ];
         } else {
             $data['courier'] = [
@@ -659,12 +666,11 @@ class Member extends BackendModel
 
         //帮助中心插件开启控制
         if ($plugin_class->isEnabled('help-center')) {
-            //dd(123);
-            $status = \Setting::get('help-center.status');
+            $status = \Setting::get('help-center.status') ? true : false;
 
             $data['help_center'] = [
                 'button_name' => '帮助中心',
-                'status' => $status ? true : false
+                'status' => $status
             ];
         } else {
             $data['help_center'] = [
@@ -673,6 +679,12 @@ class Member extends BackendModel
             ];
         }
 
+
+        //隐藏爱心值插件入口
+        $love_show = PortType::popularizeShow(\YunShop::request()->type);
+        if (isset($data['love']) && (!$love_show)) {
+            $data['love']['status'] = false;
+        }
 
         //配送站
         if (app('plugins')->isEnabled('delivery-station')) {

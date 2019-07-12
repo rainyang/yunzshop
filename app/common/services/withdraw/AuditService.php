@@ -17,6 +17,9 @@ use app\common\exceptions\ShopException;
 use app\common\models\Income;
 use app\common\models\Withdraw;
 use Illuminate\Support\Facades\DB;
+use app\common\services\finance\BalanceNoticeService;
+use app\common\services\finance\MessageService;
+// use app\frontend\modules\withdraw\services\WithdrawMessageService;
 
 class AuditService
 {
@@ -28,11 +31,14 @@ class AuditService
 
     private $audit_amount;
 
+    private $uids;
 
     public function __construct(Withdraw $withdrawModel)
     {
         $this->withdrawModel = $withdrawModel;
         $this->setAuditAmount();
+
+        $this->uids = \Setting::get('withdraw.notice.withdraw_user');
     }
 
 
@@ -47,6 +53,9 @@ class AuditService
         if ($this->withdrawModel->status == Withdraw::STATUS_INITIAL || $this->withdrawModel->status == Withdraw::STATUS_INVALID) {
             return $this->_withdrawAudit();
         }
+        
+        $this->sendMessage('不符合审核规则');
+
         throw new ShopException("提现审核：ID{$this->withdrawModel->id}，不符合审核规则");
     }
 
@@ -119,9 +128,18 @@ class AuditService
     {
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
-            throw new ShopException($validator->messages()->first());
+            
+            $msg = $validator->messages()->first();
+            
+            $this->sendMessage($msg);
+
+            throw new ShopException($msg);
         }
+
         if (!$this->withdrawModel->save()) {
+            
+            $this->sendMessage('记录更新失败');
+
             throw new ShopException("提现审核：ID{$this->withdrawModel->id}，记录更新失败");
         }
         event(new WithdrawAuditedEvent($this->withdrawModel));
@@ -166,6 +184,9 @@ class AuditService
         }
 
         if($audit_amount < 0 && $audit_amount != 0){
+            
+            $this->sendMessage('提现金额小于手续费');
+
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
 
@@ -241,4 +262,19 @@ class AuditService
         return $servicetax_rate;
     }
 
+    private function sendMessage($msg)
+    {
+        if ($this->withdrawModel->type == 'balance') {
+
+            return BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
+        
+        } else {
+            
+            foreach ($this->uids as $k => $v) {
+                //收入提现失败通知
+                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
+            }
+            return ;
+        }
+    }
 }

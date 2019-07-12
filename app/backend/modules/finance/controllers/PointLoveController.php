@@ -37,6 +37,8 @@ class PointLoveController extends BaseController
         !$_model && $_model = new PointLoveSet();
 
         $_model->rate = trim(trim(\YunShop::request()->rate));
+        $_model->transfer_love = trim(trim(\YunShop::request()->transfer_love));
+        $_model->transfer_integral = trim(trim(\YunShop::request()->transfer_integral));
         $_model->member_id = $member_id;
         $_model->uniacid = \YunShop::app()->uniacid;
 

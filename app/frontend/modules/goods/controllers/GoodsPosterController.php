@@ -104,7 +104,12 @@ class GoodsPosterController extends ApiController
             $urlPath = request()->getSchemeAndHttpHost() . '/' . substr($imgPath, strpos($imgPath, 'addons'));
         }
 
-        return $this->successJson('ok', $urlPath);
+        //return $this->successJson('ok', $urlPath);
+
+        $data = $this->base64EncodeImage($urlPath);
+        $data['image_url'] = $urlPath;
+
+        return $this->successJson('ok', $data);
 
     }
 
@@ -153,6 +158,20 @@ class GoodsPosterController extends ApiController
         // imagepng($resource);  
         // exit;  
         return $resource;
+    }
+
+    //图片返回base64 格式
+    public function base64EncodeImage($strTmpName)
+    {
+        $base64Image = '';
+        $imageInfo   = getimagesize($strTmpName);
+        //$imageData   = fread(fopen($strTmpName , 'r'), filesize($strTmpName));
+        //$base64Image = 'data:' . $imageInfo['mime'] . ';base64,' . chunk_split(base64_encode($imageData));
+        $base64Image = base64_encode(file_get_contents($strTmpName));
+        return [
+            'mime' => $imageInfo['mime'],
+            'base64Image' => $base64Image,
+        ];
     }
 
     /**

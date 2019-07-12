@@ -19,6 +19,7 @@ use app\common\facades\Setting;
 use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use app\common\services\finance\MessageService;
 
 class ApplyController extends ApiController
 {
@@ -57,12 +58,10 @@ class ApplyController extends ApiController
         $this->withdraw_set = $this->getWithdrawSet();
     }
 
-
     //提现接口
     public function index()
     {
         list($amount, $pay_way, $poundage, $withdraw_data) = $this->getPostValue();
-
         $this->amount = $amount;
         $this->pay_way = $pay_way;
         $this->poundage = $poundage;

@@ -32,7 +32,7 @@ class MemberRelation extends BaseModel
      * @var array
      */
     public $fillable = ['uniacid', 'status', 'become', 'become_order', 'become_child', 'become_ordercount',
-        'become_moneycount', 'become_goods_id', 'become_info', 'become_check', 'become_slefmoney'];
+        'become_moneycount', 'become_goods_id', 'become_info', 'become_check', 'become_slefmoney','maximum_number','reward_points'];
 
     /**
      * 不可批量赋值的属性
