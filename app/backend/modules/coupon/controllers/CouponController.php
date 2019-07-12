@@ -1,6 +1,7 @@
 <?php
 namespace app\backend\modules\coupon\controllers;
 
+use app\backend\modules\coupon\models\HotelCoupon;
 use app\common\components\BaseController;
 use app\backend\modules\coupon\models\Coupon;
 use app\common\helpers\Cache;
@@ -86,7 +87,7 @@ class CouponController extends BaseController
 
         //表单验证
         if($_POST){
-            $coupon = new Coupon();
+            $coupon = new HotelCoupon();
             if($hotel_is_open){
                 $coupon->widgets['more_hotels'] = \YunShop::request()->hotel_ids;
             }
@@ -126,7 +127,7 @@ class CouponController extends BaseController
         //获取优惠券统一的模板消息 ID (因为是统一的,所以写在 setting)
         //$template_id = Setting::get('coupon_template_id');
 
-        $coupon = Coupon::getCouponById($coupon_id);
+        $coupon = HotelCoupon::getCouponById($coupon_id);
         if(!empty($coupon->goods_ids)){
             $coupon->goods_ids = array_filter(array_unique($coupon->goods_ids)); //去重,去空值
             if (!empty($coupon->goods_ids)) {
@@ -211,7 +212,7 @@ class CouponController extends BaseController
             return $this->message('优惠券已被领取且尚未使用,因此无法删除', Url::absoluteWeb('coupon.coupon'), 'error');
         }
 
-        $res = Coupon::deleteCouponById($coupon_id);
+        $res = HotelCoupon::deleteCouponById($coupon_id);
         if ($res) {
             //店铺装修清除缓存
             if(app('plugins')->isEnabled('designer')) {

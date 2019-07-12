@@ -13,14 +13,6 @@ class Coupon extends \app\common\models\Coupon
 
     public $widgets = [];
 
-    protected static function boot()
-    {
-        if(app('plugins')->isEnabled('hotel')){
-            static::observe(new CouponObserver());
-        }
-        parent::boot();
-    }
-
     //类型转换
     protected $casts = [
         'goods_ids' => 'json',
