@@ -116,6 +116,8 @@ class GoodsController extends ApiController
 
         //商品营销 todo 优化新的
         $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
+        $goodsModel->love_shoppin_gift = $this->loveShoppingGift($goodsModel);
+
 
 //        //商品营销
 //        $goodsModel->goods_sale = $this->getGoodsSale($goodsModel);
@@ -923,6 +925,26 @@ class GoodsController extends ApiController
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
         return $this->successJson('', $this->apiData);
+    }
+
+    public function loveShoppingGift($goodsModel){
+
+        //爱心值
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel);
+            $data['name'] = $love_goods['name'];
+            $data['key'] = 'love';
+            $data['type'] = 'array';
+
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_style') == 2 ) {
+                return  '购买赠送' . $love_goods['award_proportion'] . $data['name'];
+            }
+
+
+
+        }
+
     }
 
 }

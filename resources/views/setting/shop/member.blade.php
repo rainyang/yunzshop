@@ -64,6 +64,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情已添加*件</label>
+                            <div class="col-sm-9 col-xs-12">
+
+                                <label class='radio-inline'><input type='radio' name='member[added]' value='1'
+                                                                   @if ($set['added'] == 1 ||empty($set['added'])) checked @endif />显示</label>
+                                <label class='radio-inline'><input type='radio' name='member[added]' value='2'
+                                                                   @if ($set['added'] == 2) checked @endif /> 隐藏</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">

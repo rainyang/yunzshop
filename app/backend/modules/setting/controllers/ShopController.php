@@ -87,7 +87,7 @@ class ShopController extends BaseController
             $diyForm = DiyformTypeModel::getDiyformList()->get();
             
         }
-
+        
         return view('setting.shop.member', [
             'set' => $member,
             'shop' => $shop,
