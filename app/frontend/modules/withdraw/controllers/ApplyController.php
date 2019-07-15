@@ -20,6 +20,7 @@ use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use app\common\services\finance\MessageService;
+use app\common\helpers\Url;
 
 class ApplyController extends ApiController
 {
@@ -114,6 +115,7 @@ class ApplyController extends ApiController
             if (!$withdrawModel->save()) {
                 throw new AppException("ERROR:Data storage exception -- {$item['key_name']}");
             }
+            app('plugins')->isEnabled('converge_pay') && $this->withdraw_set['free_audit'] == 1 && $this->pay_way == 'converge_pay' ? \Setting::set('plugin.convergePay_set.notifyWithdrawUrl', Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php')) : null;
             event(new WithdrawAppliedEvent($withdrawModel));
 
             $amount = bcadd($amount, $withdrawModel->amounts, 2);
