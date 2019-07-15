@@ -146,14 +146,12 @@
                             </label>
                         </div>
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                        <div class="col-sm-9 col-xs-12">
-                            <label class="checkbox-inline">
-                                <input type="checkbox"  name="base[relation_level][]"  value="3" @if (in_array(3, $relation_level)) checked @endif />3级
-                                <input type="text"  name="base[relation_level][name3]" value="{{ $relation_level['name3'] }}" placeholder="自定义名称"/>
-
-
-                            </label>
-                        </div>
+                        {{--<div class="col-sm-9 col-xs-12">--}}
+                            {{--<label class="checkbox-inline">--}}
+                                {{--<input type="checkbox"  name="base[relation_level][]"  value="3" @if (in_array(3, $relation_level)) checked @endif />3级--}}
+                                {{--<input type="text"  name="base[relation_level][name3]" value="{{ $relation_level['name3'] }}" placeholder="自定义名称"/>--}}
+                            {{--</label>--}}
+                        {{--</div>--}}
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示按钮</label>
                         <div class="col-sm-9 col-xs-12">
                             <label class="checkbox-inline">
