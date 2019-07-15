@@ -127,7 +127,11 @@ class MemberOfficeAccountService extends MemberService
                 ->asJsonResponse(true)
                 ->get();
 
-            $user_info['subscribe'] = $subscribe;
+            if (env('APP_Framework') == 'platform') {
+                $user_info['subscribe'] = $subscribe;
+            } else {
+                $user_info['subscribe'] = 1;
+            }
         }
 
         return $scope != 'base' ? array_merge($user_info, $token) : $token;
