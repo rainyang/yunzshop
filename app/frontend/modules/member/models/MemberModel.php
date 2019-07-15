@@ -948,12 +948,18 @@ class MemberModel extends Member
         }
 
         //订单显示
-        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-        $member_info['order'] = $order_info;
-        if (app('plugins')->isEnabled('hotel')) {
-            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-        }
+//        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        $member_info['order'] = $order_info;
+//        if (app('plugins')->isEnabled('hotel')) {
+//            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        }
+//
+//        if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {
+//            $member_info['lease_order'] = \Yunshop\LeaseToy\models\Order::getLeaseOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        }
 
+        $member_info['is_agent'] = self::isAgent();
+        $member_info['referral'] = self::getMyReferral();
         return $member_info;
     }
     /**

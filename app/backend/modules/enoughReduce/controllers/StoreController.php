@@ -21,7 +21,8 @@ class StoreController extends BaseController
         $setting = request()->input('setting');
 
         foreach ($setting as $key => $value) {
-            SiteSetting::set($key, $value);
+//            SiteSetting::set($key, $value);
+            \Setting::set('enoughReduce.'.$key,$value);
         }
 
         return $this->successJson("设置保存成功", Url::absoluteWeb('goods.enough-reduce.index'));
