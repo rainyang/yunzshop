@@ -57,6 +57,7 @@ class BalanceRechargeResultService
         $this->updateMemberBalance();
         $this->rechargeActivity();
         $this->rechargeEnoughGive();
+        //todo 余额充值成功
     }
 
     private function rechargeActivity()
