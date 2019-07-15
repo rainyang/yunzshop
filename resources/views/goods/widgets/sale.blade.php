@@ -65,7 +65,7 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送余额</label>
     <div class="col-xs-12 col-sm-9 col-md-10">
         <div class='input-group col-md-3'>
-            <input type="text" name="widgets[sale][award_balance]" value="{{ $item->award_balance }}" class="form-control"/>
+            <input type="text" name="widgets[sale][award_balance]" value="{{ $item->award_balance ?: 0 }}" class="form-control"/>
             <span class="input-group-addon">余额</span>
         </div>
         <span class="help-block">
