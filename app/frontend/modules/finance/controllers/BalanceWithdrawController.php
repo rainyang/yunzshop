@@ -23,6 +23,7 @@ use app\frontend\modules\finance\services\WithdrawManualService;
 use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use Illuminate\Support\Facades\DB;
 use app\common\events\withdraw\WithdrawBalanceAppliedEvent;
+use app\common\helpers\Url;
 
 class BalanceWithdrawController extends BalanceController
 {
@@ -168,6 +169,9 @@ class BalanceWithdrawController extends BalanceController
         $result = (new BalanceChange())->withdrawal($this->getBalanceChangeData());
         if ($result === true) {
             DB::commit();
+            if (app('plugins')->isEnabled('converge_pay')) {
+                (new \Yunshop\ConvergePay\services\WechatService)->notifyWithdrawUrl = Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php');
+            }
             event(new WithdrawBalanceAppliedEvent($this->withdrawModel));
 
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
