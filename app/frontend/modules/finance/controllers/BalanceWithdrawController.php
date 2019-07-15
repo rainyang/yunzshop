@@ -169,9 +169,7 @@ class BalanceWithdrawController extends BalanceController
         $result = (new BalanceChange())->withdrawal($this->getBalanceChangeData());
         if ($result === true) {
             DB::commit();
-            if (app('plugins')->isEnabled('converge_pay')) {
-                (new \Yunshop\ConvergePay\services\WechatService)->notifyWithdrawUrl = Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php');
-            }
+            app('plugins')->isEnabled('converge_pay') ? \Setting::set('plugin.convergePay_set.notifyWithdrawUrl', Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php')) : null;
             event(new WithdrawBalanceAppliedEvent($this->withdrawModel));
 
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
