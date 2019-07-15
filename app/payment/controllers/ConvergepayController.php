@@ -245,7 +245,7 @@ class ConvergepayController extends PaymentController
 
         return $parameter->hmac == md5($parameter->status . $parameter->errorCode . $parameter->errorCodeDesc . $parameter->userNo
                 . $parameter->merchantOrderNo . $parameter->platformSerialNo . $parameter->receiverAccountNoEnc
-                . $parameter->receiverNameEnc . $parameter->paidAmount . sprintf("%.2f", $parameter->fee) . $setting['hmacVal']);
+                . $parameter->receiverNameEnc . sprintf("%.2f", $parameter->paidAmount) . sprintf("%.2f", $parameter->fee) . $setting['hmacVal']);
     }
 
     /**
