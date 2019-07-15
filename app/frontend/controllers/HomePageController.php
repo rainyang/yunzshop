@@ -498,14 +498,7 @@ class HomePageController extends ApiController
      */
     public function wxapp($request)
     {
-        $idx = $this->index();
-
-        $this->apiData = $idx['json'];
-
-        $this->dataIntegrated($this->isValidatePage($request, true), 'page');
-        $this->dataIntegrated($this->getLangSetting(), 'lang');
-
-        return $this->successJson('', $this->apiData);
+        return $this->index();
     }
 
     /**
