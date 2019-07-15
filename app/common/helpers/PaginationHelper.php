@@ -18,6 +18,7 @@ class PaginationHelper
      * @return string
      */
     public static function show($total, $pageIndex, $pageSize = 15, $url = '', $context = []) {
+
         !$context && $context = ['before' => 5, 'after' => 4, 'ajaxcallback' => '', 'callbackfuncname' => ''];
         $pdata = [
             'tcount' => 0,
@@ -76,6 +77,7 @@ class PaginationHelper
                 $pdata['naa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
                 $_REQUEST['page'] = $pdata['lindex'];
                 $pdata['laa'] = 'href="' . \YunShop::app()->script_name . '?' . http_build_query($_REQUEST) . '"';
+
             }
         }
 
@@ -119,6 +121,9 @@ class PaginationHelper
             $html .= "<li><a {$pdata['naa']} class=\"pager-nav\">下一页&raquo;</a></li>";
             $html .= "<li><a {$pdata['laa']} class=\"pager-nav\">尾页</a></li>";
         }
+        $html .= "<li><input type='text' id='jump' style='width: 25px'></li>";
+        $html .= "<li><a onclick =getkey(this)  class=\"pager-nav\">跳转</a></li>";
+
         $html .= '</ul></div>';
         return $html;
     }
