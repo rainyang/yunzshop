@@ -32,7 +32,11 @@ class EditGoodsService
         $this->type = $type;
         $this->goods_id = $goods_id;
         $this->request = $request;
-        $this->goods_model = Goods::with('hasOneGoodsVideo')->with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
+        $this->goods_model = Goods::with('hasOneGoodsVideo')->with(['hasManyParams' => function ($query) {
+            return $query->orderBy('displayorder', 'asc');
+        }])->with(['hasManySpecs' => function ($query) {
+            return $query->orderBy('display_order', 'asc');
+        }])->with('hasManyGoodsCategory')->find($goods_id);
     }
 
     public function edit()
@@ -50,7 +54,7 @@ class EditGoodsService
         $goods_data = array_merge($arrt_default, $goods_data);
 
         foreach ($this->goods_model->hasManySpecs as &$spec) {
-            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
+            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->orderBy('display_order', 'asc')->get()->toArray();
         }
 
         //获取具体规格内容html

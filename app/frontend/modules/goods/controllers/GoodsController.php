@@ -944,7 +944,7 @@ class GoodsController extends ApiController
     public function couponsMemberLj($member)
     {
         if (empty($member)) {
-            return $this->errorJson('没有找到该用户', []);
+            return $this->successJson('没有找到该用户', []);
         }
         $memberLevel = $member->level_id;
 
@@ -994,7 +994,5 @@ class GoodsController extends ApiController
             }
         }
     }
-
-
 
 }

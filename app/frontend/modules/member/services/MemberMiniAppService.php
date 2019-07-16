@@ -8,11 +8,15 @@
 
 namespace app\frontend\modules\member\services;
 
+use app\common\exceptions\AppException;
 use app\common\helpers\Client;
+use app\common\models\MemberGroup;
 use app\common\services\Session;
 use app\frontend\modules\member\models\MemberMiniAppModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
 use app\frontend\modules\member\models\McMappingFansModel;
+use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class MemberMiniAppService extends MemberService
 {
@@ -41,7 +45,7 @@ class MemberMiniAppService extends MemberService
             'js_code' => $para['code'],
             'grant_type' => 'authorization_code',
         );
-\Log::debug('------------mini data--------', $data);
+
         $url = 'https://api.weixin.qq.com/sns/jscode2session';
 
         $user_info = \Curl::to($url)
@@ -57,13 +61,13 @@ class MemberMiniAppService extends MemberService
             $pc = new \WXBizDataCrypt($min_set['key'], $user_info['session_key']);
             $errCode = $pc->decryptData($json_data['encryptedData'], $json_data['iv'], $data);
         }
-\Log::debug('-------------errcode-------', [$errCode]);
+        \Log::debug('-------------min errcode-------', [$errCode]);
         if ($errCode == 0) {
             $json_user = json_decode($data, true);
         } else {
             return show_json(0,'登录认证失败');
         }
-\Log::debug('-----------mini json_user------------', $json_user);
+
         if (!empty($json_user)) {
             if (isset($json_user['unionId'])) {
                 $json_user['unionid']     = $json_user['unionId'];
@@ -76,7 +80,6 @@ class MemberMiniAppService extends MemberService
 
             //Login
             $member_id = $this->memberLogin($json_user);
-            //$this->createMiniMember($json_user, ['uniacid'=>$uniacid, 'member_id'=>$member_id]);
 
             Session::set('member_id', $member_id);
 
@@ -84,7 +87,7 @@ class MemberMiniAppService extends MemberService
 
             $result = array('session' => $random, 'wx_token' =>session_id(), 'uid' => $member_id);
 
-            return show_json(1, $result);
+            return show_json(1, $result, $result);
         } else {
             return show_json(0, '获取用户信息失败');
         }
@@ -144,62 +147,6 @@ class MemberMiniAppService extends MemberService
 
         return $member_id;
     }
-
-    /**
-     * 小程序平台授权登陆
-     *
-     * @param $uniacid
-     * @param $userinfo
-     * @return array|int|mixed
-     */
-    /*public function openidLogin($uniacid, $userinfo, $upperMemberId = NULL)
-    {
-        $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
-        $fans_mode = MemberMiniAppModel::getUId($userinfo['openid']);
-
-        if ($fans_mode) {
-            $member_model = Member::getMemberById($fans_mode->uid);
-            $member_shop_info_model = MemberShopInfo::getMemberShopInfo($fans_mode->uid);
-
-            $member_id = $fans_mode->uid;
-        }
-
-        if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
-            \Log::debug('小程序登陆更新');
-
-            $this->updateMemberInfo($member_id, $userinfo);
-        } else {
-            \Log::debug('添加新会员');
-
-            if (empty($member_model) && empty($fans_mode)) {
-                $member_id = $this->addMemberInfo($uniacid, $userinfo);
-
-                if ($member_id === false) {
-                    return show_json(8, '保存用户信息失败');
-                }
-            } elseif ($fans_mode->uid) {
-                $member_id = $fans_mode->uid;
-
-                $this->updateMemberInfo($member_id, $userinfo);
-            }
-
-            if (empty($member_shop_info_model)) {
-                $this->addSubMemberInfo($uniacid, $member_id);
-            }
-
-            //生成分销关系链
-            if ($upperMemberId) {
-                \Log::debug('分销关系链-海报');
-                Member::createRealtion($member_id, $upperMemberId);
-            } else {
-                \Log::debug('分销关系链-链接');
-                Member::createRealtion($member_id);
-            }
-        }
-
-        return $member_id;
-    }*/
 
     public function updateMemberInfo($member_id, $userinfo)
     {
@@ -271,5 +218,15 @@ class MemberMiniAppService extends MemberService
             'member_id' => $member_id,
             'type' => self::LOGIN_TYPE
         ));
+    }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged()
+    {
+        return MemberService::isLogged();
     }
 }

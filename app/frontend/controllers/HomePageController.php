@@ -304,6 +304,9 @@ class HomePageController extends ApiController
                 }
             }
 
+            //小程序验证推广按钮是否开启
+            $result['system']['btn_romotion'] = PortType::popularizeShow($type);
+
             if (is_null($integrated)) {
                 return $this->successJson('ok', $result);
             } else {
@@ -934,9 +937,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-            return show_json(1, []);
-        }
+         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+             return show_json(1, []);
+         }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
@@ -961,15 +964,15 @@ class HomePageController extends ApiController
         ));
         $config = json_decode($config, 1);
 
-        $info = [];
+        $info['uid'] = \YunShop::app()->getMemberId();
 
-        if (\YunShop::app()->getMemberId()) {
-            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
-
-            if (!empty($info)) {
-                $info = $info->toArray();
-            }
-        }
+//        if (\YunShop::app()->getMemberId()) {
+//            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+//
+//            if (!empty($info)) {
+//                $info = $info->toArray();
+//            }
+//        }
 
         $share = \Setting::get('shop.share');
 
@@ -979,7 +982,10 @@ class HomePageController extends ApiController
             }
         }
 
-        $shop = \Setting::get('shop');
+        $shop['shop'] = \Setting::get('shop.shop');
+        if (is_null($shop['shop'])) {
+            $shop['shop']['name'] = '商家分享';
+        }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {

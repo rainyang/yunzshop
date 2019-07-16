@@ -24,7 +24,7 @@
                 var url = "{!! yzWebUrl('order.operation.invoice') !!}";
             } 
             if (url_status == 'remark') {
-                var url = "{!! yzWebUrl('order.operation.remark') !!}";
+                var url = "{!! yzWebUrl('order.operation.remarks') !!}";
             }
             $.post(url, {
                      {{--$.post("{!! yzWebUrl('setting.small-program.add') !!}", {--}}
