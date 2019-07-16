@@ -14,8 +14,14 @@ class InsertImsYzSettingSupervisordTable extends Migration
     public function up()
     {
         if (Schema::hasTable('yz_setting')) {
-            $sql = "INSERT INTO `ims_yz_setting` (`id`, `uniacid`, `group`, `key`, `type`, `value`) VALUES(NULL, '0', 'shop', 'supervisor', 'string', 'http://127.0.0.1')";
-            \Illuminate\Support\Facades\DB::unprepared($sql);
+            \Illuminate\Support\Facades\DB::table('yz_setting')
+                ->insert([
+                    'uniacid' => 0,
+                    'group' => 'shop',
+                    'key' => 'supervisor',
+                    'type' => 'string',
+                    'value' => 'http://127.0.0.1',
+                ]);
         }
     }
 
