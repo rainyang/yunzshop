@@ -52,16 +52,6 @@ class HomePageController extends ApiController
     ];
     private $pageSize = 16;
 
-    protected function jumpUrl($type, $mid)
-    {
-        if (empty($type) || $type == 'undefined') {
-            $type = Client::getType();
-        }
-
-        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
-
-        return $queryString;
-    }
     /**
      * @return \Illuminate\Http\JsonResponse 当路由不包含page_id参数时,提供商城首页数据; 当路由包含page_id参数时,提供装修预览数据
      */
@@ -944,9 +934,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        // if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-        //     return show_json(1, []);
-        // }
+         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+             return show_json(1, []);
+         }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
@@ -990,7 +980,7 @@ class HomePageController extends ApiController
         }
 
         $shop['shop'] = \Setting::get('shop.shop');
-        if (is_null($shop)) {
+        if (is_null($shop['shop'])) {
             $shop['shop']['name'] = '商家分享';
         }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));

@@ -19,6 +19,6 @@ class SiteSetting extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return new \app\common\modules\site\SiteSetting();
+        return 'siteSetting';
     }
 }
