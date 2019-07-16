@@ -179,7 +179,7 @@
                                             </div>
                                         </div>
                                         <div class="help-block">
-                                            可设置1-10次,不设置或为空默认为10
+                                            不设置或为空,则不限制
                                         </div>
                                     </div>
                                 </div>
