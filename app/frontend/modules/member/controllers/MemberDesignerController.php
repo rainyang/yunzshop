@@ -19,7 +19,7 @@ class MemberDesignerController extends ApiController
          $res = [];
          $res['status'] = false;
          $res['data'] = [];
-         if (app('plugins')->isEnabled('hotel')) {
+         if (app('plugins')->isEnabled('designer')) {
             $designer =  MemberDesigner::uniacid()->where('id',1)->first();
             if($designer->datas)
             {
