@@ -266,6 +266,10 @@
                                             <a class="btn btn-default btn-sm" href="javascript:;"
                                                onclick="$('#modal-close').find(':input[name=order_id]').val('{{$order['id']}}')"
                                                data-toggle="modal" data-target="#modal-close">关闭订单</a>
+                                        @elseif( $order['status'] > 0 && $order['status'] != 3 && $order['status'] != 11  )
+                                            <a class="btn btn-default btn-sm" href="javascript:;"
+                                               onclick="$('#modal-manual-refund').find(':input[name=order_id]').val('{{$order['id']}}')"
+                                               data-toggle="modal" data-target="#modal-manual-refund">退款并关闭订单</a>
                                         @endif
 
                                     </td>
