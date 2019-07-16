@@ -120,7 +120,7 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
-    public function manualre_fund()
+    public function manualRefund()
     {
 
         $this->order->refund();
