@@ -65,6 +65,8 @@ class ConstService
 
     const SOURCE_DRAW_CHARGE  = 16; //抽奖获得
 
+    const SOURCE_DRAW_REWARD  = 17; //抽奖奖励
+
 
 
     protected static $title = '余额';
@@ -101,6 +103,7 @@ class ConstService
             self::SOURCE_CONVERT               => static::$title.'转化'.(defined('LOVE_NAME') ? LOVE_NAME : '爱心值'),
             self::SOURCE_CONVERT_CANCEL        => static::$title.'转化'.(defined('LOVE_NAME') ? LOVE_NAME : '爱心值').'失败回滚',
             self::SOURCE_DRAW_CHARGE           => '抽奖获得',
+            self::SOURCE_DRAW_REWARD           => '抽奖奖励',
         ];
     }
 

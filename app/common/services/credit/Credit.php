@@ -204,6 +204,17 @@ abstract class Credit
         return $this->addition($data);
     }
 
+    /**
+     * 抽奖奖励余额
+     * @param array $data
+     * @return string
+     */
+    public function DrawReward(array $data)
+    {
+        $this->source = ConstService::SOURCE_DRAW_REWARD;
+        return $this->addition($data);
+    }
+
     //加法
     protected function addition($data)
     {

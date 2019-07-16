@@ -199,6 +199,9 @@ class PointLog extends BaseModel
             case (35):
                 $mode_attribute = PointService::POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED;
                 break;
+            case (36):
+                $mode_attribute = PointService::POINT_MODE_DRAW_REWARD_GRT_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }

@@ -138,7 +138,8 @@ class PointService
     const POINT_MODE_DRAW_CHARGE_DEDUCTION = 35;
     const POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED = '抽奖使用扣除';
 
-
+    const POINT_MODE_DRAW_REWARD_GET = 36;
+    const POINT_MODE_DRAW_REWARD_GRT_ATTACHED = '抽奖奖励';
 
 
     const POINT = 0;
@@ -373,6 +374,9 @@ class PointService
                 break;
             case (35):
                 $mode_attribute = self::POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED;
+                break;
+            case (36):
+                $mode_attribute = self::POINT_MODE_DRAW_REWARD_GRT_ATTACHED;
                 break;
         }
         return $mode_attribute;
