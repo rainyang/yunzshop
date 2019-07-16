@@ -124,6 +124,7 @@ class GoodsController extends ApiController
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
         $goodsModel->availability = $this->couponsMemberLj();
+        $goodsModel->is_added = \ Setting::get('shop.member.added') ?: 2;
 // dd($goodsModel->toArray());
         $goodsModel->content = html_entity_decode($goodsModel->content);
 

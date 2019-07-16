@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情已添加*件</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情已添加</label>
                             <div class="col-sm-9 col-xs-12">
 
                                 <label class='radio-inline'><input type='radio' name='member[added]' value='1'
