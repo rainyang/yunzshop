@@ -27,7 +27,7 @@ class IncomeService
                 ];
             }
         }
-        $modeData['service_switch'] = $set['service_switch'];
+        $modeData['service_switch'] = $set['service_switch']?:0;
         return $modeData;
     }
 

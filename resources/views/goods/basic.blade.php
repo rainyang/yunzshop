@@ -178,7 +178,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span >*</span>商品价格</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span ></span>商品价格</label>
     <div class="col-sm-9 col-xs-12 form-inline">
         <div class="input-group form-group col-sm-3">
             <span class="input-group-addon">现价</span>
