@@ -238,4 +238,14 @@ class MemberAppYdbService extends MemberService
             'type'      => self::LOGIN_TYPE
         ));
     }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged()
+    {
+        return MemberService::isLogged();
+    }
 }

@@ -11,20 +11,15 @@ namespace app\backend\controllers;
 
 use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
-use app\common\events\order\AfterOrderPaidEvent;
-use app\common\facades\Setting;
 use app\common\models\Income;
 use app\common\models\member\ChildrenOfMember;
 use app\common\models\member\ParentOfMember;
-use app\common\models\Order;
-use app\common\models\OrderCreatedJob;
-use app\common\models\OrderPaidJob;
 use app\common\services\member\MemberRelation;
 use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use app\common\facades\Setting;
 
 class TestController extends BaseController
 {
@@ -32,13 +27,9 @@ class TestController extends BaseController
 
     public function t()
     {
-        $o = OrderPaidJob::where('status', 'waiting')->where('created_at', '<', time() - 60 * 10)->orderBy('created_at', 'desc')->get();
-        dd($o->toArray());
-    }
-    public function t2(){
 
-        event(new AfterOrderPaidEvent(Order::find(4455)));
     }
+
     private $amountItems;
 
     private function getAmountItems()
@@ -55,7 +46,7 @@ class TestController extends BaseController
     private function getAmountByMemberId($memberId)
     {
         $amountItem = $this->getAmountItems()->where('member_id', $memberId)->first();
-        if ($amountItem) {
+        if($amountItem){
             dd($amountItem);
             return $amountItem['total_amount'];
         }

@@ -10,6 +10,7 @@ namespace app\frontend\modules\member\services\factory;
 
 use app\frontend\modules\member\services\MemberAppYdbService;
 use app\frontend\modules\member\services\MemberMobileService;
+use app\frontend\modules\member\services\MemberNativeAppService;
 use app\frontend\modules\member\services\MemberWechatService;
 use app\frontend\modules\member\services\MemberAppWechatService;
 use app\frontend\modules\member\services\MemberMiniAppService;
@@ -27,6 +28,7 @@ class MemberFactory
     const LOGIN_QQ = 6;
     const LOGIN_APP_YDB = 7;
     const LOGIN_ALIPAY = 8;
+    const LOGIN_Native = 9;
 
     public static function create($type = null)
     {
@@ -57,6 +59,9 @@ class MemberFactory
                 break;
             case self::LOGIN_ALIPAY:
                 $className = new MemberAlipayService();
+                break;
+            case self::LOGIN_Native:
+                $className = new MemberNativeAppService();
                 break;
             default:
                 $className = null;
