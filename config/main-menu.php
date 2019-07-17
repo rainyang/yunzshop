@@ -1397,7 +1397,7 @@ return [
                                 'icon'       => '',
                                 'sort'       => 0,
                                 'item'       => 'member_agent_export',
-                                'parents'    => ['Member', 'member_all',],
+                                'parents'    => ['Member', 'member_all', 'member_member_agent'],
                             ],
                         ]
                     ],
