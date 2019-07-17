@@ -378,5 +378,11 @@ class BalanceWithdrawController extends BalanceController
         throw new AppException('未获取到会员信息');
     }
 
+    public function convergeWithdraw()
+    {
+        $data['actual_amount'] = bcsub($this->getWithdrawMoney(), $this->getPoundage(),2);
+        $data['poundage'] = number_format($this->getPoundage(), 2);
 
+        return $this->successJson('获取数据成功', $data);
+    }
 }
