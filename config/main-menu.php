@@ -3503,6 +3503,17 @@ return [
                         'sort'       => 0,
                         'item'       => 'order_ranking_charts',
                         'parents'    => ['charts', 'member_income_charts'],
+                    ],
+                    'member_income_charts_back' => [
+                        'name'       => '返回按钮',
+                        'url'        => 'charts.income.member_income.index',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 1,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'member_income_charts_back',
+                        'parents'    => ['charts', 'member_income_charts'],
                     ]
                 ]
             ],
