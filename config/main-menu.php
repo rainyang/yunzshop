@@ -1113,7 +1113,7 @@ return [
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
-                            'goods_discount_set_update'      => [
+                            'goods_discount_set_edit'      => [
                                 'name'       => '编辑设置',
                                 'url'        => 'discount.batch-discount.update-set',
                                 'url_params' => '',
@@ -1121,7 +1121,7 @@ return [
                                 'menu'       => 0,
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
-                                'item'       => 'goods_discount_set_update',
+                                'item'       => 'goods_discount_set_edit',
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
