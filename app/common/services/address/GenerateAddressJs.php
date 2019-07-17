@@ -17,9 +17,9 @@ class GenerateAddressJs
     public function address()
     {
         if (env('APP_Framework') == 'platform') {
-            $file_dir = base_path().'/addons/yun_shop';
+            $file_dir = base_path().'/addons/yun_shop/static';
         } else {
-            $file_dir = base_path();
+            $file_dir = base_path().'/static';
         }
 
 
