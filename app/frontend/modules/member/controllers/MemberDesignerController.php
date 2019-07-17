@@ -20,7 +20,7 @@ class MemberDesignerController extends ApiController
          $res['status'] = false;
          $res['data'] = [];
          if (app('plugins')->isEnabled('designer')) {
-            $designer =  MemberDesigner::uniacid()->where('id',1)->first();
+            $designer =  MemberDesigner::uniacid()->where('id',19)->first();
             if($designer->datas)
             {
                 $res['data'] = json_decode($designer->datas);
