@@ -12,6 +12,7 @@ namespace app\backend\modules\balance\controllers;
 use app\backend\modules\finance\models\BalanceRechargeRecords;
 use app\backend\modules\member\models\Member;
 use app\common\components\BaseController;
+use app\common\events\finance\BalanceRechargedEvent;
 use app\common\exceptions\ShopException;
 use app\common\helpers\Url;
 use app\common\services\credit\ConstService;
@@ -85,7 +86,7 @@ class RechargeController extends BaseController
     {
         $this->rechargeModel->status = BalanceRechargeRecords::PAY_STATUS_SUCCESS;
         if ($this->rechargeModel->save()) {
-            //todo 余额充值成功
+            event(new BalanceRechargedEvent($this->rechargeModel));
             return true;
         }
         return '充值状态修改失败';

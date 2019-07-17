@@ -10,6 +10,7 @@
 namespace app\frontend\modules\finance\services;
 
 
+use app\common\events\finance\BalanceRechargedEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\finance\BalanceRechargeActivity;
 use app\common\services\credit\ConstService;
@@ -57,7 +58,7 @@ class BalanceRechargeResultService
         $this->updateMemberBalance();
         $this->rechargeActivity();
         $this->rechargeEnoughGive();
-        //todo 余额充值成功
+        event(new BalanceRechargedEvent($this->rechargeModel));
     }
 
     private function rechargeActivity()
