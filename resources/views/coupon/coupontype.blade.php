@@ -67,6 +67,7 @@
         <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(1)' value="1" @if($usetype==1)checked @endif>指定商品分类</label>
         <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(2)' value="2" @if($usetype==2)checked @endif>指定商品</label>
         <label class="radio-inline"><input type="radio" name="coupon[use_type]" onclick='showusetype(4)' value="4" @if($coupon['use_type']==4)checked @endif>指定门店</label>
+        <label class="radio-inline"  @if(!$hotel_is_open) style="display: none" @endif><input type="radio" name="coupon[use_type]" onclick='showusetype(7)' value="7" @if($coupon['use_type']==7)checked @endif>指定酒店</label>
     </div>
 </div>
 
@@ -194,6 +195,45 @@
         </div>
 
     </div>
+    {{--隐藏窗口 - 适用范围:指定酒店--}}
+    <div class="col-sm-7 usetype usetype7"  @if($coupon['use_type']!=7 || !$hotel_is_open)style='display:none' @endif>
+        <div class='input-group'>
+            <div id="hotel">
+                <table class="table">
+                    <tbody id="param-itemshotel">
+                    @if ($hotels)
+                        @foreach ($hotels as $v)
+                            <tr>
+                                <td>
+                                    <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
+                                </td>
+                                <td  colspan="2">
+                                    <input id="hotelid" type="hidden" class="form-control" name="hotel_ids[]" data-id="{{$v->id}}" data-name="hotelids"  value="{{$v->id}}" style="width:200px;float:left"  />
+                                    <input id="hotelname" class="form-control" type="text" name="hotel_names[]" data-id="{{$v->id}}" data-name="hotelnames" value="{{$v->hotel_name}}" style="width:200px;float:left" readonly="true">
+                                    <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link-hotel" type="button" data-id="{{$v->id}}" onclick="$('#modal-module-menus-hotel').modal();$(this).parent().parent().addClass('focushotel')">选择酒店</button>
+                                </span>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
+                    </tbody>
+
+                    <tbody>
+                    <tr>
+                        <td colspan="3">
+                            <a href="javascript:;" id='add-param_hotel' onclick="addParam('hotel')"
+                               style="margin-top:10px;" class="btn btn-primary" title="添加酒店"><i class='fa fa-plus'></i> 添加酒店</a>
+                        </td>
+                    </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+
+    </div>
 
 </div>
 
@@ -291,6 +331,35 @@
     </div>
 </div>
 
+<div id="modal-module-menus-hotel" class="modal fade" tabindex="-1"> {{--搜索酒店的弹窗--}}
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header">
+                <button aria-hidden="true" data-dismiss="modal" class="close" type="button">
+                    ×
+                </button>
+                <h3>选择酒店</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="keyword" value=""
+                               id="search-kwd-hotel" placeholder="请输入酒店名称"/>
+                        <span class='input-group-btn'>
+                            <button type="button" class="btn btn-default" onclick="search_hotel();">搜索
+                            </button>
+                        </span>
+                    </div>
+                </div>
+                <div id="module-menus-hotel" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default"
+                                         data-dismiss="modal" aria-hidden="true">关闭</a>
+            </div>
+        </div>
+
+    </div>
+</div>
 
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否可领取</label>

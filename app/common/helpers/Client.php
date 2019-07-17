@@ -249,4 +249,37 @@ class Client
             default : return self::OS_UNKNOWN;
         }
     }
+
+    public static function is_nativeApp()
+    {
+        if(defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api'){
+            return true;
+        }
+        $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $yunzhong = (strpos($agent, 'yzshop')) ? true : false;
+        if ($yunzhong) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static function create_token($namespace = '')
+    {
+        $guid = '';
+        $uid = uniqid("", true);
+        $data = $namespace;
+        $data .= $_SERVER['REQUEST_TIME'];
+        $data .= $_SERVER['HTTP_USER_AGENT'];
+        $data .= $_SERVER['LOCAL_ADDR'];
+        $data .= $_SERVER['LOCAL_PORT'];
+        $data .= $_SERVER['REMOTE_ADDR'];
+        $data .= $_SERVER['REMOTE_PORT'];
+        $hash = strtoupper(hash('ripemd128', $uid . $guid . md5($data)));
+
+        $token = substr($hash,  0,  8) . substr($hash,  8,  4) . substr($hash, 12,  4) .
+            substr($hash, 16,  4) . substr($hash, 20, 12);
+
+        return $token;
+    }
 }

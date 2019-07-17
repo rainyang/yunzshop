@@ -10,20 +10,30 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\BaseController;
 
+use app\common\helpers\Client;
 use app\common\services\Session;
+use app\frontend\modules\member\models\SubMemberModel;
 use Illuminate\Support\Facades\Cookie;
 
 class LogoutController extends BaseController
 {
     public function index()
     {
-        $cookieid = "__cookie_yun_shop_userid_" . \YunShop::app()->uniacid;
+        if (Client::is_nativeApp()) {
+            $token = \YunShop::request()->yz_token;
 
-        Cookie::unqueue($cookieid);
-        Cookie::unqueue('member_mobile');
+            $member = SubMemberModel::getMemberByNativeToken($token);
 
-        //Session::clear('member_id');
-        session_destroy();
+            $member->access_token_2 = '';
+
+            $member->save();
+        } else {
+            setcookie('Yz-Token', '', time() - 3600);
+            setcookie('Yz-Uid', '',time() - 3600);
+
+            session_destroy();
+        }
+
         return $this->successJson('退出成功');
     }
 }

@@ -205,4 +205,14 @@ class MemberAlipayService extends MemberService
         return $this->url."?app_id=".$appId."&scope=auth_user&redirect_uri=".$callback."&state=".$state;
     }
 
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged()
+    {
+        return MemberService::isLogged();
+    }
+
 }
