@@ -10,22 +10,23 @@ namespace app\common\services\address;
 
 use Illuminate\Support\Facades\DB;
 use app\common\models\Address;
+use app\common\services\Utils;
 
 class GenerateAddressJs
 {
     public function address()
     {
         if (env('APP_Framework') == 'platform') {
-            $file_dir = '';
+            $file_dir = base_path().'/addons/yun_shop';
         } else {
-            $file_dir = '../addons/yun_shop';
+            $file_dir = base_path();
         }
+
 
         $b = $this->abcd();
         $b = json_encode($b, JSON_UNESCAPED_UNICODE);
         $str = 'var district ='.$b.';if (typeof define === "function") {define(district)} else {window.YDUI_DISTRICT = district}';
         $ccc =  file_put_contents($file_dir.'/gov_province_city_area_id.js', $str);
-
         return $ccc;
 
     }
@@ -43,4 +44,5 @@ class GenerateAddressJs
 
         return $address;
     }
+
 }
