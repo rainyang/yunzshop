@@ -122,8 +122,7 @@ class PaginationHelper
             $html .= "<li><a {$pdata['laa']} class=\"pager-nav\">尾页</a></li>";
         }
         $html .= "<li><input type='text' id='jump' style='width: 25px'></li>";
-        $html .= "<li><a onclick =getkey(this)  class=\"pager-nav\">跳转</a></li>";
-
+        $html .= "<li><a onclick =getkey(this,{$pdata['tpage']})  class=\"pager-nav\">跳转</a></li>";
         $html .= '</ul></div>';
         return $html;
     }

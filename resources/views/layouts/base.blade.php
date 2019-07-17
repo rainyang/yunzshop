@@ -298,12 +298,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
 </script>
 
 <script type='text/javascript'>
-    function getkey(a) {
+    function getkey(a,maxpage) {
         pms =  Number(document.getElementById('jump').value);
-        maxpage = Number( "{!! $_REQUEST['page'] !!}");
         inits = "{!! YunShop::app()->script_name . '?' . http_build_query($_REQUEST) !!}";
         reg=/page=(\w+)/gi;
         str=inits.match(reg);
+        // console.log(pms);
+        // console.log(maxpage)
         initsurl=inits.replace(reg,'page=');
         if(pms > maxpage){
             pms = maxpage;
