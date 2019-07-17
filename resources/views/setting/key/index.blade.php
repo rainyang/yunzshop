@@ -57,7 +57,7 @@
                                 </el-form-item>
                                 <el-form-item>
                                     {{--<el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>--}}
-                                    <el-button type="primary" @click="reg_shop('create')" v-loading="formLoading" v-if="btn == 1">注册商城</el-button>
+                                    <el-button type="primary" @click="reg_shop('create')" :disabled="formLoading" v-if="btn == 1">注册商城</el-button>
                                 </el-form-item>
                             </el-form><!--auth end-->
 
@@ -123,7 +123,7 @@
                                 </el-form-item>
 
                                 <el-form-item>
-                                    <el-button type="primary" @click.native.prevent="onSubmit" v-loading="formLoading">提交</el-button>
+                                    <el-button type="primary" @click.native.prevent="onSubmit" :disabled="formLoading">提交</el-button>
                                 </el-form-item>
                             </el-form><!--free end-->
                         </template>
@@ -314,9 +314,7 @@
                     });
                 },
                 onSubmit: function () {
-                    if (this.formLoading) {
-                        return;
-                    }
+                    this.formLoading = true;
 
                     this.$refs.form.validate((valid) => {
                         if (valid) {
