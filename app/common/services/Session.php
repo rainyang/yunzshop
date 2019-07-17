@@ -34,7 +34,6 @@ class Session
         $session_data['expire'] = $expire;
 
         $_SESSION[self::PREFIX . $name] = $session_data;
-        //session_write_close();
     }
 
     /**
@@ -52,16 +51,12 @@ class Session
 
         }
         if (isset($_SESSION[self::PREFIX . $name])) {
-           // if ($_SESSION[self::PREFIX . $name]['expire'] > time()) {
                 if(isset($key)) {
                     return array_get($_SESSION[self::PREFIX . $name]['data'], $key);
                 }else{
 
                     return $_SESSION[self::PREFIX . $name]['data'];
                 }
-          //  } else {
-           //     self::clear($name);
-          //  }
         }
         return false;
     }
@@ -99,9 +94,7 @@ class Session
         if(isset($key) && !array_has($_SESSION[self::PREFIX . $name]['data'],$key)){
             return false;
         }
-//        if($_SESSION[self::PREFIX . $name]['expire'] <= time()){
-//            return false;
-//        }
+
         return true;
     }
 
@@ -110,12 +103,12 @@ class Session
         self::put($key, $value);
     }
 
-    public static function factory($uniacid, $expire)
+    public static function factory($uniacid)
     {
         if (env('APP_Framework') == 'platform') {
-            YunSession::start($uniacid, Utils::getClientIp(), $expire);
+            YunSession::start($uniacid, Utils::getClientIp());
         } else {
-            WeSession::start($uniacid, CLIENT_IP, $expire);
+            WeSession::start($uniacid, CLIENT_IP);
         }
     }
 }
