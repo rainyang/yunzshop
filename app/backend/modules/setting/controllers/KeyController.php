@@ -234,7 +234,7 @@ class KeyController extends BaseController
             ->asJsonResponse(true)
             ->get();
 
-        return $this->successJson('ok', $res);
+        return $this->successJson('验证码已发送', $res);
     }
 
     public function reset()
