@@ -380,6 +380,7 @@ class BalanceWithdrawController extends BalanceController
 
     public function convergeWithdraw()
     {
+        $data['cost_money'] = number_format($this->getWithdrawMoney());
         $data['actual_amount'] = bcsub($this->getWithdrawMoney(), $this->getPoundage(),2);
         $data['poundage'] = number_format($this->getPoundage(), 2);
 
