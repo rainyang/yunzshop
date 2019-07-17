@@ -3047,6 +3047,16 @@ return [
                         'parents'    => ['finance', 'profit_advertisement'],
                         'child'      => []
                     ],
+                    'profit_advertisement_advertisement_change'  => [
+                        'name'       => '切换状态',
+                        'permit'     => 1,
+                        'menu'       => '',
+                        'icon'       => '',
+                        'url'        => 'finance.advertisement.setStatus',
+                        'url_params' => '',
+                        'parents'    => ['finance', 'profit_advertisement'],
+                        'child'      => []
+                    ],
                 ]
             ],
 
