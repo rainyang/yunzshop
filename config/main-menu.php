@@ -1373,7 +1373,7 @@ return [
                         'menu'       => 0,
                         'icon'       => '',
                         'sort'       => 0,
-                        'item'       => 'member_member_agent',
+                        'item'       => 'member_member_agent_old',
                         'parents'    => ['Member', 'member_all',],
                     ],
 
@@ -1387,11 +1387,24 @@ return [
                         'sort'       => 0,
                         'item'       => 'member_member_agent',
                         'parents'    => ['Member', 'member_all',],
+                        'child'      => [
+                            'member_agent_export' => [
+                                'name'       => '团队下线导出',
+                                'url'        => 'member.member.agentExport',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 0,
+                                'item'       => 'member_agent_export',
+                                'parents'    => ['Member', 'member_all',],
+                            ],
+                        ]
                     ],
 
                     'member_member_agent_parent' => [
                         'name'       => '推广上线',
-                        'url'        => 'member.member.agent-parent',
+                        'url'        => 'member.member.agentParent',
                         'url_params' => '',
                         'permit'     => 1,
                         'menu'       => 0,
