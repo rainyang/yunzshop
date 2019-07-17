@@ -725,7 +725,7 @@ return [
                             ],
 
                             'coupon_notice_set_see' => [
-                                'name'       => '通知设置',
+                                'name'       => '通知开启',
                                 'url'        => 'setting.default-notice.store',
                                 'url_params' => '',
                                 'permit'     => 1,
@@ -733,6 +733,18 @@ return [
                                 'icon'       => 'fa-ticket',
                                 'sort'       => '2',
                                 'item'       => 'coupon_notice_set_see',
+                                'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
+
+                            'coupon_notice_set_close' => [
+                                'name'       => '通知关闭',
+                                'url'        => 'setting.default-notice.storeCancel',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-ticket',
+                                'sort'       => '2',
+                                'item'       => 'coupon_notice_set_close',
                                 'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
                             ],
                         ],
@@ -1023,6 +1035,18 @@ return [
                         'icon'       => 'fa-sitemap',
                         'sort'       => '2',
                         'item'       => 'enough_reduce_store',
+                        'parents'    => ['Goods'],
+                        'child'      => []
+                    ],
+                    'area_list' => [
+                        'name'       => '选择地区',
+                        'url'        => 'area.list',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-sitemap',
+                        'sort'       => '2',
+                        'item'       => 'area_list',
                         'parents'    => ['Goods'],
                         'child'      => []
                     ],
