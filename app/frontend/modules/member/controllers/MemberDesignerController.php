@@ -20,50 +20,50 @@ class MemberDesignerController extends ApiController
          $res['status'] = false;
          $res['data'] = [];
          if (app('plugins')->isEnabled('designer')) {
-            $designer =  MemberDesigner::uniacid()->where('id',3)->first();
+            $designer =  MemberDesigner::uniacid()->where('id',20)->first();
             if($designer->datas)
             {
                 $datas = json_decode($designer->datas);
                 $memberData = $this->getMemberData();
-               /* foreach ($datas as $dkey=>$design)
+                foreach ($datas as $dkey=>$design)
                 {
-                    if($design['temp'] == 'membertool')
+                    if($design->temp == 'membertool')
                     {
-                         foreach ($design['data']['part'] as $pkey=>$par)
+                         foreach ($design->data->part as $pkey=>$par)
                          {
-                             if(!in_array($par['name'],$memberData['tools'])){
-                                 unset($datas[$dkey]['data']['part'][$pkey]);
+                             if(!in_array($par->name,$memberData['tools'])){
+                                 unset($datas[$dkey]->data->part[$pkey]);
                              }
                          }
                     }
-                    if($design['temp'] == 'membermerchant')
+                    if($design->temp == 'membermerchant')
                     {
-                        foreach ($design['data']['part'] as $pkey=>$par)
+                        foreach ($design->data->part as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['merchants'])){
-                                unset($datas[$dkey]['data']['part'][$pkey]);
+                            if(!in_array($par->name,$memberData['merchants'])){
+                                unset($datas[$dkey]->data->part[$pkey]);
                             }
                         }
                     }
-                    if($design['temp'] == 'membermarket')
+                    if($design->temp == 'membermarket')
                     {
-                        foreach ($design['data']['part'] as $pkey=>$par)
+                        foreach ($design->data->part as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['markets'])){
-                                unset($datas[$dkey]['data']['part'][$pkey]);
+                            if(!in_array($par->name,$memberData['markets'])){
+                                unset($datas[$dkey]->data->part[$pkey]);
                             }
                         }
                     }
-                    if($design['temp'] == 'memberasset')
+                    if($design->temp == 'memberasset')
                     {
-                        foreach ($design['data']['part'] as $pkey=>$par)
+                        foreach ($design->data->part as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['assets'])){
-                                unset($datas[$dkey]['data']['part'][$pkey]);
+                            if(!in_array($par->name,$memberData['assets'])){
+                                unset($datas[$dkey]->data->part[$pkey]);
                             }
                         }
                     }
-                }*/
+                }
                 $res['data'] = $datas;
                 $res['status'] = true;
             }
