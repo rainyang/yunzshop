@@ -529,6 +529,7 @@ class Withdraw extends BaseModel
     public static function SuccessfulCashWithdrawal($pay_type,$start,$end){
 
         return self::where([
+                ['member_id',\YunShop::app()->getMemberId()],
                 ['status','=',self::STATUS_PAY],
                 ['pay_way','=',$pay_type],
                 ['pay_at','>=',$start],
