@@ -27,6 +27,14 @@ class MemberDesignerController extends ApiController
                 $memberData = $this->getMemberData();
                 foreach ($datas as $dkey=>$design)
                 {
+                    if($design->temp == 'membercenter')
+                    {
+                       if($design->params->memberlove == true){
+                           if(!app('plugins')->isEnabled('love')){
+                               $datas[$dkey]->params->memberlove = false;
+                           }
+                       }
+                    }
                     if($design->temp == 'membertool')
                     {
                          foreach ($design->data->part as $pkey=>$par)
