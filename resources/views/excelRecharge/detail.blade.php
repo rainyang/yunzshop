@@ -54,7 +54,11 @@
                                         <label class="label label-danger">失败</label>
                                     @endif
                                 </td>
-                                <td style="text-align: center;">{{ $list->remark }}</td>
+                                <td style="text-align: center;">
+                                    <a style="color: #0a0a0a" title="{{ $list->remark }}">
+                                        <span>{{ $list->remark }}</span>
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>

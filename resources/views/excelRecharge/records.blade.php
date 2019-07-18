@@ -24,6 +24,7 @@
                         <tr>
                             <th style='width:6%; text-align: center;'>主键ID</th>
                             <th style='width:12%; text-align: center;'>充值时间</th>
+                            <th style='width:12%; text-align: center;'>充值类型</th>
                             <th style='width:12%; text-align: center;'>充值数量</th>
                             <th style='width:12%; text-align: center;'>失败数量</th>
                             <th style='width:12%; text-align: center;'>充值总额</th>
@@ -36,6 +37,7 @@
                             <tr>
                                 <td style="text-align: center;">{{ $list->id }}</td>
                                 <td style="text-align: center;">{{ $list->created_at }}</td>
+                                <td style="text-align: center;">{{ $list->sourceName }}</td>
                                 <td style="text-align: center;">{{ $list->total }}</td>
                                 <td style="text-align: center;">{{ $list->failure }}</td>
                                 <td style="text-align: center;">{{ $list->amount }}</td>

@@ -101,7 +101,9 @@ class ConfirmController extends PageController
      */
     private function messageContent()
     {
-        return "执行数量{$this->handleTotal}，成功数量{$this->successNum}，失败数量{$this->failureTotal}";
+        $successTotal = $this->handleTotal - $this->failureTotal;
+
+        return "执行数量{$this->handleTotal}，成功数量{$successTotal}，失败数量{$this->failureTotal}";
     }
 
     private function handleRecharge(&$recordsId)
@@ -300,13 +302,15 @@ class ConfirmController extends PageController
 
     private function batchRechargePoint($memberId, $rechargeValue)
     {
-        return (new PointService([
+        $result = (new PointService([
             'point_mode'        => PointService::POINT_MODE_EXCEL_RECHARGE,
             'member_id'         => $memberId,
             'point'             => $rechargeValue,
             'remark'            => 'Excel批量充值' . $rechargeValue,
             'point_income_type' => $rechargeValue < 0 ? PointService::POINT_INCOME_LOSE : PointService::POINT_INCOME_GET
         ]))->changePoint();
+
+        return $result ? true : false;
     }
 
 
