@@ -33,10 +33,6 @@ class ApplyRefund extends OrderOperation
     }
     public function enable()
     {
-        //2018-8-30 租赁订单不能退款
-        if ($this->order->plugin_id == 40) {
-            return false;
-        }
         //商品开启不可退款
         if ($this->order->no_refund) {
             return false;

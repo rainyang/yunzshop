@@ -176,12 +176,14 @@ class LoginController extends BaseController
             'lastvisit' =>  time(),
             'lastip' => Utils::getClientIp(),
         ]);
-
-        $sys_app = UniacidApp::getApplicationByid($admin_user->first()->hasOneAppUser->uniacid);
-        if (!is_null($sys_app->deleted_at)) {
-            return $this->successJson('平台已停用', ['status' => -5]);
-        } elseif ($sys_app->validity_time !=0 && $sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
-            return $this->successJson('平台已过期', ['status' => -5]);
+        $hasOneAppUser = $admin_user->first()->hasOneAppUser;
+        if ($hasOneAppUser->role == 'clerk' || $hasOneAppUser->role == 'operator') {
+            $sys_app = UniacidApp::getApplicationByid($hasOneAppUser->uniacid);
+            if (!is_null($sys_app->deleted_at)) {
+                return $this->successJson('平台已停用', ['status' => -5]);
+            } elseif ($sys_app->validity_time !=0 && $sys_app->validity_time < mktime(0,0,0, date('m'), date('d'), date('Y'))) {
+                return $this->successJson('平台已过期', ['status' => -5]);
+            }
         }
 
         if ($this->guard()->user()->uid !== 1) {
@@ -251,7 +253,7 @@ class LoginController extends BaseController
         $copyright['site_logo'] ? : $copyright['site_logo'] = yz_tomedia("/static/images/site_logo.png");
         $copyright['title_icon'] ? : $copyright['title_icon'] =yz_tomedia("/static/images/title_icon.png");
         $copyright['advertisement'] ? : $copyright['advertisement'] = yz_tomedia("/static/images/advertisement.jpg");
-        $copyright['information'] ? : $copyright['information'] = '<p>&copy; 2019&nbsp;<a href=\"https://www.yunzshop.com/\" target=\"_blank\" rel=\"noopener\">Yunzhong.</a>&nbsp;All Rights Reserved. 广州市芸众信息科技有限公司&nbsp;&nbsp;<a href=\"http://www.miitbeian.gov.cn/\" target=\"_blank\" rel=\"noopener\">&nbsp;粤ICP备17018310号-1</a>&nbsp;Powered by Yunzhong&nbsp;</p> <p><a href=\"https://www.yunzshop.com/\" target=\"_blank\" rel=\"noopener\">系统使用教程：www.yunzshop.com</a>&nbsp; &nbsp;&nbsp;<a href=\"https://www.yunzshop.com/plugin.php?id=it618_video:index\" target=\"_blank\" rel=\"noopener\">视频教程</a></p>';
+        $copyright['information'] ? : $copyright['information'] = '<p>&copy; 2019&nbsp;<a href="https://www.yunzmall.com/" target=\"_blank\" rel=\"noopener\">Yunzhong.</a>&nbsp;All Rights Reserved. 广州市芸众信息科技有限公司&nbsp;&nbsp;<a href="http://www.miit.gov.cn/" target="_blank\" rel="noopener\">&nbsp;粤ICP备17018310号-1</a>&nbsp;Powered by Yunzhong&nbsp;</p> <p><a href="https://bbs.yunzmall.com" target="_blank\" rel="noopener\">系统使用教程：bbs.yunzmall.com</a>&nbsp; &nbsp;&nbsp;<a href="https://bbs.yunzmall.com/plugin.php?id=it618_video:index" target="_blank\" rel="noopener\">视频教程</a></p>';
 
         if ($copyright) {
             return $this->successJson('成功', $copyright);
