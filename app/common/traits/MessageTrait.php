@@ -101,7 +101,15 @@ trait MessageTrait
      */
     public function message($message, $redirect = '', $status = 'success')
     {
-        return response()->view('message', [
+        if (env('APP_Framework' == 'platform')) {
+            return response()->view('message', [
+                'redirect' => $redirect,
+                'message' => $message,
+                'status' => $status
+            ]);
+        }
+
+        return view('message', [
             'redirect' => $redirect,
             'message' => $message,
             'status' => $status
