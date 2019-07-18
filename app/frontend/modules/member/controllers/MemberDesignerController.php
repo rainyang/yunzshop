@@ -25,7 +25,7 @@ class MemberDesignerController extends ApiController
             {
                 $datas = json_decode($designer->datas);
                 $memberData = $this->getMemberData();
-                foreach ($datas as $dkey=>$design)
+               /* foreach ($datas as $dkey=>$design)
                 {
                     if($design['temp'] == 'membertool')
                     {
@@ -63,7 +63,7 @@ class MemberDesignerController extends ApiController
                             }
                         }
                     }
-                }
+                }*/
                 $res['data'] = $datas;
                 $res['status'] = true;
             }
