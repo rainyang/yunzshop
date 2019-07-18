@@ -101,7 +101,7 @@ trait MessageTrait
      */
     public function message($message, $redirect = '', $status = 'success')
     {
-        return view('message', [
+        return response()->view('message', [
             'redirect' => $redirect,
             'message' => $message,
             'status' => $status
