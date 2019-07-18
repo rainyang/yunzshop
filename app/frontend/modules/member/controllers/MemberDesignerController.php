@@ -85,7 +85,7 @@ class MemberDesignerController extends ApiController
      */
      private function getDesigner()
      {
-         $designer =  MemberDesigner::uniacid()->where('id',20)->first();
+         $designer =  MemberDesigner::uniacid()->where(['id'=>20,'shop_page_type'=>MemberDesigner::PAGE_MEMBER_CENTER,'is_default'=>1])->first();
          return $designer;
      }
 
