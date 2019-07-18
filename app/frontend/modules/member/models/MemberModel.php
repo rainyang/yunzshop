@@ -937,14 +937,21 @@ class MemberModel extends Member
 
         //增加是否显示爱心值值
         $member_info['love_show'] = [
-            'is_show' => \Setting::get('love.member_center_show') ? 1 : 0,
-            'text' => '爱心值',
-            'data' => '0.00'
+            'usable_love_show' => \Setting::get('love.member_center_show') ? 1 : 0,
+            'unable_love_show' => \Setting::get('love.member_center_unable_show') ? 1 : 0,
+            'usable_text' => '红爱心值',
+            'unable_text' => '白爱心值',
+            'usable_data' => '0.00',
+            'unable_data' => '0.00'
         ];
         if (app('plugins')->isEnabled('love')) {
             $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
             $member_info['love_show']['text'] = LOVE_NAME;
             $member_info['love_show']['data'] = $memberLove->usable ?: '0.00';
+            $member_info['love_show']['usable_text'] = \Yunshop\Love\Common\Services\SetService::getLoveSet('usable_name') ?: '红'.LOVE_NAME;
+            $member_info['love_show']['usable_data'] = $memberLove->usable ?: '0.00';
+            $member_info['love_show']['unable_text'] = \Yunshop\Love\Common\Services\SetService::getLoveSet('unable_name') ?: '白'.LOVE_NAME;
+            $member_info['love_show']['unable_data'] = $memberLove->froze ?: '0.00';
         }
 
         //订单显示
