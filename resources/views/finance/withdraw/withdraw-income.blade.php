@@ -330,11 +330,11 @@
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">劳务税显示</label>
         <div class="col-sm-9 col-xs-12">
             <label class='radio-inline'>
-                <input type='radio' name='withdraw[income][service_switch]' value='1' @if($set['service_switch'] == 1) checked @endif />
+                <input type='radio' name='withdraw[income][service_switch]' value='1' @if($set['service_switch'] == 1 || !isset($set['service_switch'])) checked @endif />
                 开启
             </label>
             <label class='radio-inline'>
-                <input type='radio' name='withdraw[income][service_switch]' value='0' @if($set['service_switch'] == 0) checked @endif />
+                <input type='radio' name='withdraw[income][service_switch]' value='0' @if($set['service_switch'] === '0') checked @endif />
                 关闭
             </label>
 
