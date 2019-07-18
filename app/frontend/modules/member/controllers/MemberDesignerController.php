@@ -20,7 +20,7 @@ class MemberDesignerController extends ApiController
          $res['status'] = false;
          $res['data'] = [];
          if (app('plugins')->isEnabled('designer')) {
-            $designer =  MemberDesigner::uniacid()->where('id',20)->first();
+            $designer =  $this->getDesigner();
             if($designer->datas)
             {
                 $datas = json_decode($designer->datas);
@@ -80,6 +80,19 @@ class MemberDesignerController extends ApiController
          return $this->successJson('成功', $res);
      }
 
+    /**
+     * 获取可用模板
+     */
+     private function getDesigner()
+     {
+         $designer =  MemberDesigner::uniacid()->where('id',20)->first();
+         return $designer;
+     }
+
+    /**
+     * @return array
+     * 获取可用插件按钮
+     */
      private function getMemberData()
      {
          $arr = (new \app\common\services\member\MemberDesigner())->getMemberData();

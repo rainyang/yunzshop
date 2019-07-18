@@ -251,6 +251,7 @@ class MemberDesigner
                'title' => '生活缴费',
                'class' => 'icon-member-tool-j',
                'url' => 'lifeService',
+               'image'=>'member_a(1).png'
            ];
        }
 
