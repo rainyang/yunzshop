@@ -178,6 +178,7 @@ class GoodsController extends ApiController
 
         //商品营销 todo 优化新的
         $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
+        $goodsModel->love_shoppin_gift = $this->loveShoppingGift($goodsModel);
 
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
@@ -1010,7 +1011,7 @@ class GoodsController extends ApiController
             $data['key'] = 'love';
             $data['type'] = 'array';
 
-            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_style') == 2 ) {
+            if ($love_goods['award'] && (\Setting::get('love.goods_detail_show_style') == 2 ||  \Setting::get('love.goods_detail_show_style') == 0)) {
                 return  '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
         }
