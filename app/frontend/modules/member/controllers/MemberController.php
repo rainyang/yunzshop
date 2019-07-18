@@ -99,8 +99,6 @@ class MemberController extends ApiController
         $this->type = intval(\YunShop::request()->type);
         $this->sign = intval(\YunShop::request()->ingress);
 
-        $memberService = app(MemberService::class);
-        $memberService->chkAccount($member_id);
         $member_info = MemberModel::getUserInfos_v2($member_id)->first();
         if (empty($member_info)) {
             if (is_null($integrated)) {

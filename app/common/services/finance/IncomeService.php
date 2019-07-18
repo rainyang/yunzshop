@@ -33,13 +33,12 @@ class IncomeService
 
     public static function getModeName($key)
     {
-        //$dalance=Setting::get('shop.shop');
+        $balance=Setting::get('shop.shop');
         //从数据库获取
-        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
+//        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);  //不知道为什么要查这个
         switch ($key) {
             case 'balance':
-                return '提现到'.$balance;
-               // return '提现到'.$dalance['credit'];
+                return '提现到'.$balance['credit']?:'余额';
                 break;
             case 'wechat':
                 return '提现到微信';

@@ -29,6 +29,8 @@ use Illuminate\Support\Facades\Cookie;
 
 class MemberService
 {
+    const TOKEN_EXPIRE = 2160000;
+
     /**
      * @var \app\frontend\models\Member
      */
@@ -346,11 +348,8 @@ class MemberService
     {
         Session::set('member_id', $member_info['uid']);
 
-        $cookieid = "__cookie_yun_shop_userid_{$uniacid}";
-
-        setcookie('member_id', $member_info['uid'],'3600 * 24' + time(),'/');
-        Cookie::queue($cookieid, $member_info['uid']);
-        Cookie::queue('member_id', $member_info['uid']);
+        setcookie('Yz-Token', time());
+        setcookie('Yz-Uid', $member_info['uid']);
     }
 
     /**
@@ -427,7 +426,13 @@ class MemberService
         \Log::debug('----userinfo2----', $userinfo);
 
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
+        $scope = \YunShop::request()->scope ?: '';
+
+        if (isset($userinfo['nickname'])) {
+            $userinfo['nickname'] = $this->filteNickname($userinfo);
+        } else {
+            $userinfo['nickname'] = '';
+        }
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
@@ -471,7 +476,11 @@ class MemberService
                 ));
             }
 
-            $this->updateMemberInfo($member_id, $userinfo);
+            if ($scope != 'base') {
+                $this->updateMemberInfo($member_id, $userinfo);
+            }
+
+            $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
@@ -499,7 +508,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                    $this->addSubMemberInfoV2($uniacid, $member_id, $userinfo);
                 } else {
                     $this->updateSubMemberInfo($member_id, $userinfo['openid']);
                 }
@@ -535,8 +544,14 @@ class MemberService
         \Log::debug('----userinfo1----', $userinfo);
 
         $member_id = 0;
-        $userinfo['nickname'] = $this->filteNickname($userinfo);
-        //$fans_mode = McMappingFansModel::getUId($userinfo['openid']);
+        $scope = \YunShop::request()->scope ?: '';
+
+        if (isset($userinfo['nickname'])) {
+            $userinfo['nickname'] = $this->filteNickname($userinfo);
+        } else {
+            $userinfo['nickname'] = '';
+        }
+
         $fans_mode = $this->getFansModel($userinfo['openid']);
         
         $this->checkFansUid($fans_mode, $userinfo);
@@ -556,7 +571,11 @@ class MemberService
         if ((!empty($member_model)) && (!empty($fans_mode) && !empty($member_shop_info_model))) {
             \Log::debug('微信登陆更新');
 
-            $this->updateMemberInfo($member_id, $userinfo);
+            if ($scope != 'base') {
+                $this->updateMemberInfo($member_id, $userinfo);
+            }
+
+            $this->updateSubMemberInfoV2($member_id, $userinfo);
         } else {
             \Log::debug('添加新会员');
 
@@ -582,7 +601,7 @@ class MemberService
                         throw new AppException('用户数据异常, 注册失败');
                     }
 
-                    $this->addSubMemberInfo($uniacid, $member_id, $userinfo['openid']);
+                    $this->addSubMemberInfoV2($uniacid, $member_id, $userinfo);
                 }
 
                 //生成分销关系链
@@ -662,14 +681,6 @@ class MemberService
             'groupid' => $default_group->groupid
         ));
 
-        //添加mapping_fans表
-        /*McMappingFansModel::insertData($userinfo, array(
-            'uid' => $uid,
-            'acid' => $uniacid,
-            'uniacid' => $uniacid,
-            'salt' => Client::random(8),
-        ));*/
-
         return $uid;
     }
 
@@ -701,11 +712,42 @@ class MemberService
         ));
     }
 
+    public function addSubMemberInfoV2($uniacid, $member_id, $userinfo)
+    {
+        //添加yz_member表
+        $default_sub_group_id = MemberGroup::getDefaultGroupId()->first();
+
+        if (!empty($default_sub_group_id)) {
+            $default_subgroup_id = $default_sub_group_id->id;
+        } else {
+            $default_subgroup_id = 0;
+        }
+
+        SubMemberModel::insertData(array(
+            'member_id' => $member_id,
+            'uniacid' => $uniacid,
+            'group_id' => $default_subgroup_id,
+            'level_id' => 0,
+            'pay_password' => '',
+            'salt' => '',
+            'yz_openid' => $userinfo['openid'],
+            'access_token_1' => isset($userinfo['access_token']) ? $userinfo['access_token'] : '',
+            'access_expires_in_1' => isset($userinfo['expires_in']) ? time() + $userinfo['expires_in'] : '',
+            'refresh_token_1' => isset($userinfo['refresh_token']) ? $userinfo['refresh_token'] : '',
+            'refresh_expires_in_1' => time() + (28 * 24 * 3600)
+        ));
+    }
+
     private function updateSubMemberInfo($uid, $userinfo)
     {
         SubMemberModel::updateOpenid(
             $uid, ['yz_openid' => $userinfo['openid']]
         );
+    }
+
+    protected function updateSubMemberInfoV2($uid, $userinfo)
+    {
+
     }
 
     /**
@@ -735,25 +777,15 @@ class MemberService
     {
         //更新mc_members
         $mc_data = array(
-            'nickname' => stripslashes($userinfo['nickname']),
-            'avatar' => $userinfo['headimgurl'],
-            'gender' => $userinfo['sex'],
-            'nationality' => $userinfo['country'],
-            'resideprovince' => $userinfo['province'] . '省',
-            'residecity' => $userinfo['city'] . '市'
+            'nickname' => isset($userinfo['nickname'])  ? stripslashes($userinfo['nickname']) : '',
+            'avatar' => isset($userinfo['headimgurl']) ? $userinfo['headimgurl'] : '',
+            'gender' => isset($userinfo['sex']) ? $userinfo['sex'] : '-1',
+            'nationality' => isset($userinfo['country']) ? $userinfo['country'] : '',
+            'resideprovince' => isset($userinfo['province']) ? $userinfo['province'] : '' . '省',
+            'residecity' => isset($userinfo['city']) ? $userinfo['city'] : '' . '市'
         );
 
         MemberModel::updataData($member_id, $mc_data);
-
-        //更新mapping_fans
-        /*$record = array(
-            'openid' => $userinfo['openid'],
-            'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => isset($userinfo['subscribe'])?:0,
-            'tag' => base64_encode(serialize($userinfo))
-        );
-
-        McMappingFansModel::updateData($member_id, $record);*/
     }
 
     /**

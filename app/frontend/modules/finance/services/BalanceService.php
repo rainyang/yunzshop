@@ -101,6 +101,34 @@ class BalanceService
         return $this->_withdraw_set['wechat'] ? true : false;
     }
 
+    //余额提现到微信限制
+    public function withdrawWechatLimit()
+    {
+        $wechat_min = $this->_withdraw_set['wechat_min'] ;
+        $wechat_max = $this->_withdraw_set['wechat_max'] ;
+        $wechat_frequency = $this->_withdraw_set['wechat_frequency'];
+        $data = [
+            'wechat_min' => $wechat_min,
+            'wechat_max' => $wechat_max,
+            'wechat_frequency' => $wechat_frequency,
+        ];
+        return $data;
+    }
+
+    //余额提现到支付寶限制
+    public function withdrawAlipayLimit()
+    {
+        $alipay_min = $this->_withdraw_set['alipay_min'] ;
+        $alipay_max = $this->_withdraw_set['alipay_max'] ;
+        $alipay_frequency = $this->_withdraw_set['alipay_frequency'];
+        $data = [
+            'alipay_min' => $alipay_min,
+            'alipay_max' => $alipay_max,
+            'alipay_frequency' => $alipay_frequency,
+        ];
+        return $data;
+    }
+
     //余额提现到支付宝
     public function withdrawAlipay()
     {
