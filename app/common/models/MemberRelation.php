@@ -146,22 +146,11 @@ class MemberRelation extends BaseModel
      */
     public static function checkOrderGoods($goods_id, $uid)
     {
-        $list = Order::getOrderListByUid($uid);
-
-        if (!empty($list)) {
-            $list = $list->toArray();
-
-            foreach ($list as $rows) {
-                foreach ($rows['has_many_order_goods'] as $item) {
-                    if ($item['goods_id'] == $goods_id) {
-                        \Log::debug('购买商品指定商品', [$goods_id]);
-                        return true;
-                    }
-                }
-            }
+        $list = OrderGoods::uniacid()->where('uid',$uid)->whereIn('goods_id', $goods_id)->get();
+        if ($list->isEmpty()) {
+            return false;
         }
-
-        return false;
+        return true;
     }
 
     /**
@@ -501,14 +490,6 @@ class MemberRelation extends BaseModel
                 }
             }
         }
-
-        //判断是否有上级，上级是否是推广员，上级是否有推广权限
-        if (!empty($member->parent_id)) {
-            $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-            if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                return;
-            }
-        }
         //消费达多少次
         if ($become_term[2] == 2) {
             $ordercount = Order::getCostTotalNum($member->member_id);
@@ -615,14 +596,6 @@ class MemberRelation extends BaseModel
                 }
             }
             if (!$is_goods){
-                return;
-            }
-        }
-
-        //判断是否有上级，上级是否是推广员，上级是否有推广权限
-        if (!empty($member->parent_id)) {
-            $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-            if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
                 return;
             }
         }
