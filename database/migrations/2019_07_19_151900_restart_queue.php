@@ -4,7 +4,7 @@ use app\common\models\UniAccount;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class RestartQueueLevel extends Migration
+class RestartQueue extends Migration
 {
     /**
      * Run the migrations.
