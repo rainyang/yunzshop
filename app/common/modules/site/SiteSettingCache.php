@@ -11,9 +11,10 @@ class SiteSettingCache
         $setting = \app\common\models\SiteSetting::first();
 
         if (!$setting) {
-            $setting = \app\common\models\SiteSetting::create();
+            $setting = \app\common\models\SiteSetting::create(['value'=>[]]);
         }
-        \Cache::put('siteSetting', $setting->value, 600);
+
+        \Cache::put('siteSetting', $setting->value?:[], 600);
         return true;
     }
 

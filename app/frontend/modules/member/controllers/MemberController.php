@@ -99,8 +99,6 @@ class MemberController extends ApiController
         $this->type = intval(\YunShop::request()->type);
         $this->sign = intval(\YunShop::request()->ingress);
 
-        $memberService = app(MemberService::class);
-        $memberService->chkAccount($member_id);
         $member_info = MemberModel::getUserInfos_v2($member_id)->first();
         if (empty($member_info)) {
             if (is_null($integrated)) {
@@ -134,6 +132,9 @@ class MemberController extends ApiController
         } else {
             $data['inviteCode'] = 0;
         }
+
+        // 汇聚支付是否开启
+        $data['is_open_converge_pay'] = app('plugins')->isEnabled('converge_pay') ? 1 : 0;
 
         if (is_null($integrated)) {
             return $this->successJson('', $data);
@@ -1558,7 +1559,7 @@ class MemberController extends ApiController
             $data[] = [
                 'name' => 'love',
                 'title' => \Yunshop\Love\Common\Services\SetService::getLoveName() ?: '爱心值',
-                'class' => 'icon-wealth-c',
+                'class' => 'icon-member-exchange1',
                 'url' => 'love_index'
             ];
         }
@@ -1921,6 +1922,7 @@ class MemberController extends ApiController
             'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
             'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
             'is_open_fight_groups' => app('plugins')->isEnabled('fight-groups') ? 1 : 0,
+            'is_open_lease_toy' => \app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled(), //租赁订单列表是否开启
             'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
             'is_store' => $store && $store->is_black != 1 ? 1 : 0,
         ];
@@ -2255,6 +2257,10 @@ class MemberController extends ApiController
         // 拼团订单
         if (app('plugins')->isEnabled('fight-groups')) {
             $order['fight_groups_order'] = \Yunshop\FightGroups\common\models\Order::getFightGroupsOrderCountStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+
+        if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {
+            $order['lease_order'] = \Yunshop\LeaseToy\models\Order::getLeaseOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
 
         if (is_null($integrated)) {

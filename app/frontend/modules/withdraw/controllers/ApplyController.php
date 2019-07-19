@@ -19,6 +19,7 @@ use app\common\facades\Setting;
 use app\frontend\modules\withdraw\models\Withdraw;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use app\frontend\modules\withdraw\services\StatisticalPresentationService;
 use app\common\services\finance\MessageService;
 
 class ApplyController extends ApiController
@@ -66,6 +67,8 @@ class ApplyController extends ApiController
         $this->pay_way = $pay_way;
         $this->poundage = $poundage;
         $this->withdraw_data = $withdraw_data;
+        //提现限额判断
+        $this->cashLimitation();
 
         //插入提现
         $result = $this->withdrawStart();
@@ -74,6 +77,35 @@ class ApplyController extends ApiController
             return $this->successJson('提现成功');
         }
         return $this->errorJson('提现失败');
+    }
+
+    private function cashLimitation(){
+        $set = Setting::get('withdraw.income');
+
+        //提交提现的次数
+        $number_of_submissions = count($this->withdraw_data);
+
+        if( $this->pay_way == 'wechat'){
+            $wechat_frequency = floor($set['wechat_frequency'] ?: 10 );
+            //统计用户今天提现的次数
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('wechat');
+
+            if(($number_of_submissions + $today_withdraw_count) > $wechat_frequency  ){
+                \Log::debug('提现到微信失败',['今天提现次数',$today_withdraw_count,'本次提现次数',$number_of_submissions,'每日限制次数',$wechat_frequency]);
+                return $this->errorJson('提现失败,每日提现到微信次数不能超过'.$wechat_frequency.'次');
+            }
+        }elseif($this->pay_way == 'alipay'){
+            $alipay_frequency = floor($set['alipay_frequency'] ?: 10);
+            //统计用户今天提现的次数  + 供应商提现的次数
+            $statisticalPresentationService = new StatisticalPresentationService;
+            $today_withdraw_count = $statisticalPresentationService->statisticalPresentation('alipay');
+            if(($number_of_submissions + $today_withdraw_count) > $alipay_frequency  ){
+                \Log::debug('提现到支付宝失败',['今天提现次数',$today_withdraw_count,'本次提现次数',$number_of_submissions,'每日限制次数',$alipay_frequency]);
+                return $this->errorJson('提现失败,每日提现到支付宝次数不能超过'.$alipay_frequency.'次');
+
+            }
+        }
     }
 
 

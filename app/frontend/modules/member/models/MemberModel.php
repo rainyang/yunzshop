@@ -67,11 +67,11 @@ class MemberModel extends Member
         $member_model->groupid = is_null($data['groupid']) ? 0 : $data['groupid'];
         $member_model->createtime = time();
         $member_model->nickname = stripslashes($userinfo['nickname']);
-        $member_model->avatar = $userinfo['headimgurl'];
-        $member_model->gender = $userinfo['sex'];
-        $member_model->nationality = $userinfo['country'] ?: '';
-        $member_model->resideprovince = $userinfo['province'] . '省';
-        $member_model->residecity = $userinfo['city'] . '市';
+        $member_model->avatar = isset($userinfo['headimgurl']) ? $userinfo['headimgurl'] : Url::shopUrl('static/images/photo-mr.jpg');;
+        $member_model->gender = isset($userinfo['sex']) ? $userinfo['sex'] : -1;
+        $member_model->nationality = isset($userinfo['country']) ? $userinfo['country'] : '';
+        $member_model->resideprovince = isset($userinfo['province']) ? $userinfo['province'] : '' . '省';
+        $member_model->residecity = isset($userinfo['city']) ? $userinfo['city'] : '' . '市';
         $member_model->salt = '';
         $member_model->password = '';
 
@@ -834,7 +834,7 @@ class MemberModel extends Member
      */
     public static function getUserInfos_v2($member_id)
     {
-        return self::select(['uid','uniacid','credit1','credit2','credit3','createtime','nickname','realname','avatar','mobile'])
+        return self::select(['uid','uniacid','credit1','credit2','credit3','createtime','nickname','realname','avatar','mobile','birthyear','birthmonth','birthday','gender','alipay'])
             ->uniacid()
             ->where('uid', $member_id)
             ->with([
@@ -948,12 +948,18 @@ class MemberModel extends Member
         }
 
         //订单显示
-        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-        $member_info['order'] = $order_info;
-        if (app('plugins')->isEnabled('hotel')) {
-            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
-        }
+//        $order_info = \app\frontend\models\Order::getOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        $member_info['order'] = $order_info;
+//        if (app('plugins')->isEnabled('hotel')) {
+//            $member_info['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        }
+//
+//        if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {
+//            $member_info['lease_order'] = \Yunshop\LeaseToy\models\Order::getLeaseOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+//        }
 
+        $member_info['is_agent'] = self::isAgent();
+        $member_info['referral'] = self::getMyReferral();
         return $member_info;
     }
     /**
@@ -980,6 +986,16 @@ class MemberModel extends Member
                 $member_info['level_id'] =  0;
                 $member_info['level_name'] =  $set['level_name'] ? $set['level_name'] : '普通会员';
             }
+            $member_info['alipay_name'] = $yz_member['alipayname'];
+            $member_info['alipay'] =  $yz_member['alipay'];
+            $member_info['province_name'] =  $yz_member['province_name'];
+            $member_info['city_name'] =  $yz_member['city_name'];
+            $member_info['area_name'] =  $yz_member['area_name'];
+            $member_info['province'] =  $yz_member['province'];
+            $member_info['city'] =  $yz_member['city'];
+            $member_info['area'] =  $yz_member['area'];
+            $member_info['address'] =  $yz_member['address'];
+            $member_info['wechat'] =  $yz_member['wechat'];
 
             $member_info['is_agent'] = $yz_member['is_agent'] == 1 && $yz_member['status'] == 2 ? true : false;
 

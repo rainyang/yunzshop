@@ -43,13 +43,20 @@ class IncomePageFactory
 
     private $lang_set;
 
+    /**
+     * 会员收入
+     * @var array
+     */
+    private $total_income;
 
-    public function __construct(IIncomePage $income, $lang_set, $is_relation = false, $is_agent = false)
+
+    public function __construct(IIncomePage $income, $lang_set, $is_relation = false, $is_agent = false, $total_income)
     {
         $this->_income = $income;
         $this->is_agent = $is_agent;
         $this->is_relation = $is_relation;
         $this->lang_set = $lang_set;
+        $this->total_income = $total_income;
     }
 
 
@@ -159,8 +166,8 @@ class IncomePageFactory
         if (is_numeric($value)) {
             return $value;
         } else {
-            $member_id = \YunShop::app()->getMemberId();
-            return Income::where('incometable_type', $value)->whereMember_id($member_id)->sum('amount');
+            $total_income = $this->total_income->where('incometable_type', $value)->first();
+            return  $total_income ? $total_income->total_amount : '0.00';
         }
     }
 
