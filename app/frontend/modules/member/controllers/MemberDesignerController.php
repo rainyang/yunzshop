@@ -85,7 +85,10 @@ class MemberDesignerController extends ApiController
      */
      private function getDesigner()
      {
-         $designer =  MemberDesigner::uniacid()->where(['shop_page_type'=>MemberDesigner::PAGE_MEMBER_CENTER,'is_default'=>1])->first();
+         $designer =  MemberDesigner::uniacid()
+             ->whereRaw('FIND_IN_SET(?,page_type)', [\Yunshop::request()->type])
+             ->where(['shop_page_type'=>MemberDesigner::PAGE_MEMBER_CENTER,'is_default'=>1])
+             ->first();
          return $designer;
      }
 
