@@ -17,6 +17,8 @@ use app\common\models\Member;
 use app\common\services\Session;
 use app\frontend\modules\member\models\McMappingFansModel;
 use app\frontend\modules\member\models\MemberUniqueModel;
+use app\frontend\modules\member\models\SubMemberModel;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class MemberOfficeAccountService extends MemberService
 {
@@ -26,11 +28,12 @@ class MemberOfficeAccountService extends MemberService
     {
     }
 
-    public function login($params = [])
+    public function login()
     {
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
+        $scope   = \YunShop::request()->scope;
 
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
@@ -46,20 +49,16 @@ class MemberOfficeAccountService extends MemberService
 
         $state = 'yz-' . session_id();
 
-        if (!Session::get('member_id')) {
-            if ($params['scope'] == 'user_info' || \YunShop::request()->scope == 'user_info') {
-                $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
-            } else {
-                $authurl = $this->_getAuthUrl($appId, $callback, $state);
-            }
-        } else {
-            $authurl = $this->_getAuthUrl($appId, $callback, $state);
-        }
+        $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
-        $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
+        if ($scope == 'base') {
+            $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
+        }
 
         if (!empty($code)) {
             $redirect_url = $this->_getClientRequestUrl();
+
+            $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
 
             $token = \Curl::to($tokenurl)
                 ->asJsonResponse(true)
@@ -72,16 +71,15 @@ class MemberOfficeAccountService extends MemberService
             $userinfo = $this->getUserInfo($appId, $appSecret, $token);
 
             if (is_array($userinfo) && !empty($userinfo['errcode'])) {
-                \Log::debug('微信登陆授权失败-'. $userinfo['errcode']);
+                \Log::debug('微信登陆授权失败-', $userinfo);
                 return show_json(-3, '微信登陆授权失败');
             }
 
             //Login
             $member_id = $this->memberLogin($userinfo);
 
-            \YunShop::app()->openid = $userinfo['openid'];
-
             Session::set('member_id', $member_id);
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
 
@@ -103,29 +101,40 @@ class MemberOfficeAccountService extends MemberService
      */
     public function getUserInfo($appId, $appSecret, $token)
     {
-        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+        $scope     = \YunShop::request()->scope ?: '';
+        $subscribe = 0;
 
-        $global_token = \Curl::to($global_access_token_url)
-            ->asJsonResponse(true)
-            ->get();
+        if (env('APP_Framework') == 'platform') {
+            $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
-        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+            $global_token = \Curl::to($global_access_token_url)
+                ->asJsonResponse(true)
+                ->get();
 
-        $user_info = \Curl::to($global_userinfo_url)
-            ->asJsonResponse(true)
-            ->get();
+            $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
 
-        if (0 == $user_info['subscribe']) { //未关注拉取不到用户信息
+            $user_info = \Curl::to($global_userinfo_url)
+                ->asJsonResponse(true)
+                ->get();
+
+            $subscribe = $user_info['subscribe'];
+        }
+
+        if (0 == $subscribe && $scope != 'base') { //未关注拉取不到用户信息
             $userinfo_url = $this->_getUserInfoUrl($token['access_token'], $token['openid']);
 
             $user_info = \Curl::to($userinfo_url)
                 ->asJsonResponse(true)
                 ->get();
 
-            $user_info['subscribe'] = 0;
+            if (env('APP_Framework') == 'platform') {
+                $user_info['subscribe'] = $subscribe;
+            } else {
+                $user_info['subscribe'] = 1;
+            }
         }
 
-        return $user_info;
+        return $scope != 'base' ? array_merge($user_info, $token) : $token;
     }
 
     /**
@@ -174,6 +183,9 @@ class MemberOfficeAccountService extends MemberService
 
     /**
      * 获取用户信息 api
+     *
+     * 无需关注
+     *
      * @param $accesstoken
      * @param $openid
      * @return string
@@ -195,7 +207,7 @@ class MemberOfficeAccountService extends MemberService
     /**
      * 获取用户信息
      *
-     * 是否关注公众号
+     * 需要关注
      *
      * @param $accesstoken
      * @param $openid
@@ -204,6 +216,24 @@ class MemberOfficeAccountService extends MemberService
     private function _getInfo($accesstoken, $openid)
     {
         return 'https://api.weixin.qq.com/cgi-bin/user/info?access_token=' . $accesstoken . '&openid=' . $openid;
+    }
+
+    /**
+     * 验证account_token
+     *
+     * @param $accesstoken
+     * @param $openid
+     *
+     * @return string
+     */
+    private function _tokenAuth($accesstoken, $openid)
+    {
+        return 'https://api.weixin.qq.com/sns/auth?access_token=' . $accesstoken . '&openid=' . $openid;
+    }
+
+    private function _refreshAuth($appid, $refreshtoken)
+    {
+        return 'https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=' . $appid . '&grant_type=refresh_token&refresh_token=' . $refreshtoken;
     }
 
     /**
@@ -229,6 +259,25 @@ class MemberOfficeAccountService extends MemberService
         } else {
             Session::set('client_url', '');
         }
+    }
+
+    private function _setClientRequestUrl_v2()
+    {
+        $redirect_url = '';
+        $pattern = '/(&t=([\d]+[^&]*))/';
+        $t = time();
+
+        if (\YunShop::request()->yz_redirect) {
+            $yz_redirect = base64_decode(\YunShop::request()->yz_redirect);
+
+            if (preg_match($pattern, $yz_redirect)) {
+                $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
+            } else {
+                $redirect_url = $yz_redirect . '&t=' . time();
+            }
+        }
+
+        return urlencode($redirect_url);
     }
 
     /**
@@ -342,14 +391,26 @@ class MemberOfficeAccountService extends MemberService
     public function updateFansMember($fanid, $member_id, $userinfo)
     {
         $record = array(
-            //'openid' => $userinfo['openid'],
             'uid'       => $member_id,
             'nickname' => stripslashes($userinfo['nickname']),
-            'follow' => $userinfo['subscribe'] ?: 0,
+            'follow' => isset($userinfo['subscribe']) ? $userinfo['subscribe'] : 0,
             'tag' => base64_encode(serialize($userinfo))
         );
 
         McMappingFansModel::updateDataById($fanid, $record);
+    }
+
+    protected function updateSubMemberInfoV2($uid, $userinfo)
+    {
+        SubMemberModel::updateOpenid(
+            $uid, [
+                'yz_openid' => $userinfo['openid'],
+                'access_token_1' => $userinfo['access_token'],
+                'access_expires_in_1' => time() + $userinfo['expires_in'],
+                'refresh_token_1' => $userinfo['refresh_token'],
+                'refresh_expires_in_1' => time() + (28 * 24 * 3600)
+            ]
+        );
     }
 
     /**
@@ -442,5 +503,67 @@ class MemberOfficeAccountService extends MemberService
 
         redirect($redirect_url)->send();
         exit;
+    }
+
+    public function checkLogged()
+    {
+        $uniacid = \YunShop::app()->uniacid;
+
+        if (isset($_COOKIE['Yz-Token'])) {
+            try {
+                $yz_token = decrypt($_COOKIE['Yz-Token']);
+
+                list($token, $expires, $openid) = explode('\t', $yz_token);
+            } catch (DecryptException $e) {
+                return false;
+            }
+
+            $yz_member = SubMemberModel::getMemberByWechatTokenAndOpenid($token, $openid);
+
+            if (is_null($yz_member)) {
+                $openid_member = SubMemberModel::getMemberByOpenid($openid);
+
+                if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
+                    Session::set('member_id', $openid_member->member_id);
+
+                    return true;
+                }
+
+                return false;
+            }
+
+            if ($yz_member->access_expires_in_1 > time()) {
+                Session::set('member_id', $yz_member->member_id);
+                return true;
+            } else {
+                if ($yz_member->refresh_expires_in_1 > time()) {
+                    $account = AccountWechats::getAccountByUniacid($uniacid);
+                    $appId = $account->key;
+
+                    $refresh_url = $this->_refreshAuth($appId, $yz_member->refresh_token_1);
+
+                    $refresh_info = \Curl::to($refresh_url)
+                        ->asJsonResponse(true)
+                        ->get();
+
+                    if (!isset($refresh_info['errcode'])) {
+                        $yz_member->yz_openid = $refresh_info['openid'];
+                        $yz_member->access_token_1 = $refresh_info['access_token'];
+                        $yz_member->access_expires_in_1 = time() + 7200;
+                        $yz_member->refresh_token_1 = $refresh_info['refresh_token'];
+                        $yz_member->refresh_expires_in_1 = time() + (28 * 24 * 3600);
+                        $yz_member->save();
+
+                        Session::set('member_id', $yz_member->member_id);
+                        setcookie('Yz-Token', encrypt($refresh_info['access_token'] . '\t' . $yz_member->access_expires_in_1 . '\t' . $refresh_info['openid']), time() + self::TOKEN_EXPIRE);
+                        return true;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
+
+         return false;
     }
 }

@@ -132,7 +132,7 @@ class TemplateOrderDispatchPrice
             //配送模版不存在
             if (!isset($dispatchModel)) {
 
-                trace_log()->freight('111111订单模板运费','商品'.$aOrderGoods->goods_id.'运费模板不存在');
+                trace_log()->freight('订单模板运费','商品'.$aOrderGoods->goods_id.'运费模板不存在');
                 continue;
             }
 
@@ -147,11 +147,18 @@ class TemplateOrderDispatchPrice
                 continue;
             }
 
+            if ($dispatchModel->dispatch_id != $dispatch_id) {
+
+                trace_log()->freight('订单模板运费','商品'.$aOrderGoods->goods_id.'配送模板('.$dispatchModel->dispatch_id.')不匹配'.$dispatch_id);
+
+                continue;
+            }
             $dispatch_good_total += $this->getGoodsTotalInOrder($aOrderGoods);
             $dispatch_good_weight += $this->getGoodsTotalWeightInOrder($aOrderGoods);
         }
 
         $amount =  $this->calculation($dispatch_id, $dispatch_good_total, $dispatch_good_weight);
+
         trace_log()->freight('订单模板运费','配送费'.$amount.'元');
         return $amount;
     }
