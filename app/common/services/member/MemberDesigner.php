@@ -58,7 +58,7 @@ class MemberDesigner
                $name = 'recharge_code';
                $class = 'icon-member-recharge1';
                $url = 'rechargeCode';
-               $image = 'recharge_code';
+               $image = 'member_a(3).png';
            } elseif ($info['name'] == 'conference') {
                $name = 'conference';
                $class = 'icon-member-act-signup1';
