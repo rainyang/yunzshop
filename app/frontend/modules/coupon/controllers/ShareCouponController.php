@@ -18,6 +18,7 @@ use app\frontend\models\Member;
 use app\frontend\modules\coupon\models\ShoppingShareCoupon;
 use app\frontend\modules\coupon\services\ShareCouponService;
 use Carbon\Carbon;
+use Yunshop\Hotel\common\models\CouponHotel;
 
 class ShareCouponController extends ApiController
 {
@@ -178,6 +179,30 @@ class ShareCouponController extends ApiController
             case 5:
                 $res = '适用于下列门店: ';
                 $res .= implode(',', $couponInArrayFormat['storenames']);
+                return $res;
+                break;
+            case Coupon::COUPON_ONE_HOTEL_USE:
+                $res = '适用于酒店:';
+                if(app('plugins')->isEnabled('hotel')){
+                    $coupon_hotel = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->first();
+                    $res .= $coupon_hotel->hotel->hotel_name;
+                }
+                return $res;
+                break;
+            case Coupon::COUPON_MORE_HOTEL_USE:
+                $res = '适用于下列酒店: ';
+                if(app('plugins')->isEnabled('hotel')){
+                    $hotel_arr = [];
+                    $coupon_hotels = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->get();
+                    foreach ($coupon_hotels as $v){
+                        $hotel_arr[] = $v->hotel->hotel_name;
+                    }
+                    $res .= implode(',', $hotel_arr);
+                }
                 return $res;
                 break;
             default:

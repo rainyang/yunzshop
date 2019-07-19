@@ -304,6 +304,9 @@ class HomePageController extends ApiController
                 }
             }
 
+            //小程序验证推广按钮是否开启
+            $result['system']['btn_romotion'] = PortType::popularizeShow($type);
+
             if (is_null($integrated)) {
                 return $this->successJson('ok', $result);
             } else {
