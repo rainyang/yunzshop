@@ -58,17 +58,20 @@ class MemberDesigner
                $name = 'recharge_code';
                $class = 'icon-member-recharge1';
                $url = 'rechargeCode';
+               $image = 'recharge_code';
            } elseif ($info['name'] == 'conference') {
                $name = 'conference';
                $class = 'icon-member-act-signup1';
                $url = 'conferenceList';
+               $image = 'member_a(15).png';
            }
 
            $data[] = [
                'name'  => $name,
                'title' => $info['title'],
                'class' => $class,
-               'url'   => $url
+               'url'   => $url,
+               'image' => $image
            ];
        });
        if (app('plugins')->isEnabled('asset') && (new \Yunshop\Asset\Common\Services\IncomeDigitizationService)->memberPermission()) {
@@ -76,7 +79,8 @@ class MemberDesigner
                'name'  => 'asset',
                'title' => PLUGIN_ASSET_NAME,
                'class' => 'icon-number_assets',
-               'url'   => 'TransHome'
+               'url'   => 'TransHome',
+               'image' => 'member_a(69).png'
            ];
        }
 
@@ -85,7 +89,8 @@ class MemberDesigner
                'name' => 'extension',
                'title' => '推广中心',
                'class' => 'icon-member-extension1',
-               'url' => 'extension'
+               'url' => 'extension',
+               'image' => 'member_a(38).png'
            ];
        }
 
@@ -96,7 +101,8 @@ class MemberDesigner
                    'name'  => 'business_card',
                    'title' => '名片',
                    'class' => 'icon-member_card1',
-                   'url'   => 'CardCenter'
+                   'url'   => 'CardCenter',
+                   'image' => 'member_a(58).png'
                ];
            }
        }
@@ -168,7 +174,8 @@ class MemberDesigner
                    'name'  => 'credit',
                    'title' => '信用值',
                    'class' => 'icon-member-credit01',
-                   'url'   => 'creditInfo'
+                   'url'   => 'creditInfo',
+                   'image' => 'member_a(44).png'
                ];
            }
        }
@@ -179,7 +186,8 @@ class MemberDesigner
                    'name'  => 'ranking',
                    'title' => '排行榜',
                    'class' => 'icon-member-bank-list1',
-                   'url'   => 'rankingIndex'
+                   'url'   => 'rankingIndex',
+                   'image' => 'member_a(29).png'
                ];
            }
        }
@@ -225,7 +233,8 @@ class MemberDesigner
                'name' => 'love',
                'title' => \Yunshop\Love\Common\Services\SetService::getLoveName() ?: '爱心值',
                'class' => 'icon-member-exchange1',
-               'url' => 'love_index'
+               'url' => 'love_index',
+               'image' => 'member_a(1).png'
            ];
        }
 
@@ -234,7 +243,8 @@ class MemberDesigner
                'name' => 'froze',
                'title' => \Yunshop\Froze\Common\Services\SetService::getFrozeName() ?: '冻结币',
                'class' => 'icon-member-frozen1',
-               'url' => 'FrozenCoin'
+               'url' => 'FrozenCoin',
+               'image' => 'member_a(7).png'
            ];
        }
 
@@ -244,6 +254,7 @@ class MemberDesigner
                'title' => \Yunshop\Coin\Common\Services\SetService::getCoinName() ?: '华侨币',
                'class' => 'icon-member-currency1',
                'url' => 'overseas_index',
+               'image' => 'member_a(14).png'
            ];
        }
 
@@ -262,7 +273,8 @@ class MemberDesigner
                'name' => 'sign',
                'title' => trans('Yunshop\Sign::sign.plugin_name') ?: '签到',
                'class' => 'icon-member-clock1',
-               'url' => 'sign'
+               'url' => 'sign',
+               'image' => 'member_a(30).png'
            ];
        }
 
@@ -272,7 +284,8 @@ class MemberDesigner
            if ($status) {
                $data[] = [
                    'name' => 'courier',
-                   'title' => '快递'
+                   'title' => '快递',
+                   'image' => 'member_a(68).png'
                ];
            }
        }
@@ -296,6 +309,7 @@ class MemberDesigner
                    'class' => 'icon-member-collect1',
                    'url'   => 'notice',
                    'param' => 0,
+                   'image' => 'member_a(41).png'
                ];
            }
        }
@@ -312,6 +326,7 @@ class MemberDesigner
                    'title' => $pluginName,
                    'class' => 'icon-member-get-up',
                    'url'   => 'ClockPunch',
+                   'image' => 'member_a(47).png'
                ];
            }
        }
@@ -326,6 +341,7 @@ class MemberDesigner
                    'title' => '课程中心',
                    'class' => 'icon-member-course3',
                    'url'   => 'CourseManage',
+                   'image' => 'member_a(22).png'
                ];
            }
        }
@@ -458,6 +474,7 @@ class MemberDesigner
                'title' => '用户入驻',
                'class' => 'icon-member_goods',
                'url'   => 'EnterShop',
+               'image' => 'member_a(52).png'
            ];
        }
 
@@ -470,6 +487,7 @@ class MemberDesigner
                    'title' => $status['plugin_name'] ?: '消费积分',
                    'class' => 'icon-member_integral',
                    'url'   => 'Integral_love',
+                   'image' => 'member_a(55).png'
                ];
            }
        }
@@ -485,7 +503,8 @@ class MemberDesigner
                        'name'  => 'universal_card',
                        'title' => $set['name'],
                        'class' => 'icon-card',
-                       'url'   => 'CardIndex'
+                       'url'   => 'CardIndex',
+                       'image' => 'member_a(57).png'
                    ];
                }
            }
@@ -517,7 +536,8 @@ class MemberDesigner
                    'name'  => 'hotel',
                    'title' => HOTEL_NAME . '申请',
                    'class' => 'icon-member-hotel-apply',
-                   'url'   => 'hotelApply'
+                   'url'   => 'hotelApply',
+                   'image' => 'member_a(56).png'
                ];
            }
            //酒店自定义字段
