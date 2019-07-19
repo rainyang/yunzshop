@@ -112,7 +112,7 @@ class GoodsController extends ApiController
         }
 
 
-        $goodsModel->is_added = \ Setting::get('shop.member.added') ?: 2;
+        $goodsModel->is_added = \ Setting::get('shop.member.added') ?: 1;
 
 
         //验证浏览权限
