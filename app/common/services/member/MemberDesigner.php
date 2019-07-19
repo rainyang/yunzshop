@@ -193,14 +193,16 @@ class MemberDesigner
                        'name'  => 'micro',
                        'title' => '微店中心',
                        'class' => 'icon-member-mendian1',
-                       'url'   => 'microShop_home'
+                       'url'   => 'microShop_home',
+                       'image' => 'member_a(40).png'
                    ];
                } else {
                    $data[] = [
                        'name'  => 'micro',
                        'title' => '我要开店',
                        'class' => 'icon-member-mendian1',
-                       'url'   => 'microShop_apply'
+                       'url'   => 'microShop_apply',
+                       'image' => 'member_a(40).png'
                    ];
                }
            }
@@ -251,7 +253,7 @@ class MemberDesigner
                'title' => '生活缴费',
                'class' => 'icon-member-tool-j',
                'url' => 'lifeService',
-               'image'=>'member_a(1).png'
+               'image'=>'member_a(49).png'
            ];
        }
 
@@ -351,6 +353,7 @@ class MemberDesigner
                    'title' => '门店申请',
                    'class' => 'icon-member-store-apply1',
                    'url'   => 'storeApply',
+                   'image' => 'member_a(26).png'
                ];
            }
 
@@ -360,6 +363,7 @@ class MemberDesigner
                    'title' => '门店管理',
                    'class' => 'icon-member_store',
                    'url'   => 'storeManage',
+                   'image' => 'member_a(26).png'
                ];
 
                if ($store->hasOneCashier->hasOneCashierGoods->is_open == 1) {
@@ -368,7 +372,8 @@ class MemberDesigner
                        'title' => '收银台',
                        'class' => 'icon-member-cashier',
                        'url' => 'cashier',
-                       'api' => 'plugin.store-cashier.frontend.cashier.center.index'
+                       'api' => 'plugin.store-cashier.frontend.cashier.center.index',
+                       'image' => 'member_a(43).png'
                    ];
                }
            }
@@ -386,13 +391,15 @@ class MemberDesigner
                    'class' => 'icon-member-apply1',
                    'url'   => 'supplier',
                    'api'   => 'plugin.supplier.supplier.controllers.apply.supplier-apply.apply',
+                   'image' => 'member_a(53).png'
                ];
            } elseif ($supplier_setting && 1 == $supplier_setting['status']) {
                $data[] = [
                    'name'  => 'supplier',
                    'title' => $supplier_setting['name'] ?: '供应商管理',
                    'class' => 'icon-member-supplier',
-                   'url'   => 'SupplierCenter'
+                   'url'   => 'SupplierCenter',
+                   'image' => 'member_a(53).png'
                ];
            }
        }
@@ -410,6 +417,7 @@ class MemberDesigner
                        'title' => '补货商中心',
                        'class' => 'icon-member-replenishment',
                        'url'   => 'ReplenishmentApply',
+                       'image' => 'member_a(67).png'
                    ];
                }
            } else {
@@ -418,6 +426,7 @@ class MemberDesigner
                    'title' => '补货商申请',
                    'class' => 'icon-member-replenishment',
                    'url'   => 'ReplenishmentApply',
+                   'image' => 'member_a(67).png'
                ];
            }
            if ($distributor) {
@@ -427,6 +436,7 @@ class MemberDesigner
                        'title' => '配送站中心',
                        'class' => 'icon-member-express-list',
                        'url'   => 'DeliveryTerminalApply',
+                       'image' => 'member_a(54).png'
                    ];
                }
            } else {
@@ -435,6 +445,7 @@ class MemberDesigner
                    'title' => '配送站申请',
                    'class' => 'icon-member-express-list',
                    'url'   => 'DeliveryTerminalApply',
+                   'image' => 'member_a(54).png'
                ];
            }
            // dd($data);
