@@ -1011,7 +1011,7 @@ class GoodsController extends ApiController
             $data['key'] = 'love';
             $data['type'] = 'array';
 
-            if ($love_goods['award'] && (\Setting::get('love.goods_detail_show_love') == 2 ||  \Setting::get('love.goods_detail_show_love') == 0)) {
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_love') == 2) {
                 return  '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
         }
