@@ -1915,7 +1915,6 @@ return [
         ],
         'remark' => '请及时处理！！！',
     ],
-
     'income_withdraw_fail' => [
         'template_id_short' => 'OPENTM207574677',
         'title' => '收入提现失败通知',
@@ -1924,22 +1923,89 @@ return [
         'first' => '感谢您的支持！',
         'data' => [
             0 => [
+                    "keywords" => "keyword1",
+                    "value" => "提现",
+                    "color" => "#000000",
+                ],
+            1 => [
+                    "keywords" => "keyword2",
+                    "value" => "收入提现失败",
+                    "color" => "#000000",
+                ],
+            2 => [
+                    "keywords" => "keyword3",
+                    "value" => "您于[时间]申请提现[金额]元, 由于[失败原因], 未能成功提现。",
+                    "color" => "#000000",
+            ],
+        ],
+            'remark' => '如有疑问，请联系客服！',
+    ],
+
+    /**
+     * 拼团活动-拼团成功通知
+     */
+    'fight_groups_success_message' => [
+        'template_id_short' => 'OPENTM415038167',
+        'title' => '拼团成功通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '亲爱的[会员昵称],您参与由团长[团长昵称]发起的 [活动标题] [拼团人数]人团,拼团成功！',
+        'data' => [
+            0 => [
                 "keywords" => "keyword1",
-                "value" => "提现",
+                "value"    => "[商品名称(含规格)]",
                 "color" => "#000000",
             ],
             1 => [
                 "keywords" => "keyword2",
-                "value" => "收入提现失败",
+                "value"   => "[价格]",
                 "color" => "#000000",
             ],
             2 => [
                 "keywords" => "keyword3",
-                "value" => "您于[时间]申请提现[金额]元, 由于[失败原因], 未能成功提现。",
+                "value"  => "[时间]",
+                "color" => "#000000",
+            ],
+            3 => [
+                "keywords" => "keyword4",
+                "value"  => "[订单号]",
+                "color" => "#000000",
+            ],
+            4 => [
+                "keywords" => "keyword5",
+                "value"  => "[提示]",
                 "color" => "#000000",
             ],
         ],
-        'remark' => '如有疑问，请联系客服！',
-
+        'remark' => '感谢您的支持！！！',
     ],
+    /**
+     * 拼团活动-拼团失败通知
+     */
+    'fight_groups_fail_message' => [
+        'template_id_short' => 'OPENTM401113750',
+        'title' => '拼团失败通知！',
+        'first_color' => '#000000',
+        'remark_color' => '#000000',
+        'first' => '亲爱的[会员昵称],您参与由团长[团长昵称]发起的 [活动标题] [拼团人数]人团,由于团已过期，拼团失败！',
+        'data' => [
+            0 => [
+                "keywords" => "keyword1",
+                "value"    => "[商品名称(含规格)]",
+                "color" => "#000000",
+            ],
+            1 => [
+                "keywords" => "keyword2",
+                "value"   => "[价格]",
+                "color" => "#000000",
+            ],
+            2 => [
+                "keywords" => "keyword3",
+                "value"  => "[退款金额]",
+                "color" => "#000000",
+            ],
+        ],
+        'remark' => '系统将自动退款,感谢您的参与！！！',
+    ],
+
 ];
