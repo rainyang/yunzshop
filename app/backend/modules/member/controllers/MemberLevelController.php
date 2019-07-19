@@ -64,11 +64,34 @@ class MemberLevelController extends BaseController
             $levelModel->fill($requestLevel);
             //其他字段赋值
             $levelModel->uniacid = \YunShop::app()->uniacid;
-            if (!$levelModel->goods_id) {
-                $levelModel->goods_id = 0;
-            }
-            $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
+            // if (!$levelModel->goods_id) {
+            //     $levelModel->goods_id = 0;
+            // }
+            // $levelModel->validity = $requestLevel['validity'] ? $requestLevel['validity'] : 0;
+            unset($levelModel->goods);
+            unset($levelModel->goods_id);
 
+            if ($requestLevel['goods'] ) {
+
+                foreach ($requestLevel['goods'] as $k => $v) {
+                    
+                    if ($v['goods_id']) {
+
+                        $arr[] = $v['goods_id'];
+                    }
+                }
+            } else {
+                $arr[] = [];
+            }
+            
+            if (empty($requestLevel['goods_id'])) {
+                
+                $levelModel->goods_id = implode(',', array_unique($arr));
+
+            } else {
+                $ids = implode(',', array_unique(array_merge(array_filter($arr), array_values($requestLevel['goods_id']))));  
+                $levelModel->goods_id = $ids;
+            }
             //字段检测
             $validator = $levelModel->validator();
             if ($validator->fails()) {//检测失败
@@ -125,7 +148,7 @@ class MemberLevelController extends BaseController
                 $levelModel->goods_id = implode(',', array_unique($arr));
 
             } else {
-                $ids = implode(',', array_unique(array_merge($arr, array_values($requestLevel['goods_id']))));  
+                $ids = implode(',', array_unique(array_merge(array_filter($arr), array_values($requestLevel['goods_id']))));  
                 $levelModel->goods_id = $ids;
             }
 
