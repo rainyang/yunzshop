@@ -1359,7 +1359,7 @@ class MemberController extends ApiController
 
     public function getEnablePlugins($request, $integrated = null)
     {
-         $arr = (new MemberDesigner())->getMemberData();
+         $arr = (new MemberDesigner())->getMemberData();//获取会员中心页面各入口
 
         if (is_null($integrated)) {
             return $this->successJson('ok', $arr);
