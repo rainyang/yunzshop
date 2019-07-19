@@ -262,7 +262,7 @@ class MemberDesigner
            $data[] = [
                'name' => 'elive',
                'title' => '生活缴费',
-               'class' => 'icon-member-tool-j',
+               'class' => 'icon-shenghuojiaofei',
                'url' => 'lifeService',
                'image'=>'member_a(49).png'
            ];
@@ -516,8 +516,9 @@ class MemberDesigner
                $data[] = [
                    'name'  => 'separate',
                    'title' => '绑定银行卡',
-                   'class' => 'icon-member_card',
-                   'url'   => 'BankCard'
+                   'class' => 'icon-yinhangqia',
+                   'url'   => 'BankCard',
+                   'image' => 'tool_a(10).png'
                ];
            }
        }
@@ -529,7 +530,8 @@ class MemberDesigner
                    'name'  => 'hotel',
                    'title' => HOTEL_NAME . '管理',
                    'class' => 'icon-member_hotel',
-                   'url'   => 'HotelManage'
+                   'url'   => 'HotelManage',
+                   'image' => 'member_a(56).png'
                ];
            } else {
                $data[] = [
