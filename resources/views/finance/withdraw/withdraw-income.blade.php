@@ -337,8 +337,9 @@
                 <input type='radio' name='withdraw[income][service_switch]' value='0' @if($set['service_switch'] === '0') checked @endif />
                 关闭
             </label>
-
+            <span class='help-block'>关闭只隐藏前端显示，若有设置劳务税，前端提现还是会计算劳务税</span>
         </div>
+
     </div>
 </div>
 
