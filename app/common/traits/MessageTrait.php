@@ -101,12 +101,12 @@ trait MessageTrait
      */
     public function message($message, $redirect = '', $status = 'success')
     {
-        if (env('APP_Framework' == 'platform')) {
+        if (env('APP_Framework') == 'platform') {
             return response()->view('message', [
                 'redirect' => $redirect,
                 'message' => $message,
                 'status' => $status
-            ]);
+            ])->send();
         }
 
         return view('message', [
