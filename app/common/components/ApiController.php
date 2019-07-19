@@ -74,6 +74,9 @@ class ApiController extends BaseController
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
+            //TODO 静默 头像默认 重新授权登录
+            \Log::debug('---------logined scope-------', [\YunShop::request()->scope]);
+
             //发展下线
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid, $mark ,$mark_id);
         }
