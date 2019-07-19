@@ -71,6 +71,24 @@ class MemberDesignerController extends ApiController
                             }
                         }
                     }
+                    if($design->temp == 'membercarorder')
+                    {
+                        if (!app('plugins')->isEnabled('net-car')) {
+                            unset($datas[$dkey]);
+                        }
+                    }
+                    if($design->temp == 'memberhotelorder')
+                    {
+                        if (!app('plugins')->isEnabled('hotel')) {
+                            unset($datas[$dkey]);
+                        }
+                    }
+                    if($design->temp == 'memberleaseorder')
+                    {
+                        if (!app('plugins')->isEnabled('lease-toy')) {
+                            unset($datas[$dkey]);
+                        }
+                    }
                 }
                 $res['data'] = $datas;
                 $res['status'] = true;
