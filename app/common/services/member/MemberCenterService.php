@@ -31,7 +31,7 @@ class MemberCenterService
            'tool'         => ['separate','elive'],
            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze','extension'],
            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro', 'delivery_station', 'service_station'],
-           'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
+           'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'fight_groups', 'material-center'
                , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order']
        ];
 
@@ -570,8 +570,20 @@ class MemberCenterService
                    'title' => '网约车',
                    'class' => 'icon-member_my-card',
                    'url'   => 'online_car',
+                   'image' => 'member_a(64).png'
                ];
            }
+       }
+
+       //拼团插件开启关闭
+       if (app('plugins')->isEnabled('fight-groups')) {
+           $data[] = [
+               'name'  => 'fight_groups',
+               'title' => '我的拼团',
+               'class' => 'icon-member_mygroup',
+               'url'   => 'MyGroups',
+               'image' => 'member_a(64).png'
+           ];
        }
 
        foreach ($data as $k => $v) {
@@ -608,6 +620,7 @@ class MemberCenterService
            'yop' => app('plugins')->isEnabled('yop-pay') ? 1 : 0,
            'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
            'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
+           'is_open_fight_groups' => app('plugins')->isEnabled('fight-groups') ? 1 : 0,
            'is_open_lease_toy' => \app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled(), //租赁订单列表是否开启
            'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
            'is_store' => $store && $store->is_black != 1 ? 1 : 0,
