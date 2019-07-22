@@ -56,6 +56,7 @@ class MiniAppController extends ApiController
                 ->uniacid()
                 ->update([
                     'formId'=> $formId,
+                    'formId_create_time' =>$time,
                 ]);
         }
         return $this->successJson('成功');
