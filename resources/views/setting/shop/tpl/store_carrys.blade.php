@@ -1,5 +1,5 @@
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义名称</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现</label>
     <div class="col-sm-9 col-xs-12">
         <input type="text" name="setdata[income][name_of_withdrawal]" class="form-control" value="{{$set['income']['name_of_withdrawal']}}" />
     </div>
