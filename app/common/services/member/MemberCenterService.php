@@ -582,7 +582,7 @@ class MemberCenterService
                'title' => '我的拼团',
                'class' => 'icon-member_mygroup',
                'url'   => 'MyGroups',
-               'image' => 'member_a(64).png'
+               'image' => 'member_a(72).png'
            ];
        }
 
