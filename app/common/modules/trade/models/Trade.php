@@ -31,9 +31,10 @@ use Illuminate\Support\Facades\DB;
 class Trade extends BaseModel
 {
 
-    public function init(MemberCartCollection $memberCartCollection)
+    public function init(MemberCartCollection $memberCartCollection, $member = null, $request = null)
     {
-        $this->setRelation('orders', $this->getOrderCollection($memberCartCollection));
+        $request = $request ?: request();
+        $this->setRelation('orders', $this->getOrderCollection($memberCartCollection, $member, $request));
         $this->setRelation('discount', $this->getDiscount());
         $this->setRelation('dispatch', $this->getDispatch());
         $this->amount_items = $this->getAmountItems();
@@ -54,7 +55,7 @@ class Trade extends BaseModel
                     continue;
                 }
                 // 删除旧的元素
-                $result = $result->filter(function ($item)use($old) {
+                $result = $result->filter(function ($item) use ($old) {
                     return $item->code == $old->code;
                 });
                 // 添加累加后的值
@@ -113,7 +114,7 @@ class Trade extends BaseModel
                     continue;
                 }
                 // 删除旧的元素
-                $result = $result->filter(function ($item)use($old) {
+                $result = $result->filter(function ($item) use ($old) {
                     return $item->code == $old->code;
                 });
                 // 添加累加后的值
@@ -142,14 +143,13 @@ class Trade extends BaseModel
         return $attributes;
     }
 
-    private function getOrderCollection(MemberCartCollection $memberCartCollection)
+    private function getOrderCollection(MemberCartCollection $memberCartCollection, $member = null, $request = null)
     {
         // 按插件分组
         $groups = $memberCartCollection->groupByGroupId()->values();
         // 分组下单
-        $orderCollection = $groups->map(function (MemberCartCollection $memberCartCollection) {
-
-            return $memberCartCollection->getOrder($memberCartCollection->getPlugin());
+        $orderCollection = $groups->map(function (MemberCartCollection $memberCartCollection) use ($member, $request) {
+            return $memberCartCollection->getOrder($memberCartCollection->getPlugin(), $member, $request);
         });
         return new OrderCollection($orderCollection->all());
     }

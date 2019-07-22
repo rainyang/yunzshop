@@ -1359,7 +1359,8 @@ class MemberController extends ApiController
 
     public function getEnablePlugins($request, $integrated = null)
     {
-         $arr = (new MemberCenterService())->getMemberData();//获取会员中心页面各入口
+
+        $arr = (new MemberCenterService())->getMemberData();//获取会员中心页面各入口
 
         if (is_null($integrated)) {
             return $this->successJson('ok', $arr);
@@ -1687,6 +1688,10 @@ class MemberController extends ApiController
         $order['order'] = $order_info;
         if (app('plugins')->isEnabled('hotel')) {
             $order['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+        // 拼团订单
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $order['fight_groups_order'] = \Yunshop\FightGroups\common\models\Order::getFightGroupsOrderCountStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
 
         if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {

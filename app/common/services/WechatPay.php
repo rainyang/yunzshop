@@ -9,6 +9,7 @@
 namespace app\common\services;
 
 use app\common\exceptions\AppException;
+use app\common\exceptions\ShopException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\McMappingFans;
@@ -128,7 +129,12 @@ class WechatPay extends Pay
         $notify_url = '';
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
-        $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
+
+        try {
+            $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney * 100, $refundmoney * 100);
+        } catch (\Exception $e) {
+            throw new AppException('微信接口错误:' . $e->getMessage());
+        }
 
         $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
         $status = $this->queryRefund($payment, $out_trade_no);

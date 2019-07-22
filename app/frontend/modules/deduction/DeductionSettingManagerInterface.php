@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\deduction;
 
-use app\frontend\models\Goods;
+use app\common\models\Goods;
 
 interface DeductionSettingManagerInterface
 {
