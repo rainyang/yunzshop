@@ -18,6 +18,7 @@ class IncomeService
     {
         $set = Setting::get('withdraw.income');
         $modeData = [];
+
         foreach ($set as $key => $item) {
             if(in_array($key, static::$pay_way) && $item){
                 $modeData[$key] = [
@@ -26,6 +27,7 @@ class IncomeService
                 ];
             }
         }
+        $modeData['service_switch'] = isset($set['service_switch']) ? $set['service_switch'] : 1;
         return $modeData;
     }
 
