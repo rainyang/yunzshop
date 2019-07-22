@@ -29,9 +29,10 @@ class MemberDesignerController extends ApiController
                 {
                     if($design->temp == 'membercenter')
                     {
-                       if($design->params->memberlove == true){
+                       if($design->params->memberredlove == true || $design->params->memberwhitelove == true){
                            if(!app('plugins')->isEnabled('love')){
-                               $datas[$dkey]->params->memberlove = false;
+                               $datas[$dkey]->params->memberredlove = false;
+                               $datas[$dkey]->params->memberwhitelove = false;
                            }
                        }
                     }
