@@ -35,24 +35,9 @@ class GoodsController extends ApiController
     protected $publicAction = ['getRecommendGoods'];
     protected $ignoreAction = ['getRecommendGoods'];
 
-    /**
-     * @param $request
-     * @param null $integrated
-     * @return array|\Illuminate\Http\JsonResponse
-     * @throws \app\common\exceptions\AppException
-     */
-    public function getGoods($request, $integrated = null)
+    // 拆分getGoods方法，分离和插件相关的部分，只提取属于商品的信息。和插件相关的部分在getGoods中处理
+    protected function _getGoods($id, $integrated = null)
     {
-        $id = intval(\YunShop::request()->id);
-        if (!$id) {
-            if(is_null($integrated)){
-                return $this->errorJson('请传入正确参数.');
-            }else{
-                return show_json(0,'请传入正确参数.');
-            }
-
-        }
-
         $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
 
         $goodsModel = Goods::uniacid()
@@ -199,22 +184,42 @@ class GoodsController extends ApiController
                 }
             }
         }
-        //默认供应商店铺名称
-        if ($goodsModel->supplier->store_name == 'null') {
-            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
-        }
+
 
         if ($goodsModel->hasOneShare) {
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
+        /*
         //设置商品相关插件信息
         $this->setGoodsPluginsRelations($goodsModel);
-
+        */
         //该商品下的推广
         $goodsModel->show_push = SaleGoods::getPushGoods($id);
-
         //销量等于虚拟销量加真实销量
         $goodsModel->show_sales += $goodsModel->virtual_sales;
+
+        return $goodsModel;
+    }
+
+    public function getGoods($request, $integrated = null)
+    {
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            if(is_null($integrated)){
+                return $this->errorJson('请传入正确参数.');
+            }else{
+                return show_json(0,'请传入正确参数.');
+            }
+
+        }
+
+        $goodsModel = $this->_getGoods($id);
+        //设置商品相关插件信息
+        $this->setGoodsPluginsRelations($goodsModel);
+        //默认供应商店铺名称
+        if ($goodsModel->supplier->store_name == 'null') {
+            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
+        }
 
         //判断该商品是否是视频插件商品
         $videoDemand = new VideoDemandCourseGoods();
