@@ -33,7 +33,7 @@ class MemberOfficeAccountService extends MemberService
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
-        $scope   = \YunShop::request()->scope;
+        $scope   = \YunShop::request()->scope ?: 'userinfo';     //scope: base|home|userinfo
 
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
@@ -79,7 +79,7 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $this->memberLogin($userinfo);
 
             Session::set('member_id', $member_id);
-            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid'] . '\t' . $scope), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
 
@@ -508,13 +508,18 @@ class MemberOfficeAccountService extends MemberService
     public function checkLogged()
     {
         $uniacid = \YunShop::app()->uniacid;
+        $from    = \YunShop::request()->scope;
 
         if (isset($_COOKIE['Yz-Token'])) {
             try {
                 $yz_token = decrypt($_COOKIE['Yz-Token']);
 
-                list($token, $expires, $openid) = explode('\t', $yz_token);
+                list($token, $expires, $openid, $scope) = explode('\t', $yz_token);
             } catch (DecryptException $e) {
+                return false;
+            }
+
+            if ($scope == 'base' && $from != $scope) {
                 return false;
             }
 
