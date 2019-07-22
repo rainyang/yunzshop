@@ -18,13 +18,13 @@ class InsertAddressToYzAddressAndYzStreetTable extends Migration
             if ($ret) {
                 \app\common\models\Address::insert([
                     'areaname' => '烟台高新技术产业开发区',
-                    'parentid' => $ret['parentid'],
+                    'parentid' => $ret['id'],
                     'level'    => 3
                 ]);
 
                 $ret_id = \app\common\models\Address::insertGetId([
                     'areaname' => '烟台经济技术开发区',
-                    'parentid' => $ret['parentid'],
+                    'parentid' => $ret['id'],
                     'level'    => 3
                 ]);
                 $street = ['长江路社区','海河社区','八角街道','古现街道','大季家街道'];
