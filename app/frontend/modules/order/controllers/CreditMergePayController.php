@@ -16,6 +16,7 @@ use app\common\services\PayFactory;
 use app\frontend\models\OrderPay;
 use app\frontend\modules\coupon\services\ShareCouponService;
 use app\common\helpers\Url;
+use app\common\models\Order;
 
 class CreditMergePayController extends MergePayController
 {
