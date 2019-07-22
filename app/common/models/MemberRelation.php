@@ -146,7 +146,8 @@ class MemberRelation extends BaseModel
      */
     public static function checkOrderGoods($goods_id, $uid)
     {
-        $list = OrderGoods::uniacid()->where('uid',$uid)->whereIn('goods_id', $goods_id)->get();
+        $goods_ids = explode(',',$goods_id);
+        $list = OrderGoods::uniacid()->where('uid',$uid)->whereIn('goods_id', $goods_ids)->get();
         if ($list->isEmpty()) {
             return false;
         }
@@ -459,13 +460,7 @@ class MemberRelation extends BaseModel
     {
         //判断商品
         if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-            $goods_id = explode(',',$set->become_goods_id);
-            foreach ($goods_id as $id) {
-                $result = self::checkOrderGoods($id, $uid);
-                if ($result) {
-                    break;
-                }
-            }
+            $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
             if ($result) {
                 $member->is_agent = 1;
@@ -586,16 +581,8 @@ class MemberRelation extends BaseModel
     {
         //判断商品
         if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-            $goods_id = explode(',',$set->become_goods_id);
-            $is_goods = false;
-            foreach ($goods_id as $id) {
-                $result = self::checkOrderGoods($id, $uid);
-                if ($result) {
-                    $is_goods = true;
-                    break;
-                }
-            }
-            if (!$is_goods){
+            $result = self::checkOrderGoods($set->become_goods_id, $uid);
+            if (!$result) {
                 return;
             }
         }
