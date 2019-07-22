@@ -116,10 +116,10 @@ class MemberDesignerController extends ApiController
      */
      private function getMemberData()
      {
-         $arr = (new \app\common\services\member\MemberDesigner())->getMemberData();
-         $tools = [];
+         $arr = (new \app\common\services\member\MemberCenterService())->getMemberData();
+         $tools = ['m-collection','m-footprint','m-address','m-info'];
          $merchants = [];
-         $markets = [];
+         $markets = ['m-erweima','m-pinglun','m-guanxi','m-coupon'];
          $assets = [];
          foreach ($arr['tool'] as $v){
             $tools[] = $v['name'];

@@ -17,7 +17,7 @@ use Yunshop\Kingtimes\common\models\Distributor;
 use Yunshop\Kingtimes\common\models\Provider;
 
 
-class MemberDesigner
+class MemberCenterService
 {
    public function getMemberData()
    {

@@ -26,7 +26,7 @@ use app\common\models\member\MemberInvitationCodeLog;
 use app\common\models\member\MemberInviteGoodsLogController;
 use app\common\models\MemberShopInfo;
 use app\common\services\alipay\OnekeyLogin;
-use app\common\services\member\MemberDesigner;
+use app\common\services\member\MemberCenterService;
 use app\common\services\popularize\PortType;
 use app\common\services\Session;
 use app\common\services\Utils;
@@ -1359,7 +1359,7 @@ class MemberController extends ApiController
 
     public function getEnablePlugins($request, $integrated = null)
     {
-         $arr = (new MemberDesigner())->getMemberData();//获取会员中心页面各入口
+         $arr = (new MemberCenterService())->getMemberData();//获取会员中心页面各入口
 
         if (is_null($integrated)) {
             return $this->successJson('ok', $arr);
