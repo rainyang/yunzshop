@@ -89,6 +89,12 @@ class MemberDesignerController extends ApiController
                             unset($datas[$dkey]);
                         }
                     }
+                    if($design->temp == 'membergoruporder')
+                    {
+                        if (!app('plugins')->isEnabled('fight-groups')) {
+                            unset($datas[$dkey]);
+                        }
+                    }
                 }
                 $res['data'] = $datas;
                 $res['status'] = true;
