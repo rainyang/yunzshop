@@ -189,7 +189,7 @@ class CouponController extends BaseController
             'timestart' => $coupon->time_start->timestamp,
             'timeend' => $coupon->time_end->timestamp,
             'hotel_is_open' => $hotel_is_open,
-            'hotels' => CouponHotel::getHotels($coupon_id)
+            'hotels' => $hotel_is_open ? CouponHotel::getHotels($coupon_id) : '',
             //'template_id' => $template_id,
         ])->render();
     }
