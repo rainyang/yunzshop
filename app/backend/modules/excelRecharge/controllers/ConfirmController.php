@@ -267,8 +267,10 @@ class ConfirmController extends PageController
     {
         $sheet = $this->fileContent->getActiveSheet();
 
-        $highestRow = $sheet->getHighestRow();
-        $highestColumn = $sheet->getHighestColumn();
+//        $highestRow = $sheet->getHighestRow();
+//        $highestColumn = $sheet->getHighestColumn();
+        $highestRow = $sheet->getHighestDataRow();
+        $highestColumn = $sheet->getHighestDataColumn();
         $highestColumnCount = \PHPExcel_Cell::columnIndexFromString($highestColumn);
         $row = 2;
 
