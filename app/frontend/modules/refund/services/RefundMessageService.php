@@ -70,12 +70,13 @@ class RefundMessageService extends MessageService
     public static function applyRefundNoticeBuyer($refundApply,$uniacid = '')
     {
         $couponNotice = Setting::get('shop.notice');
-        \Log::info('shop.notice', $couponNotice);
+        // \Log::info('shop.notice', $couponNotice);
         //获取用户退货退款通知商家的消息模板
         $temp_id = $couponNotice['order_refund_apply_to_saler'];
         \Log::info('temp_id', $temp_id);
 
-        if ($temp_id) {
+        if (!$temp_id) {
+            \Log::info('temp_id没有数据');
             return false;
         }
 

@@ -94,7 +94,6 @@ use Illuminate\Support\Facades\DB;
  * @method static self isPlugin()
  * @method static self orders(array $searchParam)
  * @method static self cancelled()
- * @property OrderRequest orderRequest
  */
 class Order extends BaseModel
 {
@@ -152,9 +151,8 @@ class Order extends BaseModel
     public function scopeHidePluginIds($query, $plugin_ids)
     {
         if (empty($plugin_ids)) {
-
-            //酒店订单、租赁订单、网约车订单、服务站补货订单
-            $plugin_ids = [33, 40, 41, 43];
+            //酒店订单、租赁订单、网约车订单、服务站补货订单、拼团订单
+            $plugin_ids = [33,40,41,43,54];
         }
 
         return $query->whereNotIn('plugin_id', $plugin_ids);
@@ -202,7 +200,7 @@ class Order extends BaseModel
 
     public function scopeNormal($query)
     {
-        return $query->where('refund_id', 0)->where('is_pending', 0);
+        return $query->where('refund_id', 0)->where('is_pending',0);
     }
 
     /**
@@ -619,12 +617,10 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
     }
-
     public function orderFees()
     {
         return $this->hasMany(OrderFee::class, 'order_id', 'id');
     }
-
     public function orderDiscount()
     {
         return $this->hasMany(OrderDiscount::class, 'order_id', 'id');
@@ -937,10 +933,5 @@ class Order extends BaseModel
                 $orderGoods->stockEnough();
             }
         });
-    }
-
-    public function orderRequest()
-    {
-        return $this->hasOne(OrderRequest::class,'order_id');
     }
 }
