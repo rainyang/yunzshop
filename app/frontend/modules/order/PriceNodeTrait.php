@@ -55,6 +55,14 @@ trait PriceNodeTrait
         return $this->priceCache[$key];
     }
 
+    public function getCurrentPrice()
+    {
+        if(!is_array($this->priceCache)){
+            return $this->getPriceNodes()->first()->getPrice();
+        }
+        return array_last($this->priceCache);
+    }
+
     /**
      * 获取某个节点之前的价格
      * @param $key
@@ -77,7 +85,9 @@ trait PriceNodeTrait
         }
         return $this->getPriceAfter($nodeKey);
     }
-    public function getPriceBeforeWeight($key){
+
+    public function getPriceBeforeWeight($key)
+    {
         $weight = 0;
         foreach ($this->getPriceNodes() as $priceNode) {
             if ($priceNode->getKey() == $key) {
@@ -86,7 +96,7 @@ trait PriceNodeTrait
             $weight = $priceNode->getWeight();
         }
 
-        $nodeKey = $this->getPriceNodes()->filter(function ($priceNode) use ($weight){
+        $nodeKey = $this->getPriceNodes()->filter(function ($priceNode) use ($weight) {
             return $priceNode->getWeight() < $weight;
         })->last()->getKey();
 

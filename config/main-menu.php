@@ -1125,7 +1125,7 @@ return [
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
-                            'goods_discount_set_update'      => [
+                            'goods_discount_set'      => [
                                 'name'       => '编辑页面',
                                 'url'        => 'discount.discount.set',
                                 'url_params' => '',
@@ -2664,7 +2664,7 @@ return [
                 'parents'    => ['finance', 'withdraw'],
                 'child'      => [
 
-                    'withdrawRecordsIndex' => [
+                    'withdrawRecordsIndex'   => [
                         'name'       => '全部记录',
                         'url'        => 'withdraw.records.index',
                         'url_params' => "",
@@ -2686,7 +2686,7 @@ return [
                         'item'       => 'withdrawRecordsInitial',
                         'parents'    => ['finance', 'withdrawRecords'],
                     ],
-                    'withdrawRecordsAudit' => [
+                    'withdrawRecordsAudit'   => [
                         'name'       => '待打款',
                         'url'        => 'withdraw.records.audit',
                         'url_params' => "",
@@ -2697,7 +2697,7 @@ return [
                         'item'       => 'withdrawRecordsAudit',
                         'parents'    => ['finance', 'withdrawRecords'],
                     ],
-                    'withdrawRecordsPaying' => [
+                    'withdrawRecordsPaying'  => [
                         'name'       => '打款中',
                         'url'        => 'withdraw.records.paying',
                         'url_params' => "",
@@ -2708,7 +2708,7 @@ return [
                         'item'       => 'withdrawRecordsPaying',
                         'parents'    => ['finance', 'withdrawRecords'],
                     ],
-                    'withdrawRecordsPayed' => [
+                    'withdrawRecordsPayed'   => [
                         'name'       => '已打款',
                         'url'        => 'withdraw.records.payed',
                         'url_params' => "",
@@ -2719,7 +2719,7 @@ return [
                         'item'       => 'withdrawRecordsPayed',
                         'parents'    => ['finance', 'withdrawRecords'],
                     ],
-                    'withdrawRecordsRebut' => [
+                    'withdrawRecordsRebut'   => [
                         'name'       => '已驳回',
                         'url'        => 'withdraw.records.rebut',
                         'url_params' => "",
@@ -3015,34 +3015,56 @@ return [
                 ]
             ],
 
-            'batch_excel_recharge' => [
+            'excelRecharge' => [
                 'name'       => '批量充值',
-                'url'        => 'finance.batch-excel-recharge.index',
+                'url'        => 'excelRecharge.page.index',
                 'url_params' => '',
                 'permit'     => 1,
                 'menu'       => 1,
                 'icon'       => 'fa-line-chart',
                 'sort'       => 0,
-                'item'       => 'batch_excel_recharge',
+                'item'       => 'excelRecharge',
                 'parents'    => ['finance'],
                 'child'      => [
-                    'batch_excel_recharge_example' => [
+                    'excelRechargeExample' => [
                         'name'       => '下载模版',
                         'permit'     => 1,
                         'menu'       => 0,
                         'icon'       => '',
-                        'url'        => 'finance.batch-excel-recharge.example',
+                        'url'        => 'excelRecharge.example.index',
                         'url_params' => '',
-                        'parents'    => ['finance', 'batch_excel_recharge']
+                        'item'       => 'excelRechargeExample',
+                        'parents'    => ['finance', 'excelRecharge']
                     ],
-                    'batch_excel_recharge_confirm' => [
-                        'name'       => '删除广告',
+                    'excelRechargeConfirm' => [
+                        'name'       => '确认充值',
                         'permit'     => 1,
                         'menu'       => 0,
                         'icon'       => '',
-                        'url'        => 'finance.batch-excel-recharge.confirm',
+                        'url'        => 'excelRecharge.confirm.index',
                         'url_params' => '',
-                        'parents'    => ['finance', 'batch_excel_recharge']
+                        'item'       => 'excelRechargeConfirm',
+                        'parents'    => ['finance', 'excelRecharge']
+                    ],
+                    'excelRechargeRecords' => [
+                        'name'       => '充值记录',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'url'        => 'excelRecharge.records.index',
+                        'url_params' => '',
+                        'item'       => 'excelRechargeRecords',
+                        'parents'    => ['finance', 'excelRecharge']
+                    ],
+                    'excelRechargeDetail'  => [
+                        'name'       => '详情记录',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'url'        => 'excelRecharge.detail.index',
+                        'url_params' => '',
+                        'item'       => 'excelRechargeDetail',
+                        'parents'    => ['finance', 'excelRecharge']
                     ],
                 ]
             ],

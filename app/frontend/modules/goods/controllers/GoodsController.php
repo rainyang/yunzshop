@@ -96,6 +96,10 @@ class GoodsController extends ApiController
             }
         }
 
+
+        $goodsModel->is_added = \ Setting::get('shop.member.added') ?: 1;
+
+
         //验证浏览权限
         $this->validatePrivilege($goodsModel, $member);
 
@@ -104,6 +108,7 @@ class GoodsController extends ApiController
             $goodsModel->hasOneBrand->desc = html_entity_decode($goodsModel->hasOneBrand->desc);
             $goodsModel->hasOneBrand->logo = yz_tomedia($goodsModel->hasOneBrand->logo);
         }
+
 
         //商品规格图片处理
         if ($goodsModel->hasManyOptions && $goodsModel->hasManyOptions->toArray()) {
@@ -158,6 +163,7 @@ class GoodsController extends ApiController
 
         //商品营销 todo 优化新的
         $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
+        $goodsModel->love_shoppin_gift = $this->loveShoppingGift($goodsModel);
 
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
@@ -683,7 +689,7 @@ class GoodsController extends ApiController
                 $data['value'][] = '最高抵扣' . $love_goods['deduction_proportion'] . $data['name'];
             }
 
-            if ($love_goods['award']) {
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_love') != 2) {
                 $data['value'][] = '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
 
@@ -999,5 +1005,23 @@ class GoodsController extends ApiController
             }
         }
     }
+
+    public function loveShoppingGift($goodsModel){
+
+        //爱心值
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel);
+            $data['name'] = $love_goods['name'];
+            $data['key'] = 'love';
+            $data['type'] = 'array';
+
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_love') == 2) {
+                return  '购买赠送' . $love_goods['award_proportion'] . $data['name'];
+            }
+        }
+
+    }
+
 
 }
