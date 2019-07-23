@@ -110,8 +110,9 @@ class MemberDesignerController extends ApiController
                     if ($design['temp']=='goods'){
                          if($is_love_open){
                              foreach ($design['data'] as $gkey=>$goode_award){
-                                 $datas[$dkey]['data'][$gkey]['award'] = (new HomePageController())->getLoveGoods($goode_award['goodid']);
-                              //   $datas[$dkey]['data'][$gkey]['stock'] = (new HomePageController())->getGoodsStock($goode_award['goodid']);
+                                 $HomePage = new HomePageController();
+                                 $datas[$dkey]['data'][$gkey]['award'] = $HomePage->getLoveGoods($goode_award['goodid']);
+                                 $datas[$dkey]['data'][$gkey]['stock'] = $HomePage->getMemberGoodsStock($goode_award['goodid']);
                              }
                          }else{
                              foreach ($design['data'] as $gkey=>$goode_award){

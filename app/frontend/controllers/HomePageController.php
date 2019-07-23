@@ -447,6 +447,13 @@ class HomePageController extends ApiController
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
     }
+
+    public function getMemberGoodsStock($goods_id)
+    {
+        $goodsModel = Goods::select('stock')->where('uniacid',\Yunshop::app()->uniacid)->where('id',$goods_id)->first();
+        $stock = $goodsModel ? $goodsModel->stock : 0;
+        return $stock;
+    }
     
     private function getGoodsStock($goods_id)
     {
