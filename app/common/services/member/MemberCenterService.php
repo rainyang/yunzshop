@@ -295,7 +295,8 @@ class MemberCenterService
                'name'  => 'my-friend',
                'title' => MY_FRIEND_NAME,
                'class' => 'icon-member_my-friend',
-               'url'   => 'MyFriendApply'
+               'url'   => 'MyFriendApply',
+               'image' => 'member_a(63).png'
            ];
        }
 
