@@ -296,5 +296,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(".sidebar").toggle();
     });
 </script>
+
+<script type='text/javascript'>
+    function getkey(a,maxpage) {
+        pms =  Number(document.getElementById('jump').value);
+        inits = "{!! YunShop::app()->script_name . '?' . http_build_query($_REQUEST) !!}";
+        reg=/page=(\w+)/gi;
+        str=inits.match(reg);
+        // console.log(pms);
+        // console.log(maxpage)
+        initsurl=inits.replace(reg,'page=');
+        if(pms > maxpage){
+            pms = maxpage;
+        } else if(pms < 1){
+            pms = 1;
+        }
+        a.href = initsurl + pms
+    }
+</script>
 </body>
 </html>
