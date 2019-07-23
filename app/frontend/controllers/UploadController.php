@@ -36,10 +36,6 @@ class UploadController extends BaseController
             'tiff', 'svg', 'wmf', 'jpe', 'jpeg', 'dib', 'ico', 'tga', 'cut', 'pic'
         ];
 
-        $setting = SystemSetting::settingLoad('global', 'system_global');
-
-        $remote = SystemSetting::settingLoad('remote', 'system_remote');
-
         // 获取文件相关信息
         $originalName = $file->getClientOriginalName(); // 文件原名
         $realPath = $file->getRealPath();   //临时文件的绝对路径
@@ -47,37 +43,76 @@ class UploadController extends BaseController
 
         $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
 
-        if (in_array($ext, $defaultImgType)) {
-            if ($setting['image_extentions'] && !in_array($ext, array_filter($setting['image_extentions'])) ) {
-                return $this->errorJson('非规定类型的文件格式');
+        if (env('APP_Framework') == 'platform') {
+            $setting = SystemSetting::settingLoad('global', 'system_global');
+
+            $remote = SystemSetting::settingLoad('remote', 'system_remote');
+
+            if (in_array($ext, $defaultImgType)) {
+                if ($setting['image_extentions'] && !in_array($ext, array_filter($setting['image_extentions'])) ) {
+                    return $this->errorJson('非规定类型的文件格式');
+                }
+                $defaultImgSize = $setting['img_size'] ? $setting['img_size'] * 1024 : 1024*1024*5; //默认大小为5M
+                if ($file->getClientSize() > $defaultImgSize) {
+                    return $this->errorJson('文件大小超出规定值');
+                }
             }
-            $defaultImgSize = $setting['img_size'] ? $setting['img_size'] * 1024 : 1024*1024*5; //默认大小为5M
-            if ($file->getClientSize() > $defaultImgSize) {
-                return $this->errorJson('文件大小超出规定值');
+
+            if ($setting['image']['zip_percentage']) {
+                //执行图片压缩
+                $imagezip = new ImageZip();
+                $imagezip->makeThumb(
+                    yz_tomedia($newOriginalName),
+                    yz_tomedia($newOriginalName),
+                    $setting['image']['zip_percentage']
+                );
+            }
+
+            if ($setting['thumb_width'] == 1 && $setting['thumb_width']) {
+                $imagezip = new ImageZip();
+                $imagezip->makeThumb(
+                    yz_tomedia($newOriginalName),
+                    yz_tomedia($newOriginalName),
+                    $setting['thumb_width']
+                );
+            }
+        } else {
+            global $_W;
+            $remote = $_W['setting']['remote'];
+            $upload = $_W['setting']['upload'];
+
+            if (in_array($ext, $defaultImgType)) {
+                if ($upload['image']['extentions'] && !in_array($ext, $upload['image']['extentions'])) {
+                    return $this->errorJson('非规定类型的文件格式');
+                }
+                $defaultImgSize = $upload['image']['limit'] ? $upload['image']['limit'] * 1024 : 5 * 1024 * 1024;
+                if ($file->getClientSize() > $defaultImgSize) {
+                    return $this->errorJson('文件大小超出规定值');
+                }
+            }
+
+            if ($upload['image']['zip_percentage']) {
+                //执行图片压缩
+                $imagezip = new ImageZip();
+                $imagezip->makeThumb(
+                    yz_tomedia($newOriginalName),
+                    yz_tomedia($newOriginalName),
+                    $upload['image']['zip_percentage']
+                );
+            }
+
+            if ($upload['image']['thumb'] == 1 && $upload['image']['width']) {
+                $imagezip = new ImageZip();
+                $imagezip->makeThumb(
+                    yz_tomedia($newOriginalName),
+                    yz_tomedia($newOriginalName),
+                    $upload['image']['width']
+                );
             }
         }
 
         //本地上传
         \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
-
-        if ($setting['image']['zip_percentage']) {
-            //执行图片压缩
-            $imagezip = new ImageZip();
-            $imagezip->makeThumb(
-                yz_tomedia($newOriginalName),
-                yz_tomedia($newOriginalName),
-                $setting['image']['zip_percentage']
-            );
-        }
-
-        if ($setting['thumb_width'] == 1 && $setting['thumb_width']) {
-            $imagezip = new ImageZip();
-            $imagezip->makeThumb(
-                yz_tomedia($newOriginalName),
-                yz_tomedia($newOriginalName),
-                $setting['thumb_width']
-            );
-        }
 
         //远程上传
         if ($remote['type'] != 0) {
