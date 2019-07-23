@@ -29,48 +29,48 @@ class MemberDesignerController extends ApiController
                 $memberData = $this->getMemberData();
                 foreach ($datas as $dkey=>$design)
                 {
-                    if($design->temp == 'membercenter')
+                    if($design['temp'] == 'membercenter')
                     {
-                       if($design->params->memberredlove == true || $design->params->memberwhitelove == true){
+                       if($design['params']['memberredlove'] == true || $design['params']['memberwhitelove'] == true){
                            if(!app('plugins')->isEnabled('love')){
-                               $datas[$dkey]->params->memberredlove = false;
-                               $datas[$dkey]->params->memberwhitelove = false;
+                               $datas[$dkey]['params']['memberredlove'] = false;
+                               $datas[$dkey]$design['params']['memberwhitelove'] = false;
                            }
                        }
                     }
-                    if($design->temp == 'membertool')
+                    if($design['temp'] == 'membertool')
                     {
-                         foreach ($design->data->part as $pkey=>$par)
+                         foreach ($design['data']['part'] as $pkey=>$par)
                          {
-                             if(!in_array($par->name,$memberData['tools'])){
-                                 unset($datas[$dkey]->data->part[$pkey]);
+                             if(!in_array($par['name'],$memberData['tools'])){
+                                 unset($datas[$dkey]['data']['part'][$pkey]);
                              }
                          }
                     }
-                    if($design->temp == 'membermerchant')
+                    if($design['temp'] == 'membermerchant')
                     {
-                        foreach ($design->data->part as $pkey=>$par)
+                        foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par->name,$memberData['merchants'])){
-                                unset($datas[$dkey]->data->part[$pkey]);
+                            if(!in_array($par['name'],$memberData['merchants'])){
+                                unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
                     }
-                    if($design->temp == 'membermarket')
+                    if($design['temp'] == 'membermarket')
                     {
-                        foreach ($design->data->part as $pkey=>$par)
+                        foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par->name,$memberData['markets'])){
-                                unset($datas[$dkey]->data->part[$pkey]);
+                            if(!in_array($par['name'],$memberData['markets'])){
+                                unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
                     }
-                    if($design->temp == 'memberasset')
+                    if($design['temp'] == 'memberasset')
                     {
-                        foreach ($design->data->part as $pkey=>$par)
+                        foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par->name,$memberData['assets'])){
-                                unset($datas[$dkey]->data->part[$pkey]);
+                            if(!in_array($par['name'],$memberData['assets'])){
+                                unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
                     }
@@ -80,19 +80,19 @@ class MemberDesignerController extends ApiController
                             unset($datas[$dkey]);
                         }
                     }
-                    if($design->temp == 'memberhotelorder')
+                    if($design['temp'] == 'memberhotelorder')
                     {
                         if (!app('plugins')->isEnabled('hotel')) {
                             unset($datas[$dkey]);
                         }
                     }
-                    if($design->temp == 'memberleaseorder')
+                    if($design['temp'] == 'memberleaseorder')
                     {
                         if (!app('plugins')->isEnabled('lease-toy')) {
                             unset($datas[$dkey]);
                         }
                     }
-                    if($design->temp == 'membergoruporder')
+                    if($design['temp'] == 'membergoruporder')
                     {
                         if (!app('plugins')->isEnabled('fight-groups')) {
                             unset($datas[$dkey]);
