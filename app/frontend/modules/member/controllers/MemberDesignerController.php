@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use Yunshop\Designer\models\MemberDesigner;
+use Yunshop\Designer\services\DesignerService;
 
 class MemberDesignerController extends ApiController
 {
@@ -23,7 +24,8 @@ class MemberDesignerController extends ApiController
             $designer =  $this->getDesigner();
             if($designer->datas)
             {
-                $datas = json_decode($designer->datas);
+                $datas = (new DesignerService())->getMemberData($designer->datas);
+                
                 $memberData = $this->getMemberData();
                 foreach ($datas as $dkey=>$design)
                 {
