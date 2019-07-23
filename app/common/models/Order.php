@@ -148,7 +148,7 @@ class Order extends BaseModel
      * @param $query
      * @return mixed
      */
-    public function scopeHidePluginIds($query, $plugin_ids)
+    public function scopeHidePluginIds($query, $plugin_ids=[])
     {
         if (empty($plugin_ids)) {
 
