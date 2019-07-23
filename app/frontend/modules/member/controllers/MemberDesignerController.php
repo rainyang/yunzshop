@@ -25,7 +25,7 @@ class MemberDesignerController extends ApiController
             if($designer->datas)
             {
                 $datas = (new DesignerService())->getMemberData($designer->datas);
-                
+
                 $memberData = $this->getMemberData();
                 foreach ($datas as $dkey=>$design)
                 {
@@ -74,7 +74,7 @@ class MemberDesignerController extends ApiController
                             }
                         }
                     }
-                    if($design->temp == 'membercarorder')
+                    if($design['temp'] == 'membercarorder')
                     {
                         if (!app('plugins')->isEnabled('net-car')) {
                             unset($datas[$dkey]);
