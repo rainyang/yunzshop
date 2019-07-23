@@ -1211,7 +1211,7 @@ if (!function_exists('file_is_image')) {
 }
 
 if (!function_exists('file_remote_uploads')) {
-    function file_remote_uploads($filename, $auto_delete_local = true)
+        function file_remote_uploads($filename, $auto_delete_local = true)
     {
         global $_W;
         if (empty($_W['setting']['remote']['type'])) {
@@ -1249,9 +1249,9 @@ if (!function_exists('file_remote_uploads')) {
             $buckets = attachment_alioss_buctkets($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret']);
             $endpoint = 'http://' . $buckets[$_W['setting']['remote']['alioss']['bucket']]['location'] . '.aliyuncs.com';
             try {
-                $ossClient = new \OSS\OssClient($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret'], $endpoint);
+                $ossClient = new \app\common\services\aliyunoss\OssClient($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret'], $endpoint);
                 $ossClient->uploadFile($_W['setting']['remote']['alioss']['bucket'], $filename, ATTACHMENT_ROOT . $filename);
-            } catch (\OSS\Core\OssException $e) {
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
             if ($auto_delete_local) {
@@ -1277,12 +1277,10 @@ if (!function_exists('file_remote_uploads')) {
             }
         } elseif ($_W['setting']['remote']['type'] == '4') {
             if (!empty($_W['setting']['remote']['cos']['local'])) {
-                load()->library('cos');
-                qcloudcos\Cosapi::setRegion($_W['setting']['remote']['cos']['local']);
-                $uploadRet = qcloudcos\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                \app\common\services\qcloud\Cosapi::setRegion($_W['setting']['remote']['cos']['local']);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . 'image/' . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             } else {
-                load()->library('cosv3');
-                $uploadRet = \Qcloud_cos\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
             }
             if ($uploadRet['code'] != 0) {
                 switch ($uploadRet['code']) {
