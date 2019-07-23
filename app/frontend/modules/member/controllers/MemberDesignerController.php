@@ -45,7 +45,7 @@ class MemberDesignerController extends ApiController
                     {
                          foreach ($design['data']['part'] as $pkey=>$par)
                          {
-                             if(!in_array($par['name'],$memberData['tools'])){
+                             if(!in_array($par['name'],$memberData['tools']) || $par['is_open'] == false){
                                  unset($datas[$dkey]['data']['part'][$pkey]);
                              }
                          }
@@ -54,7 +54,7 @@ class MemberDesignerController extends ApiController
                     {
                         foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['merchants'])){
+                            if(!in_array($par['name'],$memberData['merchants']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
@@ -63,7 +63,7 @@ class MemberDesignerController extends ApiController
                     {
                         foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['markets'])){
+                            if(!in_array($par['name'],$memberData['markets']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
@@ -72,7 +72,7 @@ class MemberDesignerController extends ApiController
                     {
                         foreach ($design['data']['part'] as $pkey=>$par)
                         {
-                            if(!in_array($par['name'],$memberData['assets'])){
+                            if(!in_array($par['name'],$memberData['assets']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
