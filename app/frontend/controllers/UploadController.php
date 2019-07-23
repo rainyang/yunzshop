@@ -114,10 +114,18 @@ class UploadController extends BaseController
         //本地上传
         \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
 
-        //远程上传
-        if ($remote['type'] != 0) {
-            file_remote_upload($newOriginalName, true, $remote);
+        if (env('APP_Framework') == 'platform') {
+            //远程上传
+            if ($remote['type'] != 0) {
+                file_remote_upload($newOriginalName, true, $remote);
+            }
+        } else {
+            //远程上传
+            if ($remote['type'] != 0) {
+                file_remote_uploads($newOriginalName, true);
+            }
         }
+
 
         return $this->successJson('上传成功', [
             'img' => \Storage::disk('image')->url($newOriginalName),

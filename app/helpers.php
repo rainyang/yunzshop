@@ -1210,6 +1210,105 @@ if (!function_exists('file_is_image')) {
     }
 }
 
+if (!function_exists('file_remote_uploads')) {
+    function file_remote_uploads($filename, $auto_delete_local = true)
+    {
+        global $_W;
+        if (empty($_W['setting']['remote']['type'])) {
+            return false;
+        }
+        if ($_W['setting']['remote']['type'] == '1') {
+            load()->library('ftp');
+            $ftp_config = array(
+                'hostname' => $_W['setting']['remote']['ftp']['host'],
+                'username' => $_W['setting']['remote']['ftp']['username'],
+                'password' => $_W['setting']['remote']['ftp']['password'],
+                'port' => $_W['setting']['remote']['ftp']['port'],
+                'ssl' => $_W['setting']['remote']['ftp']['ssl'],
+                'passive' => $_W['setting']['remote']['ftp']['pasv'],
+                'timeout' => $_W['setting']['remote']['ftp']['timeout'],
+                'rootdir' => $_W['setting']['remote']['ftp']['dir'],
+            );
+            $ftp = new Ftp($ftp_config);
+            if (true === $ftp->connect()) {
+                $response = $ftp->upload(ATTACHMENT_ROOT . '/' . $filename, $filename);
+                if ($auto_delete_local) {
+                    file_delete($filename);
+                }
+                if (!empty($response)) {
+                    return true;
+                } else {
+                    return error(1, '远程附件上传失败，请检查配置并重新上传');
+                }
+            } else {
+                return error(1, '远程附件上传失败，请检查配置并重新上传');
+            }
+        } elseif ($_W['setting']['remote']['type'] == '2') {
+            load()->library('oss');
+            load()->model('attachment');
+            $buckets = attachment_alioss_buctkets($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret']);
+            $endpoint = 'http://' . $buckets[$_W['setting']['remote']['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            try {
+                $ossClient = new \OSS\OssClient($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret'], $endpoint);
+                $ossClient->uploadFile($_W['setting']['remote']['alioss']['bucket'], $filename, ATTACHMENT_ROOT . $filename);
+            } catch (\OSS\Core\OssException $e) {
+                return error(1, $e->getMessage());
+            }
+            if ($auto_delete_local) {
+                file_delete($filename);
+            }
+        } elseif ($_W['setting']['remote']['type'] == '3') {
+            load()->library('qiniu');
+            $auth = new Qiniu\Auth($_W['setting']['remote']['qiniu']['accesskey'], $_W['setting']['remote']['qiniu']['secretkey']);
+            $config = new Qiniu\Config();
+            $uploadmgr = new Qiniu\Storage\UploadManager($config);
+            $putpolicy = Qiniu\base64_urlSafeEncode(json_encode(array(
+                'scope' => $_W['setting']['remote']['qiniu']['bucket'] . ':' . $filename,
+            )));
+            $uploadtoken = $auth->uploadToken($_W['setting']['remote']['qiniu']['bucket'], $filename, 3600, $putpolicy);
+            list($ret, $err) = $uploadmgr->putFile($uploadtoken, $filename, ATTACHMENT_ROOT . '/' . $filename);
+            if ($auto_delete_local) {
+                file_delete($filename);
+            }
+            if ($err !== null) {
+                return error(1, '远程附件上传失败，请检查配置并重新上传');
+            } else {
+                return true;
+            }
+        } elseif ($_W['setting']['remote']['type'] == '4') {
+            if (!empty($_W['setting']['remote']['cos']['local'])) {
+                load()->library('cos');
+                qcloudcos\Cosapi::setRegion($_W['setting']['remote']['cos']['local']);
+                $uploadRet = qcloudcos\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            } else {
+                load()->library('cosv3');
+                $uploadRet = \Qcloud_cos\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            }
+            if ($uploadRet['code'] != 0) {
+                switch ($uploadRet['code']) {
+                    case -62:
+                        $message = '输入的appid有误';
+                        break;
+                    case -79:
+                        $message = '输入的SecretID有误';
+                        break;
+                    case -97:
+                        $message = '输入的SecretKEY有误';
+                        break;
+                    case -166:
+                        $message = '输入的bucket有误';
+                        break;
+                }
+
+                return error(-1, $message);
+            }
+            if ($auto_delete_local) {
+                file_delete($filename);
+            }
+        }
+    }
+}
+
 if (!function_exists('file_remote_upload')) {
     function file_remote_upload($filename, $auto_delete_local = true, $remote)
     {
