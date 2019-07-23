@@ -10,6 +10,8 @@ namespace app\frontend\modules\member\controllers;
 
 
 use app\common\components\ApiController;
+use app\common\facades\Setting;
+use app\frontend\controllers\HomePageController;
 use Yunshop\Designer\models\MemberDesigner;
 use Yunshop\Designer\services\DesignerService;
 
@@ -27,12 +29,13 @@ class MemberDesignerController extends ApiController
                 $datas = (new DesignerService())->getMemberData($designer->datas);
 
                 $memberData = $this->getMemberData();
+                $is_love_open = app('plugins')->isEnabled('love');
                 foreach ($datas as $dkey=>$design)
                 {
                     if($design['temp'] == 'membercenter')
                     {
                        if($design['params']['memberredlove'] == true || $design['params']['memberwhitelove'] == true){
-                           if(!app('plugins')->isEnabled('love')){
+                           if(!$is_love_open){
                                $datas[$dkey]['params']['memberredlove'] = false;
                                $datas[$dkey]['params']['memberwhitelove'] = false;
                            }
@@ -97,6 +100,24 @@ class MemberDesignerController extends ApiController
                         if (!app('plugins')->isEnabled('fight-groups')) {
                             unset($datas[$dkey]);
                         }
+                    }
+                    //以下从店铺装修移植过来的，不一定全
+                    if ($design['temp'] == 'sign'){
+                        $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
+                        $datas[$dkey]['params']['award_content'] = str_replace( '积分',$shop,$design['params']['award_content']);
+                    }
+
+                    if ($design['temp']=='goods'){
+                         if($is_love_open){
+                             foreach ($design['data'] as $gkey=>$goode_award){
+                                 $datas[$dkey]['data'][$gkey]['award'] = (new HomePageController())->getLoveGoods($goode_award['goodid']);
+                                 $datas[$dkey]['data'][$gkey]['stock'] = (new HomePageController())->getGoodsStock($goode_award['goodid']);
+                             }
+                         }else{
+                             foreach ($design['data'] as $gkey=>$goode_award){
+                                 $datas[$dkey]['data'][$gkey]['award'] = 0;
+                             }
+                         }
                     }
                 }
                 $res['data'] = $datas;
