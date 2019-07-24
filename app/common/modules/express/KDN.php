@@ -29,15 +29,26 @@ class KDN
 
        //快递鸟1002状态为免费，8001状态为收费
         $express_api = \Setting::get('shop.express_info');
+        if($comCode == 'JD'){
+            $requestData = json_encode(
+                [
+                    'OrderCode' => $orderSn,
+                    'CustomerName' =>  $express_api['CustomerName'],
+                    'ShipperCode' => $comCode,
+                    'LogisticCode' => $expressSn,
+                ]
+            );
+        }else{
+            $requestData = json_encode(
+                [
+                    'OrderCode' => $orderSn,
+                    'ShipperCode' => $comCode,
+                    'LogisticCode' => $expressSn,
+                ]
+            );
+        }
 
-        $requestData = json_encode(
-            [
-                'OrderCode' => $orderSn,
-                'ShipperCode' => $comCode,
-                'LogisticCode' => $expressSn,
-            ]
-        );
-
+        \Log::debug('物流参数',$requestData);
         if(empty($express_api['KDN']['express_api'])){//判断如果快递鸟状态为空，默认赋值为1002免费状态
             $express_api['KDN']['express_api'] = 1002;
         }
