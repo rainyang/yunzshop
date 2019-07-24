@@ -33,7 +33,7 @@ class KDN
             $requestData = json_encode(
                 [
                     'OrderCode' => $orderSn,
-                    'CustomerName' =>  $express_api['CustomerName'],
+                    'CustomerName' => $express_api['KDN']['CustomerName'],
                     'ShipperCode' => $comCode,
                     'LogisticCode' => $expressSn,
                 ]
