@@ -315,6 +315,7 @@
                 <th class="col-md-5 col-lg-1">ID</th>
                 <th class="col-md-5 col-lg-3">商品标题</th>
                 <th class="col-md-5 col-lg-3">商品规格</th>
+                <th class="col-md-5 col-lg-3">均摊支付金额</th>
                 <th class="col-md-5 col-lg-3">现价/原价/成本价</th>
                 <th class="col-md-5 col-lg-1">购买数量</th>
                 {{--<th class="col-md-5 col-lg-1" style="color:red;">折扣前<br/>折扣后</th>--}}
@@ -329,6 +330,7 @@
                         <a href="{{yzWebUrl($edit_goods, array('id' => $order_goods['goods_id']))}}">{{$order_goods['title']}}</a>
                     </td>
                     <td>{{$order_goods['goods_option_title']}}</td>
+                    <td>{{$order_goods['payment_amount']}}</td>
                     <td>{{$order_goods['goods_price']}}
                         /{{$order_goods['goods_market_price']}}
                         /{{$order_goods['goods_cost_price']}}元

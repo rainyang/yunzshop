@@ -15,6 +15,7 @@ use app\common\models\MemberCart;
 use app\common\modules\trade\models\Trade;
 use app\common\services\Plugin;
 use app\framework\Database\Eloquent\Collection;
+use app\framework\Http\Request;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\services\OrderService;
 
@@ -25,13 +26,14 @@ class MemberCartCollection extends Collection
      */
     protected $items;
     private $validated = false;
+
     /**
      * 验证商品有效性
      * @throws AppException
      */
     public function validate()
     {
-        if($this->validated){
+        if ($this->validated) {
             return true;
         }
 
@@ -79,7 +81,7 @@ class MemberCartCollection extends Collection
     public function groupByGroupId()
     {
         $groups = $this->groupBy(function (MemberCart $memberCart) {
-           return $memberCart->getGroupId();
+            return $memberCart->getGroupId();
         });
 
         $groups->map(function (MemberCartCollection $memberCartCollection) {
@@ -90,14 +92,18 @@ class MemberCartCollection extends Collection
 
     /**
      * 获取交易对象
+     * @param null $request
+     * @return Trade|\Illuminate\Foundation\Application|mixed
      */
-    public function getTrade()
+    public function getTrade($member = null, $request = null)
     {
+        $request = $request ?: request();
+
         $trade = app(Trade::class);
         /**
          * @var Trade $trade
          */
-        $trade->init($this);
+        $trade->init($this, $member, $request);
         return $trade;
     }
 
@@ -105,21 +111,23 @@ class MemberCartCollection extends Collection
      * 根据自身创建plugin_id对应类型的订单,当member已经实例化时传入member避免重复查询
      * @param Member|null $member
      * @param Plugin|null $plugin
+     * @param Request $request
      * @return PreOrder|bool
      * @throws AppException
      * @throws \Exception
      */
-    public function getOrder(Plugin $plugin = null, Member $member = null)
+    public function getOrder(Plugin $plugin = null, Member $member = null, $request = null)
     {
+        $request = $request ?: request();
         if ($this->isEmpty()) {
             return false;
         }
         if (!isset($member)) {
             $member = $this->getMember();
         }
-        if ($member->uid != $this->getUid()) {
-            throw new AppException("用户({$member->uid})与购物车所属用户({$this->getUid()})不符");
-        }
+//        if ($member->uid != $this->getUid()) {
+//            throw new AppException("用户({$member->uid})与购物车所属用户({$this->getUid()})不符");
+//        }
         $this->validate();
 
 
@@ -131,7 +139,7 @@ class MemberCartCollection extends Collection
 
         $order = $app->make('OrderManager')->make('PreOrder');
 
-        $order->init($member, $orderGoodsCollection,request());
+        $order->init($member, $orderGoodsCollection, $request);
 
         return $order;
     }

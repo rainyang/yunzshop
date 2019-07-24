@@ -35,24 +35,9 @@ class GoodsController extends ApiController
     protected $publicAction = ['getRecommendGoods'];
     protected $ignoreAction = ['getRecommendGoods'];
 
-    /**
-     * @param $request
-     * @param null $integrated
-     * @return array|\Illuminate\Http\JsonResponse
-     * @throws \app\common\exceptions\AppException
-     */
-    public function getGoods($request, $integrated = null)
+    // 拆分getGoods方法，分离和插件相关的部分，只提取属于商品的信息。和插件相关的部分在getGoods中处理
+    protected function _getGoods($id, $integrated = null)
     {
-        $id = intval(\YunShop::request()->id);
-        if (!$id) {
-            if(is_null($integrated)){
-                return $this->errorJson('请传入正确参数.');
-            }else{
-                return show_json(0,'请传入正确参数.');
-            }
-
-        }
-
         $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
 
         $goodsModel = Goods::uniacid()
@@ -111,6 +96,10 @@ class GoodsController extends ApiController
             }
         }
 
+
+        $goodsModel->is_added = \ Setting::get('shop.member.added') ?: 1;
+
+
         //验证浏览权限
         $this->validatePrivilege($goodsModel, $member);
 
@@ -119,6 +108,7 @@ class GoodsController extends ApiController
             $goodsModel->hasOneBrand->desc = html_entity_decode($goodsModel->hasOneBrand->desc);
             $goodsModel->hasOneBrand->logo = yz_tomedia($goodsModel->hasOneBrand->logo);
         }
+
 
         //商品规格图片处理
         if ($goodsModel->hasManyOptions && $goodsModel->hasManyOptions->toArray()) {
@@ -173,6 +163,7 @@ class GoodsController extends ApiController
 
         //商品营销 todo 优化新的
         $goodsModel->goods_sale = $this->getGoodsSaleV2($goodsModel, $member);
+        $goodsModel->love_shoppin_gift = $this->loveShoppingGift($goodsModel);
 
         //商品会员优惠
         $goodsModel->member_discount = $this->getDiscount($goodsModel, $member);
@@ -199,22 +190,42 @@ class GoodsController extends ApiController
                 }
             }
         }
-        //默认供应商店铺名称
-        if ($goodsModel->supplier->store_name == 'null') {
-            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
-        }
+
 
         if ($goodsModel->hasOneShare) {
             $goodsModel->hasOneShare->share_thumb = yz_tomedia($goodsModel->hasOneShare->share_thumb);
         }
+        /*
         //设置商品相关插件信息
         $this->setGoodsPluginsRelations($goodsModel);
-
+        */
         //该商品下的推广
         $goodsModel->show_push = SaleGoods::getPushGoods($id);
-
         //销量等于虚拟销量加真实销量
         $goodsModel->show_sales += $goodsModel->virtual_sales;
+
+        return $goodsModel;
+    }
+
+    public function getGoods($request, $integrated = null)
+    {
+        $id = intval(\YunShop::request()->id);
+        if (!$id) {
+            if(is_null($integrated)){
+                return $this->errorJson('请传入正确参数.');
+            }else{
+                return show_json(0,'请传入正确参数.');
+            }
+
+        }
+
+        $goodsModel = $this->_getGoods($id);
+        //设置商品相关插件信息
+        $this->setGoodsPluginsRelations($goodsModel);
+        //默认供应商店铺名称
+        if ($goodsModel->supplier->store_name == 'null') {
+            $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
+        }
 
         //判断该商品是否是视频插件商品
         $videoDemand = new VideoDemandCourseGoods();
@@ -678,7 +689,7 @@ class GoodsController extends ApiController
                 $data['value'][] = '最高抵扣' . $love_goods['deduction_proportion'] . $data['name'];
             }
 
-            if ($love_goods['award']) {
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_love') != 2) {
                 $data['value'][] = '购买赠送' . $love_goods['award_proportion'] . $data['name'];
             }
 
@@ -994,5 +1005,23 @@ class GoodsController extends ApiController
             }
         }
     }
+
+    public function loveShoppingGift($goodsModel){
+
+        //爱心值
+        $exist_love = app('plugins')->isEnabled('love');
+        if ($exist_love) {
+            $love_goods = $this->getLoveSet($goodsModel);
+            $data['name'] = $love_goods['name'];
+            $data['key'] = 'love';
+            $data['type'] = 'array';
+
+            if ($love_goods['award'] && \Setting::get('love.goods_detail_show_love') == 2) {
+                return  '购买赠送' . $love_goods['award_proportion'] . $data['name'];
+            }
+        }
+
+    }
+
 
 }
