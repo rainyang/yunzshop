@@ -111,24 +111,30 @@ class UploadController extends BaseController
             }
         }
 
-        //本地上传
-        \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
-
         if (env('APP_Framework') == 'platform') {
+            //本地上传
+            \Storage::disk('syst_images')->put($newOriginalName, file_get_contents($realPath));
             //远程上传
             if ($remote['type'] != 0) {
-                file_remote_upload_yz($newOriginalName, true, $remote);
+                file_remote_upload($newOriginalName, true, $remote);
             }
+
+            return $this->successJson('上传成功', [
+                'img' => \Storage::disk('syst_images')->url($newOriginalName),
+                'img_url' => yz_tomedia(\Storage::disk('syst_images')->url($newOriginalName)),
+            ]);
         } else {
+            //本地上传
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
             //远程上传
             if ($remote['type'] != 0) {
                 file_remote_upload_wq($newOriginalName, true);
             }
-        }
 
-        return $this->successJson('上传成功', [
-            'img' => \Storage::disk('image')->url($newOriginalName),
-            'img_url' => yz_tomedia(\Storage::disk('image')->url($newOriginalName)),
-        ]);
+            return $this->successJson('上传成功', [
+                'img' => \Storage::disk('image')->url($newOriginalName),
+                'img_url' => yz_tomedia(\Storage::disk('image')->url($newOriginalName)),
+            ]);
+        }
     }
 }
