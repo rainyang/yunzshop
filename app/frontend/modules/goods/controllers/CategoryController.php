@@ -58,6 +58,7 @@ class CategoryController extends BaseController
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
+        $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
 
         return $this->successJson('获取分类数据成功!', [
             'category' => $list,
