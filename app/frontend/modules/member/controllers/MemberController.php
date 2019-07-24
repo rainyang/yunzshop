@@ -512,8 +512,8 @@ class MemberController extends ApiController
 
 
         if (\YunShop::app()->getMemberId()) {
-            $memberService = app(MemberService::class);
-            $memberService->chkAccount(\YunShop::app()->getMemberId());
+//            $memberService = app(MemberService::class);
+//            $memberService->chkAccount(\YunShop::app()->getMemberId());
 
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
