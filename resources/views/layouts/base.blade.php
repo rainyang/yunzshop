@@ -50,6 +50,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script>var require = { urlArgs: 'v={{time()}}' };</script>
 
     <script type="text/javascript">
+        const protocolStr = document.location.protocol;
+        switch (protocolStr) {
+            case 'https:':
+                // 指定https访问类型，具体见百度地图API加载方式：http://www.jiazhengblog.com/blog/2011/06/28/284/
+                window.HOST_TYPE = '2'
+                break
+            default:
+                break
+        }
 
       if(navigator.appName == 'Microsoft Internet Explorer'){
         if(navigator.userAgent.indexOf("MSIE 5.0")>0 ||
