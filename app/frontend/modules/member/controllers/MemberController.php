@@ -2255,8 +2255,9 @@ class MemberController extends ApiController
         }
     }
 
-    public function memberData($request)
+    public function memberData()
     {
+        $request = Request();
         $this->dataIntegrated($this->getUserInfo($request, true), 'member');
         $this->dataIntegrated($this->getEnablePlugins($request, true), 'plugins');
         //是否显示我的推广
