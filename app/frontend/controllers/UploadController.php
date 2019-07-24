@@ -117,12 +117,12 @@ class UploadController extends BaseController
         if (env('APP_Framework') == 'platform') {
             //远程上传
             if ($remote['type'] != 0) {
-                file_remote_upload($newOriginalName, true, $remote);
+                file_remote_upload_yz($newOriginalName, true, $remote);
             }
         } else {
             //远程上传
             if ($remote['type'] != 0) {
-                file_remote_uploads($newOriginalName, true);
+                file_remote_upload_wq($newOriginalName, true);
             }
         }
 

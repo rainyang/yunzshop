@@ -1210,8 +1210,8 @@ if (!function_exists('file_is_image')) {
     }
 }
 
-if (!function_exists('file_remote_uploads')) {
-    function file_remote_uploads($filename, $auto_delete_local = true)
+if (!function_exists('file_remote_upload_wq')) {
+    function file_remote_upload_wq($filename, $auto_delete_local = true)
     {
         global $_W;
         if (empty($_W['setting']['remote']['type'])) {
@@ -1298,6 +1298,58 @@ if (!function_exists('file_remote_uploads')) {
             }
             if ($auto_delete_local) {
                 file_deletes($filename);
+            }
+        }
+    }
+}
+
+if (!function_exists('file_remote_upload_yz')) {
+    function file_remote_upload_yz($filename, $auto_delete_local = true, $remote)
+    {
+        if (!$remote['type']) {
+            return false;
+        }
+        if ($remote['type'] == '2') {
+            $buckets = attachment_alioss_buctkets($remote['alioss']['key'], $remote['alioss']['secret']);
+            $endpoint = 'http://' . $buckets[$remote['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            try {
+                $ossClient = new \app\common\services\aliyunoss\OssClient($remote['alioss']['key'], $remote['alioss']['secret'], $endpoint);
+                $ossClient->uploadFile($remote['alioss']['bucket'], $filename, base_path() . '/static/upload/' . $filename);
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                return error(1, $e->getMessage());
+            }
+            if ($auto_delete_local) {
+                file_deletes($filename);
+            }
+
+        } elseif ($remote['type'] == '4') {
+            if ($remote['cos']['local']) {
+                \app\common\services\qcloud\Cosapi::setRegion($remote['cos']['local']);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($remote['cos']['bucket'], base_path() . '/static/upload/' . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            } else {
+                $uploadRet = \app\common\services\cos\Qcloud_cos\Cosapi::upload($remote['cos']['bucket'], base_path() . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            }
+            if ($uploadRet['code'] != 0) {
+                $message = '';
+                switch ($uploadRet['code']) {
+                    case -62:
+                        $message = '输入的appid有误';
+                        break;
+                    case -79:
+                        $message = '输入的SecretID有误';
+                        break;
+                    case -97:
+                        $message = '输入的SecretKEY有误';
+                        break;
+                    case -166:
+                        $message = '输入的bucket有误';
+                        break;
+                }
+
+                return error(-1, $message);
+            }
+            if ($auto_delete_local) {
+                file_delete($filename);
             }
         }
     }
