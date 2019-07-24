@@ -1247,7 +1247,7 @@ if (!function_exists('file_remote_uploads')) {
             $endpoint = 'http://' . $buckets[$_W['setting']['remote']['alioss']['bucket']]['location'] . '.aliyuncs.com';
             try {
                 $ossClient = new \app\common\services\aliyunoss\OssClient($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret'], $endpoint);
-                $ossClient->uploadFile($_W['setting']['remote']['alioss']['bucket'], $filename, ATTACHMENT_ROOT . 'image/' . $filename);
+                $ossClient->uploadFile($_W['setting']['remote']['alioss']['bucket'], 'image/'.$filename, ATTACHMENT_ROOT . 'image/' . $filename);
             } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
                 return error(1, $e->getMessage());
             }
