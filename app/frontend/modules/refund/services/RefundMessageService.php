@@ -77,7 +77,7 @@ class RefundMessageService extends MessageService
         if (!$temp_id) {
             return false;
         }
-        $nickname = \app\common\models\Member::find($refundApply->uid)->nickname;
+        $nickname = \app\common\models\Member::where('uid', $refundApply->uid)->first()->nickname;
 
         $ordersn = Order::find($refundApply->order_id)->order_sn;
         $orderDate = Order::getOrderDetailById($refundApply->order_id);
