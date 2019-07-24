@@ -51,6 +51,7 @@ class EditGoodsService
 
         //获取规格名及规格项
         $goods_data = $this->request->goods;
+
         $goods_data = array_merge($arrt_default, $goods_data);
 
         foreach ($this->goods_model->hasManySpecs as &$spec) {
@@ -114,6 +115,10 @@ class EditGoodsService
                 return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
             }
 */
+            $goods_data['price'] = $goods_data['price'] ?: 0;
+            $goods_data['market_price'] = $goods_data['market_price'] ?: 0;
+            $goods_data['cost_price'] = $goods_data['cost_price'] ?: 0;
+
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值

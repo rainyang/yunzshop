@@ -99,8 +99,6 @@ class MemberController extends ApiController
         $this->type = intval(\YunShop::request()->type);
         $this->sign = intval(\YunShop::request()->ingress);
 
-        $memberService = app(MemberService::class);
-        $memberService->chkAccount($member_id);
         $member_info = MemberModel::getUserInfos_v2($member_id)->first();
         if (empty($member_info)) {
             if (is_null($integrated)) {
@@ -1370,7 +1368,7 @@ class MemberController extends ApiController
             'tool'         => ['separate','elive'],
             'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze','extension'],
             'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro', 'delivery_station', 'service_station'],
-            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'material-center'
+            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'fight_groups', 'material-center'
                 , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order']
         ];
 
@@ -1879,6 +1877,16 @@ class MemberController extends ApiController
             }
         }
 
+        //拼团插件开启关闭
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $data[] = [
+                'name'  => 'fight_groups',
+                'title' => '我的拼团',
+                'class' => 'icon-member_mygroup',
+                'url'   => 'MyGroups',
+            ];
+        }
+
         foreach ($data as $k => $v) {
 
             if (in_array($v['name'], $diyarr['tool'])) {
@@ -1913,6 +1921,8 @@ class MemberController extends ApiController
             'yop' => app('plugins')->isEnabled('yop-pay') ? 1 : 0,
             'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
             'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
+            'is_open_fight_groups' => app('plugins')->isEnabled('fight-groups') ? 1 : 0,
+            'is_open_lease_toy' => \app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled(), //租赁订单列表是否开启
             'is_open_converge_pay' => app('plugins')->isEnabled('converge_pay') ? 1 : 0,
             'is_store' => $store && $store->is_black != 1 ? 1 : 0,
         ];
@@ -2243,6 +2253,14 @@ class MemberController extends ApiController
         $order['order'] = $order_info;
         if (app('plugins')->isEnabled('hotel')) {
             $order['hotel_order'] = \Yunshop\Hotel\common\models\Order::getHotelOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+        // 拼团订单
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $order['fight_groups_order'] = \Yunshop\FightGroups\common\models\Order::getFightGroupsOrderCountStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
+        }
+
+        if (\app\common\services\plugin\leasetoy\LeaseToySet::whetherEnabled()) {
+            $order['lease_order'] = \Yunshop\LeaseToy\models\Order::getLeaseOrderCountGroupByStatus([Order::WAIT_PAY,Order::WAIT_SEND,Order::WAIT_RECEIVE,Order::COMPLETE,Order::REFUND]);
         }
 
         if (is_null($integrated)) {

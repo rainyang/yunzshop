@@ -96,6 +96,7 @@ class WeSessionMemcache extends WeSession {
 
     public function read($sessionid) {
         $row = cache_read($this->key($sessionid));
+
         if ($row['expiretime'] < TIMESTAMP) {
             return '';
         }
@@ -178,7 +179,6 @@ class WeSessionMysql extends WeSession {
         $params[':sessid'] = $sessionid;
         $params[':time'] = TIMESTAMP;
         $row = pdo_fetch($sql, $params);
-
 
         if(is_array($row) && !empty($row['data'])) {
             return $row['data'];

@@ -30,7 +30,7 @@ class BaseController extends Controller
 {
     use DispatchesJobs, MessageTrait, ValidatesRequests, TemplateTrait, PermissionTrait, JsonTrait;
 
-    const COOKIE_EXPIRE = 864000;
+    const SESSION_EXPIRE = 2160000;
 
     /**
      * controller中执行报错需要回滚的action数组
@@ -94,7 +94,7 @@ class BaseController extends Controller
      *
      * @return void
      */
-    private function setCookie()
+    protected function setCookie()
     {
         $session_id = '';
         if (isset(\YunShop::request()->state) && !empty(\YunShop::request()->state) && strpos(\YunShop::request()->state, 'yz-')) {
@@ -104,26 +104,29 @@ class BaseController extends Controller
         }
 
         if (isset($_COOKIE[session_name()])) {
-            $session_id_1 = $_COOKIE[session_name()];
-            session_id($session_id_1);
+            $session_id = $_COOKIE[session_name()];
         }
 
         //h5 app
         if (!empty($_REQUEST['uuid'])) {
-            $session_id_2 = md5($_REQUEST['uuid']);
-            session_id($session_id_2);
-            setcookie(session_name(), $session_id_2);
+            $session_id = md5($_REQUEST['uuid']);
+            setcookie(session_name(), $session_id);
         }
 
         if (empty($session_id) && \YunShop::request()->session_id
             && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;
-            session_id($session_id);
             setcookie(session_name(), $session_id);
         }
 
-        Session::factory(\YunShop::app()->uniacid, self::COOKIE_EXPIRE);
+        if (empty($session_id)) {
+            $session_id = md5(\YunShop::app()->uniacid . ':' . random(20));
+            setcookie(session_name(), $session_id);
+        }
+
+        session_id($session_id);
+        Session::factory(\YunShop::app()->uniacid);
     }
 
     /**
@@ -142,7 +145,7 @@ class BaseController extends Controller
     public function dataIntegrated($data, $flag)
     {
         if ($this->apiErrMsg) {
-            return $this->errorJson($this->apiErrMsg[0]);
+            return $this->successJson($this->apiErrMsg[0]);
         }
 
         if (0 == $data['status']) {

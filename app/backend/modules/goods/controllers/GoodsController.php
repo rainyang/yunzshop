@@ -34,6 +34,7 @@ use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
+use Yunshop\Hotel\common\models\Hotel;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
@@ -545,6 +546,22 @@ class GoodsController extends BaseController
             'store' => $store
         ])->render();
 
+    }
+
+    /**
+     * 获取搜索酒店
+     * @return html
+     */
+    public function getSearchHotel()
+    {
+        if(app('plugins')->isEnabled('hotel')){
+            $keyword = \YunShop::request()->keyword;
+            $hotel = Hotel::getHotelByName($keyword);
+            return view('goods.hotel', [
+                'hotel' => $hotel
+            ])->render();
+
+        }
     }
 
     /**
