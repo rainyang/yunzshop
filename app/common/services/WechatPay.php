@@ -158,7 +158,7 @@ class WechatPay extends Pay
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
         $pay_order_model = $this->withdrawlog(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON, $member_id);
 
-        $pay = $this->payParams();
+        $pay = $this->payParams($type);
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             throw new AppException('没有设定支付参数');
