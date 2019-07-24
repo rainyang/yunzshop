@@ -126,7 +126,6 @@ class UploadController extends BaseController
             }
         }
 
-
         return $this->successJson('上传成功', [
             'img' => \Storage::disk('image')->url($newOriginalName),
             'img_url' => yz_tomedia(\Storage::disk('image')->url($newOriginalName)),
