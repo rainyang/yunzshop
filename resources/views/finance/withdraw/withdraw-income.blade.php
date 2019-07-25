@@ -440,7 +440,7 @@
                 <input type='radio' name='withdraw[income][free_audit]' value='0' @if($set['free_audit'] == 0) checked @endif />
                 关闭
             </label>
-            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信、提现到环迅支付三种方式！）</span>
+            <span class='help-block'>收入提现自动审核、自动打款（自动打款只支持提现到余额、提现到微信、提现到环迅支付、提现到汇聚支付四种方式！）</span>
         </div>
     </div>
 </div>
