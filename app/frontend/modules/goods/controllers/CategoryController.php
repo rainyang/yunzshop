@@ -11,6 +11,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
+use app\common\models\Slide;
 use Illuminate\Support\Facades\Cookie;
 use app\common\components\BaseController;
 use app\common\helpers\PaginationHelper;
@@ -26,26 +27,82 @@ class CategoryController extends BaseController
 {
     public function getCategory()
     {
-
-        $set = Setting::get('shop.category');
         $pageSize = 100;
-        $parent_id = \YunShop::request()->parent_id ? \YunShop::request()->parent_id : '0';
+        $parent_id = \YunShop::request()->parent_id ?: '0';
         $list = Category::getCategorys($parent_id)->pluginId()->where('enabled', 1)->paginate($pageSize)->toArray();
+
+        if (!$list['data']) {
+            return $this->errorJson('未检测到分类数据!');
+        }
+
         foreach ($list['data'] as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
 
-        if($list['data']){
-            return $this->successJson('获取分类数据成功!', $list);
+        return $this->successJson('获取分类数据成功!', $list);
+    }
+
+    public function categoryHome()
+    {
+        $set = \Setting::get('shop.category');
+        $pageSize = 100;
+        $parent_id = \YunShop::request()->parent_id ?: '0';
+        $list = Category::getCategorys($parent_id)->pluginId()->where('enabled', 1)->paginate($pageSize)->toArray();
+
+        if (!$list['data']) {
+            return $this->errorJson('未检测到分类数据!');
         }
-        return $this->errorJson('未检测到分类数据!',$list);
+
+        foreach ($list['data'] as &$item) {
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
+        }
+        $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
+
+        return $this->successJson('获取分类数据成功!', [
+            'category' => $list,
+            'recommend' => $this->getRecommendCategoryList(),
+            'ads' => $this->getAds(),
+            'set' => $set
+        ]);
+    }
+
+    public function getAds()
+    {
+        $slide = Slide::getSlidesIsEnabled()->get();
+        if (!$slide->isEmpty()) {
+            $slide = $slide->toArray();
+            foreach ($slide as &$item) {
+                $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            }
+        }
+        return $slide;
+    }
+
+    /**
+     * 获取推荐分类
+     * @return mixed
+     */
+    public function getRecommendCategoryList()
+    {
+        $request = Category::getRecommentCategoryList()
+            ->where('is_home', '1')
+            ->pluginId()
+            ->get()
+            ->toArray();
+        foreach ($request as &$item) {
+            $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
+            $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
+        }
+
+        return $request;
     }
     
     public function getChildrenCategory()
     {
         $pageSize = 100;
-        $set = Setting::get('shop.category');
+        $set = \Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
         foreach ($list['data'] as &$item) {
@@ -66,7 +123,7 @@ class CategoryController extends BaseController
 
     public function searchGoodsCategory()
     {
-        $set = Setting::get('shop.category');
+        $set = \Setting::get('shop.category');
         $json_data = [];
         $list = Category::getCategorys(0)->pluginId()->where('enabled', 1)->get()->toArray();
         foreach ($list as &$parent) {
