@@ -486,7 +486,7 @@ class HomePageController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function wxapp()
+    public function wxapp($request)
     {
         return $this->index();
     }
