@@ -131,7 +131,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向同一用户付款不允许超过</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="input-group">
                     <div class="input-group">
@@ -191,7 +191,7 @@
         </div>
 
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向统一用户付款不允许超过</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">每日向同一用户付款不允许超过</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="input-group">
                     <div class="input-group">
