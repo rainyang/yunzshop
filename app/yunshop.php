@@ -278,15 +278,17 @@ class YunShop
             $vers = [];
             $routes_params = explode('.', $requestRoute);
 
+
             if (preg_match('/(v\d+)\./', $requestRoute, $vers)) {
                 foreach ($routes_params as $key => $item) {
-                    if ($item != $vers[0]) {
+                    if ($item != $vers[1]) {
                         $routes[] = $item;
                     }
                 }
             } else {
                 $routes = $routes_params;
             }
+
 
             $path = self::getAppPath();
 
