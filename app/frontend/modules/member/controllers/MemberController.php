@@ -220,7 +220,7 @@ class MemberController extends ApiController
                     $goods_name = $goods['title'];
                 }
 
-                if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
+                if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'],$member_info->member_id)) {
                     $apply_qualification = 7;
                 }
                 break;
