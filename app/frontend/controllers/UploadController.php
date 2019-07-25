@@ -17,6 +17,7 @@ class UploadController extends BaseController
 {
     public function uploadPic()
     {
+        $attach = request()->attach;
         $file = request()->file('file');
 
         if (!$file) {
@@ -122,6 +123,7 @@ class UploadController extends BaseController
             return $this->successJson('上传成功', [
                 'img' => \Storage::disk('syst_images')->url($newOriginalName),
                 'img_url' => yz_tomedia(\Storage::disk('syst_images')->url($newOriginalName)),
+                'attach' => $attach,
             ]);
         } else {
             //本地上传
@@ -134,6 +136,7 @@ class UploadController extends BaseController
             return $this->successJson('上传成功', [
                 'img' => \Storage::disk('image')->url($newOriginalName),
                 'img_url' => yz_tomedia(\Storage::disk('image')->url($newOriginalName)),
+                'attach' => $attach,
             ]);
         }
     }
