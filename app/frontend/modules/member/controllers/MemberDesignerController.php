@@ -49,6 +49,7 @@ class MemberDesignerController extends ApiController
                                  unset($datas[$dkey]['data']['part'][$pkey]);
                              }
                          }
+                        array_values($datas[$dkey]['data']['part']);
                     }
                     if($design['temp'] == 'membermerchant')
                     {
@@ -58,6 +59,7 @@ class MemberDesignerController extends ApiController
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
+                        array_values($datas[$dkey]['data']['part']);
                     }
                     if($design['temp'] == 'membermarket')
                     {
@@ -67,6 +69,7 @@ class MemberDesignerController extends ApiController
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
+                        array_values($datas[$dkey]['data']['part']);
                     }
                     if($design['temp'] == 'memberasset')
                     {
@@ -76,6 +79,7 @@ class MemberDesignerController extends ApiController
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
+                        array_values($datas[$dkey]['data']['part']);
                     }
                     if($design['temp'] == 'membercarorder')
                     {
