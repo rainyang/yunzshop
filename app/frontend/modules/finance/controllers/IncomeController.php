@@ -31,6 +31,13 @@ class IncomeController extends ApiController
     {
         //finance.income.get-income-withdraw-mode
         $incomeWithdrawMode = IncomeService::getIncomeWithdrawMode();
+        $set = \Setting::get('shop.lang.zh_cn.income');
+
+        if ($set['name_of_withdrawal']){
+            $incomeWithdrawMode['name_of_withdrawal '] = $set['name_of_withdrawal'];
+        }else{
+            $incomeWithdrawMode['name_of_withdrawal '] = '提现';
+        }
 
         if ($incomeWithdrawMode) {
             return $this->successJson('获取数据成功!', $incomeWithdrawMode);
