@@ -278,7 +278,7 @@ class YunShop
             $vers = [];
             $routes_params = explode('.', $requestRoute);
 
-            if (preg_match('/v{1}\d+/', $requestRoute, $vers)) {
+            if (preg_match('/(v\d+)\./', $requestRoute, $vers)) {
                 foreach ($routes_params as $key => $item) {
                     if ($item != $vers[0]) {
                         $routes[] = $item;
@@ -361,7 +361,7 @@ class YunShop
             if (empty($vers)) {
                 $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
             } else {
-                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . 'vers/' . $vers[0] . '/' . $ucFirstRoute . 'Controller.php';
+                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . 'vers/' . $vers[1] . '/' . $ucFirstRoute . 'Controller.php';
             }
 
             if (is_file($controllerFile)) {
@@ -369,7 +369,7 @@ class YunShop
                 if (empty($vers)) {
                     $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
                 } else {
-                    $namespace .= ($isPlugin ? '\\' : '\\controllers\\') . 'vers\\' . $vers[0] . '\\' . $ucFirstRoute . 'Controller';
+                    $namespace .= ($isPlugin ? '\\' : '\\controllers\\') . 'vers\\' . $vers[1] . '\\' . $ucFirstRoute . 'Controller';
                 }
 
                 $controllerName = $ucFirstRoute;
