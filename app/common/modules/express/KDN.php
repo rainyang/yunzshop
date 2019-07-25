@@ -30,6 +30,9 @@ class KDN
        //快递鸟1002状态为免费，8001状态为收费
         $express_api = \Setting::get('shop.express_info');
         if($comCode == 'JD'){
+            if(empty($express_api['KDN']['CustomerName'])){
+                throw new ShopException("请填写京东配送码");
+            }
             $requestData = json_encode(
                 [
                     'OrderCode' => $orderSn,
