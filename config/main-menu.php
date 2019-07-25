@@ -2035,6 +2035,18 @@ return [
                                 'parents'    => ['Order', 'order_list'],
                             ],
 
+                            'order_operation_manualrefund' => [
+                                'name'       => '退款并关闭订单',
+                                'url'        => 'order.operation.manualRefund',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 1,
+                                'item'       => 'order_operation_manualrefund',
+                                'parents'    => ['Order', 'order_list'],
+                            ],
+
                             'order_operation_remark' => [
                                 'name'       => '订单备注',
                                 // 'url'               => 'order.remark.index',
