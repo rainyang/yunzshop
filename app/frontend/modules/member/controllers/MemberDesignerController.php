@@ -121,7 +121,7 @@ class MemberDesignerController extends ApiController
                          }
                     }
                 }
-                $res['data'] = $datas;
+                $res['data'] = $datas->toArray();
                 $res['status'] = true;
             }
          }
