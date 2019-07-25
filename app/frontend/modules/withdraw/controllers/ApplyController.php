@@ -70,10 +70,18 @@ class ApplyController extends ApiController
         //插入提现
         $result = $this->withdrawStart();
 
-        if ($result === true) {
-            return $this->successJson('提现成功');
+        $set = \Setting::get('shop.lang.zh_cn.income');
+
+        $name = '';
+        if ($set['name_of_withdrawal']){
+            $name = $set['name_of_withdrawal'];
+        }else{
+            $name = '提现';
         }
-        return $this->errorJson('提现失败');
+        if ($result === true) {
+            return $this->successJson($name.'成功');
+        }
+        return $this->errorJson($name.'失败');
     }
 
 
