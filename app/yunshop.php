@@ -275,7 +275,18 @@ class YunShop
     public static function parseRoute($requestRoute)
     {
         try {
-            $routes = explode('.', $requestRoute);
+            $vers = [];
+            $routes_params = explode('.', $requestRoute);
+
+            if (preg_match('/v{1}\d+/', $requestRoute, $vers)) {
+                foreach ($routes_params as $key => $item) {
+                    if ($item != $vers[0]) {
+                        $routes[] = $item;
+                    }
+                }
+            } else {
+                $routes = $routes_params;
+            }
 
             $path = self::getAppPath();
 
@@ -304,7 +315,7 @@ class YunShop
                         $path = base_path() . '/plugins/' . $pluginName . '/src';
                         $length = $countRoute;
 
-                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
+                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true, $vers);
 
                         if (!app('plugins')->isEnabled($pluginName)) {
                             throw new NotFoundException("{$pluginName}插件已禁用");
@@ -316,7 +327,7 @@ class YunShop
                     }
                 } else {
 
-                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false, $vers);
 
                 }
             }
@@ -341,15 +352,26 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin)
+    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin, $vers)
     {
 
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
-            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+
+            if (empty($vers)) {
+                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+            } else {
+                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . 'vers/' . $vers[0] . '/' . $ucFirstRoute . 'Controller.php';
+            }
 
             if (is_file($controllerFile)) {
-                $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
+
+                if (empty($vers)) {
+                    $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
+                } else {
+                    $namespace .= ($isPlugin ? '\\' : '\\controllers\\') . 'vers\\' . $vers[0] . '\\' . $ucFirstRoute . 'Controller';
+                }
+
                 $controllerName = $ucFirstRoute;
                 $path = $controllerFile;
                 $currentRoutes[] = $r;
@@ -358,7 +380,6 @@ class YunShop
                 $modules[] = $r;
                 $currentRoutes[] = $r;
             } else {
-
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
@@ -366,7 +387,6 @@ class YunShop
                 $action = strpos($r, '-') === false ? $r : Str::camel($r);
                 $currentRoutes[] = $r;
             }
-
         }
 
     }
