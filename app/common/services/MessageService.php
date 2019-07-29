@@ -6,10 +6,12 @@ use app\common\events\message\SendMessageEvent;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\notice\MessageTemp;
+use app\common\models\TemplateMessageRecord;
 use app\Jobs\MessageNoticeJob;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
+use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\Jobs\MiniMessageNoticeJob;
 use app\common\models\MemberMiniAppModel;
@@ -25,7 +27,7 @@ class MessageService
      * @param string $url
      * @return bool
      */
-    public function push($member_id, $template_id, array $params, $url='', $uniacid='')
+    public function push($member_id, $temp_id, array $params, $url='', $uniacid='')
     {
         if ($uniacid) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
@@ -37,37 +39,51 @@ class MessageService
             return false;
         }
 
-        if (!$member_id || !$template_id) {
+        if (!$member_id || !$temp_id) {
             return false;
         }
 
+        $temp = MessageTemp::withoutGlobalScopes(['uniacid'])->whereId($temp_id)->first();
 
-        //todo MessageTemp 用法有点乱，需要重构
-
-        $params = MessageTemp::getSendMsg($template_id, $params);
-        $template_id = MessageTemp::$template_id;
-
+        if (!$temp) {
+            return false;
+        }
+        $template_id = $temp->template_id;
 
         if (!$template_id) {
             \Log::error("微信消息推送：MessageTemp::template_id参数不存在");
             return false;
         }
 
+        $send_msg = $this->getSendMsg($temp, $params);
 
         $memberModel = $this->getMemberModel($member_id);
 
         $config = $this->getConfiguration($uniacid);
 
-        $app = new Application($config);
+        try {
+            $app = new Application($config);
+            $app = $app->notice;
+            $app = $app->uses($template_id);
+            $app = $app->andData($send_msg);
+            $app = $app->andReceiver($memberModel->hasOneFans->openid);
+            $app = $app->andUrl($url);
+            $app->send();
+        } catch (Exception $error) {
+            TemplateMessageRecord::create([
+                'uniacid' => \YunShop::app()->uniacid,
+                'member_id' => $member_id,
+                'template_id' => $template_id,
+                'url' => $url,
+                'openid' => $memberModel->hasOneFans->openid,
+                'data' => $send_msg,
+                'send_time' => time(),
+                'status' => -1,
+                'result' => $error->getMessage(),
+            ]);
+            return true;
+        }
 
-
-        $app = $app->notice;
-        $app = $app->uses($template_id);
-        $app = $app->andData($params);
-        $app = $app->andReceiver($memberModel->hasOneFans->openid);
-        $app = $app->andUrl($url);
-
-        $app->send();
         return true;
     }
 
@@ -108,7 +124,7 @@ class MessageService
      *
      * @return array|bool
      */
-    private function getConfiguration($uniacid)
+    public function getConfiguration($uniacid)
     {
         if ($uniacid) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
@@ -124,6 +140,36 @@ class MessageService
         }
 
         return ['app_id' => $accountWechat->key, 'secret' => $accountWechat->secret];
+    }
+
+    private function getSendMsg($temp, $params)
+    {
+        $msg = [
+            'first' => [
+                'value' => $this->replaceTemplate($temp->first, $params),
+                'color' => $temp->first_color
+            ],
+            'remark' => [
+                'value' => $this->replaceTemplate($temp->remark, $params),
+                'color' => $temp->remark_color
+            ]
+        ];
+        foreach ($temp->data as $row) {
+            $msg[$row['keywords']] = [
+                'value' => $this->replaceTemplate($row['value'], $params),
+                'color' => $row['color']
+            ];
+        }
+
+        return $msg;
+    }
+
+    private function replaceTemplate($str, $datas = array())
+    {
+        foreach ($datas as $row ) {
+            $str = str_replace('[' . $row['name'] . ']', $row['value'], $str);
+        }
+        return $str;
     }
 
 
