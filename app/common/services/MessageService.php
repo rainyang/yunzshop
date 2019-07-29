@@ -82,7 +82,7 @@ class MessageService
                 'data' => json_encode($send_msg),
                 'send_time' => time(),
                 'status' => -1,
-                'result' => $error->getMessage(),
+                'extend_data' => $error->getMessage(),
             ]);
 
             return true;
