@@ -8,10 +8,10 @@ use app\common\models\Member;
 use app\common\models\notice\MessageTemp;
 use app\common\models\TemplateMessageRecord;
 use app\Jobs\MessageNoticeJob;
+use EasyWeChat\Core\Exception;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
-use Exception;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\Jobs\MiniMessageNoticeJob;
 use app\common\models\MemberMiniAppModel;
@@ -62,6 +62,7 @@ class MessageService
         $config = $this->getConfiguration($uniacid);
 
         try {
+
             $app = new Application($config);
             $app = $app->notice;
             $app = $app->uses($template_id);
@@ -69,18 +70,21 @@ class MessageService
             $app = $app->andReceiver($memberModel->hasOneFans->openid);
             $app = $app->andUrl($url);
             $app->send();
+
         } catch (Exception $error) {
+
             TemplateMessageRecord::create([
                 'uniacid' => \YunShop::app()->uniacid,
                 'member_id' => $member_id,
                 'template_id' => $template_id,
                 'url' => $url,
                 'openid' => $memberModel->hasOneFans->openid,
-                'data' => $send_msg,
+                'data' => json_encode($send_msg),
                 'send_time' => time(),
                 'status' => -1,
                 'result' => $error->getMessage(),
             ]);
+
             return true;
         }
 
