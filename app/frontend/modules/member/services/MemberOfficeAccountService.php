@@ -519,7 +519,7 @@ class MemberOfficeAccountService extends MemberService
                 return false;
             }
 
-            if ($scope == 'base' && $from != $scope) {
+            if ($scope === 'base' && $from != $scope) {
                 return false;
             }
 
@@ -529,8 +529,6 @@ class MemberOfficeAccountService extends MemberService
                 $openid_member = SubMemberModel::getMemberByOpenid($openid);
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
-                    Session::set('member_id', $openid_member->member_id);
-
                     return true;
                 }
 
@@ -538,7 +536,6 @@ class MemberOfficeAccountService extends MemberService
             }
 
             if ($yz_member->access_expires_in_1 > time()) {
-                Session::set('member_id', $yz_member->member_id);
                 return true;
             } else {
                 if ($yz_member->refresh_expires_in_1 > time()) {
