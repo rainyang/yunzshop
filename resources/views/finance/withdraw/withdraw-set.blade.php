@@ -62,6 +62,7 @@
                                 <span class='help-block'>是否允许用户将余额提出</span>
                             </div>
                         </div>
+
                         <div id='withdraw' @if(empty($set['status']))style="display:none"@endif>
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -83,6 +84,49 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id='withdraw_balance_wechat' @if(empty($set['wechat']))style="display:none"@endif>
+                                <div class="form-group">
+                                    <label style="margin-left: 110px;" class="col-xs-12 col-sm-3 col-md-2 control-label">单笔付款金额</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div style="margin-left: 80px;" class="input-group">
+                                                <div class="input-group-addon">单笔最低金额</div>
+                                                <input type="text" name="withdraw[balance][wechat_min]" class="form-control"
+                                                       value="{{$set['wechat_min']}}" placeholder=""/>
+                                                <div class="input-group-addon">单笔最高金额</div>
+                                                <input type="text" name="withdraw[balance][wechat_max]" class="form-control"
+                                                       value="{{$set['wechat_max']}}" placeholder=""/>
+                                            </div>
+                                            <div style="margin-left: 80px;" class="help-block">
+                                                可设置区间0.3-20000，设置为0为空则不限制，请参考微信商户平台--产品中心--企业付款到零钱--产品设置--额度设置中设置
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 215px;">每日向同一用户付款不允许超过</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group">
+
+                                                <input type="text" name="withdraw[balance][wechat_frequency]" class="form-control"
+                                                       value="{{$set['wechat_frequency']}}" placeholder=""/>
+                                                <div class="input-group-addon">次</div>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            可设置1-10次,不设置或为空默认为10
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
                             <div class="form-group">
                                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                                 <div class="col-sm-9 col-xs-12">
@@ -103,6 +147,47 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id='withdraw_balance_alipay' @if(empty($set['alipay']))style="display:none"@endif>
+                                <div class="form-group">
+                                    <label  class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 110px;" >单笔付款金额</label>
+                                    <div class="col-md-6 col-sm-9 col-xs-12">
+                                        <div class="input-group">
+                                            <div class="input-group" style="margin-left: 80px;">
+                                                <div class="input-group-addon">单笔最低金额</div>
+                                                <input type="text" name="withdraw[balance][alipay_min]" class="form-control"
+                                                       value="{{$set['alipay_min']}}" placeholder=""/>
+                                                <div class="input-group-addon">单笔最高金额</div>
+                                                <input type="text" name="withdraw[balance][alipay_max]" class="form-control"
+                                                       value="{{$set['alipay_max']}}" placeholder=""/>
+                                            </div>
+                                            <div  class="help-block" style="margin-left: 80px;">
+                                                不设置或为空,则不限制
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" style="margin-left: 215px;">每日向同一用户付款不允许超过</label>
+                                    <div class="col-sm-9 col-xs-12 col-md-6 ">
+                                        <div class="input-group">
+                                            <div class="input-group">
+                                                <input type="text" name="withdraw[balance][alipay_frequency]" class="form-control"
+                                                       value="{{$set['alipay_frequency']}}" placeholder=""/>
+                                                <div class="input-group-addon">次</div>
+                                            </div>
+                                        </div>
+                                        <div class="help-block">
+                                            不设置或为空,则不限制
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
                             @if(app('plugins')->isEnabled('huanxun'))
                                 <div class="form-group">
                                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -306,6 +391,23 @@
                                 </div>
                             </div>
 
+                            <div class="tab-pane  active">
+                                <div class="form-group">
+                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现免审核</label>
+                                    <div class="col-sm-9 col-xs-12">
+                                        <label class='radio-inline'>
+                                            <input type='radio' name='withdraw[balance][audit_free]' value='1' @if($set['audit_free'] == 1) checked @endif />
+                                            开启
+                                        </label>
+                                        <label class='radio-inline'>
+                                            <input type='radio' name='withdraw[balance][audit_free]' value='0' @if($set['audit_free'] == 0) checked @endif />
+                                            关闭
+                                        </label>
+                                        <span class='help-block'>余额提现自动审核、自动打款（自动打款只支持提现到提现到汇聚支付一种方式！）</span>
+                                    </div>
+                                </div>
+                            </div>
+
 
                         </div>
                         {{--余额提现 end--}}
@@ -321,7 +423,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="success-btn col-sm-9 col-xs-12">
-                        <input type="submit" name="submit" value="提交" class="btn btn-success"/>
+                        <input type="submit" name="submit" value="提交" class="btn btn-success" onclick='return formcheck()'  />
                     </div>
                 </div>
             </div>
@@ -344,6 +446,24 @@
             }
         });
 
+        $(":radio[name='withdraw[balance][wechat]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_balance_wechat").show();
+            }
+            else {
+                $("#withdraw_balance_wechat").hide();
+            }
+        });
+        $(":radio[name='withdraw[balance][alipay]']").click(function () {
+            if ($(this).val() == 1) {
+                $("#withdraw_balance_alipay").show();
+            }
+            else {
+                $("#withdraw_balance_alipay").hide();
+            }
+        });
+
+
         $(":radio[name='withdraw[balance][poundage_type]']").click(function () {
             if ($(this).val() == 1) {
                 $("#poundage_unit").html('元');
@@ -363,6 +483,58 @@
             }
         });
     })
+
+
+    // function formcheck(){
+    //     var balance_wechat_min        = $("input[name='withdraw[balance][wechat_min]']").val() ;
+    //     var balance_wechat_max        = $("input[name='withdraw[balance][wechat_max]']").val() ;
+    //     var balance_wechat_frequency  = $("input[name='withdraw[balance][wechat_frequency]']").val() ;
+    //     var balance_alipay_min        = $("input[name='withdraw[balance][alipay_min]']").val() ;
+    //     var balance_alipay_max        = $("input[name='withdraw[balance][alipay_max]']").val() ;
+    //     var balance_alipay_frequency  = $("input[name='withdraw[balance][alipay_frequency]']").val() ;
+    //     // var income_wechat_min        = $("input[name='withdraw[income][wechat_min]']").val() ? $("input[name='withdraw[income][wechat_min]']").val() : 1;
+    //     // var income_wechat_max        = $("input[name='withdraw[income][wechat_max]']").val() ? $("input[name='withdraw[income][wechat_max]']").val() : 20000;
+    //     // var income_wechat_frequency  = $("input[name='withdraw[income][wechat_frequency]']").val() ? $("input[name='withdraw[income][wechat_frequency]']").val() : 10;
+    //     // var income_alipay_min        = $("input[name='withdraw[income][alipay_min]']").val() ? $("input[name='withdraw[income][alipay_min]']").val() :1;
+    //     // var income_alipay_max        = $("input[name='withdraw[income][alipay_max]']").val() ? $("input[name='withdraw[income][alipay_max]']").val() :20000;
+    //     // var income_alipay_frequency  = $("input[name='withdraw[income][alipay_frequency]']").val() ? $("input[name='withdraw[income][alipay_frequency]']").val() : 10;
+    //
+    //     if($(":radio[name='withdraw[balance][wechat]']").val() == 1){
+    //         if(balance_wechat_min < 1 && balance_wechat_min != ''  ){
+    //             showPopover($("input[name='withdraw[balance][wechat_min]']"),'不能小于1');
+    //             return false;
+    //         }
+    //         if(balance_wechat_max > 20000){
+    //             showPopover($("input[name='withdraw[balance][wechat_max]']"),'不能大于20000');
+    //             return false;
+    //         }
+    //         if( balance_wechat_frequency < 1 || balance_wechat_frequency > 10){
+    //             showPopover($("input[name='withdraw[balance][wechat_frequency]']"),'可设置区间为1-10');
+    //             return false;
+    //         }
+    //     }
+    //
+    //     if($(":radio[name='withdraw[balance][alipay]']").val() == 1) {
+    //         if (balance_alipay_min < 1) {
+    //             showPopover($("input[name='withdraw[balance][alipay_min]']"), '不能小于1');
+    //             return false;
+    //         }
+    //         if (balance_alipay_max > 20000) {
+    //             showPopover($("input[name='withdraw[balance][alipay_max]']"), '不能大于20000');
+    //             return false;
+    //         }
+    //         if (balance_alipay_frequency < 1 || balance_alipay_frequency > 10) {
+    //             showPopover($("input[name='withdraw[balance][alipay_frequency]']"), '可设置区间为1-10');
+    //             return false;
+    //         }
+    //     }
+    //
+    //
+    //
+    //
+    //
+    //
+    // }
 </script>
 
 @endsection

@@ -19,7 +19,7 @@ use app\common\services\MessageService;
 use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-
+use app\common\facades\Setting;
 
 class TestController extends BaseController
 {
@@ -27,7 +27,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        dd(app('qrcode')->size(120)->cache(yzAppFullUrl('member/coursedetail/797')));
+
     }
 
     private $amountItems;

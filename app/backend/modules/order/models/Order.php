@@ -62,7 +62,7 @@ class Order extends \app\common\models\Order
         return $orders;
     }
 
-    public function scopeOrders(Builder $order_builder, $search)
+    public function scopeOrders(Builder $order_builder, $search = [])
     {
         if ($search['first_order']) {
             $order_builder->whereHas('hasManyFirstOrder');
@@ -79,7 +79,7 @@ class Order extends \app\common\models\Order
             'process',
             'hasOneRefundApply' => self::refundBuilder(),
             'hasOneOrderRemark',
-            'hasOneOrderPay'=> function (Builder $query) {
+            'hasOneOrderPay'=> function ($query) {
                 $query->orderPay();
             },
             'hasManyFirstOrder'

@@ -15,6 +15,8 @@ use app\common\exceptions\AppException;
  * @package app\common\models
  * @property int uniacid
  * @property int goods_id
+ * @property int product_price
+ * @property int market_price
  * @property int title
  * @property int stock
  */

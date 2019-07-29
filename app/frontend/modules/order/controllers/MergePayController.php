@@ -25,6 +25,7 @@ use app\frontend\modules\orderPay\models\PreOrderPay;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use app\common\helpers\Url;
 
 class MergePayController extends ApiController
 {
@@ -182,6 +183,25 @@ class MergePayController extends ApiController
 
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {
             $redirect = $trade['redirect_url'].'&outtradeno='.request()->input('order_pay_id');
+        }
+        // 拼团订单支付成功后跳转该团页面
+        // 插件开启
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+            // 只有一个订单
+            if ($orders->count() == 1) {
+                $order = $orders[0];
+                // 是拼团的订单
+                if ($order->plugin_id == 54) {
+                    $fightGroupsTeamMember = \Yunshop\FightGroups\common\models\FightGroupsTeamMember::uniacid()->with(['hasOneTeam'])->where('order_id', $order->id)->first();
+                    // 有团员并且有团队，跳到拼团详情页
+                    if (!empty($fightGroupsTeamMember) && !empty($fightGroupsTeamMember->hasOneTeam)) {
+                        $redirect = Url::absoluteApp('group_detail/' . $fightGroupsTeamMember->hasOneTeam->id, ['i' => \YunShop::app()->uniacid]);
+                    } else {
+                        $redirect = Url::absoluteApp('home');
+                    }
+                }
+            }
         }
 
         $data['redirect'] = $redirect;

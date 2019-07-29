@@ -141,6 +141,28 @@ class AlipayController extends PaymentController
         } else {
             $out_trade_no = $this->substr_var($_GET['out_trade_no']);
         }
+
+        // 拼团订单支付成功后跳转该团页面
+        // 插件开启
+        if (app('plugins')->isEnabled('fight-groups')) {
+            $orderPay = OrderPay::where('pay_sn', $out_trade_no)->first();
+            $orders = Order::whereIn('id', $orderPay->order_ids)->get();
+            // 只有一个订单
+            if ($orders->count() == 1) {
+                $order = $orders[0];
+                // 是拼团的订单
+                if ($order->plugin_id == 54) {
+                    $fightGroupsTeamMember = \Yunshop\FightGroups\common\models\FightGroupsTeamMember::uniacid()->with(['hasOneTeam'])->where('order_id', $order->id)->first();
+                    // 有团员并且有团队，跳到拼团详情页
+                    if (!empty($fightGroupsTeamMember) && !empty($fightGroupsTeamMember->hasOneTeam)) {
+                        redirect(Url::absoluteApp('group_detail/' . $fightGroupsTeamMember->hasOneTeam->id, ['i' => \YunShop::app()->uniacid]))->send();
+                    } else {
+                        redirect(Url::absoluteApp('home'))->send();
+                    }
+                }
+            }
+        }
+
         $trade = \Setting::get('shop.trade');
         //这里做支付后跳转，需要取到支付流水号
         if (!is_null($trade) && isset($trade['redirect_url']) && !empty($trade['redirect_url'])) {

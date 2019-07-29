@@ -15,6 +15,7 @@ use app\common\models\Member;
 use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
+use Illuminate\Contracts\Encryption\DecryptException;
 
 class LoginController extends ApiController
 {
@@ -36,18 +37,6 @@ class LoginController extends ApiController
             $type = Client::getType();
         }
 
-        if (1 == $type && MemberService::isLogged()) {
-            $url = Url::absoluteApp('home', ['i' => $uniacid, 'mid' => $mid]);
-
-            if (Session::get('client_url')) {
-                $url = Session::get('client_url');
-            }
-
-            //return $this->successJson('ok', ['status'=> 1, 'url' => $url]);
-            redirect($url)->send();
-        }
-
-
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
@@ -66,8 +55,7 @@ class LoginController extends ApiController
                             if (isset($msg['json']['redirect_url'])) {
                                 $url = $msg['json']['redirect_url'];
                             }
-
-                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'url' => $url]);
+                            return $this->successJson($msg['json'], ['status'=> $msg['status'], 'token' => $msg['variable']['token'], 'url' => $url]);
                         } else {
                             return $this->errorJson($msg['json'], ['status'=> $msg['status']]);
                         }
@@ -110,5 +98,10 @@ class LoginController extends ApiController
             $member = MemberFactory::create($type);
             $member->chekAccount();
         }
+    }
+
+    public function checkLogin()
+    {
+        return $this->successJson('已登录');
     }
 }

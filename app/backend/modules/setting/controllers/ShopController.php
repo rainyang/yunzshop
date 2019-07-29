@@ -66,6 +66,7 @@ class ShopController extends BaseController
     public function member()
     {
         $member = Setting::get('shop.member');
+        $shop = Setting::get('shop.shop');
         $requestModel = \YunShop::request()->member;
 
         if ($requestModel) {
@@ -86,9 +87,10 @@ class ShopController extends BaseController
             $diyForm = DiyformTypeModel::getDiyformList()->get();
             
         }
-
+        
         return view('setting.shop.member', [
             'set' => $member,
+            'shop' => $shop,
             'is_diyform' => $is_diyform,
             'diyForm' => $diyForm,
         ])->render();
