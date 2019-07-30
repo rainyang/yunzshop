@@ -3,6 +3,7 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\goods\Privilege;
@@ -250,6 +251,7 @@ class GoodsController extends ApiController
 
     public function getGoodsPage($request)
     {
+        dd(1);
         $this->dataIntegrated($this->getGoods($request, true),'get_goods');
         $storeId = $this->apiData['get_goods']->store_goods->store_id;
         if($storeId){
@@ -267,7 +269,7 @@ class GoodsController extends ApiController
                 return $this->errorJson('酒店插件未开启');
             }
         }
-        $this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
+        //$this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
         return $this->successJson('', $this->apiData);
@@ -955,7 +957,7 @@ class GoodsController extends ApiController
     public function couponsMemberLj($member)
     {
         if (empty($member)) {
-            return $this->successJson('没有找到该用户', []);
+            throw new AppException('没有找到该用户');
         }
         $memberLevel = $member->level_id;
 

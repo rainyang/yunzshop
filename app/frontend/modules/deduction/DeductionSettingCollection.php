@@ -153,6 +153,7 @@ abstract class DeductionSettingCollection extends Collection
             }
             if($deductionSetting->getMinDeductionType() !== false){
                 $type = $deductionSetting->getMinDeductionType();
+                trace_log()->deduction("订单抵扣",'抵扣设置使用'.get_class($deductionSetting));
                 break;
             }
         }

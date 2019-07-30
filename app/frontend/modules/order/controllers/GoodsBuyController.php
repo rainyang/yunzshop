@@ -51,6 +51,7 @@ class GoodsBuyController extends ApiController
      */
     public function index()
     {
+        opcache_reset();
         $this->validateParam();
         $trade = $this->getMemberCarts()->getTrade();
         return $this->successJson('成功', $trade);
