@@ -29,6 +29,7 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
 use app\common\models\MemberFavorite;
+use app\framework\Http\Request;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
@@ -171,8 +172,9 @@ class GoodsController extends BaseController
         return $this->message('商品复制成功', Url::absoluteWeb($this->success_url));
     }
 
-    public function create(\Illuminate\Http\Request $request)
+    public function create()
     {
+        $request = Request();
         $goods_service = new CreateGoodsService($request);
         $result = $goods_service->create();
 
@@ -205,7 +207,7 @@ class GoodsController extends BaseController
         ])->render();
     }
 
-    public function edit(\Illuminate\Http\Request $request)
+    public function edit()
     {
         /*$this->goods_id = intval(\YunShop::request()->id);
 
@@ -290,6 +292,7 @@ class GoodsController extends BaseController
         }*/
 //        dump(\Config::get('widget.goods'));
         //todo 所有操作去service里进行，供应商共用此方法。
+        $request = Request();
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
 
         $result = $goods_service->edit();

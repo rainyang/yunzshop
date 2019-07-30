@@ -6,9 +6,12 @@
  * Time: 上午9:19
  */
 namespace app\framework\Database\Eloquent;
+use app\framework\Pagination\LengthAwarePaginator;
 use BadMethodCallException;
 use Illuminate\Database\Eloquent\RelationNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\Paginator;
+
 class Builder extends \Illuminate\Database\Eloquent\Builder
 {
 

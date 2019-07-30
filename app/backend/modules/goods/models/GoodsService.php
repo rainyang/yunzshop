@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Administrator
@@ -21,25 +22,29 @@ class GoodsService extends \app\common\models\goods\GoodsService
             return false;
         }
         if (!$data) {
+
             return false;
         }
         $model = self::getGoodsModel($goodsId, $operate);
+
         //判断deleted
         if ($operate == 'deleted') {
             return $model->delete();
         }
         $attr['goods_id'] = $goodsId;
         $attr['uniacid'] = \YunShop::app()->uniacid;
+
         $attr['serviceFee'] = $data['service_fee'];
         $attr['is_automatic'] = $data['is_automatic'];
         if ($data['is_automatic'] == 1) {
             $attr['on_shelf_time'] = strtotime($data['time']['start']);
             $attr['lower_shelf_time'] = strtotime($data['time']['end']);
         }
-        if(isset($data['is_refund'])) {
+        if (isset($data['is_refund'])) {
             $attr['is_refund'] = $data['is_refund'];
         };
         $model->fill($attr);
+
 
         return $model->save();
     }
