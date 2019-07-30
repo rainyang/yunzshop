@@ -12,7 +12,7 @@ use app\frontend\modules\coupon\models\MemberCoupon;
 use app\common\models\MemberShopInfo;
 use Carbon\Carbon;
 use EasyWeChat\Foundation\Application;
-
+use Yunshop\Hotel\common\models\CouponHotel;
 
 
 class MemberCouponController extends ApiController
@@ -276,6 +276,20 @@ class MemberCouponController extends ApiController
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
             $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
+            if(app('plugins')->isEnabled('hotel')){
+                if($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_ONE_HOTEL_USE){
+                    $find = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->first();
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $find->hotel_id;
+                }elseif ($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_MORE_HOTEL_USE){
+                    $finds = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->get();
+                    $findsArr = [];
+                    foreach ($finds as $find_v){
+                        $findsArr[] = $find_v->hotel_id;
+                    }
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $findsArr;
+                }
+            }
+
             if ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE && ($v['belongs_to_coupon']['time_days'] == 0)) { //不限时
                 $coupons[$k]['belongs_to_coupon']['start'] = substr($v['get_time'], 0, 10);
                 $coupons[$k]['belongs_to_coupon']['end'] = '不限时间';
@@ -309,6 +323,20 @@ class MemberCouponController extends ApiController
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
             $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
 
+            if(app('plugins')->isEnabled('hotel')){
+                if($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_ONE_HOTEL_USE){
+                    $find = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->first();
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $find->hotel_id;
+                }elseif ($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_MORE_HOTEL_USE){
+                    $finds = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->get();
+                    $findsArr = [];
+                    foreach ($finds as $find_v){
+                        $findsArr[] = $find_v->hotel_id;
+                    }
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $findsArr;
+                }
+            }
+
             if ($v['belongs_to_coupon']['time_limit'] == Coupon::COUPON_SINCE_RECEIVE
                 && ($v['belongs_to_coupon']['time_days'] !== 0)
                 && ($time > Carbon::createFromTimestamp(strtotime($v['get_time']) + $v['belongs_to_coupon']['time_days'] * 3600 * 24)->endOfDay()->timestamp)) {
@@ -336,6 +364,19 @@ class MemberCouponController extends ApiController
         foreach ($coupons as $k => $v) {
             $coupons[$k]['belongs_to_coupon']['deduct'] = intval($coupons[$k]['belongs_to_coupon']['deduct']);
             $coupons[$k]['belongs_to_coupon']['discount'] = intval($coupons[$k]['belongs_to_coupon']['discount']);
+            if(app('plugins')->isEnabled('hotel')){
+                if($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_ONE_HOTEL_USE){
+                    $find = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->first();
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $find->hotel_id;
+                }elseif ($v['belongs_to_coupon']['use_type'] == Coupon::COUPON_MORE_HOTEL_USE){
+                    $finds = CouponHotel::where('coupon_id',$v['belongs_to_coupon']['id'])->get();
+                    $findsArr = [];
+                    foreach ($finds as $find_v){
+                        $findsArr[] = $find_v->hotel_id;
+                    }
+                    $coupons[$k]['belongs_to_coupon']['hotel_ids'] = $findsArr;
+                }
+            }
             $usageLimit = array('api_limit' => self::usageLimitDescription($v['belongs_to_coupon']));
             $usedCoupons[] = array_merge($coupons[$k], $usageLimit);
         }
@@ -371,6 +412,30 @@ class MemberCouponController extends ApiController
             case 5:
                 $res = '适用于下列门店: ';
                 $res .= implode(',', $couponInArrayFormat['storenames']);
+                return $res;
+                break;
+            case Coupon::COUPON_ONE_HOTEL_USE:
+                $res = '适用于酒店 :';
+                if(app('plugins')->isEnabled('hotel')){
+                    $coupon_hotel = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->first();
+                    $res .= $coupon_hotel->hotel->hotel_name;
+                }
+                return $res;
+                break;
+            case Coupon::COUPON_MORE_HOTEL_USE:
+                $res = '适用于下列酒店: ';
+                if(app('plugins')->isEnabled('hotel')){
+                    $hotel_arr = [];
+                    $coupon_hotels = CouponHotel::where('coupon_id',$couponInArrayFormat['id'])->with('hotel',function ($query){
+                        $query->select('hotel_name');
+                    })->get();
+                    foreach ($coupon_hotels as $v){
+                        $hotel_arr[] = $v->hotel->hotel_name;
+                    }
+                    $res .= implode(',', $hotel_arr);
+                }
                 return $res;
                 break;
             default:

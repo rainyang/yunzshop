@@ -29,11 +29,13 @@ use app\common\helpers\PaginationHelper;
 use app\common\helpers\Url;
 use app\common\models\GoodsCategory;
 use app\common\models\MemberFavorite;
+use app\framework\Http\Request;
 use app\frontend\modules\coupon\listeners\CouponSend;
 use Setting;
 use app\common\services\goods\VideoDemandCourseGoods;
 use app\common\models\Store as StoreCashier;
 use Yunshop\Designer\models\Store;
+use Yunshop\Hotel\common\models\Hotel;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
@@ -170,8 +172,9 @@ class GoodsController extends BaseController
         return $this->message('商品复制成功', Url::absoluteWeb($this->success_url));
     }
 
-    public function create(\Illuminate\Http\Request $request)
+    public function create()
     {
+        $request = Request();
         $goods_service = new CreateGoodsService($request);
         $result = $goods_service->create();
 
@@ -204,7 +207,7 @@ class GoodsController extends BaseController
         ])->render();
     }
 
-    public function edit(\Illuminate\Http\Request $request)
+    public function edit()
     {
         /*$this->goods_id = intval(\YunShop::request()->id);
 
@@ -289,6 +292,7 @@ class GoodsController extends BaseController
         }*/
 //        dump(\Config::get('widget.goods'));
         //todo 所有操作去service里进行，供应商共用此方法。
+        $request = Request();
         $goods_service = new EditGoodsService($request->id, \YunShop::request());
 
         $result = $goods_service->edit();
@@ -545,6 +549,22 @@ class GoodsController extends BaseController
             'store' => $store
         ])->render();
 
+    }
+
+    /**
+     * 获取搜索酒店
+     * @return html
+     */
+    public function getSearchHotel()
+    {
+        if(app('plugins')->isEnabled('hotel')){
+            $keyword = \YunShop::request()->keyword;
+            $hotel = Hotel::getHotelByName($keyword);
+            return view('goods.hotel', [
+                'hotel' => $hotel
+            ])->render();
+
+        }
     }
 
     /**

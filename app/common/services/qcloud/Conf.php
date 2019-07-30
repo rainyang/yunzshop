@@ -17,7 +17,12 @@ class Conf {
      */
     public static function config()
     {
-        $remote = SystemSetting::settingLoad('remote', 'system_remote');
+        if (env('APP_Framework') == 'platform') {
+            $remote = SystemSetting::settingLoad('remote', 'system_remote');
+        } else {
+            global $_W;
+            $remote = $_W['setting']['remote'];
+        }
 
         return [
             'APP_ID'     => $remote['cos']['appid'],

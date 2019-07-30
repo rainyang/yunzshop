@@ -45,6 +45,7 @@ use app\frontend\modules\goods\listeners\GoodsStock;
 use app\frontend\modules\member\listeners\MemberLevelValidity;
 use app\frontend\modules\order\listeners\orderListener;
 use app\frontend\modules\withdraw\listeners\WithdrawApplyListener;
+use app\frontend\modules\withdraw\listeners\WithdrawBalanceApplyListener;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use app\common\events\WechatMessage;
 use app\common\listeners\WechatMessageListener;
@@ -133,6 +134,11 @@ class EventServiceProvider extends ServiceProvider
         WithdrawAuditListener::class,
         WithdrawPayListener::class,
         WithdrawSuccessListener::class,
+
+        /**
+         * 余额提现监听者类
+         */
+        WithdrawBalanceApplyListener::class,
 
         \app\common\listeners\MessageListener::class,
 

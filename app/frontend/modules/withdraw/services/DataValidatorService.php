@@ -16,6 +16,9 @@ use app\frontend\modules\withdraw\models\Withdraw;
 
 class DataValidatorService
 {
+    const  WITHDRAW_TYPE_WECHAT   = 'wechat';
+
+    const  WITHDRAW_TYPE_ALIPAY   = 'alipay';
     /**
      * @var Withdraw
      */
@@ -47,6 +50,11 @@ class DataValidatorService
 
         // 12月20号修改 原：提现金额不能小于1
         $amount = $this->withdrawModel->amounts;
+        $type   = $this->withdrawModel->pay_way;
+
+        //微信支付宝提现限制
+        $this->cashLimitation($type,$type_name);
+
         if (bccomp($amount, 0, 2) == -1) {
             throw new AppException("{$type_name}提现金额不能小于0元");
         }
@@ -57,7 +65,7 @@ class DataValidatorService
         }
 
         $roll_out_limit = $this->getRollOutLimit();
-        if (bccomp($amount, $roll_out_limit, 2) == -1) {
+        if (bccomp($amount, $roll_out_limit, 2) == -1 && $type != self::WITHDRAW_TYPE_WECHAT && $type != self::WITHDRAW_TYPE_ALIPAY ) {
             throw new AppException("{$type_name}提现金额不能小于{$roll_out_limit}元");
         }
 
@@ -108,6 +116,37 @@ class DataValidatorService
     private function incomeSet()
     {
         return $this->withdrawModel->income_set;
+    }
+
+    private function withdrawIncomeSet()
+    {
+        return \Setting::get('withdraw.income');
+    }
+
+
+
+
+    private function cashLimitation($type,$type_name){
+
+        $set = $this->withdrawIncomeSet();
+
+        if( $type == self::WITHDRAW_TYPE_WECHAT){
+            $wechat_min =  $set['wechat_min'] ;
+            $wechat_max =  $set['wechat_max'] ;
+            if( $this->withdrawModel->amounts <= $wechat_min && !empty($wechat_min)){
+                throw new AppException("{$type_name}提现到微信单笔提现额度最低{$wechat_min}元",['status'=>0]);
+            }elseif( $this->withdrawModel->amounts >= $wechat_max && !empty($wechat_max)){
+                throw new AppException("{$type_name}提现到微信单笔提现额度最高{$wechat_max}元",['status'=>0]);
+            }
+        }elseif($type == self::WITHDRAW_TYPE_ALIPAY){
+            $alipay_min =  $set['alipay_min'] ;
+            $alipay_max =  $set['alipay_max'] ;
+            if( $this->withdrawModel->amounts <= $alipay_min && !empty($alipay_min)){
+                throw new AppException("{$type_name}提现到支付宝单笔提现额度最低{$alipay_min}元",['status'=>0]);
+            }elseif( $this->withdrawModel->amounts >= $alipay_max && !empty($alipay_max)){
+                throw new AppException("{$type_name}提现到支付宝单笔提现额度最高{$alipay_max}元",['status'=>0]);
+            }
+        }
     }
 
 }

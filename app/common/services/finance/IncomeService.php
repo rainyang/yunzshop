@@ -18,6 +18,7 @@ class IncomeService
     {
         $set = Setting::get('withdraw.income');
         $modeData = [];
+
         foreach ($set as $key => $item) {
             if(in_array($key, static::$pay_way) && $item){
                 $modeData[$key] = [
@@ -26,13 +27,15 @@ class IncomeService
                 ];
             }
         }
+        $modeData['service_switch'] = isset($set['service_switch']) ? $set['service_switch'] : 1;
         return $modeData;
     }
 
     public static function getModeName($key)
     {
-        //$dalance=Setting::get('shop.shop');
+        $balance=Setting::get('shop.shop');
         //从数据库获取
+
         $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
 
         $set = \Setting::get('shop.lang.zh_cn.income');
@@ -47,6 +50,13 @@ class IncomeService
             case 'balance':
                 return $name.'到'.$balance;
                // return '提现到'.$dalance['credit'];
+
+
+////        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);  //不知道为什么要查这个
+//        switch ($key) {
+//            case 'balance':
+//                return '提现到'.$balance['credit']?:'余额';
+
                 break;
             case 'wechat':
                 return $name.'到微信';
