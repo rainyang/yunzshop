@@ -21,7 +21,7 @@ class YunSession implements \SessionHandlerInterface
 
     public static $expire;
 
-    public static function start($uniacid, $openid, $expire = 3600) {
+    public static function start($uniacid, $openid, $expire = 7200) {
         self::$uniacid = $uniacid;
         self::$openid = $openid;
         self::$expire = $expire;
