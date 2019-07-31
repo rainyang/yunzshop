@@ -66,7 +66,7 @@ class CategoryController extends BaseController
         $recommend = $this->getRecommendCategoryList();
         // 获取推荐分类的第一个分类下的商品返回
         if (!empty($recommend)) {
-            $goods_list = $this->getGoodsList($recommend[0]['id']);
+            $goods_list = $this->getGoodsList($recommend[0]['id'],0);
         } else {
             $goods_list = [];
         }
@@ -98,13 +98,14 @@ class CategoryController extends BaseController
     public function getGoodsListByCategoryId()
     {
         $category_id = \YunShop::request()->category_id;
-        return $this->successJson('获取商品成功!', $this->getGoodsList($category_id));
+        $goods_page = \YunShop::request()->goods_page ?: 0;
+        return $this->successJson('获取商品成功!', $this->getGoodsList($category_id,$goods_page));
     }
 
     /**
      * 获取分类下的商品和规格
      */
-    public function getGoodsList($category_id)
+    public function getGoodsList($category_id,$goods_page)
     {
         $list = Goods::uniacid()
             ->with(['hasManySpecs' => function ($query) {
@@ -112,9 +113,9 @@ class CategoryController extends BaseController
         }, 'hasManyOptions' => function ($query) {
                 return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
             }])
-            ->search(['category'=>$category_id])->where('yz_goods.status',1)->orderBy('display_order', 'desc')->orderBy('yz_goods.id', 'desc')
-            ->get();
-        $list->map(function(Goods $goodsModel){
+            ->search(['category'=>$category_id])->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
+            ->paginate(20,['*'],'page',$goods_page);
+        foreach ($list['data'] as $goodsModel) {
             $goodsModel->buyNum = 0;
             if (strexists($goodsModel->thumb, 'image/')) {
                 $goodsModel->thumb = yz_tomedia($goodsModel->thumb,'image');
@@ -123,11 +124,8 @@ class CategoryController extends BaseController
             }
 
             foreach ($goodsModel->hasManySpecs as &$spec) {
-
                 if ($spec['id']) {
-
                     $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
-
                     foreach ($spec['specitem'] as &$specitem) {
                         $specitem['thumb'] = yz_tomedia($specitem['thumb']);
                     }
@@ -144,7 +142,7 @@ class CategoryController extends BaseController
                 $goodsModel->max_price = $goodsModel->hasManyOptions->max("product_price");
                 $goodsModel->stock = $goodsModel->hasManyOptions->sum('stock');
             }
-        });
+        }
         return  $list->toArray();
     }
 
@@ -185,12 +183,11 @@ class CategoryController extends BaseController
         // 增加分类下的商品返回。
         // 逻辑为：点击一级分类，如果三级分类未开启，则将一级分类下的第一个二级分类的商品返回
         // 如果开启三级分类，则取三级分类的第一个分类下的商品返回
-        $list['goods_list'] = [];
         if (!empty($list['data'])) {
             if (empty($list['data'][0]['has_many_children'])) {
-                $list['goods_list'] = $this->getGoodsList($list['data'][0]['id']);
+                $list['goods_list'] = $this->getGoodsList($list['data'][0]['id'],0);
             } else {
-                $list['goods_list'] = $this->getGoodsList($list['data'][0]['has_many_children'][0]['id']);
+                $list['goods_list'] = $this->getGoodsList($list['data'][0]['has_many_children'][0]['id'],0);
             }
         }
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
