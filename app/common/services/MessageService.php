@@ -250,7 +250,7 @@ class MessageService
         }
         $job = new MessageNoticeJob($templateId, $data, $member->hasOneFans->openid, $url);
 
-        DispatchesJobs::dispatch($job,DispatchesJobs::LIGHT);
+        DispatchesJobs::dispatch($job,DispatchesJobs::LOW);
     }
 
 
