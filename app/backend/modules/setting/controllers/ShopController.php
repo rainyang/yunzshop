@@ -66,6 +66,7 @@ class ShopController extends BaseController
     public function member()
     {
         $member = Setting::get('shop.member');
+        $shop = Setting::get('shop.shop');
         $requestModel = \YunShop::request()->member;
 
         if ($requestModel) {
@@ -86,9 +87,10 @@ class ShopController extends BaseController
             $diyForm = DiyformTypeModel::getDiyformList()->get();
             
         }
-
+        
         return view('setting.shop.member', [
             'set' => $member,
+            'shop' => $shop,
             'is_diyform' => $is_diyform,
             'diyForm' => $diyForm,
         ])->render();
@@ -115,14 +117,17 @@ class ShopController extends BaseController
                 $this->error('订单设置失败');
             }
         }
-
-        $goods = Goods::select('id', 'title', 'thumb')
-            ->where('status', 1)
-            ->whereIn('id', $order['goods'])
-            ->where('plugin_id', 0)
-            ->get();
-        if (!$goods->isEmpty()) {
-            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        if (!empty($order['goods'])) {
+            $goods = Goods::select('id', 'title', 'thumb')
+                ->where('status', 1)
+                ->whereIn('id', $order['goods'])
+                ->where('plugin_id', 0)
+                ->get();
+            if (!$goods->isEmpty()) {
+                $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+            }
+        } else {
+            $goods = [];
         }
 
         return view('setting.shop.order', [

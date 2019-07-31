@@ -8,7 +8,7 @@
 
 namespace app\frontend\modules\finance\deduction;
 
-use app\frontend\models\Goods;
+use app\common\models\Goods;
 use app\frontend\modules\deduction\DeductionSettingInterface;
 use app\frontend\modules\deduction\DeductionSettingManagerInterface;
 use app\frontend\modules\finance\deduction\deductionSettings\PointGoodsDeductionSetting;

@@ -253,11 +253,10 @@
                                                 </a>--}}
                                                 @if (in_array($item['id'], $courseGoods_ids))
                                                     <a class="umphp" title="商品二维码"
-
                                                        data-url="{{yzAppFullUrl('member/coursedetail/'.$item['id'])}}"
                                                        data-goodsid="{{$item['id']}}">
                                                         <div class="img">
-                                                            {!! QrCode::size(120)->cache(yzAppFullUrl('member/coursedetail/'.$item['id'])) !!}
+                                                            {!! QrCode::size(120)->generate(yzAppFullUrl('member/coursedetail/'.$item['id'])) !!}
                                                         </div>
                                                         <span>推广链接</span>
                                                     </a>
@@ -266,7 +265,7 @@
                                                        data-url="{{yzAppFullUrl('goods/'.$item['id'])}}"
                                                        data-goodsid="{{$item['id']}}">
                                                         <div class="img">
-                                                            {!! QrCode::size(120)->cache(yzAppFullUrl('goods/'.$item['id'])) !!}
+                                                            {!! QrCode::size(120)->generate(yzAppFullUrl('goods/'.$item['id'])) !!}
                                                         </div>
                                                         <span>推广链接</span>
                                                     </a>

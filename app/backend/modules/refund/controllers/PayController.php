@@ -36,8 +36,10 @@ class PayController extends BaseController
     /**
      * {@inheritdoc}
      */
-    public function index(\Request $request)
+    public function index()
     {
+        $request = request()->input();
+        
         $this->validate([
             'refund_id' => 'required'
         ]);

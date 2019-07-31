@@ -3,11 +3,15 @@
 namespace app\backend\modules\coupon\models;
 
 
+use app\common\observers\coupon\CouponObserver;
+
 class Coupon extends \app\common\models\Coupon
 {
     static protected $needLog = true;
 
     public $table = 'yz_coupon';
+
+    public $widgets = [];
 
     //类型转换
     protected $casts = [

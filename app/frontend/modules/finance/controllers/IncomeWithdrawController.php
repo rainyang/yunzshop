@@ -305,6 +305,8 @@ class IncomeWithdrawController extends ApiController
         {
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
+
+        $actual_amount =  bcsub($this->withdraw_amounts,$poundage, 2);
         
         /*if ($this->isUseBalanceSpecialSet()) {
             if ($this->special_poundage_type == 1) {
@@ -378,6 +380,7 @@ class IncomeWithdrawController extends ApiController
             'special_poundage_rate'  => $this->special_poundage_rate,
             'special_service_tax'    => $special_service_tax,
             'special_service_tax_rate' => $this->special_service_tax_rate,
+            'actual_amount'     => $actual_amount
         ];
     }
 

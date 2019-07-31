@@ -30,5 +30,9 @@ return [
         'id'=>41,
         'name'=>'net-car'
     ],
+    [
+        'id'=>44,
+        'name'=>'jd-supply'
+    ],
 
 ];

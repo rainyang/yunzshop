@@ -91,7 +91,7 @@ class Sale extends \app\common\models\Sale
     private function goodsPriceInOrder(PreOrderGoods $orderGoods)
     {
         $result =  $orderGoods->order->orderGoods->where('goods_id', $orderGoods->goods_id)->sum(function (PreOrderGoods $orderGoods) {
-            return $orderGoods->payment_amount;
+            return $orderGoods->getPriceCalculator()->getCurrentPrice();
         });
 
         return $result;

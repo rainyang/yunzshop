@@ -12,7 +12,11 @@ use app\common\exceptions\AppException;
 use app\common\exceptions\GoodsStockNotEnough;
 use app\common\models\goods\Discount;
 use app\common\models\goods\GoodsDispatch;
+use app\common\models\goods\GoodsLimitBuy;
+use app\common\models\goods\GoodsVideo;
 use app\common\models\goods\Privilege;
+use app\common\modules\goods\GoodsPriceManager;
+use app\common\models\goods\Share;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\DB;
@@ -65,6 +69,10 @@ use app\common\modules\discount\GoodsMemberLevelDiscount;
  * @property GoodsDiscount hasManyGoodsDiscount
  * @property GoodsDispatch hasOneGoodsDispatch
  * @property Privilege hasOnePrivilege
+ * @property Brand hasOneBrand
+ * @property GoodsLimitBuy hasOneGoodsLimitBuy
+ * @property GoodsVideo hasOneGoodsVideo
+ * @property Share hasOneShare
  */
 class Goods extends BaseModel
 {
@@ -109,7 +117,6 @@ class Goods extends BaseModel
             42 => 网约车分红
             92 => 供应商商品
      */
-
 
 
     /**
@@ -267,7 +274,7 @@ class Goods extends BaseModel
         return $this->hasOne('app\common\models\goods\GoodsVideo', 'goods_id', 'id');
     }
 
-    public function scopePluginIdShow($query, $pluginId = [0,53])
+    public function scopePluginIdShow($query, $pluginId = [0, 53])
     {
         return $query->whereIn('plugin_id', $pluginId);
     }
@@ -432,7 +439,7 @@ class Goods extends BaseModel
      */
     public static function getGoodsByNames($keyword)
     {
-        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales','virtual_sales', 'sku', 'plugin_id', 'stock')
+        return static::uniacid()->select('id', 'title', 'thumb', 'market_price', 'price', 'real_sales', 'virtual_sales', 'sku', 'plugin_id', 'stock')
             ->where('title', 'like', '%' . $keyword . '%')
             ->where('status', 1)
             //->where('is_plugin', 0)
@@ -472,9 +479,8 @@ class Goods extends BaseModel
     }
 
     /**
-     * @author shenyang
-     * 减库存
      * @param $num
+     * @author shenyang
      * @throws GoodsStockNotEnough
      */
     public function reduceStock($num)
@@ -492,9 +498,9 @@ class Goods extends BaseModel
 
     /**
      * 库存是否充足
-     * @author shenyang
      * @param $num
      * @return bool
+     * @author shenyang
      */
     public function stockEnough($num)
     {
@@ -508,8 +514,8 @@ class Goods extends BaseModel
 
     /**
      * 增加销量
-     * @author shenyang
      * @param $num
+     * @author shenyang
      */
     public function addSales($num)
     {
@@ -519,8 +525,8 @@ class Goods extends BaseModel
 
     /**
      * 判断实物
-     * @author shenyang
      * @return bool
+     * @author shenyang
      */
     public function isRealGoods()
     {
@@ -537,7 +543,7 @@ class Goods extends BaseModel
      */
     public static function getPushGoods($goodsIds)
     {
-        return self::select('id', 'title', 'thumb', 'price','market_price' )->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
+        return self::select('id', 'title', 'thumb', 'price', 'market_price')->whereIn('id', $goodsIds)->where('status', 1)->get()->toArray();
     }
 
     public static function boot()
@@ -595,6 +601,16 @@ class Goods extends BaseModel
         return Goods::select(['id', 'title', 'thumb', 'plugin_id'])->pluginId($pluginId)->where('title', 'like', '%' . $keyword . '%')->get();
     }
 
+    private $priceManager;
+
+    public function getPriceManager()
+    {
+        if (!isset($this->priceManager)) {
+            $this->priceManager = new GoodsPriceManager($this);
+        }
+        return $this->priceManager;
+    }
+
     /**
      * 获取交易价(实际参与交易的商品价格)
      * @return float|int
@@ -603,18 +619,19 @@ class Goods extends BaseModel
     public function getDealPriceAttribute()
     {
         if (!isset($this->dealPrice)) {
-            $level_discount_set = SettingFacades::get('discount.all_set');
-            if (
-                isset($level_discount_set['type'])
-                && $level_discount_set['type'] == 1
-                && $this->memberLevelDiscount()->getAmount($this->market_price)
-            ) {
-                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
-                $this->dealPrice = $this->market_price;
-            } else {
-                // 默认使用现价
-                $this->dealPrice = $this->price;
-            }
+//            $level_discount_set = SettingFacades::get('discount.all_set');
+//            if (
+//                isset($level_discount_set['type'])
+//                && $level_discount_set['type'] == 1
+//                && $this->memberLevelDiscount()->getAmount($this->market_price)
+//            ) {
+//                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
+//                $this->dealPrice = $this->market_price;
+//            } else {
+//                // 默认使用现价
+//                $this->dealPrice = $this->price;
+//            }
+            $this->dealPrice = $this->getPriceManager()->getDealPrice();
         }
 
         return $this->dealPrice;

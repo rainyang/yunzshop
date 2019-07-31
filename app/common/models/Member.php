@@ -3,6 +3,7 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberUnique;
 use app\common\events\member\BecomeAgent;
 
 use app\common\events\member\PluginCreateRelationEvent;
@@ -297,6 +298,11 @@ class Member extends BackendModel
     public function hasOneMemberChildren()
     {
         return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
+    }
+
+    public function hasOneMemberUnique()
+    {
+        return $this->hasOne(MemberUnique::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query, $uid)

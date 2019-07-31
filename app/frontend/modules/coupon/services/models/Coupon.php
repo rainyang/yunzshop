@@ -156,7 +156,8 @@ class Coupon
         //记录优惠券被选中了
         $this->getMemberCoupon()->selected = 1;
         $this->getMemberCoupon()->used = 1;
-        //dump($this->getMemberCoupon());
+        $this->getMemberCoupon()->use_time = time();
+        //dump($this->getMemberCoupon());coupo
 
         // todo 订单优惠券使用记录暂时加在这里,优惠券部分需要重构
         $preOrderCoupon = new PreOrderCoupon([

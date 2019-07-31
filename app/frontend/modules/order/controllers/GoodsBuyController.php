@@ -38,7 +38,7 @@ class GoodsBuyController extends ApiController
 
         $this->validate([
             'goods_id' => 'required|integer',
-            'options_id' => 'integer',
+            'option_id' => 'integer',
             'total' => 'integer|min:1',
         ]);
 

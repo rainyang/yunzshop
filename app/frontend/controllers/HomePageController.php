@@ -136,11 +136,11 @@ class HomePageController extends ApiController
                     $member_info = MemberModel::getUserInfos($member_id)->first();
 
                     if (!empty($member_info)) {
-                        $member_info = $member_info->toArray();
-                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
-                        $data        = MemberModel::addPlugins($data);
+//                        $member_info = $member_info->toArray();
+//                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
+//                        $data        = MemberModel::addPlugins($data);
 
-                        $result['memberinfo'] = $data;
+                        $result['memberinfo']['uid'] = $member_id;
                     }
                 }
             }
@@ -303,6 +303,9 @@ class HomePageController extends ApiController
                     $result['captcha']['status'] = $status;
                 }
             }
+
+            //小程序验证推广按钮是否开启
+            $result['system']['btn_romotion'] = PortType::popularizeShow($type);
 
             if (is_null($integrated)) {
                 return $this->successJson('ok', $result);
@@ -483,7 +486,7 @@ class HomePageController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function wxapp()
+    public function wxapp($request)
     {
         return $this->index();
     }
@@ -934,9 +937,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-            return show_json(1, []);
-        }
+         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+             return show_json(1, []);
+         }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
@@ -961,15 +964,15 @@ class HomePageController extends ApiController
         ));
         $config = json_decode($config, 1);
 
-        $info = [];
+        $info['uid'] = \YunShop::app()->getMemberId();
 
-        if (\YunShop::app()->getMemberId()) {
-            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
-
-            if (!empty($info)) {
-                $info = $info->toArray();
-            }
-        }
+//        if (\YunShop::app()->getMemberId()) {
+//            $info = Member::getUserInfos(\YunShop::app()->getMemberId())->first();
+//
+//            if (!empty($info)) {
+//                $info = $info->toArray();
+//            }
+//        }
 
         $share = \Setting::get('shop.share');
 
@@ -979,7 +982,10 @@ class HomePageController extends ApiController
             }
         }
 
-        $shop = \Setting::get('shop');
+        $shop['shop'] = \Setting::get('shop.shop');
+        if (is_null($shop['shop'])) {
+            $shop['shop']['name'] = '商家分享';
+        }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
 
         if (!is_null(\Config('customer_service'))) {
@@ -1034,7 +1040,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->isValidatePage($request, true), 'page');
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
-        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+//        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }

@@ -72,7 +72,9 @@ class AdminUserController extends BaseController
             return $this->check(AdminUser::returnData('0', AdminUser::PARAM));
         }
 
-        $user = AdminUser::with('hasOneProfile')->find($uid);
+        $user = AdminUser::with('hasOneProfile')->with(['hasOneAppUser' => function ($query) {
+            return $query->select('uid', 'role_name', 'role');
+        }])->find($uid);
 
         if ($data) {
             return $this->returnMessage(1, $data, $user);

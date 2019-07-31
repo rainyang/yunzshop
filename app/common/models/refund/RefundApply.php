@@ -55,6 +55,59 @@ class RefundApply extends BaseModel
     const COMPLETE = '6';//已完成
     const CONSENSUS = '7';//手动退款
 
+    public function getAllTypeAttribute()
+    {
+        return collect([
+            [
+                'id' => self::REFUND_TYPE_REFUND_MONEY,
+                'name' => '仅退款',
+            ], [
+                'id' => self::REFUND_TYPE_RETURN_GOODS,
+                'name' => '退款退货',
+            ], [
+                'id' => self::REFUND_TYPE_EXCHANGE_GOODS,
+                'name' => '换货',
+            ],
+        ]);
+    }
+
+    public function getAllStatusAttribute()
+    {
+        return collect([
+            [
+                'id' => self::CLOSE,
+                'name' => '已关闭',
+            ], [
+                'id' => self::CANCEL,
+                'name' => '用户取消',
+            ], [
+                'id' => self::REJECT,
+                'name' => '驳回',
+            ], [
+                'id' => self::WAIT_CHECK,
+                'name' => '待审核',
+            ], [
+                'id' => self::WAIT_RETURN_GOODS,
+                'name' => '待退货',
+            ], [
+                'id' => self::WAIT_RECEIVE_RETURN_GOODS,
+                'name' => '待收货',
+            ], [
+                'id' => self::WAIT_RESEND_GOODS,
+                'name' => '重新发货',
+            ], [
+                'id' => self::WAIT_RECEIVE_RESEND_GOODS,
+                'name' => '重新收货',
+            ], [
+                'id' => self::COMPLETE,
+                'name' => '已完成',
+            ], [
+                'id' => self::CONSENSUS,
+                'name' => '手动退款',
+            ]
+        ]);
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -140,7 +193,7 @@ class RefundApply extends BaseModel
     {
 
 
-       return  $this->getRefundTypeName()[$this->refund_type];
+        return $this->getRefundTypeName()[$this->refund_type];
         /*
         $mapping = [
             self::REFUND_TYPE_REFUND_MONEY => '退款',
@@ -171,7 +224,7 @@ class RefundApply extends BaseModel
             self::WAIT_RESEND_GOODS => '待商家重新发货',
             self::WAIT_RECEIVE_RESEND_GOODS => '待买家收货',
             self::WAIT_REFUND => '待退款',
-            self::COMPLETE => '已'.$this->getRefundTypeName()[$this->refund_type],
+            self::COMPLETE => '已' . $this->getRefundTypeName()[$this->refund_type],
             self::CONSENSUS => '已手动退款',
         ];
 
