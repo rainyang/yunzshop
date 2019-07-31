@@ -14,6 +14,7 @@ use app\common\facades\Setting;
 use app\frontend\controllers\HomePageController;
 use Yunshop\Designer\models\MemberDesigner;
 use Yunshop\Designer\services\DesignerService;
+use app\frontend\modules\member\models\MemberModel;
 
 class MemberDesignerController extends ApiController
 {
@@ -157,9 +158,18 @@ class MemberDesignerController extends ApiController
      private function getMemberData()
      {
          $arr = (new \app\common\services\member\MemberCenterService())->getMemberData();
+
          $tools = ['m-collection','m-footprint','m-address','m-info'];
          $merchants = [];
-         $markets = ['m-erweima','m-pinglun','m-guanxi','m-coupon'];
+         //控制二维码显示，由member-data方法搬来
+         $member_info = MemberModel::getUserInfos_v2(\YunShop::app()->getMemberId())->first();
+         $is_agent = $member_info['yz_member']['is_agent'] == 1 && $member_info['yz_member']['status'] == 2 ? true : false;
+         if($is_agent){
+             $markets = ['m-erweima'];
+         }else{
+             $markets = [];
+         }
+         $markets = array_merge($markets,['m-pinglun','m-guanxi','m-coupon']);
          $assets = [];
          $merchants_arr = [];
          foreach ($arr['tool'] as $v){
