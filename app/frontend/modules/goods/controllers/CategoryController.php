@@ -107,7 +107,7 @@ class CategoryController extends BaseController
     public function getGoodsList($category_id)
     {
         $list = Goods::uniacid()
-            ->with(['hasManyParams' => function ($query) {
+            ->with(['hasManySpecs' => function ($query) {
             return $query->select('id', 'goods_id', 'title', 'description');
         }, 'hasManyOptions' => function ($query) {
                 return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
