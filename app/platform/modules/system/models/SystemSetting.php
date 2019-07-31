@@ -62,7 +62,7 @@ class SystemSetting extends BaseModel
     public static function settingLoad($key = '', $cache_name = '', $sign = false)
     {
         $result = Cache::remember($cache_name, 3600, function () use ($key) {
-            return self::getKeyList($key);
+            return app('systemSetting')->get($key);
         });
 
         if ($result && !$sign) {

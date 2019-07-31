@@ -35,7 +35,7 @@
                             <div class="form-group col-xs-12 col-sm-8 col-lg-2">
                                 <!--    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>-->
                                 <div class="">
-                                    <input class="form-control" placeholder="请输入商品id" name="search[goods_id]" id="" type="text" value="{{$requestSearch['keyword']}}" ／>
+                                    <input class="form-control" placeholder="请输入商品id" name="search[goods_id]" id="" type="text" value="{{$requestSearch['goods_id']}}" ／>
                                 </div>
                             </div>
                             <div class="form-group col-xs-12 col-sm-8 col-lg-2">
