@@ -25,7 +25,7 @@ class MemberRelation extends BaseModel
     public $timestamps = false;
 
     private static $orderId;
-    
+
     /**
      * 可以批量赋值的属性
      *

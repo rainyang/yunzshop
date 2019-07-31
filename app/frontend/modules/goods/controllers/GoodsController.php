@@ -251,7 +251,6 @@ class GoodsController extends ApiController
 
     public function getGoodsPage($request)
     {
-        dd(1);
         $this->dataIntegrated($this->getGoods($request, true),'get_goods');
         $storeId = $this->apiData['get_goods']->store_goods->store_id;
         if($storeId){
