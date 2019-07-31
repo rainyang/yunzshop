@@ -10,7 +10,7 @@ class WeSession implements \SessionHandlerInterface{
     public static $expire;
 
 
-    public static function start($uniacid, $openid, $expire = 3600) {
+    public static function start($uniacid, $openid, $expire = 7200) {
         WeSession::$uniacid = $uniacid;
         WeSession::$openid = $openid;
         WeSession::$expire = $expire;
@@ -165,11 +165,6 @@ class WeSessionRedis extends WeSessionMemcache {
 
 class WeSessionMysql extends WeSession {
     public function open($save_path, $session_name) {
-        $tablename = str_replace('`', "'", tablename('core_sessions'));
-        $status = pdo_fetch("SHOW TABLE STATUS LIKE {$tablename}");
-        if (strexists($status['Comment'], 'crashed')) {
-            pdo_run("REPAIR TABLE " . tablename('core_sessions'));
-        }
         return true;
     }
 

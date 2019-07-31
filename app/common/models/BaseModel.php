@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use app\framework\Database\Eloquent\Collection;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class BaseModel
@@ -61,6 +62,11 @@ class BaseModel extends Model
 
     protected $search_fields;
     static protected $needLog = false;
+
+    public function getTableName()
+    {
+        return app('db')->getTablePrefix().$this->getTable();
+    }
 
     /**
      * 模糊查找
@@ -411,6 +417,7 @@ class BaseModel extends Model
         }, $attributes, array_keys($attributes)));
         return $attributes;
     }
+
     /**
      * 校验参数
      * @param $request
@@ -428,8 +435,10 @@ class BaseModel extends Model
             throw new AppException($validator->errors()->first());
         }
     }
-    public function getPlugin(){
-        if(isset($this->plugin_id) && $this->plugin_id > 0){
+
+    public function getPlugin()
+    {
+        if (isset($this->plugin_id) && $this->plugin_id > 0) {
             return app('plugins')->findPlugin($this->plugin_id);
         }
         return null;

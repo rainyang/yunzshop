@@ -22,8 +22,9 @@ use app\frontend\modules\finance\models\WithdrawSetLog;
 use app\frontend\modules\finance\services\WithdrawManualService;
 use app\frontend\modules\withdraw\services\WithdrawMessageService;
 use Illuminate\Support\Facades\DB;
+use app\common\events\withdraw\WithdrawBalanceAppliedEvent;
+use app\common\helpers\Url;
 use app\frontend\modules\withdraw\services\StatisticalPresentationService;
-
 
 class BalanceWithdrawController extends BalanceController
 {
@@ -128,7 +129,7 @@ class BalanceWithdrawController extends BalanceController
 
 
         $withdrawFetter = $this->balanceSet->withdrawAstrict();
-        if ($withdrawFetter > $this->getWithdrawMoney() && $withdrawType != 'wechant' && $withdrawType != 'alipay' ) {
+        if ($withdrawFetter > $this->getWithdrawMoney()) {
             return $this->errorJson('提现金额不能小于' . $withdrawFetter . '元');
         }
 
@@ -136,7 +137,6 @@ class BalanceWithdrawController extends BalanceController
             return $this->errorJson('扣除手续费后的金额不能小于1元');
         }
 
-        $this->cashLimitation();
 
         DB::beginTransaction();
 
@@ -170,6 +170,8 @@ class BalanceWithdrawController extends BalanceController
         $result = (new BalanceChange())->withdrawal($this->getBalanceChangeData());
         if ($result === true) {
             DB::commit();
+            app('plugins')->isEnabled('converge_pay') && Setting::get('withdraw.balance.audit_free') == 1 && $withdrawType == 'converge_pay' ? \Setting::set('plugin.convergePay_set.notifyWithdrawUrl', Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php')) : null;
+            event(new WithdrawBalanceAppliedEvent($this->withdrawModel));
             BalanceNoticeService::withdrawSubmitNotice($this->withdrawModel);
             //提现通知管理员
             (new WithdrawMessageService())->withdraw($this->withdrawModel);
@@ -183,7 +185,8 @@ class BalanceWithdrawController extends BalanceController
     }
 
     //提现限制
-    private function cashLimitation(){
+    private function cashLimitation()
+    {
         $start = strtotime(date("Y-m-d"),time());
         $end   = $start+60*60*24;
         $withdrawType = $this->getWithdrawType();
@@ -230,7 +233,6 @@ class BalanceWithdrawController extends BalanceController
 
         }
     }
-
 
     /**
      * @return array
@@ -425,5 +427,12 @@ class BalanceWithdrawController extends BalanceController
         throw new AppException('未获取到会员信息');
     }
 
+    public function convergeWithdraw()
+    {
+        $data['cost_money'] = number_format($this->getWithdrawMoney(), 2);
+        $data['actual_amount'] = bcsub($this->getWithdrawMoney(), $this->getPoundage(),2);
+        $data['poundage'] = number_format($this->getPoundage(), 2);
 
+        return $this->successJson('获取数据成功', $data);
+    }
 }

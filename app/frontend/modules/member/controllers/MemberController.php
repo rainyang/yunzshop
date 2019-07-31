@@ -220,7 +220,7 @@ class MemberController extends ApiController
                     $goods_name = $goods['title'];
                 }
 
-                if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'])) {
+                if ($info['become_check'] && MemberRelation::checkOrderGoods($info['become_goods_id'],$member_info->member_id)) {
                     $apply_qualification = 7;
                 }
                 break;
@@ -512,8 +512,8 @@ class MemberController extends ApiController
 
 
         if (\YunShop::app()->getMemberId()) {
-            $memberService = app(MemberService::class);
-            $memberService->chkAccount(\YunShop::app()->getMemberId());
+//            $memberService = app(MemberService::class);
+//            $memberService->chkAccount(\YunShop::app()->getMemberId());
 
             $member_model = MemberModel::getMemberById(\YunShop::app()->getMemberId());
             $member_shop_info_model = MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId());
@@ -967,6 +967,22 @@ class MemberController extends ApiController
 //        if(is_null($share['desc'])){
 //            $share['desc'] = "";
 //        }
+        if (app('plugins')->isEnabled('designer')){
+            $index = (new RecordsController())->shareIndex();
+            foreach($index['data'] as $value){
+                foreach ($value['page_type_cast'] as $item){
+                    if ($item == 1){
+                        $designer = json_decode(htmlspecialchars_decode($value['page_info']))[0]->params;
+                        if (!empty($share['icon']) && !empty($share['desc'])) {
+                            $share['title'] = $designer->title;
+                            $share['icon'] = $designer->img;
+                            $share['desc'] = $designer->desc;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
 
         $data = [
             'config' => $config,
@@ -1903,17 +1919,14 @@ class MemberController extends ApiController
             }
         }
 
+        $arr['ViewSet'] = [];
         if (app('plugins')->isEnabled('designer')) {
             //获取所有模板
             $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
-
-            if (!$sets) {
-                $arr['ViewSet'] = [];
-            } else {
-                foreach ($sets as $k => $v) {
-                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-                    $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-                }
+            
+            foreach ($sets as $k => $v) {
+                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+                $arr['ViewSet'][$v['type']]['name'] = $v['names'];
             }
         }
 
@@ -2061,7 +2074,7 @@ class MemberController extends ApiController
         return $this->successJson('成功');
     }
 
-    public function isValidatePage()
+    public function isValidatePage($request, $integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
 
@@ -2069,19 +2082,23 @@ class MemberController extends ApiController
         if (Cache::has('shop_member')) {
             $member_set = Cache::get('shop_member');
         } else {
-            $member_set = Setting::get('shop.member');
+            $member_set = \Setting::get('shop.member');
         }
 
         if (!is_null($member_set)) {
             $data = [
                 'is_bind_mobile' => $this->isBindMobile($member_set, $member_id),
-                'invite_page'    => 0,
-                'is_invite'      => 0,
-                'is_login'       => 0,
+                'invite_page' => 0,
+                'is_invite' => 0,
+                'is_login' => 0,
             ];
 
             if ($data['is_bind_mobile']) {
-                return $this->successJson('强制绑定手机开启', $data);
+                if (is_null($integrated)) {
+                    return $this->successJson('强制绑定手机开启', $data);
+                } else {
+                    return show_json(1, $data);
+                }
             }
 
             $type = \YunShop::request()->type;
@@ -2101,8 +2118,15 @@ class MemberController extends ApiController
 
             $data['is_invite'] = $invitation_log ? 1 : 0;
             $data['is_login'] = $member_id ? 1 : 0;
-            return $this->successJson('邀请页面开关', $data);
+
+            if (is_null($integrated)) {
+                return $this->successJson('邀请页面开关', $data);
+            } else {
+                return show_json(1, $data);
+            }
         }
+
+        return show_json(1, []);
     }
 
     public function confirmGoods()
@@ -2270,8 +2294,9 @@ class MemberController extends ApiController
         }
     }
 
-    public function memberData($request)
+    public function memberData()
     {
+        $request = Request();
         $this->dataIntegrated($this->getUserInfo($request, true), 'member');
         $this->dataIntegrated($this->getEnablePlugins($request, true), 'plugins');
         //是否显示我的推广

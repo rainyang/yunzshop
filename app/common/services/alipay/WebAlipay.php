@@ -19,7 +19,7 @@ class WebAlipay extends AliPay
     public function __construct()
     {}
 
-    public function doPay($data = [])
+    public function doPay($data = [], $payType = 2)
     {
         // 创建支付单。
         $alipay = app('alipay.web');

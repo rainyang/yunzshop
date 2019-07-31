@@ -725,7 +725,7 @@ return [
                             ],
 
                             'coupon_notice_set_see' => [
-                                'name'       => '通知设置',
+                                'name'       => '通知开启',
                                 'url'        => 'setting.default-notice.store',
                                 'url_params' => '',
                                 'permit'     => 1,
@@ -733,6 +733,18 @@ return [
                                 'icon'       => 'fa-ticket',
                                 'sort'       => '2',
                                 'item'       => 'coupon_notice_set_see',
+                                'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
+                            ],
+
+                            'coupon_notice_set_close' => [
+                                'name'       => '通知关闭',
+                                'url'        => 'setting.default-notice.storeCancel',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-ticket',
+                                'sort'       => '2',
+                                'item'       => 'coupon_notice_set_close',
                                 'parents'    => ['Goods', 'coupon', 'coupon_coupon_set'],
                             ],
                         ],
@@ -1026,6 +1038,18 @@ return [
                         'parents'    => ['Goods'],
                         'child'      => []
                     ],
+                    'area_list' => [
+                        'name'       => '选择地区',
+                        'url'        => 'area.list',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => 'fa-sitemap',
+                        'sort'       => '2',
+                        'item'       => 'area_list',
+                        'parents'    => ['Goods'],
+                        'child'      => []
+                    ],
                 ],
             ],
 
@@ -1113,7 +1137,7 @@ return [
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
-                            'goods_discount_set_update'      => [
+                            'goods_discount_set_edit'      => [
                                 'name'       => '编辑设置',
                                 'url'        => 'discount.batch-discount.update-set',
                                 'url_params' => '',
@@ -1121,7 +1145,7 @@ return [
                                 'menu'       => 0,
                                 'icon'       => 'fa-sitemap',
                                 'sort'       => '2',
-                                'item'       => 'goods_discount_set_update',
+                                'item'       => 'goods_discount_set_edit',
                                 'parents'    => ['Goods', 'discount_set', 'goods_discount_set'],
                                 'child'      => []
                             ],
@@ -1373,7 +1397,7 @@ return [
                         'menu'       => 0,
                         'icon'       => '',
                         'sort'       => 0,
-                        'item'       => 'member_member_agent',
+                        'item'       => 'member_member_agent_old',
                         'parents'    => ['Member', 'member_all',],
                     ],
 
@@ -1387,11 +1411,24 @@ return [
                         'sort'       => 0,
                         'item'       => 'member_member_agent',
                         'parents'    => ['Member', 'member_all',],
+                        'child'      => [
+                            'member_agent_export' => [
+                                'name'       => '团队下线导出',
+                                'url'        => 'member.member.agentExport',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 0,
+                                'item'       => 'member_agent_export',
+                                'parents'    => ['Member', 'member_all', 'member_member_agent'],
+                            ],
+                        ]
                     ],
 
                     'member_member_agent_parent' => [
                         'name'       => '推广上线',
-                        'url'        => 'member.member.agent-parent',
+                        'url'        => 'member.member.agentParent',
                         'url_params' => '',
                         'permit'     => 1,
                         'menu'       => 0,
@@ -1896,6 +1933,28 @@ return [
                                 'item'       => 'order_pay_detail',
                                 'parents'    => ['Order', 'order_detail'],
                             ],
+                            'order_fix_payfail'              => [
+                                'name'       => '修复支付状态',
+                                'url'        => 'order.fix.pay-fail',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-file-text',
+                                'sort'       => 1,
+                                'item'       => 'order_fix_payfail',
+                                'parents'    => ['Order', 'order_detail'],
+                            ],
+                            'orderpay_fix_refund'              => [
+                                'name'       => '原路退款',
+                                'url'        => 'orderPay.fix.refund',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => 'fa-file-text',
+                                'sort'       => 1,
+                                'item'       => 'orderpay_fix_refund',
+                                'parents'    => ['Order', 'order_detail'],
+                            ],
                             'change_order_price_index'    => [
                                 'name'       => '修改价格跳转路由',
                                 'url'        => 'order.change-order-price.index',
@@ -1973,6 +2032,18 @@ return [
                                 'icon'       => '',
                                 'sort'       => 1,
                                 'item'       => 'order_operation_close',
+                                'parents'    => ['Order', 'order_list'],
+                            ],
+
+                            'order_operation_manualrefund' => [
+                                'name'       => '退款并关闭订单',
+                                'url'        => 'order.operation.manualRefund',
+                                'url_params' => '',
+                                'permit'     => 1,
+                                'menu'       => 0,
+                                'icon'       => '',
+                                'sort'       => 1,
+                                'item'       => 'order_operation_manualrefund',
                                 'parents'    => ['Order', 'order_list'],
                             ],
 
@@ -3012,6 +3083,16 @@ return [
                         'parents'    => ['finance', 'profit_advertisement'],
                         'child'      => []
                     ],
+                    'profit_advertisement_advertisement_change'  => [
+                        'name'       => '切换状态',
+                        'permit'     => 1,
+                        'menu'       => '',
+                        'icon'       => '',
+                        'url'        => 'finance.advertisement.setStatus',
+                        'url_params' => '',
+                        'parents'    => ['finance', 'profit_advertisement'],
+                        'child'      => []
+                    ],
                 ]
             ],
 
@@ -3479,6 +3560,17 @@ return [
                         'icon'       => 'fa-bar-chart-o',
                         'sort'       => 0,
                         'item'       => 'order_ranking_charts',
+                        'parents'    => ['charts', 'member_income_charts'],
+                    ],
+                    'member_income_charts_back' => [
+                        'name'       => '返回按钮',
+                        'url'        => 'charts.income.member_income.index',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 1,
+                        'icon'       => 'fa-bar-chart-o',
+                        'sort'       => 0,
+                        'item'       => 'member_income_charts_back',
                         'parents'    => ['charts', 'member_income_charts'],
                     ]
                 ]

@@ -202,7 +202,7 @@ class GoodsController extends ApiController
         //该商品下的推广
         $goodsModel->show_push = SaleGoods::getPushGoods($id);
         //销量等于虚拟销量加真实销量
-        $goodsModel->show_sales += $goodsModel->virtual_sales;
+//        $goodsModel->show_sales += $goodsModel->virtual_sales;
 
         return $goodsModel;
     }
@@ -389,7 +389,7 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->where(function($query) {
 //                $query->whereIn('plugin_id', [0,40,92,41]);
-                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92)->orWhere('plugin_id', 32);
             });
 
         //todo 为什么要取出id, 如id过多超出in的长度如何处理
