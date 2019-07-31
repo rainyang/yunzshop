@@ -10,6 +10,7 @@
 namespace app\Jobs;
 
 
+use app\common\events\Event;
 use app\common\services\MessageService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
