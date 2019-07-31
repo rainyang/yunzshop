@@ -117,14 +117,17 @@ class ShopController extends BaseController
                 $this->error('订单设置失败');
             }
         }
-
-        $goods = Goods::select('id', 'title', 'thumb')
-            ->where('status', 1)
-            ->whereIn('id', $order['goods'])
-            ->where('plugin_id', 0)
-            ->get();
-        if (!$goods->isEmpty()) {
-            $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+        if (!empty($order['goods'])) {
+            $goods = Goods::select('id', 'title', 'thumb')
+                ->where('status', 1)
+                ->whereIn('id', $order['goods'])
+                ->where('plugin_id', 0)
+                ->get();
+            if (!$goods->isEmpty()) {
+                $goods = set_medias($goods->toArray(), array('thumb', 'share_icon'));
+            }
+        } else {
+            $goods = [];
         }
 
         return view('setting.shop.order', [

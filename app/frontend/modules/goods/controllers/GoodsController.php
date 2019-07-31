@@ -203,7 +203,7 @@ class GoodsController extends ApiController
         //该商品下的推广
         $goodsModel->show_push = SaleGoods::getPushGoods($id);
         //销量等于虚拟销量加真实销量
-        $goodsModel->show_sales += $goodsModel->virtual_sales;
+//        $goodsModel->show_sales += $goodsModel->virtual_sales;
 
         return $goodsModel;
     }
