@@ -185,8 +185,9 @@ class CategoryController extends BaseController
         // 增加分类下的商品返回。
         // 逻辑为：点击一级分类，如果三级分类未开启，则将一级分类下的第一个二级分类的商品返回
         // 如果开启三级分类，则取三级分类的第一个分类下的商品返回
+        $list['goods_list'] = [];
         if (!empty($list['data'])) {
-            if (!empty($list['data'][0]['has_many_children'])) {
+            if (empty($list['data'][0]['has_many_children'])) {
                 $list['goods_list'] = $this->getGoodsList($list['data'][0]['id']);
             } else {
                 $list['goods_list'] = $this->getGoodsList($list['data'][0]['has_many_children'][0]['id']);
