@@ -113,7 +113,8 @@ class MemberCenterService
                    'name'  => 'declaration',
                    'title' => DECLARATION_NAME,
                    'class' => 'icon-declaration_system',
-                   'url'   => 'DeclarationApply'
+                   'url'   => 'DeclarationApply',
+                   'image' => 'member_a (66).png'
                ];
            }
        }
@@ -150,7 +151,8 @@ class MemberCenterService
                'name'  => 'material-center',
                'title' => '素材中心',
                'class' => 'icon-member_material',
-               'url'   => 'materialCenter'
+               'url'   => 'materialCenter',
+               'image' => 'member_a(65).png'
            ];
        }
 
