@@ -42,6 +42,9 @@ class UploadController extends BaseController
         $realPath = $file->getRealPath();   //临时文件的绝对路径
         $ext = $file->getClientOriginalExtension(); //文件后缀
 
+        if (!$ext) {
+            $ext = 'jpg';
+        }
         $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
 
         if (env('APP_Framework') == 'platform') {
