@@ -17,8 +17,8 @@
                     <el-form ref="form" :rules="rules" :model="form" label-width="17%">
                         <el-form-item label="开启多队列分类">
                             <el-form-item prop="queue.is_classify">
-                                <el-radio v-model="form.queue.is_classify" label="0">关闭</el-radio>
-                                <el-radio v-model="form.queue.is_classify" label="1">开启</el-radio>
+                                <el-radio v-model="form.queue.is_classify" :label="0">关闭</el-radio>
+                                <el-radio v-model="form.queue.is_classify" :label="1">开启</el-radio>
                                 <p class="help-block">开启多队列分类需要配置supervisor相应的类名</p>
                             </el-form-item>
                         </el-form-item>
@@ -44,7 +44,7 @@
                 console.log(temp);
                 let temp1 = {
                     queue: {
-                        'is_classify': '0',
+                        is_classify: '0',
                     },
                     ...temp,
                 }
