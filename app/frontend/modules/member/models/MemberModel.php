@@ -733,27 +733,29 @@ class MemberModel extends Member
 
         return $data;
     }
+
     public function orders()
     {
-        return $this->hasMany(Order::class,'uid','uid');
+        return $this->hasMany(Order::class, 'uid', 'uid');
     }
 
     public function memberChildren()
     {
         return $this->hasMany(MemberChildren::class, 'member_id', 'uid');
     }
+
     /**
      * 我推荐的人v2 数据
      * @return array
      */
     public static function getMyAgentData_v2()
     {
-
+        $relationLevel = request()->input('relationLevel', 1);
         $pageSize = 10;
 
         // 查出用户的某一级别下线的会员资料
 
-        $teamMembersIds = MemberModel::find(\YunShop::app()->getMemberId())->memberChildren()->where('level', 1)->pluck('child_id');
+        $teamMembersIds = MemberModel::find(\YunShop::app()->getMemberId())->memberChildren()->where('level', $relationLevel)->pluck('child_id');
         // 总订单数,总订单金额
 
 
@@ -761,22 +763,22 @@ class MemberModel extends Member
         $teamMembers = MemberModel::select(['mobile', 'createtime', 'avatar', 'nickname', 'uid'])->whereIn('uid', $teamMembersIds)
             ->with(['yzMember' => function ($builder) {
                 $builder->select(['member_id', 'is_agent', 'status', 'wechat', 'deleted_at']);
-            },'memberChildren.orders'=> function ($order) {
-                $order->select(['id','uid','price','status'])->where('status',3);
+            }, 'memberChildren.orders' => function ($order) {
+                $order->select(['id', 'uid', 'price', 'status'])->where('status', 3);
             }])
             ->orderBy('uid', 'desc')->paginate($pageSize)->toArray();
 
-        $orderData = Order::select(DB::raw('sum(`price`) as total_amount,count(1) as total,uid'))->whereIn('uid',array_column($teamMembers['data'],'uid'))->where('status',3)->groupBy('uid')->get();
+        $orderData = Order::select(DB::raw('sum(`price`) as total_amount,count(1) as total,uid'))->whereIn('uid', array_column($teamMembers['data'], 'uid'))->where('status', 3)->groupBy('uid')->get();
 
         foreach ($teamMembers['data'] as &$v) {
             // 不限
-            $v['team_order_money'] = collect($v['member_children'])->sum(function($member_children){
+            $v['team_order_money'] = collect($v['member_children'])->sum(function ($member_children) {
                 return collect($member_children['orders'])->sum('price');
             });
             $v['team_total'] = collect($v['member_children'])->count();
             // 一级
-            $v['child_order_money'] = $orderData->where('uid',$v['uid'])->sum('price');
-            $v['child_order_total'] = $orderData->where('uid',$v['uid'])->count();
+            $v['child_order_money'] = $orderData->where('uid', $v['uid'])->sum('price');
+            $v['child_order_total'] = $orderData->where('uid', $v['uid'])->count();
             $v['avatar'] = $v['avatar_image'];
             $v['createtime'] = date('Y-m-d H:i:s', $v['createtime']);
             unset($v['avatar_image']);
@@ -787,7 +789,7 @@ class MemberModel extends Member
 
             if (!is_null($v['yz_member'])) {
                 if (1 == $v['yz_member']['is_agent'] && 2 == $v['yz_member']['status']) {
-                    $v['is_agent']=1;
+                    $v['is_agent'] = 1;
                 }
             }
             unset($v['yz_member']);
@@ -808,7 +810,7 @@ class MemberModel extends Member
     public static function getUserInfos_v2($member_id)
     {
 
-        return self::select(['uid','uniacid','credit1','credit2','credit3','createtime','nickname','realname','avatar','mobile','birthyear','birthmonth','birthday','gender','alipay'])
+        return self::select(['uid', 'uniacid', 'credit1', 'credit2', 'credit3', 'createtime', 'nickname', 'realname', 'avatar', 'mobile', 'birthyear', 'birthmonth', 'birthday', 'gender', 'alipay'])
             ->uniacid()
             ->where('uid', $member_id)
             ->with([
@@ -963,15 +965,15 @@ class MemberModel extends Member
                 $member_info['level_name'] = $set['level_name'] ? $set['level_name'] : '普通会员';
             }
             $member_info['alipay_name'] = $yz_member['alipayname'];
-            $member_info['alipay'] =  $yz_member['alipay'];
-            $member_info['province_name'] =  $yz_member['province_name'];
-            $member_info['city_name'] =  $yz_member['city_name'];
-            $member_info['area_name'] =  $yz_member['area_name'];
-            $member_info['province'] =  $yz_member['province'];
-            $member_info['city'] =  $yz_member['city'];
-            $member_info['area'] =  $yz_member['area'];
-            $member_info['address'] =  $yz_member['address'];
-            $member_info['wechat'] =  $yz_member['wechat'];
+            $member_info['alipay'] = $yz_member['alipay'];
+            $member_info['province_name'] = $yz_member['province_name'];
+            $member_info['city_name'] = $yz_member['city_name'];
+            $member_info['area_name'] = $yz_member['area_name'];
+            $member_info['province'] = $yz_member['province'];
+            $member_info['city'] = $yz_member['city'];
+            $member_info['area'] = $yz_member['area'];
+            $member_info['address'] = $yz_member['address'];
+            $member_info['wechat'] = $yz_member['wechat'];
 
             $member_info['is_agent'] = $yz_member['is_agent'] == 1 && $yz_member['status'] == 2 ? true : false;
 
@@ -1011,7 +1013,7 @@ class MemberModel extends Member
 
         //显示积分
         $member_info['integral'] = [
-            'is_show' =>\Setting::get('shop.member.show_point') ? 0 : 1,
+            'is_show' => \Setting::get('shop.member.show_point') ? 0 : 1,
             'text' => !empty($shop['credit1']) ? $shop['credit1'] : '积分',
             'data' => $member_info['credit1']
         ];
@@ -1029,7 +1031,7 @@ class MemberModel extends Member
             $memberLove = MemberLove::where('member_id', \YunShop::app()->getMemberId())->first();
             $member_info['love_show']['usable_text'] = \Yunshop\Love\Common\Services\SetService::getLoveSet('usable_name') ?: LOVE_NAME;
             $member_info['love_show']['usable_data'] = $memberLove->usable ?: '0.00';
-            $member_info['love_show']['unable_text'] = \Yunshop\Love\Common\Services\SetService::getLoveSet('unable_name') ?: '白'.LOVE_NAME;
+            $member_info['love_show']['unable_text'] = \Yunshop\Love\Common\Services\SetService::getLoveSet('unable_name') ?: '白' . LOVE_NAME;
             $member_info['love_show']['unable_data'] = $memberLove->froze ?: '0.00';
         }
 
