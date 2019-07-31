@@ -10,7 +10,7 @@ class WeSession implements \SessionHandlerInterface{
     public static $expire;
 
 
-    public static function start($uniacid, $openid, $expire = 3600) {
+    public static function start($uniacid, $openid, $expire = 7200) {
         WeSession::$uniacid = $uniacid;
         WeSession::$openid = $openid;
         WeSession::$expire = $expire;
