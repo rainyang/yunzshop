@@ -57,9 +57,8 @@ class MemberDesignerController extends ApiController
                         {
                             if(in_array($par['name'],['store-cashier','hotel','supplier','micro']))
                             {
-                                $datas[$dkey]['data']['part'][$pkey]['title'] = $memberData['merchants_arr'][$par['name']]['title'];
+                                $datas[$dkey]['data']['part'][$pkey]['title'] = 1;
                                 $datas[$dkey]['data']['part'][$pkey]['url'] = $memberData['merchants_arr'][$par['name']]['url'];
-                                
                             }
                             if(!in_array($par['name'],$memberData['merchants']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
