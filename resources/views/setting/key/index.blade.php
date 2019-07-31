@@ -57,7 +57,7 @@
                                 </el-form-item>
                                 <el-form-item>
                                     {{--<el-button type="primary" @click="reg_shop('cancel')" v-loading="formLoading" v-if="btn == 0">取消商城</el-button>--}}
-                                    <el-button type="primary" @click="reg_shop('create')" v-loading="formLoading" v-if="btn == 1">注册商城</el-button>
+                                    <el-button type="primary" @click="reg_shop('create')" :disabled="formLoading" v-if="btn == 1">注册商城</el-button>
                                 </el-form-item>
                             </el-form><!--auth end-->
 
@@ -123,7 +123,7 @@
                                 </el-form-item>
 
                                 <el-form-item>
-                                    <el-button type="primary" @click.native.prevent="onSubmit" v-loading="formLoading">提交</el-button>
+                                    <el-button type="primary" @click.native.prevent="onSubmit" :disabled="formLoading">提交</el-button>
                                 </el-form-item>
                             </el-form><!--free end-->
                         </template>
@@ -270,8 +270,6 @@
                             type: 'error'
                         });
                     }
-
-                    this.formLoading = false;
                 }, response => {
                         console.log(response);
                     });
@@ -287,15 +285,23 @@
                             type: 'error'
                         });
                     }
-
-                    this.formLoading = false;
                 }, response => {
                         console.log(response);
                     });
                 },
                 reg_shop: function (type) {
+                    const loading = this.$loading({
+                        lock: true,
+                        text: '努力注册中',
+                        spinner: 'el-icon-loading',
+                        background: 'rgba(0, 0, 0, 0.7)'
+                    });
+
                     this.$http.post("{!! yzWebUrl('setting.key.index') !!}", {'upgrade': {'key':this.key, 'secret': this.secret}, 'type': type}).then(response => {
+                        loading.close();
+
                         if (response.data.result) {
+
                         this.$message({
                             message: response.data.msg,
                             type: 'success'
@@ -307,20 +313,24 @@
                             type: 'error'
                         });
                     }
-
-                    this.formLoading = false;
                 }, response => {
+                        loading.close();
                         console.log(response);
                     });
                 },
                 onSubmit: function () {
-                    if (this.formLoading) {
-                        return;
-                    }
-
                     this.$refs.form.validate((valid) => {
                         if (valid) {
+                            const loading = this.$loading({
+                                lock: true,
+                                text: '努力注册中',
+                                spinner: 'el-icon-loading',
+                                background: 'rgba(0, 0, 0, 0.7)'
+                            });
+
                             this.$http.post("{!! yzWebUrl('setting.key.register') !!}", {'data': this.form}).then(response => {
+                                loading.close();
+
                                 if (response.data.result) {
                                 this.$message({
                                     message: response.data.msg,
@@ -333,9 +343,8 @@
                                     type: 'error'
                                 });
                             }
-
-                            this.formLoading = false;
                         }, response => {
+                                loading.close();
                                 console.log(response);
                             });
                         } else {
@@ -350,24 +359,14 @@
                       }
 
                     this.$http.post("{!! yzWebUrl('setting.key.reset') !!}", {'data': data}).then(res => {
-                        console.log(res,'511512');
                                 res=res.body
                         if (res.result==1) {
-                                this.tapTwoPas()
-                        }
-                    })
-                },
-                tapTwoPas(){
-                    this.$http.post("{!! yzWebUrl('setting.key.reset') !!}").then(res => {
-                        console.log(res, '511512');
-                                res=res.body
-                        if (res.result==1) {
-                            this.key = res.data.key;
-                            this.secret = res.data.secret
-                            this.$message({
-                                message: res.msg,
-                                type: 'success'
-                            });
+                        this.key = res.data.key;
+                        this.secret = res.data.secret
+                        this.$message({
+                            message: res.msg,
+                            type: 'success'
+                        });
                         }
                     })
                 }

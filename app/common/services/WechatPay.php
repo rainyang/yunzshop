@@ -9,6 +9,7 @@
 namespace app\common\services;
 
 use app\common\exceptions\AppException;
+use app\common\exceptions\ShopException;
 use app\common\helpers\Client;
 use app\common\helpers\Url;
 use app\common\models\McMappingFans;
@@ -128,7 +129,12 @@ class WechatPay extends Pay
         $notify_url = '';
         $app     = $this->getEasyWeChatApp($pay, $notify_url);
         $payment = $app->payment;
-        $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney*100, $refundmoney*100);
+
+        try {
+            $result = $payment->refund($out_trade_no, $out_refund_no, $totalmoney * 100, $refundmoney * 100);
+        } catch (\Exception $e) {
+            throw new AppException('微信接口错误:' . $e->getMessage());
+        }
 
         $this->payResponseDataLog($out_trade_no, '微信退款', json_encode($result));
         $status = $this->queryRefund($payment, $out_trade_no);
@@ -158,7 +164,7 @@ class WechatPay extends Pay
         $op = '微信钱包提现 订单号：' . $out_trade_no . '提现金额：' . $money;
         $pay_order_model = $this->withdrawlog(Pay::PAY_TYPE_WITHDRAW, $this->pay_type[Pay::PAY_MODE_WECHAT], $money, $op, $out_trade_no, Pay::ORDER_STATUS_NON, $member_id);
 
-        $pay = $this->payParams();
+        $pay = $this->payParams($type);
 
         if (empty($pay['weixin_mchid']) || empty($pay['weixin_apisecret'])) {
             throw new AppException('没有设定支付参数');

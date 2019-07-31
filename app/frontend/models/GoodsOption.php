@@ -8,8 +8,8 @@
 
 namespace app\frontend\models;
 
-use app\common\facades\Setting;
 use app\common\modules\discount\GoodsMemberLevelDiscount;
+use app\common\modules\goodsOption\GoodsOptionPriceManager;
 
 /**
  * Class GoodsOption
@@ -30,6 +30,15 @@ class GoodsOption extends \app\common\models\GoodsOption
     protected $vipDiscountAmount;
     public $vipDiscountLog;
 
+    private $priceManager;
+
+    public function getPriceManager()
+    {
+        if (!isset($this->priceManager)) {
+            $this->priceManager = new GoodsOptionPriceManager($this);
+        }
+        return $this->priceManager;
+    }
     /**
      * 获取交易价(实际参与交易的商品价格)
      * @return float|int
@@ -38,18 +47,7 @@ class GoodsOption extends \app\common\models\GoodsOption
     public function getDealPriceAttribute()
     {
         if (!isset($this->dealPrice)) {
-            $level_discount_set = Setting::get('discount.all_set');
-            if (
-                isset($level_discount_set['type'])
-                && $level_discount_set['type'] == 1
-                && $this->memberLevelDiscount()->getAmount($this->market_price)
-            ) {
-                // 如果开启了原价计算会员折扣,并且存在等级优惠金额
-                $this->dealPrice = $this->market_price;
-            } else {
-                // 默认使用现价
-                $this->dealPrice = $this->product_price;
-            }
+            $this->dealPrice = $this->getPriceManager()->getDealPrice();
         }
 
         return $this->dealPrice;

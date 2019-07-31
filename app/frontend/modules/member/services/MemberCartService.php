@@ -44,8 +44,9 @@ class MemberCartService
         }
 
         $cart = app('OrderManager')->make('MemberCart', $params);
-
-        $cart->setRelation('member', Member::current());
+        if($cart->member_id == Member::current()->uid){
+            $cart->setRelation('member', Member::current());
+        }
         return $cart;
     }
 

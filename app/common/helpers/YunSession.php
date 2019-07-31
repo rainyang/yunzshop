@@ -21,7 +21,7 @@ class YunSession implements \SessionHandlerInterface
 
     public static $expire;
 
-    public static function start($uniacid, $openid, $expire = 3600) {
+    public static function start($uniacid, $openid, $expire = 7200) {
         self::$uniacid = $uniacid;
         self::$openid = $openid;
         self::$expire = $expire;
@@ -175,12 +175,6 @@ class YunSessionRedis extends YunSessionMemcache {
 
 class YunSessionMysql extends YunSession {
     public function open($save_path, $session_name) {
-        $tablename = DB::getTablePrefix() . 'core_sessions';
-        $status = DB::selectOne("SHOW TABLE STATUS LIKE '{$tablename}'");
-
-        if (strexists($status['Comment'], 'crashed')) {
-            DB::select("REPAIR TABLE " . DB::getTablePrefix() . 'core_sessions');
-        }
         return true;
     }
 

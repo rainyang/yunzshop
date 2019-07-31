@@ -305,6 +305,8 @@ class IncomeWithdrawController extends ApiController
         {
             $poundage = number_format($this->poundage_rate, 2, '.','');
         }
+
+        $actual_amount =  bcsub($this->withdraw_amounts,$poundage, 2);
         
         /*if ($this->isUseBalanceSpecialSet()) {
             if ($this->special_poundage_type == 1) {
@@ -359,25 +361,26 @@ class IncomeWithdrawController extends ApiController
         }
 
         return [
-        'type'              => $income['class'],
-        'key_name'          => $income['type'],
-        'type_name'         => $this->getLangTitle($key) ? $this->getLangTitle($key) : $income['title'],
-        'income'            => $this->withdraw_amounts,
-        'poundage'          => $poundage,
-        'poundage_type'     => $this->poundage_type?:0,
-        'poundage_rate'     => $this->poundage_rate,
-        'servicetax'        => $service_tax,
-        'servicetax_rate'   => $this->service_tax_rate,
-        'roll_out_limit'    => $this->getIncomeAmountFetter(),
-        'max_roll_out_limit' => $this->getIncomeAmountMax(),
-        'max_time_out_limit' => $this->getIncomeTimeMax(),
-        'can'               => $can,
-        'selected'          => $this->incomeIsCanWithdraw(),
-        'type_id'           => $this->getIncomeTypeIds($income['class']),
-        'special_poundage'  => $special_poundage,
-        'special_poundage_rate'  => $this->special_poundage_rate,
-        'special_service_tax'    => $special_service_tax,
-        'special_service_tax_rate' => $this->special_service_tax_rate,
+            'type'              => $income['class'],
+            'key_name'          => $income['type'],
+            'type_name'         => $this->getLangTitle($key) ? $this->getLangTitle($key) : $income['title'],
+            'income'            => $this->withdraw_amounts,
+            'poundage'          => $poundage,
+            'poundage_type'     => $this->poundage_type?:0,
+            'poundage_rate'     => $this->poundage_rate,
+            'servicetax'        => $service_tax,
+            'servicetax_rate'   => $this->service_tax_rate,
+            'roll_out_limit'    => $this->getIncomeAmountFetter(),
+            'max_roll_out_limit' => $this->getIncomeAmountMax(),
+            'max_time_out_limit' => $this->getIncomeTimeMax(),
+            'can'               => $can,
+            'selected'          => $this->incomeIsCanWithdraw(),
+            'type_id'           => $this->getIncomeTypeIds($income['class']),
+            'special_poundage'  => $special_poundage,
+            'special_poundage_rate'  => $this->special_poundage_rate,
+            'special_service_tax'    => $special_service_tax,
+            'special_service_tax_rate' => $this->special_service_tax_rate,
+            'actual_amount'     => $actual_amount
         ];
     }
 

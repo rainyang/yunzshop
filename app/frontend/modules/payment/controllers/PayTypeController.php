@@ -11,7 +11,8 @@ namespace app\frontend\modules\payment\controllers;
 use app\common\components\BaseController;
 use app\frontend\modules\order\models\PreOrder;
 use app\frontend\modules\order\OrderCollection;
-use app\frontend\modules\order\services\behavior\OrderPay;
+// use app\frontend\modules\order\services\behavior\OrderPay;
+use app\common\models\OrderPay;
 use app\frontend\modules\payment\orderPayments\BasePayment;
 
 class PayTypeController extends BaseController
