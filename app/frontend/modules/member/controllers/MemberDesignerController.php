@@ -36,7 +36,7 @@ class MemberDesignerController extends ApiController
                     {
                        if($design['params']['memberredlove'] == true || $design['params']['memberwhitelove'] == true){
                            if(!$is_love_open){
-                               $datas[$dkey]['params']['memberredlove'] = false;
+                               $design['params']['memberredlove'] = false;
                                $datas[$dkey]['params']['memberwhitelove'] = false;
                            }
                        }
@@ -55,6 +55,12 @@ class MemberDesignerController extends ApiController
                     {
                         foreach ($design['data']['part'] as $pkey=>$par)
                         {
+                            if(in_array($par['name'],['store-cashier','hotel','supplier','micro']))
+                            {
+                                $datas[$dkey]['data']['part'][$pkey]['title'] = $memberData['merchants_arr'][$par['name']]['title'];
+                                $datas[$dkey]['data']['part'][$pkey]['url'] = $memberData['merchants_arr'][$par['name']]['url'];
+                                
+                            }
                             if(!in_array($par['name'],$memberData['merchants']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
@@ -156,8 +162,10 @@ class MemberDesignerController extends ApiController
          $merchants = [];
          $markets = ['m-erweima','m-pinglun','m-guanxi','m-coupon'];
          $assets = [];
+         $merchants_arr = [];
          foreach ($arr['tool'] as $v){
             $tools[] = $v['name'];
+            $merchants_arr[$v['name']] = $v;
          }
          foreach ($arr['merchant'] as $v){
              $merchants[] = $v['name'];
@@ -174,6 +182,7 @@ class MemberDesignerController extends ApiController
              'merchants'=>$merchants,
              'markets'=>$markets,
              'assets'=>$assets,
+             'merchants_arr' => $merchants_arr
          ];
      }
 }
