@@ -300,8 +300,8 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = new SystemSetting();
-        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
+        $systemSetting = app('systemSetting');
+        if ($remote = $systemSetting->get('system_remote')) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
