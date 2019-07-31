@@ -109,13 +109,15 @@ class CategoryController extends BaseController
     {
         $list = Goods::uniacid()
             ->with(['hasManySpecs' => function ($query) {
-            return $query->select('id', 'goods_id', 'title', 'description');
+            return $query->select('id', 'goods_id', 'title', 'description')->with(['hasManySpecsItem'=>function($query){
+                return $query->select('id', 'title', 'specid', 'thumb');
+            }]);
         }, 'hasManyOptions' => function ($query) {
                 return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
             }])
             ->search(['category'=>$category_id])->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
             ->paginate(20,['*'],'page',$goods_page);
-        foreach ($list['data'] as $goodsModel) {
+        foreach ($list as $goodsModel) {
             $goodsModel->buyNum = 0;
             if (strexists($goodsModel->thumb, 'image/')) {
                 $goodsModel->thumb = yz_tomedia($goodsModel->thumb,'image');
@@ -124,11 +126,8 @@ class CategoryController extends BaseController
             }
 
             foreach ($goodsModel->hasManySpecs as &$spec) {
-                if ($spec['id']) {
-                    $spec['specitem'] = GoodsSpecItem::select('id', 'title', 'specid', 'thumb')->where('specid', $spec['id'])->get();
-                    foreach ($spec['specitem'] as &$specitem) {
-                        $specitem['thumb'] = yz_tomedia($specitem['thumb']);
-                    }
+                foreach ($spec->hasManySpecsItem as &$specitem) {
+                    $specitem->thumb = yz_tomedia($specitem->thumb);
                 }
             }
 
