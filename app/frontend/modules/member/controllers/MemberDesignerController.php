@@ -178,7 +178,8 @@ class MemberDesignerController extends ApiController
      */
      private function getMemberData()
      {
-         $arr = (new \app\common\services\member\MemberCenterService())->getMemberData();
+         $memberId = \YunShop::app()->getMemberId();
+         $arr = (new \app\common\services\member\MemberCenterService())->getMemberData($memberId);
 
          $tools = ['m-collection','m-footprint','m-address','m-info'];
          $merchants = [];
