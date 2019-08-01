@@ -106,7 +106,7 @@ class GoodsPosterController extends ApiController
 
         //return $this->successJson('ok', $urlPath);
 
-        $data = $this->base64EncodeImage($urlPath);
+        $data = $this->base64EncodeImage($imgPath);
         $data['image_url'] = $urlPath;
 
         return $this->successJson('ok', $data);
