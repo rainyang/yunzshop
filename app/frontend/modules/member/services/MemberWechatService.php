@@ -144,4 +144,14 @@ class MemberWechatService extends MemberService
 
         return $arr;
     }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged($login = null)
+    {
+        return MemberService::isLogged();
+    }
 }

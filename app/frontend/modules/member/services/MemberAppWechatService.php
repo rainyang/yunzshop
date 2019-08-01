@@ -129,4 +129,14 @@ class MemberAppWechatService extends MemberService
     {
         return "https://api.weixin.qq.com/sns/userinfo?access_token={$accesstoken}&openid={$openid}&lang=zh_CN";
     }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged($login = null)
+    {
+        return MemberService::isLogged();
+    }
 }

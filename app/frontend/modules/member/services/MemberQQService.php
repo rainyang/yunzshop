@@ -101,4 +101,14 @@ class MemberQQService extends MemberService
     {
         return "https://graph.qq.com/user/get_simple_userinfo? access_token={$accesstoken}&oauth_consumer_key=12345&openid={$openid} ";
     }
+
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged($login = null)
+    {
+        return MemberService::isLogged();
+    }
 }

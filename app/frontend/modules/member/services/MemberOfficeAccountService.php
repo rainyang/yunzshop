@@ -34,7 +34,7 @@ class MemberOfficeAccountService extends MemberService
 
         $uniacid = \YunShop::app()->uniacid;
         $scope   = \YunShop::request()->scope ?: 'userinfo';     //scope: base|home|userinfo
-
+\Log::debug('------login------', $scope);
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
         }
@@ -52,10 +52,12 @@ class MemberOfficeAccountService extends MemberService
         $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
         if ($scope == 'base') {
+            \Log::debug('-------setp1------');
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
         if (!empty($code)) {
+            \Log::debug('------setp2-------');
             $redirect_url = $this->_getClientRequestUrl();
 
             $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -79,6 +81,7 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $this->memberLogin($userinfo);
 
             Session::set('member_id', $member_id);
+            \Log::debug('------set cookie-----', [$scope]);
             setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid'] . '\t' . $scope), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
@@ -505,7 +508,7 @@ class MemberOfficeAccountService extends MemberService
         exit;
     }
 
-    public function checkLogged()
+    public function checkLogged($login = null)
     {
         $uniacid = \YunShop::app()->uniacid;
         $from    = \YunShop::request()->scope;
@@ -520,6 +523,7 @@ class MemberOfficeAccountService extends MemberService
             }
 
             if ($scope === 'base' && $from != $scope) {
+                $login->jump = true;
                 return false;
             }
 

@@ -32,6 +32,8 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
+    public $jump = false;
+
     /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
@@ -63,7 +65,7 @@ class ApiController extends BaseController
 
         $member = MemberFactory::create($type);
 
-        if (!$member->checkLogged()) {
+        if (!$member->checkLogged($this)) {
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {
@@ -73,9 +75,6 @@ class ApiController extends BaseController
             if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
-
-            //TODO 静默 头像默认 重新授权登录
-            \Log::debug('---------logined scope-------', [\YunShop::request()->scope]);
 
             //发展下线
             Member::chkAgent(\YunShop::app()->getMemberId(), $mid, $mark ,$mark_id);
@@ -107,7 +106,7 @@ class ApiController extends BaseController
         if ($type == 2) {
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         } else {
-            if ($this->controller == 'Login' && $this->action == 'checkLogin') {
+            if (($this->controller == 'Login' && $this->action == 'checkLogin') || $this->jump) {
                 if ($scope == 'home') {
                     if (!$mid && (!app('plugins')->isEnabled('designer')
                             || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {

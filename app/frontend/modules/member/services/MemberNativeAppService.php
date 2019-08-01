@@ -76,7 +76,7 @@ class MemberNativeAppService extends MemberService
      *
      * @return bool
      */
-    public function checkLogged()
+    public function checkLogged($login = null)
     {
         $token = \Yunshop::request()->yz_token;
 
