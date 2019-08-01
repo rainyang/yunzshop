@@ -66,7 +66,7 @@ class CategoryController extends BaseController
         $recommend = $this->getRecommendCategoryList();
         // 获取推荐分类的第一个分类下的商品返回
         if (!empty($recommend)) {
-            $goods_list = $this->getGoodsList($recommend[0]['id'],0);
+            $goods_list = $this->getGoodsList($recommend[0]['id'],1);
         } else {
             $goods_list = [];
         }
@@ -98,7 +98,7 @@ class CategoryController extends BaseController
     public function getGoodsListByCategoryId()
     {
         $category_id = \YunShop::request()->category_id;
-        $goods_page = \YunShop::request()->goods_page ?: 0;
+        $goods_page = \YunShop::request()->goods_page ?: 1;
         return $this->successJson('获取商品成功!', $this->getGoodsList($category_id,$goods_page));
     }
 
@@ -184,9 +184,9 @@ class CategoryController extends BaseController
         $goods_list = [];
         if (!empty($list)) {
             if (empty($list[0]['has_many_children'])) {
-                $goods_list = $this->getGoodsList($list[0]['id'],0);
+                $goods_list = $this->getGoodsList($list[0]['id'],1);
             } else {
-                $goods_list = $this->getGoodsList($list[0]['has_many_children'][0]['id'],0);
+                $goods_list = $this->getGoodsList($list[0]['has_many_children'][0]['id'],1);
             }
         }
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
