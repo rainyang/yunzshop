@@ -1544,7 +1544,7 @@ class MemberController extends ApiController
                 if ($micro_shop) {
                     $data[] = [
                         'name'  => 'micro',
-                        'title' => '微店中心',
+                        'title' => MICRO_PLUGIN_NAME.'中心',
                         'class' => 'icon-member-mendian1',
                         'url'   => 'microShop_home'
                     ];
