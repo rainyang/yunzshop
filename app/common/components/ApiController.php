@@ -8,7 +8,6 @@
 
 namespace app\common\components;
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\MemberNotLoginException;
 use app\common\exceptions\ShopException;
 use app\common\exceptions\UniAccountNotFoundException;
@@ -17,6 +16,7 @@ use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\UniAccount;
+use app\common\modules\shop\models\Shop;
 use app\common\services\Session;
 use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
@@ -47,7 +47,7 @@ class ApiController extends BaseController
             \YunShop::request()->type = 5;
         }
 
-        $relaton_set = MemberRelation::getSetInfo()->first();
+        $relaton_set = Shop::current()->memberRelation;
 
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
@@ -76,7 +76,7 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
+            if (\app\frontend\models\Member::current()->yzMember->is_black) {
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 

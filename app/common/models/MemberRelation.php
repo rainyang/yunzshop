@@ -43,12 +43,12 @@ class MemberRelation extends BaseModel
 
     /**
      * 获取会员关系链数据
-     *
-     * @return mixed
+     * @return MemberRelation
      */
     public static function getSetInfo()
     {
-        return self::uniacid();
+        // todo 优化重复查询问题,返回一个元素的集合是为了不影响历史代码的调用方式的,
+        return collect([\app\common\modules\shop\models\Shop::current()->memberRelation]);
     }
 
     /**

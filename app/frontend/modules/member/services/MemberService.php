@@ -76,8 +76,7 @@ class MemberService
     public static function isLogged()
     {
         if (\YunShop::app()->getMemberId()) {
-            $del_member = MemberDel::byMemberId(\YunShop::app()->getMemberId())->first();
-            if ($del_member) {
+            if (\app\frontend\models\Member::current()->hasOneDel) {
                 MemberDel::delUpdate(\YunShop::app()->getMemberId());
                 Session::clear('member_id');
             }

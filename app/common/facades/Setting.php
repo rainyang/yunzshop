@@ -18,11 +18,6 @@ class Setting extends Facade
 
     private static $instance;
 
-    public function __construct()
-    {
-
-    }
-
     protected static function getFacadeAccessor()
     {
         return 'setting';
