@@ -144,8 +144,13 @@ class MemberDesignerController extends ApiController
      */
      private function getDesigner()
      {
+         if(\Yunshop::request()->ingress == 'weChatApplet'){
+             $pageType = 9;
+         }else{
+             $pageType = \Yunshop::request()->type;
+         }
          $designer =  MemberDesigner::uniacid()
-             ->whereRaw('FIND_IN_SET(?,page_type)', [\Yunshop::request()->type])
+             ->whereRaw('FIND_IN_SET(?,page_type)', [$pageType])
              ->where(['shop_page_type'=>MemberDesigner::PAGE_MEMBER_CENTER,'is_default'=>1])
              ->first();
          return $designer;
