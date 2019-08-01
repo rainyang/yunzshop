@@ -56,11 +56,12 @@ class CategoryController extends BaseController
         if (!$list['data']) {
             return $this->errorJson('未检测到分类数据!');
         }
-
+        /* 分类不再需要图片信息
         foreach ($list['data'] as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
         }
+        */
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
 
         $recommend = $this->getRecommendCategoryList();
@@ -98,6 +99,9 @@ class CategoryController extends BaseController
     public function getGoodsListByCategoryId()
     {
         $category_id = \YunShop::request()->category_id;
+        if (empty($category_id)) {
+            return $this->errorJson("分类不能为空",[]);
+        }
         $goods_page = \YunShop::request()->goods_page ?: 1;
         return $this->successJson('获取商品成功!', $this->getGoodsList($category_id,$goods_page));
     }
@@ -169,6 +173,7 @@ class CategoryController extends BaseController
         $set = \Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
         $list = Category::getChildrenCategorys($parent_id,$set)->get()->toArray();
+        /* 分类不再需要图片信息
         foreach ($list as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
@@ -177,6 +182,7 @@ class CategoryController extends BaseController
                 $has_many_child['adv_img'] = replace_yunshop(yz_tomedia($has_many_child['adv_img']));
             }
         }
+        */
 
         // 增加分类下的商品返回。
         // 逻辑为：点击一级分类，如果三级分类未开启，则将一级分类下的第一个二级分类的商品返回
