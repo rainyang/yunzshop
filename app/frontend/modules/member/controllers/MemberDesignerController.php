@@ -31,11 +31,13 @@ class MemberDesignerController extends ApiController
 
                 $memberData = $this->getMemberData();
                 //收银台属于插件第二个按钮，特殊处理
-                $has_cashier = 0;
+                $is_cashier = 0;
+                $has_cashier = 1;
                 if($memberData['merchants_arr']['cashier'])
                 {
-                    $has_cashier = 1;
+                    $is_cashier = 1;
                 }
+
                 $is_love_open = app('plugins')->isEnabled('love');
                 foreach ($datas as $dkey=>$design)
                 {
@@ -67,12 +69,16 @@ class MemberDesignerController extends ApiController
                                 $datas[$dkey]['data']['part'][$pkey]['title'] = $memberData['merchants_arr'][$par['name']]['title'];
                                 $datas[$dkey]['data']['part'][$pkey]['url'] = $memberData['merchants_arr'][$par['name']]['url'];
                             }
+                            if($par['name'] == 'cashier')
+                            {
+                                $has_cashier = 0;
+                            }
                             if(!in_array($par['name'],$memberData['merchants']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
                         $datas[$dkey]['data']['part'] = array_values($datas[$dkey]['data']['part']);
-                        if($has_cashier == 1)
+                        if($is_cashier == 1 && $has_cashier == 1)
                         {
                             $datas[$dkey]['data']['part'][] = $memberData['merchants_arr']['cashier'];
                         }
