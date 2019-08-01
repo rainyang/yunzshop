@@ -30,6 +30,14 @@ class MemberDesignerController extends ApiController
                 $datas = (new DesignerService())->getMemberData($designer->datas);
 
                 $memberData = $this->getMemberData();
+                //收银台属于插件第二个按钮，特殊处理
+                $is_cashier = 0;
+                $has_cashier = 1;
+                if($memberData['merchants_arr']['cashier'])
+                {
+                    $is_cashier = 1;
+                }
+
                 $is_love_open = app('plugins')->isEnabled('love');
                 foreach ($datas as $dkey=>$design)
                 {
@@ -61,11 +69,19 @@ class MemberDesignerController extends ApiController
                                 $datas[$dkey]['data']['part'][$pkey]['title'] = $memberData['merchants_arr'][$par['name']]['title'];
                                 $datas[$dkey]['data']['part'][$pkey]['url'] = $memberData['merchants_arr'][$par['name']]['url'];
                             }
+                            if($par['name'] == 'cashier')
+                            {
+                                $has_cashier = 0;
+                            }
                             if(!in_array($par['name'],$memberData['merchants']) || $par['is_open'] == false){
                                 unset($datas[$dkey]['data']['part'][$pkey]);
                             }
                         }
                         $datas[$dkey]['data']['part'] = array_values($datas[$dkey]['data']['part']);
+                        if($is_cashier == 1 && $has_cashier == 1)
+                        {
+                            $datas[$dkey]['data']['part'][] = $memberData['merchants_arr']['cashier'];
+                        }
                     }
                     if($design['temp'] == 'membermarket')
                     {
@@ -144,8 +160,13 @@ class MemberDesignerController extends ApiController
      */
      private function getDesigner()
      {
+         if(\Yunshop::request()->ingress == 'weChatApplet'){
+             $pageType = 9;
+         }else{
+             $pageType = \Yunshop::request()->type;
+         }
          $designer =  MemberDesigner::uniacid()
-             ->whereRaw('FIND_IN_SET(?,page_type)', [\Yunshop::request()->type])
+             ->whereRaw('FIND_IN_SET(?,page_type)', [$pageType])
              ->where(['shop_page_type'=>MemberDesigner::PAGE_MEMBER_CENTER,'is_default'=>1])
              ->first();
          return $designer;
@@ -157,7 +178,8 @@ class MemberDesignerController extends ApiController
      */
      private function getMemberData()
      {
-         $arr = (new \app\common\services\member\MemberCenterService())->getMemberData();
+         $memberId = \YunShop::app()->getMemberId();
+         $arr = (new \app\common\services\member\MemberCenterService())->getMemberData($memberId);
 
          $tools = ['m-collection','m-footprint','m-address','m-info'];
          $merchants = [];

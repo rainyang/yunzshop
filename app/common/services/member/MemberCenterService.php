@@ -19,7 +19,7 @@ use Yunshop\Kingtimes\common\models\Provider;
 
 class MemberCenterService
 {
-   public function getMemberData()
+   public function getMemberData($memberId)
    {
        $filter = [
            'conference',
@@ -123,7 +123,7 @@ class MemberCenterService
        //配送站
        if (app('plugins')->isEnabled('delivery-station')) {
            $delivery_station_setting = Setting::get('plugin.delivery_station');
-           $delivery_station = \Yunshop\DeliveryStation\models\DeliveryStation::memberId(\YunShop::app()->getMemberId())->first();
+           $delivery_station = \Yunshop\DeliveryStation\models\DeliveryStation::memberId($memberId)->first();
            if ($delivery_station && $delivery_station_setting['is_open']) {
                $data[] = [
                    'name'  => 'delivery_station',
@@ -135,7 +135,7 @@ class MemberCenterService
        }
        //服务站
        if (app('plugins')->isEnabled('service-station')) {
-           $service_station = \Yunshop\ServiceStation\models\ServiceStation::isBlack()->memberId(\YunShop::app()->getMemberId())->first();
+           $service_station = \Yunshop\ServiceStation\models\ServiceStation::isBlack()->memberId($memberId)->first();
            if ($service_station) {
                $data[] = [
                    'name' => 'service_station',
@@ -197,7 +197,7 @@ class MemberCenterService
        if (app('plugins')->isEnabled('micro')) {
            $micro_set = \Setting::get('plugin.micro');
            if ($micro_set['is_open_miceo'] == 1) {
-               $micro_shop = \Yunshop\Micro\common\models\MicroShop::getMicroShopByMemberId(\YunShop::app()->getMemberId());
+               $micro_shop = \Yunshop\Micro\common\models\MicroShop::getMicroShopByMemberId($memberId);
                if ($micro_shop) {
                    $data[] = [
                        'name'  => 'micro',
@@ -364,7 +364,7 @@ class MemberCenterService
        }
 
        if (app('plugins')->isEnabled('store-cashier')) {
-           $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid(\YunShop::app()->getMemberId())->first();
+           $store = \Yunshop\StoreCashier\common\models\Store::getStoreByUid($memberId)->first();
 
            if (!$store) {
                $data[] = [
@@ -401,7 +401,7 @@ class MemberCenterService
        }
        if (app('plugins')->isEnabled('supplier')) {
            $supplier_setting = Setting::get('plugin.supplier');
-           $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId(\YunShop::app()->getMemberId(), 1);
+           $supplier = \Yunshop\Supplier\common\models\Supplier::getSupplierByMemberId($memberId, 1);
 
            if (!$supplier) {
                $data[] = [
@@ -424,9 +424,9 @@ class MemberCenterService
        }
        if (app('plugins')->isEnabled('kingtimes')) {
            $provider = Provider::select(['id', 'uid', 'status'])->where('uid',
-               \YunShop::app()->getMemberId())->first();
+               $memberId)->first();
            $distributor = Distributor::select(['id', 'uid', 'status'])->where('uid',
-               \YunShop::app()->getMemberId())->first();
+               $memberId)->first();
 
            if ($provider) {
 
@@ -527,7 +527,7 @@ class MemberCenterService
        }
 
        if (app('plugins')->isEnabled('hotel')) {
-           $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid(\YunShop::app()->getMemberId())->first();
+           $hotel = \Yunshop\Hotel\common\models\Hotel::getHotelByUid($memberId)->first();
            if ($hotel) {
                $data[] = [
                    'name'  => 'hotel',
