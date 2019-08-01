@@ -10,6 +10,7 @@ namespace app\common\models\user;
 
 
 use app\backend\modules\user\observers\UserObserver;
+use app\common\helpers\Cache;
 use app\common\models\BaseModel;
 use Illuminate\Validation\Rule;
 
@@ -231,59 +232,57 @@ class User extends BaseModel
     }
 
     /**
-     * 数据库获取用户权限
-     *
-     * @return mixed
-     */
-    public static function getUserPermissionsCache()
-    {
-        $key = 'user.permissions.' . \YunShop::app()->uid;
-        $list = \Cache::get($key);
-        if ($list === null) {
-            $list = static::select(['uid'])
-                ->where(['uid' => \YunShop::app()->uid])
-                //->where('type','!=', '1')
-                ->with([
-                    'userRole' => function ($query) {
-                        return $query->select(['user_id', 'role_id'])
-                            ->with(['permissions']);
-                    },
-                    'permissions'
-                ])
-                ->get();
-
-            \Cache::put($key, $list, 3600);
-        }
-        return $list;
-    }
-
-    /**
      * 获取并组合用户权限
      *
      * @return array
      */
-    public static function getAllPermissions()
+    public static function userPermissionCache()
+    {
+        $cacheKey = 'permissions.' . \YunShop::app()->uid;
+        if (!Cache::has($cacheKey)) {
+            $userPermission = self::userPermission();
+
+            Cache::put($cacheKey, $userPermission, 4200);
+        } else {
+            $userPermission = Cache::get($cacheKey);
+        }
+        return $userPermission;
+    }
+
+    /**
+     *
+     *
+     * @return array
+     */
+    public static function userPermission()
     {
         set_time_limit(0);
-        $userPermissions = self::getUserPermissionsCache()->toArray();
-        //dd($userPermissions);
+        $userPermissionsModel = self::userPermissionByUid(\YunShop::app()->uid);
+
         $permissions = [];
-        if ($userPermissions) {
-            foreach ($userPermissions as $v) {
-                if ($v['permissions']) {
-                    foreach ($v['permissions'] as $v1) {
-                        $permissions[] = $v1['permission'];
-                    }
-                }
-                if ($v['user_role']['permissions']) {
-                    foreach ($v['user_role']['permissions'] as $key => $v2) {
-                        !in_array($v2['permission'], $permissions) && $permissions[] = $v2['permission'];
-                    }
-                }
+        if (!$userPermissionsModel->permissions->isEmpty()) {
+            foreach ($userPermissionsModel->permissions as $key => $permission) {
+                $permissions[] = $permission->permission;
             }
         }
-        //dd($permissions);
+        if (!$userPermissionsModel->userRole->permissions->isEmpty()) {
+            foreach ($userPermissionsModel->userRole->permissions as $key => $permission) {
+                !in_array($permission->permission, $permissions) && $permissions[] = $permission->permission;
+            }
+        }
         return $permissions;
+    }
+
+    public static function userPermissionByUid($uid)
+    {
+        $model = static::with([
+            'userRole' => function ($query) {
+                return $query->with('permissions');
+            },
+            'permissions'
+        ])->where('uid', $uid)->first();
+
+        return $model;
     }
 
     /**
