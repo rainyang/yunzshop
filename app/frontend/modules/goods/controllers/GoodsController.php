@@ -7,6 +7,7 @@ use app\common\exceptions\AppException;
 use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\goods\Privilege;
+use app\frontend\models\Member;
 use app\frontend\modules\goods\models\Goods;
 use app\common\models\GoodsSpecItem;
 use app\common\services\goods\SaleGoods;
@@ -39,7 +40,7 @@ class GoodsController extends ApiController
     // 拆分getGoods方法，分离和插件相关的部分，只提取属于商品的信息。和插件相关的部分在getGoods中处理
     protected function _getGoods($id, $integrated = null)
     {
-        $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
+        $member = Member::current()->yzMember;
 
         $goodsModel = Goods::uniacid()
             ->with([
@@ -57,9 +58,6 @@ class GoodsController extends ApiController
                 },
                 'hasOneBrand' => function ($query) {
                     return $query->select('id', 'logo', 'name', 'desc');
-                },
-                'hasOneGoodsLimitbuy' => function ($query) {
-                    return $query->select('goods_id', 'end_time');
                 },
                 'hasOneShare',
                 'hasOneGoodsDispatch',
@@ -268,7 +266,7 @@ class GoodsController extends ApiController
                 return $this->errorJson('酒店插件未开启');
             }
         }
-        //$this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
+        $this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
         return $this->successJson('', $this->apiData);

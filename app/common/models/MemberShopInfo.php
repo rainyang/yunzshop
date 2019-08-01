@@ -88,6 +88,7 @@ class MemberShopInfo extends BaseModel
     //团队
     //private $team_offline;
 
+
     /**
      * todo common 中的 model 不应该使用全局作用域 2018-03-02
      * 设置全局作用域
