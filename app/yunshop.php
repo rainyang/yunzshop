@@ -617,11 +617,6 @@ class YunApp extends YunComponent
      */
     public function getMemberId()
     {
-        $testUid = \YunShop::request()->test_uid;
-        if ($testUid) {
-            return $testUid;
-        }
-
         $member_id = 0;
         $type = \Yunshop::request()->type ?: '';
         $token = \Yunshop::request()->yz_token ?: '';
