@@ -301,7 +301,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
 
     if (env('APP_Framework') == 'platform') {
         $systemSetting = app('systemSetting');
-        if ($remote = $systemSetting->get('system_remote')) {
+        if ($remote = $systemSetting->get('remote')) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
@@ -354,7 +354,6 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-
     //todo 2019/06/25 blank ---- 把或 || 条件换成与 && ,这样修改有个问题就是只有开启了远程存储图片，就永远不会再取本地图片
     //(!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))
     if (!$sign && ($local_path || empty($upload_type)) && file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
@@ -364,6 +363,8 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
             $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
         }
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type)) && file_exists(base_path('static/upload/').$src)) {
+        $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type))) {
         $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         $attach_url_remote = '';

@@ -25,7 +25,6 @@ use Illuminate\Database\Eloquent\Collection;
  */
 class Member extends \app\common\models\Member
 {
-    static $current;
 
     /**
      * @return self

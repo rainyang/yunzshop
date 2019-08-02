@@ -39,20 +39,20 @@ class MenuService
             return $url;
         }
 
+        $userPermission = User::userPermissionCache();
         //检测当前 key 下路由是否有权限访问
         foreach ($current_menu['child'] as $key => $value) {
 
-            if ($value['url'] == $current_menu['url'] && in_array($key, User::getAllPermissions())) {
+            if ($value['url'] == $current_menu['url'] && in_array($key, $userPermission)) {
                 return $url;
                 break;
             }
             continue;
         }
-
         //上面条件都不满足时，找第一个有权限访问的路由
         foreach ($current_menu['child'] as $key => $value) {
 
-            if (in_array($key, User::getAllPermissions())) {
+            if (in_array($key, $userPermission)) {
                 return yzWebFullUrl($value['url']) . ($value['url_params'] ? '&' . $value['url_params'] : '');
                 break;
             }

@@ -49,7 +49,7 @@ class PermissionService
         if (self::checkNoPermission($item) === true) {
             return true;
         }
-        return in_array($item, User::getAllPermissions());
+        return in_array($item, User::userPermissionCache());
     }
 
     /**

@@ -17,6 +17,7 @@ class UploadController extends BaseController
 {
     public function uploadPic()
     {
+        $attach = request()->attach;
         $file = request()->file('file');
 
         if (!$file) {
@@ -41,6 +42,9 @@ class UploadController extends BaseController
         $realPath = $file->getRealPath();   //临时文件的绝对路径
         $ext = $file->getClientOriginalExtension(); //文件后缀
 
+        if (!$ext) {
+            $ext = 'jpg';
+        }
         $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
 
         if (env('APP_Framework') == 'platform') {
@@ -122,6 +126,7 @@ class UploadController extends BaseController
             return $this->successJson('上传成功', [
                 'img' => \Storage::disk('syst_images')->url($newOriginalName),
                 'img_url' => yz_tomedia(\Storage::disk('syst_images')->url($newOriginalName)),
+                'attach' => $attach,
             ]);
         } else {
             //本地上传
@@ -134,6 +139,7 @@ class UploadController extends BaseController
             return $this->successJson('上传成功', [
                 'img' => \Storage::disk('image')->url($newOriginalName),
                 'img_url' => yz_tomedia(\Storage::disk('image')->url($newOriginalName)),
+                'attach' => $attach,
             ]);
         }
     }

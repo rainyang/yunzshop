@@ -3,9 +3,11 @@ namespace app\frontend\modules\goods\controllers;
 
 use app\backend\modules\goods\models\Brand;
 use app\common\components\ApiController;
+use app\common\exceptions\AppException;
 use app\common\facades\Setting;
 use app\common\models\Category;
 use app\common\models\goods\Privilege;
+use app\frontend\models\Member;
 use app\frontend\modules\goods\models\Goods;
 use app\common\models\GoodsSpecItem;
 use app\common\services\goods\SaleGoods;
@@ -38,7 +40,7 @@ class GoodsController extends ApiController
     // 拆分getGoods方法，分离和插件相关的部分，只提取属于商品的信息。和插件相关的部分在getGoods中处理
     protected function _getGoods($id, $integrated = null)
     {
-        $member = MemberShopInfo::uniacid()->ofMemberId(\YunShop::app()->getMemberId())->withLevel()->first();
+        $member = Member::current()->yzMember;
 
         $goodsModel = Goods::uniacid()
             ->with([
@@ -56,9 +58,6 @@ class GoodsController extends ApiController
                 },
                 'hasOneBrand' => function ($query) {
                     return $query->select('id', 'logo', 'name', 'desc');
-                },
-                'hasOneGoodsLimitbuy' => function ($query) {
-                    return $query->select('goods_id', 'end_time');
                 },
                 'hasOneShare',
                 'hasOneGoodsDispatch',
@@ -389,7 +388,7 @@ class GoodsController extends ApiController
             ->where("status", 1)
             ->where(function($query) {
 //                $query->whereIn('plugin_id', [0,40,92,41]);
-                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92)->orWhere('plugin_id', 32);
+                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
             });
 
         //todo 为什么要取出id, 如id过多超出in的长度如何处理
@@ -955,7 +954,7 @@ class GoodsController extends ApiController
     public function couponsMemberLj($member)
     {
         if (empty($member)) {
-            return $this->successJson('没有找到该用户', []);
+            throw new AppException('没有找到该用户');
         }
         $memberLevel = $member->level_id;
 

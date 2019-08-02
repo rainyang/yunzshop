@@ -22,8 +22,9 @@ class PluginServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(PluginManager $plugins)
+    public function boot()
     {
+        $plugins = app('plugins');
         if (strpos(request()->path(), 'install')) {
             return;
         }
