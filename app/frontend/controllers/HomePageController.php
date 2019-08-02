@@ -180,35 +180,9 @@ class HomePageController extends ApiController
                     } else {
                         $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
-                    $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
-                    if ($is_love){
-                        foreach ($designer['data'] as &$data){
-                            //替换积分字样
-                            if ($data['temp'] == 'sign'){
-                                $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
-                            }
-                            if ($data['temp']=='goods'){
-                                foreach ($data['data'] as &$goode_award){
-                                    $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
-                                    $goode_award['stock'] = $this ->getGoodsStock($goode_award['goodid']);
-                                }
-                            }
-                        }
-                    }else{
-                        foreach ($designer['data'] as &$data){
-                            //替换积分字样
-                            if ($data['temp'] == 'sign'){
-                                foreach ($data['params'] as &$award_content){
-                                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
-                                }
-                            }
-                            if ($data['temp']=='goods'){
-                                foreach ($data['data'] as &$goode_award){
-                                    $goode_award['award'] = 0;
-                                }
-                            }
-                        }
-                    }
+
+                    $designer = $this->addDynamicData($designer);
+
 
                     $result['item'] = $designer;
 
@@ -316,7 +290,57 @@ class HomePageController extends ApiController
             return $this->jumpUrl($type, $mid);
         }
     }
+    private function designerGoodsData($designer){
+        foreach ($designer['data'] as $data){
+            if ($data['temp'] == 'goods'){
+                foreach ($data['data'] as &$goode_award){
+                    $goodsIds[] = $goode_award['goodid'];
+                }
+            }
+        }
+        if(!$goodsIds){
+           return $designer;
+        }
+        $goodsCollection = Goods::select(['id','stock'])->whereIn('id',$goodsIds)->get();
+        $goodsLoveCollection = GoodsLove::select(['goods_id','award'])->whereIn('goods_id',$goodsIds)->get();
+        foreach ($designer['data'] as &$data){
+            if ($data['temp'] == 'goods'){
+                foreach ($data['data'] as &$goode_award){
+                    $goode_award['stock'] = array_get($goodsCollection->where('id',$goode_award['goodid'])->first(),'stock',0);
+                    $goode_award['award'] = array_get($goodsLoveCollection->where('goods_id',$goode_award['goodid'])->first(),'award',0);
+                }
+            }
+        }
 
+        return $designer;
+    }
+    private function addDynamicData($designer){
+        $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
+        if (app('plugins')->isEnabled('love')){
+            $designer = $this->designerGoodsData($designer);
+            foreach ($designer['data'] as &$data){
+                //替换积分字样
+                if ($data['temp'] == 'sign'){
+                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                }
+            }
+        }else{
+            foreach ($designer['data'] as &$data){
+                //替换积分字样
+                if ($data['temp'] == 'sign'){
+                    foreach ($data['params'] as &$award_content){
+                        $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                    }
+                }
+                if ($data['temp']=='goods'){
+                    foreach ($data['data'] as &$goode_award){
+                        $goode_award['award'] = 0;
+                    }
+                }
+            }
+        }
+        return $designer;
+    }
     public function designerShare()
     {
         $i         = \YunShop::request()->i;
