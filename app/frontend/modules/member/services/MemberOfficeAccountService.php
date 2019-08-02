@@ -311,7 +311,7 @@ class MemberOfficeAccountService extends MemberService
             if (preg_match($pattern, $yz_redirect)) {
                 $redirect_url = preg_replace($pattern, "&t={$t}", $yz_redirect);
             } else {
-                $redirect_url = $yz_redirect;
+                $redirect_url = $yz_redirect . '&t=' . time();
             }
         }
 

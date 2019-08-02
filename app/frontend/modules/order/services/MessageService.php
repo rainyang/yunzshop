@@ -18,7 +18,7 @@ class MessageService extends \app\common\services\MessageService
     private $shopMessage;
     protected $formId;
     protected $noticeType;
-    function __construct($order,$formId = '',$type = 1,$title)
+    function __construct($order,$formId = '',$type = 1,$title='')
     {
         $this->buyerMessage = new BuyerMessage($order,$formId,$type,$title);
         $this->shopMessage = new ShopMessage($order,$formId,$type,$title);

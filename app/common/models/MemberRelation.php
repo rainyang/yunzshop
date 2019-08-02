@@ -43,12 +43,12 @@ class MemberRelation extends BaseModel
 
     /**
      * 获取会员关系链数据
-     *
-     * @return mixed
+     * @return MemberRelation
      */
     public static function getSetInfo()
     {
-        return self::uniacid();
+        // todo 优化重复查询问题,返回一个元素的集合是为了不影响历史代码的调用方式的,
+        return collect([\app\common\modules\shop\models\Shop::current()->memberRelation]);
     }
 
     /**
@@ -146,22 +146,12 @@ class MemberRelation extends BaseModel
      */
     public static function checkOrderGoods($goods_id, $uid)
     {
-        $list = Order::getOrderListByUid($uid);
-
-        if (!empty($list)) {
-            $list = $list->toArray();
-
-            foreach ($list as $rows) {
-                foreach ($rows['has_many_order_goods'] as $item) {
-                    if ($item['goods_id'] == $goods_id) {
-                        \Log::debug('购买商品指定商品', [$goods_id]);
-                        return true;
-                    }
-                }
-            }
+        $goods_ids = explode(',',$goods_id);
+        $list = OrderGoods::uniacid()->where('uid',$uid)->whereIn('goods_id', $goods_ids)->get();
+        if ($list->isEmpty()) {
+            return false;
         }
-
-        return false;
+        return true;
     }
 
     /**
@@ -470,13 +460,7 @@ class MemberRelation extends BaseModel
     {
         //判断商品
         if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-            $goods_id = explode(',',$set->become_goods_id);
-            foreach ($goods_id as $id) {
-                $result = self::checkOrderGoods($id, $uid);
-                if ($result) {
-                    break;
-                }
-            }
+            $result = self::checkOrderGoods($set->become_goods_id, $uid);
 
             if ($result) {
                 $member->is_agent = 1;
@@ -499,14 +483,6 @@ class MemberRelation extends BaseModel
                     self::setRelationInfo($member);
                     return;
                 }
-            }
-        }
-
-        //判断是否有上级，上级是否是推广员，上级是否有推广权限
-        if (!empty($member->parent_id)) {
-            $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-            if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
-                return;
             }
         }
         //消费达多少次
@@ -605,24 +581,8 @@ class MemberRelation extends BaseModel
     {
         //判断商品
         if ($become_term[4] == 4 && !empty($set->become_goods_id)) {
-            $goods_id = explode(',',$set->become_goods_id);
-            $is_goods = false;
-            foreach ($goods_id as $id) {
-                $result = self::checkOrderGoods($id, $uid);
-                if ($result) {
-                    $is_goods = true;
-                    break;
-                }
-            }
-            if (!$is_goods){
-                return;
-            }
-        }
-
-        //判断是否有上级，上级是否是推广员，上级是否有推广权限
-        if (!empty($member->parent_id)) {
-            $parent = MemberShopInfo::getMemberShopInfo($member->parent_id);
-            if (empty($parent) || $parent->is_agent != 1 || $parent->status != 2) {
+            $result = self::checkOrderGoods($set->become_goods_id, $uid);
+            if (!$result) {
                 return;
             }
         }

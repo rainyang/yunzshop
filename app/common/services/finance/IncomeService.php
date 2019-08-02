@@ -18,6 +18,7 @@ class IncomeService
     {
         $set = Setting::get('withdraw.income');
         $modeData = [];
+
         foreach ($set as $key => $item) {
             if(in_array($key, static::$pay_way) && $item){
                 $modeData[$key] = [
@@ -26,6 +27,7 @@ class IncomeService
                 ];
             }
         }
+        $modeData['service_switch'] = isset($set['service_switch']) ? $set['service_switch'] : 1;
         return $modeData;
     }
 
@@ -33,30 +35,48 @@ class IncomeService
     {
         $balance=Setting::get('shop.shop');
         //从数据库获取
-//        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);  //不知道为什么要查这个
+
+        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
+
+        $set = \Setting::get('shop.lang.zh_cn.income');
+
+        $name = '';
+        if ($set['name_of_withdrawal']){
+            $name = $set['name_of_withdrawal'];
+        }else{
+            $name = '提现';
+        }
         switch ($key) {
             case 'balance':
-                return '提现到'.$balance['credit']?:'余额';
+                return $name.'到'.$balance;
+               // return '提现到'.$dalance['credit'];
+
+
+////        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);  //不知道为什么要查这个
+//        switch ($key) {
+//            case 'balance':
+//                return '提现到'.$balance['credit']?:'余额';
+
                 break;
             case 'wechat':
-                return '提现到微信';
+                return $name.'到微信';
                 break;
             case 'alipay':
-                return '提现到支付宝';
+                return $name.'到支付宝';
                 break;
             case 'manual':
-                return '提现手动打款';
+                return $name.'手动打款';
                 break;
             case 'huanxun':
-                return '提现到银行卡';
+                return $name.'到银行卡';
                 break;
             case 'eup_pay':
-                return '提现到EUP';
+                return $name.'到EUP';
             case 'yop_pay':
-                return '提现到易宝';
+                return $name.'到易宝';
                 break;
             case 'converge_pay':
-                return '提现到银行卡-HJ';
+                return $name.'到银行卡-HJ';
                 break;
         }
     }

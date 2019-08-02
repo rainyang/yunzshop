@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use app\frontend\modules\withdraw\services\StatisticalPresentationService;
 use app\common\services\finance\MessageService;
+use app\common\helpers\Url;
 
 class ApplyController extends ApiController
 {
@@ -73,10 +74,18 @@ class ApplyController extends ApiController
         //插入提现
         $result = $this->withdrawStart();
 
-        if ($result === true) {
-            return $this->successJson('提现成功');
+        $set = \Setting::get('shop.lang.zh_cn.income');
+
+        $name = '';
+        if ($set['name_of_withdrawal']){
+            $name = $set['name_of_withdrawal'];
+        }else{
+            $name = '提现';
         }
-        return $this->errorJson('提现失败');
+        if ($result === true) {
+            return $this->successJson($name.'成功');
+        }
+        return $this->errorJson($name.'失败');
     }
 
     private function cashLimitation(){
@@ -146,6 +155,7 @@ class ApplyController extends ApiController
             if (!$withdrawModel->save()) {
                 throw new AppException("ERROR:Data storage exception -- {$item['key_name']}");
             }
+            app('plugins')->isEnabled('converge_pay') && $this->withdraw_set['free_audit'] == 1 && $this->pay_way == 'converge_pay' ? \Setting::set('plugin.convergePay_set.notifyWithdrawUrl', Url::shopSchemeUrl('payment/convergepay/notifyUrlWithdraw.php')) : null;
             event(new WithdrawAppliedEvent($withdrawModel));
 
             $amount = bcadd($amount, $withdrawModel->amounts, 2);

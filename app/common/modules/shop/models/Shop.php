@@ -10,6 +10,7 @@
 namespace app\common\modules\shop\models;
 
 use app\common\models\AccountWechats;
+use app\common\models\MemberRelation;
 
 /**
  * todo 商城类
@@ -19,22 +20,32 @@ use app\common\models\AccountWechats;
  * @property int weid
  * @property int acid
  * @property AccountWechats account
+ * @property MemberRelation memberRelation
  */
 class Shop extends \app\common\models\Shop
 {
     static $current;
-    // todo 当前公众号对应的商城
+
+    /**
+     * 当前公众号对应的商城
+     * @return Shop
+     */
     public static function current()
     {
         if (!isset(self::$current)) {
             self::$current = new self();
             self::$current->init();
         }
-        self::$current;
+        return self::$current;
     }
 
-    private function init()
+    public function memberRelation()
     {
+        return $this->hasOne(MemberRelation::class,'uniacid','uniacid');
+    }
 
+    public function init()
+    {
+        $this->uniacid = \YunShop::app()->uniacid;
     }
 }

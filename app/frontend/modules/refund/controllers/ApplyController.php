@@ -18,7 +18,7 @@ use app\frontend\modules\order\services\MiniMessageService;
  */
 class ApplyController extends ApiController
 {
-    public function index(Request $request)
+    public function index($request)
     {
         $this->validate([
             'order_id' => 'required|integer'
@@ -61,7 +61,7 @@ class ApplyController extends ApiController
     }
 
 
-    public function store(Request $request)
+    public function store($request)
     {
 
         $this->validate([

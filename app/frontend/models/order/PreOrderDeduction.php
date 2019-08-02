@@ -109,6 +109,7 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function getAmount()
     {
+
         return $this->getMinDeduction()->getMoney() + $this->getUsablePoint()->getMoney();
     }
 
@@ -182,7 +183,9 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function getUsablePoint()
     {
+
         if (!isset($this->usablePoint)) {
+
             trace_log()->deduction('开始订单抵扣', "{$this->getName()} 计算可用金额");
 
             $this->usablePoint = $this->newCoin();
@@ -190,7 +193,6 @@ class PreOrderDeduction extends OrderDeduction
             // 购买者不存在虚拟币记录
             if (!$this->getMemberCoin()) {
                 trace_log()->deduction('订单抵扣', "{$this->getName()} 用户没有对应虚拟币");
-
                 return $this->usablePoint;
             }
 
@@ -208,7 +210,6 @@ class PreOrderDeduction extends OrderDeduction
                 $this->getMemberCoin()->getMaxUsableCoin()->getMoney() - $this->getMinDeduction()->getMoney(),
                 $deductionAmount
             );
-
             $this->usablePoint = $this->newCoin()->setMoney($amount);
             trace_log()->deduction("订单抵扣", "{$this->name} 可抵扣{$this->usablePoint->getMoney()}元");
         }
@@ -222,7 +223,6 @@ class PreOrderDeduction extends OrderDeduction
      */
     public function getOrderGoodsDeductionAmount()
     {
-
         $amount = ($this->getMaxOrderGoodsDeduction()->getMoney() / ($this->getMaxDeduction()->getMoney()+$this->getMaxDispatchPriceDeduction()->getMoney())) * $this->amount;
         return $amount;
     }

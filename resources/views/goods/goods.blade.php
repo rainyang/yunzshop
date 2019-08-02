@@ -68,23 +68,6 @@
             return false;
         }
 
-        if ($(':input[name="widgets[video_demand][is_course]"]:checked').val() == 1) {
-            
-            if ($(':input[name="widgets[video_demand][lecturer_id]"]').val() == '') {
-                alert('课程讲师不能为空');
-                $('#myTab a[href="#tab_video_demand"]').tab('show');
-                Tip.focus(':input[name="widgets[video_demand][lecturer_id]"]', "课程讲师不能为空");
-                return false;
-            }
-
-            if ($(':input[name="widgets[video_demand][chapter][chapter_id][]"]').length <= 0) {
-                alert('课程章节不能为空');
-                $('#myTab a[href="#tab_video_demand"]').tab('show');
-                Tip.focus('#chapter_button', "课程章节不能为空");
-                return false;
-            }
-        }
-
         if ($(':input[name="goods[title]"]').val() == '') {
             $('#myTab a[href="#tab_basic"]').tab('show');
             Tip.focus("#goodsname", "请输入商品名称!");
@@ -133,39 +116,39 @@
 
         @endif
 
-        if ($.trim($(':input[name="goods[price]"]').val()) == '') {
-            $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="goods[price]"]', '请填写价格.');
-            return false;
-        } else {
-            if (!reg.test($(':input[name="goods[price]"]').val())) {
-                $('#myTab a[href="#tab_basic"]').tab('show');
-                Tip.focus(':input[name="goods[price]"]', '价格格式错误,最多两位小数.');
-                return false;
-            }
-        }
-        if ($.trim($(':input[name="goods[market_price]"]').val()) == '') {
-            $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="goods[market_price]"]', '请填写价格.');
-            return false;
-        } else {
-            if (!reg.test($(':input[name="goods[market_price]"]').val())) {
-                $('#myTab a[href="#tab_basic"]').tab('show');
-                Tip.focus(':input[name="goods[market_price]"]', '价格格式错误,最多两位小数.');
-                return false;
-            }
-        }
-        if ($.trim($(':input[name="goods[cost_price]"]').val()) == '') {
-            $('#myTab a[href="#tab_basic"]').tab('show');
-            Tip.focus(':input[name="goods[cost_price]"]', '请填写价格.');
-            return false;
-        } else {
-            if (!reg.test($(':input[name="goods[cost_price]"]').val())) {
-                $('#myTab a[href="#tab_basic"]').tab('show');
-                Tip.focus(':input[name="goods[cost_price]"]', '价格格式错误,最多两位小数.');
-                return false;
-            }
-        }
+        // if ($.trim($(':input[name="goods[price]"]').val()) == '') {
+        //     $('#myTab a[href="#tab_basic"]').tab('show');
+        //     Tip.focus(':input[name="goods[price]"]', '请填写价格.');
+        //     return false;
+        // } else {
+        //     if (!reg.test($(':input[name="goods[price]"]').val())) {
+        //         $('#myTab a[href="#tab_basic"]').tab('show');
+        //         Tip.focus(':input[name="goods[price]"]', '价格格式错误,最多两位小数.');
+        //         return false;
+        //     }
+        // }
+        // if ($.trim($(':input[name="goods[market_price]"]').val()) == '') {
+        //     $('#myTab a[href="#tab_basic"]').tab('show');
+        //     Tip.focus(':input[name="goods[market_price]"]', '请填写价格.');
+        //     return false;
+        // } else {
+        //     if (!reg.test($(':input[name="goods[market_price]"]').val())) {
+        //         $('#myTab a[href="#tab_basic"]').tab('show');
+        //         Tip.focus(':input[name="goods[market_price]"]', '价格格式错误,最多两位小数.');
+        //         return false;
+        //     }
+        // }
+        // if ($.trim($(':input[name="goods[cost_price]"]').val()) == '') {
+        //     $('#myTab a[href="#tab_basic"]').tab('show');
+        //     Tip.focus(':input[name="goods[cost_price]"]', '请填写价格.');
+        //     return false;
+        // } else {
+        //     if (!reg.test($(':input[name="goods[cost_price]"]').val())) {
+        //         $('#myTab a[href="#tab_basic"]').tab('show');
+        //         Tip.focus(':input[name="goods[cost_price]"]', '价格格式错误,最多两位小数.');
+        //         return false;
+        //     }
+        // }
 
         if ($(':input[name="goods[stock]"]').val() == '') {
             $('#myTab a[href="#tab_basic"]').tab('show');

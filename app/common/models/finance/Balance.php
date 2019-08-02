@@ -32,7 +32,7 @@ class Balance extends BaseModel
     public static function boot()
     {
         parent::boot();
-        static::addGlobalScope('uniacid',function (Builder $builder) {
+        static::addGlobalScope(function (Builder $builder) {
             return $builder->uniacid();
         });
     }

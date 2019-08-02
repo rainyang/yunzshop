@@ -162,7 +162,14 @@ class ListController extends BaseController
         } else {
             $build->orderBy($this->orderModel->getModel()->getTable() . '.id', 'desc');
         }
-        $list += $build->paginate(self::PAGE_SIZE)->toArray();
+
+        $page = $build->paginate(self::PAGE_SIZE);
+
+        foreach ($page as $item){
+            $item->canRefund = $item->canRefund();
+        }
+        $list += $page->toArray();
+
 
         $pager = PaginationHelper::show($list['total'], $list['current_page'], $list['per_page']);
 

@@ -8,9 +8,7 @@
 namespace app\common\events\payment;
 
 
-use app\common\events\Event;
-
-class RechargeComplatedEvent extends Event
+class RechargeComplatedEvent extends GetOrderPaymentTypeEvent
 {
     protected $data;
 

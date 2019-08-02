@@ -165,11 +165,6 @@ class WeSessionRedis extends WeSessionMemcache {
 
 class WeSessionMysql extends WeSession {
     public function open($save_path, $session_name) {
-        $tablename = str_replace('`', "'", tablename('core_sessions'));
-        $status = pdo_fetch("SHOW TABLE STATUS LIKE {$tablename}");
-        if (strexists($status['Comment'], 'crashed')) {
-            pdo_run("REPAIR TABLE " . tablename('core_sessions'));
-        }
         return true;
     }
 
