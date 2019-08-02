@@ -2991,7 +2991,7 @@ if (!function_exists('uploadUrl')) {
      * 上传 相关组件 使用的url
      * @return mixed
      */
-    function uploadUrl()
+    function uploadUrl($type = 'default')
     {
         if (env('APP_Framework') == 'platform') {
             $url['upload_url'] = '/admin/system/upload/upload?upload_type=';
@@ -3001,7 +3001,13 @@ if (!function_exists('uploadUrl')) {
             $url['video_url'] = '/admin/system/upload/video?local=local&type=video&pagesize=5';
         } else {
             $url['upload_url'] = './index.php?c=utility&a=file&do=upload&upload_type=';
-            $url['image_url'] = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
+            if($type = 'new'){
+                $image_url = str_replace('/web','.',yzWebUrl('upload.uploadimage.getimage'));
+                $url['image_url'] = $image_url;
+            }elseif($type = 'default') {
+                $url['image_url'] = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
+            }
+
             $url['fetch_url'] = './index.php?c=utility&a=file&do=fetch';
             $url['delet_url'] = './index.php?c=utility&a=file&do=delete';
             $url['video_url'] = './index.php?c=utility&a=file&do=video&local=local&type=video&pagesize=5';
