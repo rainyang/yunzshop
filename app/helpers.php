@@ -290,12 +290,16 @@ if (!function_exists("tomedia")) {
  * @param null $upload_type 上传图片时的类型，数据表 upload_type 字段(只需要在上传图片时，传参数，获取列表不需要传改参数)
  * @return string
  */
-function yz_tomedia($src, $local_path = false, $upload_type = null)
+function yz_tomedia($src, $local_path = false, $upload_type = null,$host = '')
 {
     if (empty($src)) {
         return '';
     }
-
+    if($host){
+        $HttpHost = $host;
+    }else{
+        $HttpHost = request()->getSchemeAndHttpHost();
+    }
     $setting = [];
     $sign = false;
 
@@ -324,28 +328,28 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     $os = Client::osType();
     if (strexists($src, $addons)) {
         if ($os == Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+            $url_dz = $HttpHost . substr($src, strpos($src, $addons));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
-        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+        return $HttpHost . substr($src, strpos($src, $addons));
     }
 
     //判断是否是本地带域名图片地址
     $local = strtolower($src);
     if (strexists($src, $attachment)) {
         if ($os == Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
+            $url_dz = $HttpHost . substr($src, strpos($src, $attachment));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
         if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
             return $src;
         } else {
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
+            return $HttpHost . substr($src, strpos($src, $attachment));
         }
     }
 
     //如果远程地址中包含本地host也检测是否远程图片
-    if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
+    if (strexists($src, $HttpHost) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
         $src = $t = substr($urls['path'], strpos($urls['path'], 'image'));
     }
@@ -358,14 +362,14 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     //(!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))
     if (!$sign && ($local_path || empty($upload_type)) && file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         if (strexists($src, '/attachment/')) {
-            $src = request()->getSchemeAndHttpHost() . $src;
+            $src = $HttpHost . $src;
         } else {
-            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            $src = $HttpHost . '/attachment/' . $src;
         }
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type)) && file_exists(base_path('static/upload/').$src)) {
-        $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
+        $src = $HttpHost .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type))) {
-        $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
+        $src = $HttpHost .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         $attach_url_remote = '';
         if ($upload_type == 1) {
