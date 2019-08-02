@@ -30,6 +30,7 @@ class DetailController extends BaseController
                 throw new AppException("未找到id为{$processId}的审核进程记录");
             }
         }
+        $this->process['remittanceRecord']['report_url'] = yz_tomedia($this->process['remittanceRecord']['report_url']);
     }
 
     /**
