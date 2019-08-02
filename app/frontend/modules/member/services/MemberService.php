@@ -722,6 +722,8 @@ class MemberService
             $default_subgroup_id = 0;
         }
 
+        $invite_code = MemberModel::getInviteCode();
+
         SubMemberModel::insertData(array(
             'member_id' => $member_id,
             'uniacid' => $uniacid,
@@ -733,7 +735,8 @@ class MemberService
             'access_token_1' => isset($userinfo['access_token']) ? $userinfo['access_token'] : '',
             'access_expires_in_1' => isset($userinfo['expires_in']) ? time() + $userinfo['expires_in'] : '',
             'refresh_token_1' => isset($userinfo['refresh_token']) ? $userinfo['refresh_token'] : '',
-            'refresh_expires_in_1' => time() + (28 * 24 * 3600)
+            'refresh_expires_in_1' => time() + (28 * 24 * 3600),
+            'invite_code' => $invite_code
         ));
     }
 
