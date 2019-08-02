@@ -170,11 +170,11 @@ class CategoryController extends BaseController
     
     public function getChildrenCategory()
     {
+        $pageSize = 100;
         $set = \Setting::get('shop.category');
         $parent_id = intval(\YunShop::request()->parent_id);
-        $list = Category::getChildrenCategorys($parent_id,$set)->get()->toArray();
-
-        foreach ($list as &$item) {
+        $list = Category::getChildrenCategorys($parent_id,$set)->paginate($pageSize)->toArray();
+        foreach ($list['data'] as &$item) {
             $item['thumb'] = replace_yunshop(yz_tomedia($item['thumb']));
             $item['adv_img'] = replace_yunshop(yz_tomedia($item['adv_img']));
             foreach ($item['has_many_children'] as &$has_many_child) {
@@ -186,20 +186,21 @@ class CategoryController extends BaseController
         // 增加分类下的商品返回。
         // 逻辑为：点击一级分类，如果三级分类未开启，则将一级分类下的第一个二级分类的商品返回
         // 如果开启三级分类，则取三级分类的第一个分类下的商品返回
-        $goods_list = [];
-        if (!empty($list)) {
-            if (empty($list[0]['has_many_children'])) {
-                $goods_list = $this->getGoodsList($list[0]['id'],1);
+        if (!empty($list['data'])) {
+            if (empty($list['data'][0]['has_many_children'])) {
+                $list['goods_list'] = $this->getGoodsList($list['data'][0]['id'],1);
             } else {
-                $goods_list = $this->getGoodsList($list[0]['has_many_children'][0]['id'],1);
+                $list['goods_list'] = $this->getGoodsList($list['data'][0]['has_many_children'][0]['id'],1);
             }
+        } else {
+            $list['goods_list'] = [];
         }
         $set['cat_adv_img'] = replace_yunshop(yz_tomedia($set['cat_adv_img']));
-        return $this->successJson('获取子分类数据成功!', [
-            'category' => $list,
-            'goods_list' => $goods_list,
-            'set' => $set
-        ]);
+        $list['set'] = $set;
+        if($list){
+            return $this->successJson('获取子分类数据成功!', $list);
+        }
+        return $this->errorJson('未检测到子分类数据!',$list);
     }
 
     public function searchGoodsCategory()
