@@ -265,7 +265,7 @@ class User extends BaseModel
                 $permissions[] = $permission->permission;
             }
         }
-        if (!$userPermissionsModel->userRole->permissions->isEmpty()) {
+        if ($userPermissionsModel->userRole && !$userPermissionsModel->userRole->permissions->isEmpty()) {
             foreach ($userPermissionsModel->userRole->permissions as $key => $permission) {
                 !in_array($permission->permission, $permissions) && $permissions[] = $permission->permission;
             }
