@@ -186,6 +186,8 @@ class EventServiceProvider extends ServiceProvider
         \app\backend\modules\goods\listeners\GoodsServiceListener::class,
         // 订单生成后判断是否可退换货
         \app\common\listeners\order\OrderNoRefundListener::class,
+        // 订单关闭后返还优惠券
+        \app\backend\modules\coupon\listeners\OrderClosedListener::class,
     ];
 
     /**
