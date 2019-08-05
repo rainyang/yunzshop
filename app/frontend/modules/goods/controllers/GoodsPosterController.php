@@ -491,8 +491,7 @@ class GoodsPosterController extends ApiController
         ];
         $path = storage_path('app/public/goods/qrcode/' . \YunShop::app()->uniacid);
         if (!is_dir($path)) {
-            load()->func('file');
-            mkdirs($path);
+            Utils::mkdirs($path);
         }
         \Log::debug('=====地址信息=======',$postdata);
         $res = $this->curl_post($url, json_encode($postdata), $options = array());
