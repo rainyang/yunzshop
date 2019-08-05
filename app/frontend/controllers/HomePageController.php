@@ -278,6 +278,10 @@ class HomePageController extends ApiController
                 }
             }
 
+            
+            if($member_set['mobile_login_code']){
+                $result['system'] = $member_set['mobile_login_code'] ? true : false;
+            }
             //小程序验证推广按钮是否开启
             $result['system']['btn_romotion'] = PortType::popularizeShow($type);
 
