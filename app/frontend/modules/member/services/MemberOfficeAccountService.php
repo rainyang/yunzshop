@@ -521,7 +521,7 @@ class MemberOfficeAccountService extends MemberService
             } catch (DecryptException $e) {
                 return false;
             }
-
+\Log::debug('----base-----', [$from,$scope]);
             if ($scope === 'base' && $from != $scope) {
                 $login->jump = true;
                 return false;
