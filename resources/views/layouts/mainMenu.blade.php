@@ -20,7 +20,7 @@
                     </li>--}}
                     @foreach(config(config('app.menu_key','menu')) as $key=>$value)
 
-                        @if(isset($value['menu']) && $value['menu'] == 1 && can($key) && ($value['top_show'] == 1 || app('plugins')->isTopShow($key)))
+                        @if(isset($value['menu']) && $value['menu'] == 1 && $value['can'] && ($value['top_show'] == 1 || app('plugins')->isTopShow($key)))
 
                             @if(isset($value['child']) && array_child_kv_exists($value['child'],'menu',1))
 
@@ -58,13 +58,15 @@
                             @if(YunShop::app()->role)
                                 <ul class="dropdown-menu">
                                     @if (env('APP_Framework') != 'platform')
-                                    @if(YunShop::app()->role !='operator')
-                                        <li class="about"> <i></i><a href="?c=account&a=post&uniacid={{YunShop::app()->uniacid}}&acid={{YunShop::app()->uniacid}}"> <span class="fa fa-wechat"></span>编辑当前账号资料</a> </li>
-                                    @endif
-                                    <li> <a href="?c=account&a=display&"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
-                                    <li> <a target="_blank" href="?c=utility&a=emulator&"><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
+                                        @if(YunShop::app()->role !='operator')
+                                            <li class="about"> <i></i><a href="?c=account&a=post&uniacid={{YunShop::app()->uniacid}}&acid={{YunShop::app()->uniacid}}"> <span class="fa fa-wechat"></span>编辑当前账号资料</a> </li>
+                                        @endif
+                                        <li> <a href="?c=account&a=display&"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
+                                        <li> <a target="_blank" href="?c=utility&a=emulator&"><span class="fa fa-mobile fa-fw"></span>模拟测试</a> </li>
                                     @else
-                                        <li> <a href="/#/manage/index"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
+                                        @if(YunShop::app()->role != 'operator' && YunShop::app()->role != 'clerk')
+                                            <li> <a href="/#/manage/index"><span class="fa fa-cogs fa-fw"></span>管理其他公众号</a> </li>
+                                        @endif
                                     @endif
                                     @if(request()->getHost() != 'test.yunzshop.com' && env('APP_ENV') != 'production')
                                         <li> <a target="_blank" href="{{yzWebUrl('menu.index')}}"><span class="fa fa-align-justify fa-fw"></span>菜单管理</a></li>
@@ -87,19 +89,19 @@
                         </a>
                         <ul class="dropdown-menu">
                             @if (env('APP_Framework') != 'platform')
-                            <li class="about"> <i></i> <a href="?c=user&a=profile&do=profile&"> <span class="fa fa-wechat fa-fw"></span>我的账号</a> </li>
-                            @if(YunShop::app()->role == 'founder')
-                                <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
-                                <li class="system one"> <a href="?c=system&a=welcome&"><span class="fa fa-sitemap fa-fw"></span>系统选项</a> </li>
-                                <li class="system"> <a href="?c=system&a=welcome" target="_blank"><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
-                                <li class="system three"> <a href="?c=system&a=updatecache&" target="_blank"><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>
-                            @endif
+                                <li class="about"> <i></i> <a href="?c=user&a=profile&do=profile&"> <span class="fa fa-wechat fa-fw"></span>我的账号</a> </li>
+                                @if(YunShop::app()->role == 'founder')
+                                    <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
+                                    <li class="system one"> <a href="?c=system&a=welcome&"><span class="fa fa-sitemap fa-fw"></span>系统选项</a> </li>
+                                    <li class="system"> <a href="?c=system&a=welcome" target="_blank"><span class="fa fa-cloud-download fa-fw"></span>自动更新</a> </li>
+                                    <li class="system three"> <a href="?c=system&a=updatecache&" target="_blank"><span class="fa fa-refresh fa-fw"></span>更新缓存</a> </li>
+                                @endif
                             @endif
 
                             @if (env('APP_Framework') == 'platform')
-                                    @if(YunShop::app()->role == 'founder')
-                                        <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
-                                    @endif
+                                @if(YunShop::app()->role == 'founder')
+                                    <li class="system one"> <a href="{{yzWebFullUrl('setting.key.index')}}"><span class="fa fa-key fa-fw"></span>商城授权</a> </li>
+                                @endif
                                 <li class="drop_out"> <a href="javascript:void(0)" id="sys_logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>
                             @else
                                 <li class="drop_out"> <a href="?c=user&a=logout"><span class="fa fa-sign-out fa-fw"></span>退出系统</a> </li>

@@ -10,10 +10,9 @@ namespace app\common\models\user;
 
 
 use app\backend\modules\user\observers\UserObserver;
+use app\common\helpers\Cache;
 use app\common\models\BaseModel;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Schema;
 
 class User extends BaseModel
 {
@@ -23,12 +22,12 @@ class User extends BaseModel
 
     public $timestamps = false;
 
-    public $widgets =[];
+    public $widgets = [];
 
     public $attributes = [
-        'groupid' => 0 ,
-        'type' => 1,
-        'remark' => '',
+        'groupid' => 0,
+        'type'    => 1,
+        'remark'  => '',
         'endtime' => 0
     ];
 
@@ -57,46 +56,43 @@ class User extends BaseModel
      */
     public function getNewAttributes()
     {
-        if($this->hasColumn('owner_uid')){ //用于兼容新版微擎新增的字段
+        if ($this->hasColumn('owner_uid')) { //用于兼容新版微擎新增的字段
             $this->attributes = array_merge($this->attributes, ['owner_uid' => '0']);
         }
-        if($this->hasColumn('founder_groupid')){
+        if ($this->hasColumn('founder_groupid')) {
             $this->attributes = array_merge($this->attributes, ['founder_groupid' => '0']);
         }
-        if($this->hasColumn('register_type')){
+        if ($this->hasColumn('register_type')) {
             $this->attributes = array_merge($this->attributes, ['register_type' => '0']);
         }
-        if($this->hasColumn('openid')){
+        if ($this->hasColumn('openid')) {
             $this->attributes = array_merge($this->attributes, ['openid' => '']);
         }
-        if($this->hasColumn('welcome_link')){
+        if ($this->hasColumn('welcome_link')) {
             $this->attributes = array_merge($this->attributes, ['welcome_link' => '0']);
         }
-        if($this->hasColumn('is_bind')){
+        if ($this->hasColumn('is_bind')) {
             $this->attributes = array_merge($this->attributes, ['is_bind' => '0']);
         }
-
-        if($this->hasColumn('schoolid')){
+        if ($this->hasColumn('schoolid')) {
             $this->attributes = array_merge($this->attributes, ['schoolid' => '0']);
         }
-        if($this->hasColumn('credit1')){
+        if ($this->hasColumn('credit1')) {
             $this->attributes = array_merge($this->attributes, ['credit1' => '0']);
         }
-        if($this->hasColumn('credit2')){
+        if ($this->hasColumn('credit2')) {
             $this->attributes = array_merge($this->attributes, ['credit2' => '0']);
         }
-        if($this->hasColumn('agentid')){
+        if ($this->hasColumn('agentid')) {
             $this->attributes = array_merge($this->attributes, ['agentid' => '0']);
         }
-        if($this->hasColumn('uniacid')){
+        if ($this->hasColumn('uniacid')) {
             $this->attributes = array_merge($this->attributes, ['uniacid' => '0']);
         }
-
-        if($this->hasColumn('token')){
+        if ($this->hasColumn('token')) {
             $this->attributes = array_merge($this->attributes, ['token' => '']);
         }
-
-        if($this->hasColumn('registration_id')){
+        if ($this->hasColumn('registration_id')) {
             $this->attributes = array_merge($this->attributes, ['registration_id' => '']);
         }
 
@@ -164,18 +160,18 @@ class User extends BaseModel
      */
     public function scopeRecords($query)
     {
-        return $query->whereHas('uniAccount', function($query){
+        return $query->whereHas('uniAccount', function ($query) {
             return $query->uniacid()->where('role', '!=', 'clerk');
         })
-        ->with(['userProfile' => function($profile) {
-            return $profile->select('uid', 'realname', 'mobile');
-        }])
-        ->with(['userRole' => function($userRole) {
-            return $userRole->select('user_id', 'role_id')
-                ->with(['role' => function ($role) {
-                    return $role->select('id', 'name')->uniacid();
-                }]);
-        }]);
+            ->with(['userProfile' => function ($profile) {
+                return $profile->select('uid', 'realname', 'mobile');
+            }])
+            ->with(['userRole' => function ($userRole) {
+                return $userRole->select('user_id', 'role_id')
+                    ->with(['role' => function ($role) {
+                        return $role->select('id', 'name')->uniacid();
+                    }]);
+            }]);
     }
 
     public function scopeSearch($query, array $keyword)
@@ -191,7 +187,7 @@ class User extends BaseModel
             $query = $query->where('status', $keyword['status']);
         }
         if ($keyword['role_id']) {
-            $query =$query->whereHas('userRole', function ($userRole) use ($keyword) {
+            $query = $query->whereHas('userRole', function ($userRole) use ($keyword) {
                 return $userRole->where('role_id', $keyword['role_id']);
             });
         }
@@ -209,19 +205,19 @@ class User extends BaseModel
     public static function getUserById($userId)
     {
         return self::where('uid', $userId)
-            ->with(['userProfile' => function($profile) {
+            ->with(['userProfile' => function ($profile) {
                 return $profile->select('uid', 'realname', 'mobile');
             }])
-            ->with(['userRole' => function($userRole) {
+            ->with(['userRole' => function ($userRole) {
                 return $userRole->select('user_id', 'role_id')
                     ->with(['role' => function ($role) {
                         return $role->select('id', 'name')->uniacid();
                     }]);
             }])
-            ->with(['permissions' => function($userPermission) {
+            ->with(['permissions' => function ($userPermission) {
                 return $userPermission->select('permission', 'item_id');
             }])
-            ->whereHas('uniAccount', function($query){
+            ->whereHas('uniAccount', function ($query) {
                 return $query->uniacid()->where('role', '!=', 'clerk');
             })
             ->first();
@@ -236,66 +232,68 @@ class User extends BaseModel
     }
 
     /**
-     * 数据库获取用户权限
+     * 获取并组合用户权限
      *
-     * @return mixed */
-    public static function getUserPermissionsCache()
+     * @return array
+     */
+    public static function userPermissionCache()
     {
-        $key = 'user.permissions.'.\YunShop::app()->uid;
-        $list = \Cache::get($key);
-        if($list === null){
-            $list =  static::select(['uid'])
-                ->where(['uid' => \YunShop::app()->uid])
-                //->where('type','!=', '1')
-                ->with([
-                    'userRole' => function ($query) {
-                        return $query->select(['user_id','role_id'])
-                            ->with(['permissions']);
-                    },
-                    'permissions'
-                ])
-                ->get();
+        $cacheKey = 'permissions.' . \YunShop::app()->uid;
+        if (!Cache::has($cacheKey)) {
+            $userPermission = self::userPermission();
 
-            \Cache::put($key,$list,3600);
+            Cache::put($cacheKey, $userPermission, 4200);
+        } else {
+            $userPermission = Cache::get($cacheKey);
         }
-        return $list;
+        return $userPermission;
     }
 
     /**
-     * 获取并组合用户权限
      *
-     * @return array*/
-    public static function getAllPermissions()
+     *
+     * @return array
+     */
+    public static function userPermission()
     {
         set_time_limit(0);
-        $userPermissions = self::getUserPermissionsCache()->toArray();
-        //dd($userPermissions);
+        $userPermissionsModel = self::userPermissionByUid(\YunShop::app()->uid);
+
         $permissions = [];
-        if($userPermissions) {
-            foreach ($userPermissions as $v) {
-                if ($v['permissions']) {
-                    foreach ($v['permissions'] as $v1) {
-                        $permissions[] = $v1['permission'];
-                    }
-                }
-                if ($v['user_role']['permissions']) {
-                    foreach ($v['user_role']['permissions'] as $key => $v2) {
-                        !in_array($v2['permission'], $permissions) && $permissions[] = $v2['permission'];
-                    }
-                }
+        if (!$userPermissionsModel->permissions->isEmpty()) {
+            foreach ($userPermissionsModel->permissions as $key => $permission) {
+                $permissions[] = $permission->permission;
             }
         }
-        //dd($permissions);
+        if ($userPermissionsModel->userRole && !$userPermissionsModel->userRole->permissions->isEmpty()) {
+            foreach ($userPermissionsModel->userRole->permissions as $key => $permission) {
+                !in_array($permission->permission, $permissions) && $permissions[] = $permission->permission;
+            }
+        }
         return $permissions;
     }
 
+    public static function userPermissionByUid($uid)
+    {
+        $model = static::with([
+            'userRole' => function ($query) {
+                return $query->with('permissions');
+            },
+            'permissions'
+        ])->where('uid', $uid)->first();
+
+        return $model;
+    }
+
     /**
-    * 定义字段名
-    *
-    * @return array */
-    public  function atributeNames() {
+     * 定义字段名
+     *
+     * @return array
+     */
+    public function atributeNames()
+    {
         return [
-            'username'=> "操作员用户名",
+            'username' => "操作员用户名",
             'password' => "操作员密码"
         ];
     }
@@ -303,11 +301,12 @@ class User extends BaseModel
     /**
      * 字段规则
      *
-     * @return array */
-    public  function rules()
+     * @return array
+     */
+    public function rules()
     {
         return [
-            'username' => ['required',Rule::unique($this->table)->ignore($this->id)],
+            'username' => ['required', Rule::unique($this->table)->ignore($this->id)],
             'password' => 'required'
         ];
     }

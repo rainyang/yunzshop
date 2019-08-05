@@ -120,6 +120,17 @@ class OperationController extends BaseController
      * @return mixed
      * @throws \app\common\exceptions\AppException
      */
+    public function manualRefund()
+    {
+
+        $this->order->refund();
+        return $this->message('操作成功');
+    }
+
+    /**
+     * @return mixed
+     * @throws \app\common\exceptions\AppException
+     */
     public function delete()
     {
         OrderService::orderDelete($this->param);
@@ -127,7 +138,7 @@ class OperationController extends BaseController
         return $this->message('操作成功');
     }
 
-    public function remark()
+    public function remarks()
     {
         $order = Order::find(request()->input('order_id'));
         if(!$order){

@@ -65,12 +65,14 @@ class LevelUpgradeService
         }
 
         if ($set['level_after'] != 1) {
+                \Log::debug('后台未开启支付升级设置');
             return;
         }
 
         $this->memberModel = MemberShopInfo::ofMemberId($this->orderModel->uid)->withLevel()->first();
 
         if (is_null($this->memberModel)) {
+                \Log::debug('暂无该会员信息');
             return;
         }
 
@@ -214,19 +216,18 @@ class LevelUpgradeService
     {
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
         
-        \Log::info('---==get_order_model==---', $this->orderModel);
-        
-        \Log::info('---==get_member_model==---', $this->memberModel);
+        \Log::debug('---==get_order_model==---', $this->orderModel);
+        \Log::debug('---==get_member_model==---', $this->memberModel);
         // $level = MemberLevel::uniacid()->select('id', 'level', 'level_name', 'goods_id', 'validity')->whereIn('goods_id', $goodsIds)->orderBy('level', 'desc')->first();  // 原先逻辑为购买指定某一商品即可升级, 现为购买指定任易商品即可升级
         //获取
         
         $levelid = MemberLevel::find($this->memberModel->level_id);
         
-        \Log::info('---==levelid==---', $levelid);
+        \Log::debug('---==levelid==---', $levelid);
 
         $levels = MemberLevel::uniacid()->where('level', '>', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
         
-        \Log::info('---==levels==---', $levels);
+        \Log::debug('---==levels==---', $levels);
 
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
 
@@ -237,9 +238,8 @@ class LevelUpgradeService
                 
                 $levelGoodsId = explode(',', $level->goods_id);
         
-        \Log::info('---==levelGoodsId==---', $levelGoodsId);
-
-        \Log::info('---==checkInarray==---', in_array($time->goods_id, $levelGoodsId));
+        \Log::debug('---==levelGoodsId==---', $levelGoodsId);
+        \Log::debug('---==checkInarray==---', in_array($time->goods_id, $levelGoodsId));
 
                 if (in_array($time->goods_id, $levelGoodsId)) {
                     
@@ -247,7 +247,7 @@ class LevelUpgradeService
 
                     $reallevel = MemberLevel::find($level->id);
 
-                    \Log::info('---===member_level_upgrade===---', $time->total);
+                    \Log::debug('---===member_level_upgrade===---', $time->total);
 
                     //开启一卡通
                     if (app('plugins')->isEnabled('universal-card')) {

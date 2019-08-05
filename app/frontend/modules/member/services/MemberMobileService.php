@@ -58,10 +58,18 @@ class MemberMobileService extends MemberService
                 return show_json(6, "手机号或密码错误");
             }
         } else {
-            return show_json(6, "手机号或密码错误");
+            return show_json(6,"手机号或密码错误");
         }
 
     }
 
-
+    /**
+     * 验证登录状态
+     *
+     * @return bool
+     */
+    public function checkLogged()
+    {
+        return MemberService::isLogged();
+    }
 }

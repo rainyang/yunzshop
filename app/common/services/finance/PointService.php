@@ -132,7 +132,17 @@ class PointService
     const POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION = 33;
     const POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED = '爱心值提现扣除';
 
+    const POINT_MODE_FIGHT_GROUPS_TEAM_SUCCESS = 34;
+    const POINT_MODE_FIGHT_GROUPS_TEAM_SUCCESS_ATTACHED = '拼团活动团长奖励';
 
+    const POINT_MODE_DRAW_CHARGE_GET = 35;
+    const POINT_MODE_DRAW_CHARGE_GRT_ATTACHED = '抽奖获得';
+
+    const POINT_MODE_DRAW_CHARGE_DEDUCTION = 36;
+    const POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED = '抽奖使用扣除';
+
+    const POINT_MODE_DRAW_REWARD_GET = 37;
+    const POINT_MODE_DRAW_REWARD_GRT_ATTACHED = '抽奖奖励';
 
 
     const POINT = 0;
@@ -361,7 +371,18 @@ class PointService
                 }else {
                     $mode_attribute = self::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
                 }
-
+                break;
+            case (34):
+                $mode_attribute = self::POINT_MODE_FIGHT_GROUPS_TEAM_SUCCESS_ATTACHED;
+                break;
+            case (35):
+                $mode_attribute = self::POINT_MODE_DRAW_CHARGE_GRT_ATTACHED;
+                break;
+            case (36):
+                $mode_attribute = self::POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED;
+                break;
+            case (37):
+                $mode_attribute = self::POINT_MODE_DRAW_REWARD_GRT_ATTACHED;
                 break;
         }
         return $mode_attribute;

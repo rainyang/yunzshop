@@ -17,7 +17,7 @@ require.config({
         'datetimepicker': '../../components/datetimepicker/jquery.datetimepicker',
         'daterangepicker': '../../components/daterangepicker/daterangepicker',
         'colorpicker': '../../components/colorpicker/spectrum',
-        'map': 'http://api.map.baidu.com/getscript?v=2.0&ak=F51571495f717ff1194de02366bb8da9&services=&t=20140530104353',
+        'map': 'https://api.map.baidu.com/getscript?v=2.0&ak=F51571495f717ff1194de02366bb8da9&services=&t=20140530104353',
         'editor': '../../components/tinymce/tinymce.min',
         'kindeditor':'../../components/kindeditor/lang/zh_CN',
         'kindeditor.main':'../../components/kindeditor/kindeditor-min',

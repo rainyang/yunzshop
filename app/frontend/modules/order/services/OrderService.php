@@ -14,7 +14,7 @@ use app\common\models\Order;
 
 use app\common\models\order\OrderGoodsChangePriceLog;
 use app\common\modules\orderGoods\OrderGoodsCollection;
-use \app\frontend\models\MemberCart;
+use \app\common\models\MemberCart;
 use app\frontend\modules\order\services\behavior\OrderCancelPay;
 use app\frontend\modules\order\services\behavior\OrderCancelSend;
 use app\frontend\modules\order\services\behavior\OrderChangePrice;

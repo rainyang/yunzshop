@@ -50,6 +50,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script>var require = { urlArgs: 'v={{time()}}' };</script>
 
     <script type="text/javascript">
+        const protocolStr = document.location.protocol;
+        switch (protocolStr) {
+            case 'https:':
+                // 指定https访问类型，具体见百度地图API加载方式：http://www.jiazhengblog.com/blog/2011/06/28/284/
+                window.HOST_TYPE = '2'
+                break
+            default:
+                break
+        }
 
       if(navigator.appName == 'Microsoft Internet Explorer'){
         if(navigator.userAgent.indexOf("MSIE 5.0")>0 ||
@@ -99,9 +108,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ static_url('yunshop/vue/js/vue-resource.js') }}"></script>
 
     {{--<link href="https://cdn.bootcss.com/element-ui/2.3.1/theme-chalk/index.css" rel="stylesheet">--}}
-    <link href="{{ static_url('yunshop/element-ui/css/element-ui_2.3.1_theme-chalk_index.css') }}" rel="stylesheet">
+    <link href="{{ static_url('yunshop/element-ui/2.10.1/css/element-ui_2.10.1_theme-chalk_index.css') }}" rel="stylesheet">
     {{--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>--}}
-    <script src="{{ static_url('yunshop/element-ui/js/element-ui_2.4.0_index.js') }}"></script>
+    <script src="{{ static_url('yunshop/element-ui/2.10.1/js/element-ui_2.10.1_index.js') }}"></script>
 
     <script src="{{static_url('assets/js/perfect-scrollbar.jquery.min.js')}}" type="text/javascript"></script>
     <!-- Library for adding dinamically elements -->
@@ -295,6 +304,24 @@ scratch. This page gets rid of all links and provides the needed markup only.
         console.log('sidebar', $(".sidebar"));
         $(".sidebar").toggle();
     });
+</script>
+
+<script type='text/javascript'>
+    function getkey(a,maxpage) {
+        pms =  Number(document.getElementById('jump').value);
+        inits = "{!! YunShop::app()->script_name . '?' . http_build_query($_REQUEST) !!}";
+        reg=/page=(\w+)/gi;
+        str=inits.match(reg);
+        // console.log(pms);
+        // console.log(maxpage)
+        initsurl=inits.replace(reg,'page=');
+        if(pms > maxpage){
+            pms = maxpage;
+        } else if(pms < 1){
+            pms = 1;
+        }
+        a.href = initsurl + pms
+    }
 </script>
 </body>
 </html>

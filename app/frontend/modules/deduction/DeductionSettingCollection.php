@@ -120,7 +120,7 @@ abstract class DeductionSettingCollection extends Collection
      */
     public function getImportantAndValidMinPriceProportion()
     {
-
+dump();
         // 找到抵扣设置集合中设置了价格比例的,权重最高的设置项
 
         $priceProportion = 0;
@@ -153,6 +153,7 @@ abstract class DeductionSettingCollection extends Collection
             }
             if($deductionSetting->getMinDeductionType() !== false){
                 $type = $deductionSetting->getMinDeductionType();
+                trace_log()->deduction("订单抵扣",'抵扣设置使用'.get_class($deductionSetting));
                 break;
             }
         }

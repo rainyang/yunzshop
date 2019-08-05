@@ -64,6 +64,17 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品详情已添加数量</label>
+                            <div class="col-sm-9 col-xs-12">
+
+                                <label class='radio-inline'><input type='radio' name='member[added]' value='1'
+                                                                   @if ($set['added'] == 1 ||empty($set['added'])) checked @endif />显示</label>
+                                <label class='radio-inline'><input type='radio' name='member[added]' value='2'
+                                                                   @if ($set['added'] == 2) checked @endif /> 隐藏</label>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
@@ -180,6 +191,19 @@
                                     <input type="radio" name="member[show_balance]" value="1" @if ($set['show_balance'] == 1) checked @endif/>不显示
                                 </label>
                                 <span class="help-block">会员中心是否显示会员余额值</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示{{$shop['credit1']?:'积分'}}</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_point]" value="0" @if (empty($set['show_point'])) checked @endif/>显示
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="member[show_point]" value="1" @if ($set['show_point'] == 1) checked @endif/>不显示
+                                </label>
+                                <span class="help-block">会员中心是否显示会员{{$shop['credit1']?:'积分'}}</span>
                             </div>
                         </div>
                         {{--<div class="form-group">

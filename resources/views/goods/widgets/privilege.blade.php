@@ -4,14 +4,14 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级浏览权限</label>
     <div class="col-sm-9 col-xs-12 chks">
         <label class="checkbox-inline">
-            <input type="checkbox" class='chkall' name="widgets[privilege][show_levels]" value="" @if ( $privilege['show_levels']=='') checked="true" @endif  /> 全部会员等级
+            <input type="checkbox" class='chkall' name="widgets[privilege][show_levels]" value="" @if ( $privilege['show_levels']==='') checked="true" @endif  /> 全部会员等级
         </label>
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle' name="widgets[privilege][show_levels][]" value="0" @if ( $privilege['show_levels'] != '' && is_array($privilege['show_levels']) && in_array('0', $privilege['show_levels'])) checked="true" @endif  />  普通等级
+            <input type="checkbox" class='chksingle' name="widgets[privilege][show_levels][]" value="0" @if ( $privilege['show_levels'] !== '' && is_array($privilege['show_levels']) && in_array('0', $privilege['show_levels'])) checked="true" @endif  />  普通等级
         </label>
         @foreach ( $levels as $level)
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle' name="widgets[privilege][show_levels][]" value="{{ $level['id'] }}" @if ( $privilege['show_levels'] != '' && is_array($privilege['show_levels'])  && in_array($level['id'], $privilege['show_levels'])) checked="true" @endif  /> {{ $level['level_name'] }}
+            <input type="checkbox" class='chksingle' name="widgets[privilege][show_levels][]" value="{{ $level['id'] }}" @if ( $privilege['show_levels'] !== '' && is_array($privilege['show_levels'])  && in_array($level['id'], $privilege['show_levels'])) checked="true" @endif  /> {{ $level['level_name'] }}
         </label>
         @endforeach
     </div>
@@ -22,14 +22,14 @@
     <div class="col-sm-9 col-xs-12 chks" >
 
         <label class="checkbox-inline">
-            <input type="checkbox" class='chkall' name="widgets[privilege][buy_levels]" value="" @if ( $privilege['buy_levels'] == '' ) checked="true" @endif  /> 全部会员等级
+            <input type="checkbox" class='chkall' name="widgets[privilege][buy_levels]" value="" @if ( $privilege['buy_levels'] === '' ) checked="true" @endif  /> 全部会员等级
         </label>
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_levels][]" value="0" @if ( $privilege['buy_levels'] != '' && is_array($privilege['buy_levels'])  && in_array('0', $privilege['buy_levels'])) checked="true" @endif  /> 普通等级
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_levels][]" value="0" @if ( $privilege['buy_levels'] !== '' && is_array($privilege['buy_levels'])  && in_array('0', $privilege['buy_levels'])) checked="true" @endif  /> 普通等级
         </label>
         @foreach ($levels as $level)
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_levels][]" value="{{ $level['id'] }}" @if ( $privilege['buy_levels'] != '' && is_array($privilege['buy_levels']) && in_array($level['id'], $privilege['buy_levels']) ) checked="true" @endif  /> {{ $level['level_name'] }}
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_levels][]" value="{{ $level['id'] }}" @if ( $privilege['buy_levels'] !== '' && is_array($privilege['buy_levels']) && in_array($level['id'], $privilege['buy_levels']) ) checked="true" @endif  /> {{ $level['level_name'] }}
         </label>
         @endforeach
     </div>
@@ -39,14 +39,14 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员组浏览权限</label>
     <div class="col-sm-9 col-xs-12 chks" >
         <label class="checkbox-inline">
-            <input type="checkbox" class='chkall' name="widgets[privilege][show_groups]" value="" @if ( $privilege['show_groups'] == '' )checked="true" @endif  /> 全部会员组
+            <input type="checkbox" class='chkall' name="widgets[privilege][show_groups]" value="" @if ( $privilege['show_groups'] === '' )checked="true" @endif  /> 全部会员组
         </label>
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][show_groups][]" value="0" @if ( $privilege['show_groups'] != '' && is_array($privilege['show_groups']) && in_array('0', $privilege['show_groups'])) checked="true" @endif  /> 无分组
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][show_groups][]" value="0" @if ( $privilege['show_groups'] !== '' && is_array($privilege['show_groups']) && in_array('0', $privilege['show_groups'])) checked="true" @endif  /> 无分组
         </label>
         @foreach ($groups as $group)
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][show_groups][]" value="{{ $group['id'] }}" @if ( $privilege['show_groups'] != ''  && in_array($group['id'], $privilege['show_groups']) && is_array($privilege['show_groups'])) checked="true" @endif  /> {{ $group['group_name'] }}
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][show_groups][]" value="{{ $group['id'] }}" @if ( $privilege['show_groups'] !== ''  && in_array($group['id'], $privilege['show_groups']) && is_array($privilege['show_groups'])) checked="true" @endif  /> {{ $group['group_name'] }}
         </label>
         @endforeach
     </div>
@@ -56,14 +56,14 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员组购买权限</label>
     <div class="col-sm-9 col-xs-12 chks" >
         <label class="checkbox-inline">
-            <input type="checkbox" class='chkall' name="widgets[privilege][buy_groups]" value="" @if ( $privilege['buy_groups' ] == '' )checked="true" @endif  /> 全部会员组
+            <input type="checkbox" class='chkall' name="widgets[privilege][buy_groups]" value="" @if ( $privilege['buy_groups' ] === '' )checked="true" @endif  /> 全部会员组
         </label>
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_groups][]" value="0" @if ( $privilege['buy_groups'] != ''  && is_array($privilege['buy_groups']) && in_array('0', $privilege['buy_groups'])) checked="true" @endif  />  无分组
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_groups][]" value="0" @if ( $privilege['buy_groups'] !== ''  && is_array($privilege['buy_groups']) && in_array('0', $privilege['buy_groups'])) checked="true" @endif  />  无分组
         </label>
         @foreach  ($groups as $group)
         <label class="checkbox-inline">
-            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_groups][]" value="{{ $group['id'] }}" @if ( $privilege['buy_groups'] != '' &&  is_array($privilege['buy_groups']) && in_array($group['id'], $privilege['buy_groups']) ) checked="true" @endif  /> {{ $group['group_name'] }}
+            <input type="checkbox" class='chksingle'  name="widgets[privilege][buy_groups][]" value="{{ $group['id'] }}" @if ( $privilege['buy_groups'] !== '' &&  is_array($privilege['buy_groups']) && in_array($group['id'], $privilege['buy_groups']) ) checked="true" @endif  /> {{ $group['group_name'] }}
         </label>
         @endforeach
 

@@ -32,7 +32,11 @@ class EditGoodsService
         $this->type = $type;
         $this->goods_id = $goods_id;
         $this->request = $request;
-        $this->goods_model = Goods::with('hasOneGoodsVideo')->with('hasManyParams')->with('hasManySpecs')->with('hasManyGoodsCategory')->find($goods_id);
+        $this->goods_model = Goods::with('hasOneGoodsVideo')->with(['hasManyParams' => function ($query) {
+            return $query->orderBy('displayorder', 'asc');
+        }])->with(['hasManySpecs' => function ($query) {
+            return $query->orderBy('display_order', 'asc');
+        }])->with('hasManyGoodsCategory')->find($goods_id);
     }
 
     public function edit()
@@ -47,10 +51,11 @@ class EditGoodsService
 
         //获取规格名及规格项
         $goods_data = $this->request->goods;
+
         $goods_data = array_merge($arrt_default, $goods_data);
 
         foreach ($this->goods_model->hasManySpecs as &$spec) {
-            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->get()->toArray();
+            $spec['items'] = GoodsSpecItem::where('specid', $spec['id'])->orderBy('display_order', 'asc')->get()->toArray();
         }
 
         //获取具体规格内容html
@@ -110,6 +115,10 @@ class EditGoodsService
                 return ['status' => -1, 'msg' => '积分抵扣金额大于商品现价'];
             }
 */
+            $goods_data['price'] = $goods_data['price'] ?: 0;
+            $goods_data['market_price'] = $goods_data['market_price'] ?: 0;
+            $goods_data['cost_price'] = $goods_data['cost_price'] ?: 0;
+
             $this->goods_model->setRawAttributes($goods_data);
             $this->goods_model->widgets = $this->request->widgets;
             //其他字段赋值

@@ -86,7 +86,7 @@ class PosterController extends ApiController
 
             $imgSource = imagecreatefromstring(\Curl::to($shopImg)->get());
             $logoSource = imagecreatefromstring(\Curl::to($shopLogo)->get());
-            if (2 == $this->type) {
+            if (2 == $this->type and request()->input('ingress') == 'weChatApplet') {
                 $qrcode = MemberModel::getWxacode();
                 $qrSource = imagecreatefromstring(\Curl::to($qrcode)->get());
             } else {
