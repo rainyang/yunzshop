@@ -541,7 +541,7 @@ return [
      * 收入提现失败通知
      */
     'finance_income_withdraw_fail' => [
-        'title' => '',
+        'title' => '提现失败管理员通知',
         'subtitle' => '提现失败管理员通知',
         'value' => 'finance_income_withdraw_fail',
         'param' => [
