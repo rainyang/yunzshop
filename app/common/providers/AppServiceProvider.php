@@ -101,7 +101,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('options',  OptionRepository::class);
         $this->app->singleton('siteSetting',  SiteSetting::class);
         $this->app->singleton('siteSettingCache',  SiteSettingCache::class);
-        $this->app->singleton('systemSetting', SystemSetting::class);
+        $this->app->singleton('SystemSetting', SystemSetting::class);
         /**
          * 设置
          */
