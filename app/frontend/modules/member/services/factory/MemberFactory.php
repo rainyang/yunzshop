@@ -17,6 +17,7 @@ use app\frontend\modules\member\services\MemberMiniAppService;
 use app\frontend\modules\member\services\MemberOfficeAccountService;
 use app\frontend\modules\member\services\MemberQQService;
 use app\frontend\modules\member\services\MemberAlipayService;
+use app\frontend\modules\member\services\SmsCodeService;
 
 class MemberFactory
 {
@@ -29,6 +30,7 @@ class MemberFactory
     const LOGIN_APP_YDB = 7;
     const LOGIN_ALIPAY = 8;
     const LOGIN_Native = 9;
+    const LOGIN_MOBILE_CODE = 10;
 
     public static function create($type = null)
     {
@@ -62,6 +64,9 @@ class MemberFactory
                 break;
             case self::LOGIN_Native:
                 $className = new MemberNativeAppService();
+                break;
+            case self::LOGIN_MOBILE_CODE:
+                $className = new SmsCodeService();
                 break;
             default:
                 $className = null;
