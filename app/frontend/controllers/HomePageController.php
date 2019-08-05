@@ -138,11 +138,11 @@ class HomePageController extends ApiController
                     $member_info = MemberModel::getUserInfos($member_id)->first();
 
                     if (!empty($member_info)) {
-                        $member_info = $member_info->toArray();
-                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
-                        $data        = MemberModel::addPlugins($data);
+//                        $member_info = $member_info->toArray();
+//                        $data        = MemberModel::userData($member_info, $member_info['yz_member']);
+//                        $data        = MemberModel::addPlugins($data);
 
-                        $result['memberinfo'] = $data;
+                        $result['memberinfo']['uid'] = $member_id;
                     }
                 }
             }
@@ -182,35 +182,9 @@ class HomePageController extends ApiController
                     } else {
                         $designer = Cache::get("{$member_id}_designer_default_{$page->id}");
                     }
-                    $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
-                    if ($is_love){
-                        foreach ($designer['data'] as &$data){
-                            //替换积分字样
-                            if ($data['temp'] == 'sign'){
-                                $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
-                            }
-                            if ($data['temp']=='goods'){
-                                foreach ($data['data'] as &$goode_award){
-                                    $goode_award['award'] = $this->getLoveGoods($goode_award['goodid']);
-                                    $goode_award['stock'] = $this ->getGoodsStock($goode_award['goodid']);
-                                }
-                            }
-                        }
-                    }else{
-                        foreach ($designer['data'] as &$data){
-                            //替换积分字样
-                            if ($data['temp'] == 'sign'){
-                                foreach ($data['params'] as &$award_content){
-                                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
-                                }
-                            }
-                            if ($data['temp']=='goods'){
-                                foreach ($data['data'] as &$goode_award){
-                                    $goode_award['award'] = 0;
-                                }
-                            }
-                        }
-                    }
+
+                    $designer = $this->addDynamicData($designer);
+
 
                     $result['item'] = $designer;
 
@@ -296,6 +270,19 @@ class HomePageController extends ApiController
                 ];
             }
 
+            //增加验证码功能
+            $status = Setting::get('shop.sms.status');
+            if (extension_loaded('fileinfo')) {
+                if ($status == 1) {
+                    $captcha                     = self::captchaTest();
+                    $result['captcha']           = $captcha;
+                    $result['captcha']['status'] = $status;
+                }
+            }
+
+            //小程序验证推广按钮是否开启
+            $result['system']['btn_romotion'] = PortType::popularizeShow($type);
+
             if (is_null($integrated)) {
                 return $this->successJson('ok', $result);
             } else {
@@ -305,7 +292,57 @@ class HomePageController extends ApiController
             return $this->jumpUrl($type, $mid);
         }
     }
+    private function designerGoodsData($designer){
+        foreach ($designer['data'] as $data){
+            if ($data['temp'] == 'goods'){
+                foreach ($data['data'] as &$goode_award){
+                    $goodsIds[] = $goode_award['goodid'];
+                }
+            }
+        }
+        if(!$goodsIds){
+           return $designer;
+        }
+        $goodsCollection = Goods::select(['id','stock'])->whereIn('id',$goodsIds)->get();
+        $goodsLoveCollection = GoodsLove::select(['goods_id','award'])->whereIn('goods_id',$goodsIds)->get();
+        foreach ($designer['data'] as &$data){
+            if ($data['temp'] == 'goods'){
+                foreach ($data['data'] as &$goode_award){
+                    $goode_award['stock'] = array_get($goodsCollection->where('id',$goode_award['goodid'])->first(),'stock',0);
+                    $goode_award['award'] = array_get($goodsLoveCollection->where('goods_id',$goode_award['goodid'])->first(),'award',0);
+                }
+            }
+        }
 
+        return $designer;
+    }
+    private function addDynamicData($designer){
+        $shop = Setting::get('shop.shop')['credit1'] ? :'积分';
+        if (app('plugins')->isEnabled('love')){
+            $designer = $this->designerGoodsData($designer);
+            foreach ($designer['data'] as &$data){
+                //替换积分字样
+                if ($data['temp'] == 'sign'){
+                    $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                }
+            }
+        }else{
+            foreach ($designer['data'] as &$data){
+                //替换积分字样
+                if ($data['temp'] == 'sign'){
+                    foreach ($data['params'] as &$award_content){
+                        $data['params']['award_content'] = str_replace( '积分',$shop,$data['params']['award_content']);
+                    }
+                }
+                if ($data['temp']=='goods'){
+                    foreach ($data['data'] as &$goode_award){
+                        $goode_award['award'] = 0;
+                    }
+                }
+            }
+        }
+        return $designer;
+    }
     public function designerShare()
     {
         $i         = \YunShop::request()->i;
@@ -436,6 +473,13 @@ class HomePageController extends ApiController
         $goods = $goodsModel ? $goodsModel->toArray()['award'] : 0;
         return $goods;
     }
+
+    public function getMemberGoodsStock($goods_id)
+    {
+        $goodsModel = Goods::select('stock')->where('uniacid',\Yunshop::app()->uniacid)->where('id',$goods_id)->first();
+        $stock = $goodsModel ? $goodsModel->stock : 0;
+        return $stock;
+    }
     
     private function getGoodsStock($goods_id)
     {
@@ -475,7 +519,7 @@ class HomePageController extends ApiController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function wxapp()
+    public function wxapp($request)
     {
         return $this->index();
     }
@@ -893,6 +937,9 @@ class HomePageController extends ApiController
         if($langData['income']['special_service_tax'] == ''){
             $langData['income']['special_service_tax'] = '劳务税';
         }
+        if($langData['income']['name_of_withdrawal'] == ''){
+            $langData['income']['name_of_withdrawal'] = '提现';
+        }
         return show_json(1, $langData);
     }
 
@@ -926,9 +973,9 @@ class HomePageController extends ApiController
     {
         $member = \Setting::get('shop.member');
 
-        // if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
-        //     return show_json(1, []);
-        // }
+         if (isset($member['wechat_login_mode']) && 1 == $member['wechat_login_mode']) {
+             return show_json(1, []);
+         }
 
         $url = \YunShop::request()->url;
         $account = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
@@ -972,7 +1019,7 @@ class HomePageController extends ApiController
         }
 
         $shop['shop'] = \Setting::get('shop.shop');
-        if (is_null($shop)) {
+        if (is_null($shop['shop'])) {
             $shop['shop']['name'] = '商家分享';
         }
         $shop['icon'] = replace_yunshop(yz_tomedia($shop['logo']));
@@ -1046,7 +1093,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->isValidatePage($request, true), 'page');
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
-        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+//        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
 
         return $this->successJson('', $this->apiData);
     }

@@ -121,7 +121,7 @@ class ApplicationController extends BaseController
         //判断用户是否有权限添加平台
         $uid = \Auth::guard('admin')->user()->uid;
 
-        $num = UniacidApp::where('creator', $uid)->count();
+        $num = UniacidApp::withTrashed()->where('creator', $uid)->count();
 
         $realnum = AdminUser::find($uid)->application_number;
 
@@ -138,7 +138,7 @@ class ApplicationController extends BaseController
         //判断用户是否有权限添加平台
         $uid = \Auth::guard('admin')->user()->uid;
 
-        $num = UniacidApp::where('creator', $uid)->count();
+        $num = UniacidApp::withTrashed()->where('creator', $uid)->count();
 
         $realnum = AdminUser::find($uid)->application_number;
 

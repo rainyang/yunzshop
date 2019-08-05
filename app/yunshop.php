@@ -57,19 +57,32 @@ class YunShop
         $controller->route = implode('.', $currentRoutes);
 
         if (self::isWeb()) {
-            //菜单生成
-            $menu_array = Config::get('app.menu');
-            if (!\Cache::has('db_menu')) {
-                $dbMenu = Config::get($menu_array['main_menu']);//$dbMenu = Menu::getMenuList();
-                \Cache::put('db_menu', $dbMenu, 3600);
+
+            $menuListCacheKey = "menuList_". \YunShop::app()->uid;
+            if (!\app\common\helpers\Cache::has($menuListCacheKey)) {
+                //菜单生成
+                $menu_array = Config::get('app.menu');
+                if (!\Cache::has('db_menu')) {
+                    $dbMenu = Config::get($menu_array['main_menu']);//$dbMenu = Menu::getMenuList();
+                    \Cache::put('db_menu', $dbMenu, 3600);
+                } else {
+                    $dbMenu = \Cache::get('db_menu');
+                }
+                $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
+                //兼容旧插件使用
+                $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
+                //创始人私有菜单
+                $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
+
+
+                $menuList = static::validateMenuPermit($menuList);
+
+                \app\common\helpers\Cache::put($menuListCacheKey, $menuList, 3600);
             } else {
-                $dbMenu = \Cache::get('db_menu');
+                $menuList = \app\common\helpers\Cache::get($menuListCacheKey);
             }
-            $menuList = array_merge($dbMenu, (array)Config::get($menu_array['plugins_menu']));
-            //兼容旧插件使用
-            $menuList = array_merge($menuList, (array)Config::get($menu_array['old_plugin_menu']));
-            //创始人私有菜单
-            $menuList['system']['child'] = array_merge($menuList['system']['child'], (array)Config::get($menu_array['founder_menu']));
+//            dd($menuList);
+
             Config::set('menu', $menuList);
             $item = Menu::getCurrentItemByRoute($controller->route, $menuList);
 //            dd($item);
@@ -103,6 +116,18 @@ class YunShop
             );
         }
         exit($content);
+    }
+
+    public static function validateMenuPermit(array $menuList)
+    {
+        foreach ($menuList as $key => &$item) {
+            $item['can'] = true;
+            $item['permit'] && $item['can'] = PermissionService::can($key);
+            if ($item['child']) {
+                $item['child'] = static::validateMenuPermit($item['child']);
+            }
+        }
+        return $menuList;
     }
 
     public static function isShowSecondMenu()
@@ -275,7 +300,20 @@ class YunShop
     public static function parseRoute($requestRoute)
     {
         try {
-            $routes = explode('.', $requestRoute);
+            $vers = [];
+            $routes_params = explode('.', $requestRoute);
+
+
+            if (preg_match('/(v\d+)\./', $requestRoute, $vers)) {
+                foreach ($routes_params as $key => $item) {
+                    if ($item != $vers[1]) {
+                        $routes[] = $item;
+                    }
+                }
+            } else {
+                $routes = $routes_params;
+            }
+
 
             $path = self::getAppPath();
 
@@ -304,7 +342,7 @@ class YunShop
                         $path = base_path() . '/plugins/' . $pluginName . '/src';
                         $length = $countRoute;
 
-                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true);
+                        self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, true, $vers);
 
                         if (!app('plugins')->isEnabled($pluginName)) {
                             throw new NotFoundException("{$pluginName}插件已禁用");
@@ -316,7 +354,7 @@ class YunShop
                     }
                 } else {
 
-                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false);
+                    self::findRouteFile($controllerName, $action, $routes, $namespace, $path, $length, $currentRoutes, $requestRoute, false, $vers);
 
                 }
             }
@@ -341,15 +379,26 @@ class YunShop
      * @param $requestRoute
      * @param $isPlugin
      */
-    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin)
+    public static function findRouteFile(&$controllerName, &$action, $routes, &$namespace, &$path, $length, &$currentRoutes, $requestRoute, $isPlugin, $vers)
     {
 
         foreach ($routes as $k => $r) {
             $ucFirstRoute = ucfirst(Str::camel($r));
-            $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+
+            if (empty($vers)) {
+                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . $ucFirstRoute . 'Controller.php';
+            } else {
+                $controllerFile = $path . ($isPlugin ? '/' : '/controllers/') . 'vers/' . $vers[1] . '/' . $ucFirstRoute . 'Controller.php';
+            }
 
             if (is_file($controllerFile)) {
-                $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
+
+                if (empty($vers)) {
+                    $namespace .= ($isPlugin ? '' : '\\controllers') . '\\' . $ucFirstRoute . 'Controller';
+                } else {
+                    $namespace .= ($isPlugin ? '\\' : '\\controllers\\') . 'vers\\' . $vers[1] . '\\' . $ucFirstRoute . 'Controller';
+                }
+
                 $controllerName = $ucFirstRoute;
                 $path = $controllerFile;
                 $currentRoutes[] = $r;
@@ -358,7 +407,6 @@ class YunShop
                 $modules[] = $r;
                 $currentRoutes[] = $r;
             } else {
-
                 if ($length !== ($isPlugin ? $k + 3 : $k + 1)) {
                     throw new NotFoundException('路由长度有误:' . $requestRoute);
 
@@ -366,7 +414,6 @@ class YunShop
                 $action = strpos($r, '-') === false ? $r : Str::camel($r);
                 $currentRoutes[] = $r;
             }
-
         }
 
     }
@@ -573,11 +620,24 @@ class YunApp extends YunComponent
         if(isset($_GET['test_uid'])){
             return $_GET['test_uid'];
         }
-        if (Session::get('member_id')) {
-            return Session::get('member_id');
-        } else {
-            return 0;
-        }
+        $member_id = 0;
+        $type = \Yunshop::request()->type ?: '';
+        $token = \Yunshop::request()->yz_token ?: '';
+
+         switch ($type) {
+             case 9:
+                 $native_app = new \app\frontend\modules\member\services\MemberNativeAppService();
+
+                 $member_id = $native_app->getMemberId($token);
+
+                 break;
+             default:
+                 if (Session::get('member_id')) {
+                     $member_id = Session::get('member_id');
+                 }
+         }
+
+         return $member_id;
     }
 
 }

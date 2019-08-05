@@ -49,11 +49,11 @@ class SupervisordController extends BaseController
         if ($setting){
 
             $setting['address']['ip'] = $setting['address']['ip']?:'http://127.0.0.1';
-            Setting::set('supervisor',$setting);
+            Setting::setNotUniacid('supervisor',$setting);
             return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
         }
-        $supervisord  = Setting::get('supervisor');
-        $supervisord['address']['ip'] = $supervisord['address']['ip']?: 'http://127.0.0.1';
+        $supervisord  = Setting::getNotUniacid('supervisor');
+        $supervisord['address']['ip'] ? : Setting::setNotUniacid('supervisor', $supervisord['address']['ip'] = 'http://127.0.0.1');
 
         return view('supervisor.store',[
              'setting'=>json_encode($supervisord)

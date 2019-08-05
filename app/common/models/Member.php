@@ -3,10 +3,14 @@
 namespace app\common\models;
 
 use app\backend\models\BackendModel;
+use app\backend\modules\member\models\MemberUnique;
 use app\common\events\member\BecomeAgent;
 
 use app\common\events\member\PluginCreateRelationEvent;
+use app\common\exceptions\AppException;
+use app\common\exceptions\MemberNotLoginException;
 use app\common\models\member\MemberChildren;
+use app\common\models\member\MemberDel;
 use app\common\models\member\MemberParent;
 use app\common\repositories\OptionRepository;
 use app\common\services\PluginManager;
@@ -96,11 +100,14 @@ use app\common\models\member\MemberInvitationCodeLog;
  * @property Collection memberCarts
  * @property McMappingFans hasOneFans
  * @property \app\backend\modules\member\models\MemberShopInfo yzMember
+ * @property MemberDel hasOneDel
  */
 class Member extends BackendModel
 {
-    protected  $connection = 'mysql';
-    
+    static $current;
+
+    protected $connection = 'mysql';
+
     public $table = 'mc_members';
 
     public $timestamps = false;
@@ -117,7 +124,7 @@ class Member extends BackendModel
     protected $search_fields = ['mobile', 'uid', 'nickname', 'realname'];
 
     protected $primaryKey = 'uid';
-    protected $appends = ['avatar_image','username'];
+    protected $appends = ['avatar_image', 'username'];
 
     protected $hidden = ['password', 'salt'];
 
@@ -126,6 +133,20 @@ class Member extends BackendModel
         return $this->hasOne('app\common\models\member\BankCard', 'member_id', 'uid');
     }
 
+    /**
+     * @return \app\frontend\models\Member
+     * @throws AppException
+     */
+    public static function current()
+    {
+        if (!isset(static::$current)) {
+            static::$current = self::find(\YunShop::app()->getMemberId());
+            if (!static::$current) {
+                return new Member();
+            }
+        }
+        return static::$current;
+    }
 
     public function pointLove()
     {
@@ -163,6 +184,7 @@ class Member extends BackendModel
     {
         return $this->hasOne('app\common\models\McMappingFans', 'uid', 'uid');
     }
+
     public function hasOneMiniApp()
     {
         return $this->hasOne('app\common\models\MemberMiniAppModel', 'member_id', 'uid');
@@ -195,12 +217,13 @@ class Member extends BackendModel
      * @return mixed
      */
 
-    public function getMemberId($memberIds){
-          return self::select(['uid'])
+    public function getMemberId($memberIds)
+    {
+        return self::select(['uid'])
             ->uniacid()
             ->whereIn('uid', $memberIds)->get()->map(function ($value) {
-                  return $value;
-              })->toArray();;
+                return $value;
+            })->toArray();;
     }
 
     /**
@@ -297,6 +320,11 @@ class Member extends BackendModel
     public function hasOneMemberChildren()
     {
         return $this->hasOne(MemberChildren::class, 'member_id', 'uid');
+    }
+
+    public function hasOneMemberUnique()
+    {
+        return $this->hasOne(MemberUnique::class, 'member_id', 'uid');
     }
 
     public function scopeOfUid($query, $uid)
@@ -445,8 +473,7 @@ class Member extends BackendModel
         $relation = new MemberRelation();
         $relation->becomeChildAgent($mid, $model);
 
-        if($mark_id && $mark)
-        {
+        if ($mark_id && $mark) {
             event(new PluginCreateRelationEvent($mid, $model, $mark, $mark_id));
         }
     }
@@ -499,7 +526,7 @@ class Member extends BackendModel
             //邀请码关系链
             $codemodel = new MemberInvitationCodeLog();
             \Log::info('registe_3_code', \YunShop::request()->invite_code);
-            
+
             if (!$codemodel->where('member_id', $member_id)->where('mid', $code_mid)->first()) {
                 \Log::info('add_codemodel');
                 $codemodel->uniacid = \YunShop::app()->uniacid;
@@ -515,17 +542,17 @@ class Member extends BackendModel
 
                 $codemodel->save();
                 \Log::info('registe_4', $codemodel->save());
-            
+
             } else {
                 \Log::info('已存在');
             }
-           
 
-            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-'. \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
+
+            file_put_contents(storage_path("logs/" . date('Y-m-d') . "_invitecode.log"), print_r($member_id . '-' . \YunShop::request()->invite_code . '-' . $code_mid . '-reg' . PHP_EOL, 1), FILE_APPEND);
         }
 
-        $mid   = !is_null($code_mid) ? $code_mid : self::getMid();
-        $mid   = !is_null($upperMemberId) ? $upperMemberId : $mid;
+        $mid = !is_null($code_mid) ? $code_mid : self::getMid();
+        $mid = !is_null($upperMemberId) ? $upperMemberId : $mid;
 
         event(new BecomeAgent($mid, $model));
     }
@@ -682,7 +709,7 @@ class Member extends BackendModel
 
         //配送站
         if (app('plugins')->isEnabled('delivery-station')) {
-            $data['is_open_delivery_station'] = \Setting::get('plugin.delivery_station.is_open')?1:0;
+            $data['is_open_delivery_station'] = \Setting::get('plugin.delivery_station.is_open') ? 1 : 0;
         } else {
             $data['is_open_delivery_station'] = 0;
         }
@@ -919,7 +946,7 @@ class Member extends BackendModel
      */
     public function memberCarts()
     {
-        return $this->hasMany(MemberCart::class,'uid','member_id');
+        return $this->hasMany(MemberCart::class, 'uid', 'member_id');
     }
 
     /**

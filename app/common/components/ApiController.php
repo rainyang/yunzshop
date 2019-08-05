@@ -8,7 +8,6 @@
 
 namespace app\common\components;
 
-use app\backend\modules\member\models\MemberRelation;
 use app\common\exceptions\MemberNotLoginException;
 use app\common\exceptions\ShopException;
 use app\common\exceptions\UniAccountNotFoundException;
@@ -17,11 +16,18 @@ use app\common\helpers\Url;
 use app\common\models\Member;
 use app\common\models\MemberShopInfo;
 use app\common\models\UniAccount;
+use app\common\modules\shop\models\Shop;
 use app\common\services\Session;
+use app\frontend\modules\member\services\factory\MemberFactory;
 use app\frontend\modules\member\services\MemberService;
+use Yunshop\Designer\Common\Services\IndexPageService;
 
 class ApiController extends BaseController
 {
+    const MOBILE_TYPE = 5;
+    const WEB_APP     = 7;
+    const NATIVE_APP  = 9;
+
     protected $publicController = [];
     protected $publicAction = [];
     protected $ignoreAction = [];
@@ -41,7 +47,7 @@ class ApiController extends BaseController
             \YunShop::request()->type = 5;
         }
 
-        $relaton_set = MemberRelation::getSetInfo()->first();
+        $relaton_set = Shop::current()->memberRelation;
 
         $type = \YunShop::request()->type;
         $mid = Member::getMid();
@@ -55,11 +61,13 @@ class ApiController extends BaseController
             $type = Client::getType();
         }
 
-        if (!MemberService::isLogged()) {
+        $member = MemberFactory::create($type);
+
+        if (!$member->checkLogged()) {
             if ($mid && $this->controller == 'HomePage'
-                  && ($this->action == 'index' || $this->action == 'getParams')
+                && ($this->action == 'index' || $this->action == 'getParams')
             ) {
-               return $this->jumpUrl($type, $mid);
+                return $this->jumpUrl($type, $mid);
             }
 
             if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
@@ -68,17 +76,7 @@ class ApiController extends BaseController
                 $this->jumpUrl($type, $mid);
             }
         } else {
-            if (!MemberShopInfo::getMemberShopInfo(\YunShop::app()->getMemberId())) {
-                Session::clear('member_id');
-
-                if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
-                    || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
-                ) {
-                    $this->jumpUrl($type, $mid);
-                }
-            }
-
-            if (MemberShopInfo::isBlack(\YunShop::app()->getMemberId())) {
+            if (\app\frontend\models\Member::current()->yzMember->is_black) {
                 throw new ShopException('黑名单用户，请联系管理员', ['login_status' => -1]);
             }
 
@@ -104,15 +102,28 @@ class ApiController extends BaseController
             $type = Client::getType();
         }
 
-        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid];
+        $scope   = \YunShop::request()->scope ?: '';
 
-        if (5 == $type || 7 == $type) {
-            throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'session_id' => session_id(), 'i' => \YunShop::app()->uniacid, 'mid' => $mid]);
+        $queryString = ['type'=>$type,'i'=>\YunShop::app()->uniacid, 'mid'=>$mid, 'scope' => $scope];
+
+
+        if ($type == 2) {
+            throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
+        } else {
+            if ($this->controller == 'Login' && $this->action == 'checkLogin') {
+                if ($scope == 'home') {
+                    if (!$mid && (!app('plugins')->isEnabled('designer')
+                            || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {
+                        return;
+                    }
+                }
+
+                if (self::MOBILE_TYPE == $type || self::WEB_APP == $type || self::NATIVE_APP == $type) {
+                    throw new MemberNotLoginException('请登录', ['login_status' => 1, 'login_url' => '', 'type' => $type, 'i' => \YunShop::app()->uniacid, 'mid' => $mid, 'scope' => $scope]);
+                }
+
+                throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
+            }
         }
-
-        throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
     }
-
-
-
 }

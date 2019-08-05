@@ -99,12 +99,10 @@ class MemberShopInfo extends BaseModel
 
         static::observe(new MemberObserver());
 
-        static::addGlobalScope('uniacid',function (Builder $builder) {
+        static::addGlobalScope('uniacid', function (Builder $builder) {
             return $builder->uniacid();
         });
     }
-
-
 
 
     /**
@@ -150,7 +148,6 @@ class MemberShopInfo extends BaseModel
     }
 
 
-
     //团队
     public function getTeamOffline($member_id)
     {
@@ -184,7 +181,7 @@ class MemberShopInfo extends BaseModel
 
         $this->lv2_offline = $this->getMemberOffline($this->lv1_offline);
 
-        return  $this->lv2_offline;
+        return $this->lv2_offline;
     }
 
 
@@ -199,7 +196,7 @@ class MemberShopInfo extends BaseModel
 
         $this->lv3_offline = $this->getMemberOffline($this->lv2_offline);
 
-        return  $this->lv3_offline;
+        return $this->lv3_offline;
     }
 
 
@@ -222,22 +219,21 @@ class MemberShopInfo extends BaseModel
             $member_ids = array_chunk($member_ids, 10000);
             $result_assemble = [];
             foreach ($member_ids as $item) {
-                $assemble = static::select('member_id')->whereIn('parent_id',$item)->get();
+                $assemble = static::select('member_id')->whereIn('parent_id', $item)->get();
                 $assemble = $assemble->isEmpty() ? [] : array_pluck($assemble->toArray(), 'member_id');
 
-                $result_assemble = array_merge($result_assemble,$assemble);
+                $result_assemble = array_merge($result_assemble, $assemble);
             }
             return $result_assemble;
         }
 
-        $assemble = static::select('member_id')->whereIn('parent_id',$member_ids)->get();
+        $assemble = static::select('member_id')->whereIn('parent_id', $member_ids)->get();
 
         return $assemble->isEmpty() ? [] : array_pluck($assemble->toArray(), 'member_id');
     }
 
 
-
-    public function scopeSearch($query,$search)
+    public function scopeSearch($query, $search)
     {
         if ($search['member_level']) {
             $query->ofLevelId($search['member_level']);
@@ -249,19 +245,16 @@ class MemberShopInfo extends BaseModel
     }
 
 
-
-    public function scopeOfLevelId($query,$levelId)
+    public function scopeOfLevelId($query, $levelId)
     {
-        return $query->where('level_id',$levelId);
+        return $query->where('level_id', $levelId);
     }
 
 
-
-    public function scopeOfGroupId($query,$groupId)
+    public function scopeOfGroupId($query, $groupId)
     {
-        return $query->where('group_id',$groupId);
+        return $query->where('group_id', $groupId);
     }
-
 
 
     /**
@@ -276,7 +269,6 @@ class MemberShopInfo extends BaseModel
     }
 
 
-
     /**
      * 检索关联会员等级表
      * @param $query
@@ -284,11 +276,10 @@ class MemberShopInfo extends BaseModel
      */
     public function scopeWithLevel($query)
     {
-        return $query->with(['level' => function($query) {
+        return $query->with(['level' => function ($query) {
             return $query;
         }]);
     }
-
 
 
     /**
@@ -299,6 +290,10 @@ class MemberShopInfo extends BaseModel
      */
     public static function getMemberShopInfo($memberId)
     {
+        // 为了方便解决重复查询当前用户的bug
+        if (Member::current()->uid == $memberId) {
+            return Member::current()->yzMember;
+        }
         return self::select('*')->where('member_id', $memberId)
             ->uniacid()
             ->first(1);
@@ -311,7 +306,7 @@ class MemberShopInfo extends BaseModel
      */
     public static function getMemberShopInfoByOpenid($openid)
     {
-        return static::uniacid()->whereHas('hasOneMappingFans', function($query) use ($openid){
+        return static::uniacid()->whereHas('hasOneMappingFans', function ($query) use ($openid) {
             $query->where('openid', '=', $openid);
         })->first();
     }
@@ -392,7 +387,7 @@ class MemberShopInfo extends BaseModel
     public static function getYzMembersId()
     {
         return static::uniacid()
-            ->select (['member_id'])
+            ->select(['member_id'])
             ->get();
     }
 
@@ -450,9 +445,9 @@ class MemberShopInfo extends BaseModel
                 }
             }
 
-            $member_relation   = Member::setMemberRelation($uid, $parent_id);
+            $member_relation = Member::setMemberRelation($uid, $parent_id);
             $plugin_commission = app('plugins')->isEnabled('commission');
-            $plugin_team       = app('plugins')->isEnabled('team-dividend');
+            $plugin_team = app('plugins')->isEnabled('team-dividend');
 
             if (isset($member_relation) && $member_relation !== false) {
                 $member = MemberShopInfo::getMemberShopInfo($uid);
@@ -526,9 +521,9 @@ class MemberShopInfo extends BaseModel
             ->uniacid()
             ->count();
 
-        if($data > 0){
+        if ($data > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -542,15 +537,15 @@ class MemberShopInfo extends BaseModel
     {
         $member = self::select('member_id')
             ->where('invite_code', $inviteCode)
-            ->with(['hasOneMember' => function($q){
+            ->with(['hasOneMember' => function ($q) {
                 $q->select('uid', 'nickname', 'avatar', 'realname');
             }])
             ->uniacid()
             ->first();
 
-        if($member){
+        if ($member) {
             return $member;
-        }else{
+        } else {
             return false;
         }
     }

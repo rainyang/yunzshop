@@ -33,7 +33,7 @@ trait PermissionTrait
         if ($this->isFounder()) {
             return true;
         }
-        return in_array($route, User::getAllPermissions());
+        return in_array($route, User::userPermissionCache());
     }
 
     /**

@@ -118,12 +118,7 @@ return [
                 'host' =>env('DB_HOST', $default_host),
             ],
             'read' => [
-                [
-                    'host'      => env('DB_SLAVE_HOST', $default_slave_host),
-                    'username'  => env('DB_SLAVE_USERNAME', $default_slave_username),
-                    'password'  => env('DB_SLAVE_PASSWORD', $default_slave_password),
-                    'port'      => env('DB_SLAVE_PORT', $default_slave_port),
-                ]
+                'host'      => env('DB_SLAVE_HOST', $default_slave_host),
             ],
             'port' => env('DB_PORT', $default_port),
             'database' => env('DB_DATABASE', $default_db),

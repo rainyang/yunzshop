@@ -10,13 +10,9 @@ namespace app\frontend\modules\order\controllers;
 
 use app\common\components\ApiController;
 use app\common\exceptions\AppException;
-use app\common\facades\Setting;
 use app\common\models\DispatchType;
 use app\common\models\Order;
-use app\common\modules\refund\services\RefundService;
-use app\common\requests\Request;
 use app\frontend\models\OrderAddress;
-use Yunshop\StoreCashier\common\models\StoreDelivery;
 use app\common\services\plugin\leasetoy\LeaseToySet;
 use app\common\services\goods\VideoDemandCourseGoods;
 
@@ -78,7 +74,7 @@ class DetailController extends ApiController
 
 
         //租赁插件
-        $lease_enabled = LeaseToySet::whetherEnabled();
+       /* $lease_enabled = LeaseToySet::whetherEnabled();
         if ($lease_enabled && $order->plugin_id == 40) {
             $lease_toy = \Yunshop\LeaseToy\services\LeaseOrderDetail::detailInfo($order);
             foreach ($data['has_many_order_goods'] as &$goods) {
@@ -92,7 +88,7 @@ class DetailController extends ApiController
             }
             $data['lease_toy'] = $lease_toy['data'];
 
-        }
+        }*/
         //todo 临时解决
         if (!$order) {
             return $this->errorJson($msg = '未找到数据', []);

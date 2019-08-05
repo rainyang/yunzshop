@@ -290,18 +290,22 @@ if (!function_exists("tomedia")) {
  * @param null $upload_type 上传图片时的类型，数据表 upload_type 字段(只需要在上传图片时，传参数，获取列表不需要传改参数)
  * @return string
  */
-function yz_tomedia($src, $local_path = false, $upload_type = null)
+function yz_tomedia($src, $local_path = false, $upload_type = null,$host = '')
 {
     if (empty($src)) {
         return '';
     }
-
+    if($host){
+        $HttpHost = $host;
+    }else{
+        $HttpHost = request()->getSchemeAndHttpHost();
+    }
     $setting = [];
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = new SystemSetting();
-        if ($remote = $systemSetting->getKeyList('remote', 'system_remote', true)) {
+        $systemSetting = app('systemSetting');
+        if ($remote = $systemSetting->get('remote')) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
         $sign = true;
@@ -324,28 +328,28 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
     $os = Client::osType();
     if (strexists($src, $addons)) {
         if ($os == Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+            $url_dz = $HttpHost . substr($src, strpos($src, $addons));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
-        return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $addons));
+        return $HttpHost . substr($src, strpos($src, $addons));
     }
 
     //判断是否是本地带域名图片地址
     $local = strtolower($src);
     if (strexists($src, $attachment)) {
         if ($os == Client::OS_TYPE_IOS) {
-            $url_dz = request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
+            $url_dz = $HttpHost . substr($src, strpos($src, $attachment));
             return 'https:' . substr($url_dz, strpos($url_dz, '//'));
         }
         if (strexists($local, 'http://') || strexists($local, 'https://') || substr($local, 0, 2) == '//') {
             return $src;
         } else {
-            return request()->getSchemeAndHttpHost() . substr($src, strpos($src, $attachment));
+            return $HttpHost . substr($src, strpos($src, $attachment));
         }
     }
 
     //如果远程地址中包含本地host也检测是否远程图片
-    if (strexists($src, request()->getSchemeAndHttpHost()) && !strexists($src, '/addons/')) {
+    if (strexists($src, $HttpHost) && !strexists($src, '/addons/')) {
         $urls = parse_url($src);
         $src = $t = substr($urls['path'], strpos($urls['path'], 'image'));
     }
@@ -354,17 +358,18 @@ function yz_tomedia($src, $local_path = false, $upload_type = null)
         return 'https:' . substr($src, strpos($src, '//'));
     }
 
-
     //todo 2019/06/25 blank ---- 把或 || 条件换成与 && ,这样修改有个问题就是只有开启了远程存储图片，就永远不会再取本地图片
     //(!$sign && ($local_path || empty($upload_type)) || file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src))
     if (!$sign && ($local_path || empty($upload_type)) && file_exists(base_path('../../') . '/' . $_W['config']['upload']['attachdir'] . '/' . $src)) {
         if (strexists($src, '/attachment/')) {
-            $src = request()->getSchemeAndHttpHost() . $src;
+            $src = $HttpHost . $src;
         } else {
-            $src = request()->getSchemeAndHttpHost() . '/attachment/' . $src;
+            $src = $HttpHost . '/attachment/' . $src;
         }
     } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type)) && file_exists(base_path('static/upload/').$src)) {
-        $src = request()->getSchemeAndHttpHost() .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
+        $src = $HttpHost .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
+    } elseif (env('APP_Framework') == 'platform' && ($local_path || empty($upload_type))) {
+        $src = $HttpHost .  '/static/upload' . (strpos($src,'/') === 0 ? '':'/') . $src;
     } else {
         $attach_url_remote = '';
         if ($upload_type == 1) {
@@ -1210,6 +1215,99 @@ if (!function_exists('file_is_image')) {
     }
 }
 
+if (!function_exists('file_remote_upload_wq')) {
+    function file_remote_upload_wq($filename, $auto_delete_local = true)
+    {
+        global $_W;
+        if (empty($_W['setting']['remote']['type'])) {
+            return false;
+        }
+        if ($_W['setting']['remote']['type'] == '1') {
+            $ftp_config = array(
+                'hostname' => $_W['setting']['remote']['ftp']['host'],
+                'username' => $_W['setting']['remote']['ftp']['username'],
+                'password' => $_W['setting']['remote']['ftp']['password'],
+                'port' => $_W['setting']['remote']['ftp']['port'],
+                'ssl' => $_W['setting']['remote']['ftp']['ssl'],
+                'passive' => $_W['setting']['remote']['ftp']['pasv'],
+                'timeout' => $_W['setting']['remote']['ftp']['timeout'],
+                'rootdir' => $_W['setting']['remote']['ftp']['dir'],
+            );
+            $ftp = new Ftp($ftp_config);
+            if (true === $ftp->connect()) {
+                $response = $ftp->upload(ATTACHMENT_ROOT . 'image/' . $filename, $filename);
+                if ($auto_delete_local) {
+                    file_deletes($filename);
+                }
+                if (!empty($response)) {
+                    return true;
+                } else {
+                    return error(1, '远程附件上传失败，请检查配置并重新上传');
+                }
+            } else {
+                return error(1, '远程附件上传失败，请检查配置并重新上传');
+            }
+        } elseif ($_W['setting']['remote']['type'] == '2') {
+            $buckets = attachment_alioss_buctkets($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret']);
+            $endpoint = 'http://' . $buckets[$_W['setting']['remote']['alioss']['bucket']]['location'] . '.aliyuncs.com';
+            try {
+                $ossClient = new \app\common\services\aliyunoss\OssClient($_W['setting']['remote']['alioss']['key'], $_W['setting']['remote']['alioss']['secret'], $endpoint);
+                $ossClient->uploadFile($_W['setting']['remote']['alioss']['bucket'], 'image/'.$filename, ATTACHMENT_ROOT . 'image/' . $filename);
+            } catch (\app\common\services\aliyunoss\OSS\Core\OssException $e) {
+                return error(1, $e->getMessage());
+            }
+            if ($auto_delete_local) {
+                file_deletes($filename);
+            }
+        } elseif ($_W['setting']['remote']['type'] == '3') {
+            $auth = new Qiniu\Auth($_W['setting']['remote']['qiniu']['accesskey'], $_W['setting']['remote']['qiniu']['secretkey']);
+            $config = new Qiniu\Config();
+            $uploadmgr = new Qiniu\Storage\UploadManager($config);
+            $putpolicy = Qiniu\base64_urlSafeEncode(json_encode(array(
+                'scope' => $_W['setting']['remote']['qiniu']['bucket'] . ':' . $filename,
+            )));
+            $uploadtoken = $auth->uploadToken($_W['setting']['remote']['qiniu']['bucket'], $filename, 3600, $putpolicy);
+            list($ret, $err) = $uploadmgr->putFile($uploadtoken, $filename, ATTACHMENT_ROOT . 'image/' . $filename);
+            if ($auto_delete_local) {
+                file_deletes($filename);
+            }
+            if ($err !== null) {
+                return error(1, '远程附件上传失败，请检查配置并重新上传');
+            } else {
+                return true;
+            }
+        } elseif ($_W['setting']['remote']['type'] == '4') {
+            if (!empty($_W['setting']['remote']['cos']['local'])) {
+                \app\common\services\qcloud\Cosapi::setRegion($_W['setting']['remote']['cos']['local']);
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . 'image/' . $filename, 'image/' . $filename, '', 3 * 1024 * 1024, 0);
+            } else {
+                $uploadRet = \app\common\services\qcloud\Cosapi::upload($_W['setting']['remote']['cos']['bucket'], ATTACHMENT_ROOT . $filename, '/' . $filename, '', 3 * 1024 * 1024, 0);
+            }
+            if ($uploadRet['code'] != 0) {
+                switch ($uploadRet['code']) {
+                    case -62:
+                        $message = '输入的appid有误';
+                        break;
+                    case -79:
+                        $message = '输入的SecretID有误';
+                        break;
+                    case -97:
+                        $message = '输入的SecretKEY有误';
+                        break;
+                    case -166:
+                        $message = '输入的bucket有误';
+                        break;
+                }
+
+                return error(-1, $message);
+            }
+            if ($auto_delete_local) {
+                file_deletes($filename);
+            }
+        }
+    }
+}
+
 if (!function_exists('file_remote_upload')) {
     function file_remote_upload($filename, $auto_delete_local = true, $remote)
     {
@@ -1289,6 +1387,23 @@ if (!function_exists('attachment_alioss_buctkets')) {
         }
 
         return $bucketlist;
+    }
+}
+
+if (!function_exists('file_deletes')) {
+    function file_deletes($file)
+    {
+        if (empty($file)) {
+            return false;
+        }
+        if (file_exists($file)) {
+            @unlink($file);
+        }
+        if (file_exists(ATTACHMENT_ROOT . 'image/' . $file)) {
+            @unlink(ATTACHMENT_ROOT . 'image/' . $file);
+        }
+
+        return true;
     }
 }
 

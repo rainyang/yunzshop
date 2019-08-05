@@ -50,6 +50,13 @@ class SettingCache
 
     }
 
+    public function push($key, $value, $minutes = null)
+    {
+        $arrayValue = $this->get($key, []);
+        $arrayValue[] = $value;
+        $this->put($key, $arrayValue, $minutes);
+    }
+
     /**
      * @param $key
      * @param $value

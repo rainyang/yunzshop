@@ -180,7 +180,7 @@ class ConvergepayController extends PaymentController
     public function notifyUrlWithdraw()
     {
         $parameter = request();
-        \Log::debug('--汇聚提现参数--', $parameter);
+        \Log::debug('--汇聚提现回调参数--', $parameter);
 
         if (empty(\YunShop::app()->uniacid)) {
             $orderNo = explode('H', $parameter->merchantOrderNo);
@@ -193,7 +193,7 @@ class ConvergepayController extends PaymentController
         //访问记录
         Pay::payAccessLog();
         //保存响应数据
-        Pay::payResponseDataLog($orderNo[0], '汇聚提现', $parameter);
+        Pay::payResponseDataLog($orderNo[0], '汇聚回调提现', $parameter);
 
         if ($this->checkWithdrawHmac($parameter)) {
             if ($parameter->status == '205') {
@@ -245,7 +245,7 @@ class ConvergepayController extends PaymentController
 
         return $parameter->hmac == md5($parameter->status . $parameter->errorCode . $parameter->errorCodeDesc . $parameter->userNo
                 . $parameter->merchantOrderNo . $parameter->platformSerialNo . $parameter->receiverAccountNoEnc
-                . $parameter->receiverNameEnc . $parameter->paidAmount . sprintf("%.2f", $parameter->fee) . $setting['hmacVal']);
+                . $parameter->receiverNameEnc . sprintf("%.2f", $parameter->paidAmount) . sprintf("%.2f", $parameter->fee) . $setting['hmacVal']);
     }
 
     /**

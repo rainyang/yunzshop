@@ -193,6 +193,18 @@ class PointLog extends BaseModel
                     $mode_attribute = PointService::POINT_MODE_LOVE_WITHDRAWAL_DEDUCTION_ATTACHED;
                 }
                 break;
+            case (34):
+                $mode_attribute = PointService::POINT_MODE_FIGHT_GROUPS_TEAM_SUCCESS_ATTACHED;
+                break;
+            case (35):
+                $mode_attribute = PointService::POINT_MODE_DRAW_CHARGE_GRT_ATTACHED;
+                break;
+            case (36):
+                $mode_attribute = PointService::POINT_MODE_DRAW_CHARGE_DEDUCTION_ATTACHED;
+                break;
+            case (37):
+                $mode_attribute = PointService::POINT_MODE_DRAW_REWARD_GRT_ATTACHED;
+                break;
         }
         return $mode_attribute;
     }
