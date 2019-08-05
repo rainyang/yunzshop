@@ -1917,7 +1917,7 @@ return [
     ],
     'income_withdraw_fail' => [
         'template_id_short' => 'OPENTM207574677',
-        'title' => '提现失败通知',
+        'title' => '提现失败管理员通知',
         'first_color' => '#000000',
         'remark_color' => '#000000',
         'first' => '感谢您的支持！',
@@ -1929,7 +1929,7 @@ return [
                 ],
             1 => [
                     "keywords" => "keyword2",
-                    "value" => "收入提现失败",
+                    "value" => "提现失败管理员通知",
                     "color" => "#000000",
                 ],
             2 => [
