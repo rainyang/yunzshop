@@ -8,5 +8,6 @@ use app\common\models\BaseModel;
 class OrderCouponReturn extends BaseModel
 {
     public $table = 'yz_order_coupon_return';
+    public $timestamps = false;
     public $guarded = [];
 }

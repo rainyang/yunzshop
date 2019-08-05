@@ -33,7 +33,7 @@ class OrderClosedListener
                 if (!empty($memberCoupon) && $memberCoupon->used == 1) {
                     \Log::info('-----订单关闭优惠券返还------订单id:'.$orderCoupon->order_id.' 优惠券id:'.$orderCoupon->coupon_id.' 会员id:'.$memberCoupon->uid);
                     // 修改member_coupon的使用状态
-                    $this->changeMemberCouponUsedStatus($memberCoupon,0);
+                    $this->changeMemberCouponUsedStatus($memberCoupon,0,0);
                     // 记录日志表
                     $this->logCoupon($memberCoupon,$order);
                     // 做新表记录返还的order_coupon_id
@@ -50,10 +50,12 @@ class OrderClosedListener
     /**
      * @param $memberCoupon \app\common\models\MemberCoupon
      * @param $used int
+     * @param $use_time int
      */
-	protected function changeMemberCouponUsedStatus($memberCoupon, $used)
+	protected function changeMemberCouponUsedStatus($memberCoupon, $used, $use_time)
     {
         $memberCoupon->used = $used;
+        $memberCoupon->use_time = $use_time;
         $memberCoupon->save();
     }
 
