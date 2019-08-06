@@ -29,11 +29,6 @@ class LoginController extends ApiController
         $uniacid = \YunShop::app()->uniacid;
         $mid = Member::getMid();
 
-        if(\Setting::get('shop.member.mobile_login_code') == 1){
-            // todo 待优化，需要考虑其他很多种情况
-             $type = 10;
-        }
-
         if (empty($type) || $type == 'undefined') {
             $type = Client::getType();
         }
@@ -45,6 +40,11 @@ class LoginController extends ApiController
         //判断是否开启微信登录
         if (\YunShop::request()->show_wechat_login) {
             return $this->init_login();
+        }
+
+        if(\Setting::get('shop.member.mobile_login_code') == 1){
+            // todo 待优化，需要考虑其他很多种情况
+            $type = 10;
         }
 
         if (!empty($type)) {
