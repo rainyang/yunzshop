@@ -48,14 +48,29 @@ class SupervisordController extends BaseController
         $setting = request()->input('setting');
         if ($setting){
 
-            $setting['address']['ip'] = $setting['address']['ip']?:'http://127.0.0.1';
-            Setting::setNotUniacid('supervisor',$setting);
+            $set['address']['ip'] = $setting['address']['ip']?:'http://127.0.0.1';
+            Setting::setNotUniacid('supervisor',$set);
             return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
         }
         $supervisord  = Setting::getNotUniacid('supervisor');
         $supervisord['address']['ip'] ? : Setting::setNotUniacid('supervisor', $supervisord['address']['ip'] = 'http://127.0.0.1');
 
         return view('supervisor.store',[
+             'setting'=>json_encode($supervisord)
+        ])->render();
+    }
+
+    public function queue(){
+        $setting = request()->input('setting');
+        if ($setting){
+            $set['queue']['is_classify'] = $setting['queue']['is_classify'] ?: 0;
+            Setting::setNotUniacid('supervisor',$set);
+            return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
+        }
+        $supervisord  = Setting::getNotUniacid('supervisor');
+        $supervisord['queue']['is_classify'] ? : Setting::setNotUniacid('supervisor', $supervisord['queue']['is_classify'] = 0);
+
+        return view('supervisor.queue',[
              'setting'=>json_encode($supervisord)
         ])->render();
     }

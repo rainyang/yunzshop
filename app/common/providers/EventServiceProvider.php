@@ -12,7 +12,6 @@ use app\backend\modules\charts\modules\team\listeners\TeamRank;
 use app\backend\modules\goods\listeners\LimitBuy;
 use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
-use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\PayLog;
@@ -94,10 +93,6 @@ class EventServiceProvider extends ServiceProvider
             WechatMessageListener::class//示例监听类
         ],
 
-        //发送消息触发事件
-        SendMessageEvent::class => [
-
-        ],
         AfterProcessStatusChangedEvent::class => [
             StatusContainer::class,
         ],
