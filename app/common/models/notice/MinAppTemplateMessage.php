@@ -21,6 +21,13 @@ class MinAppTemplateMessage extends BackendModel
 
     protected $guarded = [''];
 
+    public static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new UniacidScope);
+    }
+
+
     public static function getList()
     {
         return self::select('*')->get();

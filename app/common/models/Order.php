@@ -148,7 +148,7 @@ class Order extends BaseModel
      * @param $query
      * @return mixed
      */
-    public function scopeHidePluginIds($query, $plugin_ids)
+    public function scopeHidePluginIds($query, $plugin_ids=[])
     {
         if (empty($plugin_ids)) {
             //酒店订单、租赁订单、网约车订单、服务站补货订单、拼团订单

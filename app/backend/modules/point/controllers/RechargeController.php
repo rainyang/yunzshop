@@ -58,7 +58,7 @@ class RechargeController extends BaseController
             $params = [
                 ['name' => '时间', 'value' => date('Y-m-d H:i:s')],
                 ['name' => '积分变动金额', 'value' => $this->getRechargeData()['money'] ],
-                ['name' => '积分变动类型', 'value' => $this->rechargeModel->getTypeNameComment() ],
+                ['name' => '积分变动类型', 'value' => $this->rechargeModel->getTypeNameComment($this->rechargeModel->type) ],
                 ['name' => '变动后积分数值', 'value' => $this->memberModel->credit1+$this->getRechargeData()['money']]
             ];
 

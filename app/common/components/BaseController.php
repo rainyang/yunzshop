@@ -4,9 +4,6 @@ namespace app\common\components;
 
 use app\common\exceptions\AppException;
 
-use app\common\exceptions\ShopException;
-use app\common\helpers\WeSession;
-use app\common\models\Modules;
 use app\common\services\Check;
 use app\common\services\Session;
 
@@ -16,6 +13,7 @@ use app\common\traits\PermissionTrait;
 use app\common\traits\TemplateTrait;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -71,13 +69,13 @@ class BaseController extends Controller
      * url参数验证
      *
      * @param array $rules
-     * @param \Request|null $request
+     * @param Request|null $request
      * @param array $messages
      * @param array $customAttributes
      *
      * @throws AppException
      */
-    public function validate(array $rules, \Request $request = null, array $messages = [], array $customAttributes = [])
+    public function validate(array $rules, Request $request = null, array $messages = [], array $customAttributes = [])
     {
         if (!isset($request)) {
             $request = request();
@@ -113,7 +111,7 @@ class BaseController extends Controller
             setcookie(session_name(), $session_id);
         }
 
-        if (empty($session_id) && \YunShop::request()->session_id
+        if (\YunShop::request()->type == 2 && \YunShop::request()->session_id
             && \YunShop::request()->session_id != 'undefined' && \YunShop::request()->session_id != 'null'
         ) {
             $session_id = \YunShop::request()->session_id;

@@ -159,7 +159,7 @@ class WithdrawApplyListener
         $withdraw_set = $withdrawModel->withdraw_set;
         if ($withdraw_set['free_audit'] == 1) {
 
-            $free_audit = ['balance', 'wechat', 'huanxun'];
+            $free_audit = ['balance', 'wechat', 'huanxun', 'converge_pay'];
             if (in_array($withdrawModel->pay_way, $free_audit)) {
 
                 $job = new WithdrawFreeAuditJob($withdrawModel);

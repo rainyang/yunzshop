@@ -19,6 +19,10 @@ class Setting extends BaseModel
     public $guarded = [''];
 
     public $defaultGroup = 'shop';
+public function __construct(array $attributes = [])
+{
+    parent::__construct($attributes);
+}
 
     /**
      * 获取统一账号配置与值
@@ -30,22 +34,24 @@ class Setting extends BaseModel
      */
     public function getValue($uniqueAccountId, $key, $default = null)
     {
-        if (app('SettingCache')->has($key)) {
+        if (app('SettingCache')->has($key) || in_array($key,app('SettingCache')->get('nullSettingKeys'))) {
             //\Log::debug('-----setting get cache------'.$cacheKey);
             $value = app('SettingCache')->get($key);
         } else {
+
             //\Log::debug('-----setting get db------'.$key);
             list($group, $groupKey) = $this->parseKey($key);
 
             $settingGroupItems = $this->getItems($uniqueAccountId, $group);
+
             //\Log::debug('-----setting save cache------' . $cacheKey, $value);
             if (!array_has($settingGroupItems, $groupKey)) {
                 // 如果数据库中不存在记录,需要在缓存中添加这个key,避免重复查库
-                yz_array_set($settingGroupItems, $groupKey, null);
-
+                app('SettingCache')->push('nullSettingKeys', $key, 600);
             }
             $value = array_get($settingGroupItems, $groupKey, $default);
-            app('SettingCache')->put($group, $settingGroupItems, 600)  ;
+            app('SettingCache')->put($group, $settingGroupItems, 600);
+
         }
         return $value;
 

@@ -67,7 +67,7 @@ class UniacidApp extends BaseModel
     	return [
             'img' => '',
             'url' => '',
-            'name' => 'max:10',
+            'name' => '',
             'kind' => '',
             'type' => '',
             'title' => '',

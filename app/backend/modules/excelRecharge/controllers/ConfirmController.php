@@ -219,6 +219,16 @@ class ConfirmController extends PageController
     }
 
     /**
+     * 爱心值类型
+     *
+     * @return string
+     */
+    private function rechargeTypeOfLove()
+    {
+        return request()->love_type;
+    }
+
+    /**
      * 批量充值类型验证
      *
      * @return bool
@@ -316,9 +326,9 @@ class ConfirmController extends PageController
     }
 
 
-    private function batchRechargeLove($memberId, $rechargeValue, $love_type)
+    private function batchRechargeLove($memberId, $rechargeValue)
     {
-        return (new LoveChangeService($love_type))->recharge([
+        return (new LoveChangeService($this->rechargeTypeOfLove()))->recharge([
             'member_id'    => $memberId,
             'change_value' => $rechargeValue,
             'operator'     => ConstService::OPERATOR_MEMBER,
