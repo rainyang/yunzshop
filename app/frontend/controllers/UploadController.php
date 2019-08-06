@@ -117,7 +117,10 @@ class UploadController extends BaseController
 
         if (env('APP_Framework') == 'platform') {
             //本地上传
-            \Storage::disk('syst_images')->put($newOriginalName, file_get_contents($realPath));
+            $result = \Storage::disk('syst_images')->put($newOriginalName, file_get_contents($realPath));
+            if (!$result){
+                return $this->successJson('上传失败');
+            }
             //远程上传
             if ($remote['type'] != 0) {
                 file_remote_upload($newOriginalName, true, $remote);
@@ -130,7 +133,10 @@ class UploadController extends BaseController
             ]);
         } else {
             //本地上传
-            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            $result = \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            if (!$result){
+                return $this->successJson('上传失败');
+            }
             //远程上传
             if ($remote['type'] != 0) {
                 file_remote_upload_wq($newOriginalName, true);
