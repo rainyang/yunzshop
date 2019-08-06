@@ -9,6 +9,7 @@
 namespace app\common\services\notice;
 
 
+use app\common\exceptions\AppException;
 use app\common\exceptions\ShopException;
 use app\common\models\AccountWechats;
 use app\common\traits\JsonTrait;
@@ -157,6 +158,11 @@ class WechatApi
         $global_token = \Curl::to($global_access_token_url)
             ->asJsonResponse(true)
             ->get();
+
+        if (isset($global_token['errcode']) && isset($global_token['errmsg'])) {
+           throw new AppException($global_token['errmsg']);
+        }
+
         return $global_token['access_token'];
     }
 
