@@ -105,7 +105,7 @@ class PayedService
             return $this->payed();
             
         } catch (\Exception $e) {
-            
+                \Log::debug('__withdrawPay--------payServiceed');
             if (\Setting::get('withdraw.income.free_audit') == 1) {
                 $this->sendMessage();
             }
@@ -152,7 +152,7 @@ class PayedService
         \Log::debug('---------eventmodel+++++++++-----------------');
         $this->updateWithdrawModel();
 
-        event(new WithdrawPayedEvent($this->withdrawModel));
+        event(new WithdrawPayewechatWithdrawPaydEvent($this->withdrawModel));
     }
 
 
