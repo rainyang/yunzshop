@@ -111,7 +111,7 @@ class PayedService
             if (\Setting::get('withdraw.income.free_audit') == 1) {
                 $this->sendMessage();
             }
-            throw new ShopException($this->msg);
+            throw new ShopException($this->msg ? : '提现失败');
         }
     }
 
@@ -233,7 +233,8 @@ class PayedService
                 $result = $this->convergePayWithdrawPay();
                 break;
             default:
-                throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
+                $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型";
+                throw new ShopException($this->msg);
         }
         return $result;
     }
