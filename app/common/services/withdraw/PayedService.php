@@ -155,7 +155,7 @@ class PayedService
         \Log::debug('---------eventmodel+++++++++-----------------');
         $this->updateWithdrawModel();
 
-        event(new WithdrawPayewechatWithdrawPaydEvent($this->withdrawModel));
+        event(new WithdrawPayedEvent($this->withdrawModel));
     }
 
 
