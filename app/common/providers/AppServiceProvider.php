@@ -9,6 +9,7 @@ use app\common\modules\site\SiteSettingCache;
 use app\common\repositories\OptionRepository;
 use app\common\services\mews\captcha\src\Captcha;
 
+use app\framework\Log\CronLog;
 use app\framework\Log\TraceLog;
 use app\common\facades\Setting;
 use app\platform\Repository\SystemSetting;
@@ -26,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         \Cron::setDisablePreventOverlapping();
-
+        \Cron::setLogger((new CronLog())->getLogger()->getMonolog());
         //微信接口不输出错误
         if (strpos(request()->getRequestUri(), '/api.php') >= 0) {
             error_reporting(0);
