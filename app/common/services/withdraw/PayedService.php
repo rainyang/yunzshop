@@ -47,6 +47,7 @@ class PayedService
             $this->_withdrawPay();
             return true;
         }
+        \Log::debug('---------提现打款,不符合打款规则-----------------');
 
         throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
     }
@@ -99,6 +100,8 @@ class PayedService
             DB::transaction(function () {
                 $this->pay();
             });
+            \Log::debug('---------payed+++++++++-----------------');
+
             return $this->payed();
             
         } catch (\Exception $e) {
@@ -146,6 +149,7 @@ class PayedService
         $this->withdrawModel->arrival_at = time();
 
         $this->updateWithdrawModel();
+        \Log::debug('---------eventmodel+++++++++-----------------');
 
         event(new WithdrawPayedEvent($this->withdrawModel));
     }
