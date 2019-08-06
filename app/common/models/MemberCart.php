@@ -103,8 +103,9 @@ class MemberCart extends BaseModel
     public function getGroupId()
     {
         if (!$this->goods->getPlugin()) {
+            // 判断是否拆单。如果开启商品拆单，则将每种商品拆成不同订单，不考虑规格数量
             if (\Setting::get('shop.order.order_apart')) {
-                return $this->goods_id."_".$this->option_id;
+                return $this->goods_id;
             }
             return 0;
         }
