@@ -1329,6 +1329,18 @@ return [
                         'parents'    => ['Member', 'member_all',],
                     ],
 
+                    'member_import' => [
+                        'name'       => '会员excel导入',
+                        'url'        => 'member.member.import',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'member_import',
+                        'parents'    => ['Member', 'member_all',],
+                    ],
+
                     'member_export' => [
                         'name'       => '会员导出',
                         'url'        => 'member.member.export',

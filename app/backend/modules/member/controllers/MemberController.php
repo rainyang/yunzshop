@@ -274,6 +274,16 @@ class MemberController extends BaseController
         return view('member.add-member',['img'=>$headimg])->render();
     }
 
+    public function import()
+    {
+        return view('member.import')->render();
+    }
+
+    public function memberExcel()
+    {
+        return $this->successJson('导入成功');
+    }
+
 
     private function getResultIds(array $result_ids, $member_id, $compare, $compared, $is_added)
     {
