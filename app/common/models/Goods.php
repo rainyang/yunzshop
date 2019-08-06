@@ -115,6 +115,8 @@ class Goods extends BaseModel
             40 => 租赁商品
             41 => 网约车商品
             42 => 网约车分红
+            43 => ps 由于服务站订单使用了
+            44 => 京东-供应链
             92 => 供应商商品
      */
 
@@ -282,6 +284,16 @@ class Goods extends BaseModel
     public function scopeIsPlugin($query)
     {
         return $query->where('is_plugin', 0);
+    }
+
+    public function scopeWhereInPluginIds($query, $pluginIds = [])
+    {
+        if (empty($pluginIds)) {
+            //标准商城默认都会显示下面这几种类型的商品
+            $pluginIds = [0,40,41,44,92];
+        }
+
+        return $query->whereIn('plugin_id', $pluginIds);
     }
 
     public function scopeSearch($query, $filters)

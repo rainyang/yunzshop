@@ -386,10 +386,7 @@ class GoodsController extends ApiController
 //        });
         $list = Goods::Search($requestSearch)->select('yz_goods.id')
             ->where("status", 1)
-            ->where(function($query) {
-//                $query->whereIn('plugin_id', [0,40,92,41]);
-                $query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-            });
+            ->whereInPluginIds();
 
         //todo 为什么要取出id, 如id过多超出in的长度如何处理
         $id_arr = collect($list->get())->map(function ($rows) {
@@ -513,10 +510,8 @@ class GoodsController extends ApiController
         $goodsList = Goods::uniacid()->select('id', 'id as goods_id', 'title', 'thumb', 'price', 'market_price')
             ->where('status', '1')
             ->where('brand_id', $brand_id)
-            ->where(function ($query) {
-                $query->whereIn('plugin_id', [0, 40, 92, 41]);
-                //$query->where("plugin_id", 0)->orWhere('plugin_id', 40)->orWhere('plugin_id', 92);
-            })->orderBy($order_field, $order_by)
+            ->whereInPluginIds()
+            ->orderBy($order_field, $order_by)
             ->paginate(20)->toArray();
 
         if (empty($goodsList)) {
