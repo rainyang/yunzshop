@@ -10,7 +10,7 @@ namespace app\framework\Log;
 
 class CronLog extends BaseLog
 {
-    protected $logDir = 'logs/debug/Cron.log';
+    protected $logDir = 'logs/cron/cron.log';
     public function add($message, array $content = [])
     {
         $this->log->debug($message, $content);
