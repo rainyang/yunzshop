@@ -180,7 +180,6 @@ class EventServiceProvider extends ServiceProvider
         //商品定时上下架
         \app\backend\modules\goods\listeners\GoodsServiceListener::class,
         // 订单生成后判断是否可退换货
-        \app\common\listeners\order\OrderNoRefundListener::class,
     ];
 
     /**

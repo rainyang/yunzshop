@@ -333,6 +333,7 @@ class PreOrder extends Order
             'goods_total' => $this->getGoodsTotal(),//订单商品总数
 
             'is_virtual' => $this->isVirtual(),//是否是虚拟商品订单
+            'no_refund' => $this->noRefund(),
             'order_sn' => OrderService::createOrderSN(),//订单编号
             'create_time' => time(),
             'note' => $this->getParams('note'),//订单备注
@@ -349,6 +350,16 @@ class PreOrder extends Order
         $attributes = array_merge($this->getAttributes(), $attributes);
         $this->setRawAttributes($attributes);
 
+    }
+
+    private function noRefund()
+    {
+        foreach ($this->orderGoods as $goods) {
+            if ($goods->goods->no_refund) {
+                return 1;
+            }
+        }
+        return 0;
     }
 
     public function beforeSaving()
