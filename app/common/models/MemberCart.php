@@ -103,6 +103,9 @@ class MemberCart extends BaseModel
     public function getGroupId()
     {
         if (!$this->goods->getPlugin()) {
+            if (\Setting::get('shop.order.order_apart')) {
+                return $this->goods_id."_".$this->option_id;
+            }
             return 0;
         }
         if (!$this->goods->getPlugin()->app()->bound(MemberCart::class)) {
