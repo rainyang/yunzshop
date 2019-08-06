@@ -45,7 +45,7 @@ class GoodsController extends ApiController
         $goodsModel = Goods::uniacid()
             ->with([
                 'hasManyParams' => function ($query) {
-                    return $query->select('goods_id', 'title', 'value');
+                    return $query->select('goods_id', 'title', 'value')->orderby('displayorder','asc');
                 },
                 'hasManySpecs' => function ($query) {
                     return $query->select('id', 'goods_id', 'title', 'description');
