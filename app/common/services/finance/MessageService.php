@@ -17,7 +17,7 @@ class MessageService
 
     public static function incomeWithdraw($withdrawData, $member, $uniacid = '')
     {
-        Log::info("收入提现提交通知开始");
+        \Log::info("收入提现提交通知开始");
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_title')) {
             \Log::debug("app_common_service_finance_messageService--incomeWithdraw——get_not_send");
 
