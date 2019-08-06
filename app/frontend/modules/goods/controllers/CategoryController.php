@@ -75,6 +75,7 @@ class CategoryController extends BaseController
         return $this->successJson('获取分类数据成功!', [
             'category' => $list,
             'recommend' => $recommend,
+            'member_cart' => \app\frontend\modules\member\controllers\MemberCartController::index([],true),
             'goods_list' => $goods_list,
             'ads' => $this->getAds(),
             'set' => $set
