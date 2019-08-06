@@ -10,7 +10,7 @@ namespace app\common\services\finance;
 
 use app\common\facades\Setting;
 use app\common\models\notice\MessageTemp;
-use Illuminate\Support\Facades\Log;
+// use Illuminate\Support\Facades\Log;
 
 class MessageService
 {
@@ -19,6 +19,8 @@ class MessageService
     {
         Log::info("收入提现提交通知开始");
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_title')) {
+            \Log::debug("app_common_service_finance_messageService--incomeWithdraw——get_not_send");
+
             return;
         }
         if ($uniacid) {
@@ -26,8 +28,9 @@ class MessageService
         }
         $withdrawNotice = Setting::get('withdraw.notice');
         $temp_id = $withdrawNotice['income_withdraw'];
-        Log::info("收入提现提交通知",print_r($temp_id,true));
+        \Log::info("收入提现提交通知",print_r($temp_id,true));
         if (!$temp_id) {
+            \Log::debug("app_common_service_finance_messageService--incomeWithdraw——no_temp_id");
             return;
         }
         static::messageNotice($temp_id, $member, $withdrawData, $uniacid);
@@ -54,6 +57,8 @@ class MessageService
     public static function withdrawCheck($withdrawData, $member, $uniacid = '')
     {
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_check_title')) {
+            \Log::debug("app_common_service_finance_messageService--withdrawCheck——get_not_send");
+
             return;
         }
         if ($uniacid) {
@@ -62,6 +67,7 @@ class MessageService
         $withdrawNotice = Setting::get('withdraw.notice');
         $temp_id = $withdrawNotice['income_withdraw_check'];
         if (!$temp_id) {
+            \Log::debug("app_common_service_finance_messageService--withdrawCheck——temp_id");
             return;
         }
         $withdrawData['poundage'] = $withdrawData['actual_poundage'];
@@ -91,6 +97,7 @@ class MessageService
     public static function withdrawPay($withdrawData, $member, $uniacid = '')
     {
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_pay_title')) {
+            \Log::debug("app_common_service_finance_messageService--withdrawPay——getNotSend");
             return;
         }
         if ($uniacid) {
@@ -99,6 +106,7 @@ class MessageService
         $withdrawNotice = Setting::get('withdraw.notice');
         $temp_id = $withdrawNotice['income_withdraw_pay'];
         if (!$temp_id) {
+            \Log::debug("app_common_service_finance_messageService--withdrawPay——temp_id");
             return;
         }
         $withdrawData['amounts'] = $withdrawData['actual_amounts'];
@@ -127,6 +135,7 @@ class MessageService
     public static function withdrawArrival($withdrawData, $member, $uniacid = '')
     {
         if (!\YunShop::notice()->getNotSend('withdraw.income_withdraw_arrival_title')) {
+            \Log::debug('app_common_service_finance_messageService--withdrawArrival——get_not_send++++++');
             return;
         }
         if ($uniacid) {
@@ -135,6 +144,7 @@ class MessageService
         $withdrawNotice = Setting::get('withdraw.notice');
         $temp_id = $withdrawNotice['income_withdraw_arrival'];
         if (!$temp_id) {
+            \Log::debug('app_common_service_finance_messageService--withdrawArrival——no_temp_id++++++');
             return;
         }
         $withdrawData['amounts'] = $withdrawData['actual_amounts'];
@@ -200,6 +210,7 @@ class MessageService
 
         $msg = MessageTemp::getSendMsg($temp_id, $params);
         if (!$msg) {
+            \Log::debug('app_common_service_finance_messageService--messageNotice——no_msg++++++');
             return;
         }
         \app\common\services\MessageService::notice(MessageTemp::$template_id, $msg, $member->uid, $uniacid);
