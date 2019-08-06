@@ -63,6 +63,9 @@
                                            @if (empty($set['order_apart'])) checked @endif/>
                                     关闭
                                 </label>
+                                <span class="help-block">
+                                    开启有用户购买平台自营商品，每一个商品拆成一个订单，订单原有逻辑不变。
+                                </span>
                             </div>
                         </div>
 
