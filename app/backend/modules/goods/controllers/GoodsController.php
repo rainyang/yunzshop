@@ -634,5 +634,61 @@ class GoodsController extends BaseController
         ])->render();
     }
 
+    /**
+     * 商品批量导入
+     */
+    public function import()
+    {
+//        $file = '\storage\app/public/recharge/62dfb2e0706289bee51423faecdb24f5.xlsx';
+//        $reader = \Excel::load($file);
+//        $sheet = $reader->getSheet()->toArray(); // 读取第一個工作表
+//        dd($sheet);
+//        $highestRow = $sheet->getHighestRow(); // 取得总行数
+//        $highestColumm = $sheet->getHighestColumn(); // 取得总列数
+        return view('goods.import')->render();
+    }
+
+    /**
+     * 商品批量导入
+     */
+    public function a()
+    {
+        $data = request()->input('data');
+        $goodsData = array();
+        $i = 0;
+        foreach ($data as $key => $value){
+            $goodsData[$i] = [
+                'uniacid' => $value['公众号'] ?: 0,
+                'display_order' => $value['排序'],
+                'title' => $value['商品名称'],
+                // todo 商品分类
+                'brand_id' => $value['品牌'],
+                'type' => $value['商品类型'],
+                'sku' => $value['商品单位'],
+                'is_discount' => 1,
+                'is_new' => 1,
+                'is_hot' =>1,
+                'is_discount' => 1,
+                'thumb_url' => $value['商品图片'],
+                'goods_sn' => $value['商品编号'],
+                'price' => $value['商品现价'],
+                'market_price' => $value['商品原价'],
+                'cost_price' => $value['成本价'],
+                'weight' => $value['重量'],
+                'stock' => $value['库存'],
+                'virtual_sales' => $value['虚拟销量'],
+                'reduce_stock_method' => $value['拍下减库存'],
+                'no_refund' => $value['不可退货退款'],
+                'status' => $value['是否上架'],
+                'content' => $value['商品详情']
+            ];
+            $i++;
+        }
+//        dd($goodsData);
+        $result = Goods::insert($goodsData);
+        if($result){
+            return $this->successJson('导入成功');
+        }
+    }
 
 }
