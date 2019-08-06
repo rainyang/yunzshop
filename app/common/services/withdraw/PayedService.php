@@ -109,6 +109,7 @@ class PayedService
             if (\Setting::get('withdraw.income.free_audit') == 1) {
                 $this->sendMessage();
             }
+            throw new ShopException('提现打款失败');
         }
     }
 
