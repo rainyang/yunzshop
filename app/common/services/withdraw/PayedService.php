@@ -127,6 +127,7 @@ class PayedService
         $this->withdrawModel->pay_at = time();
 
         event(new WithdrawPayingEvent($this->withdrawModel));
+        \Log::debug('++++app_common_services_withdraw_PayService----paying---');
         $this->updateWithdrawModel();
     }
 
@@ -148,8 +149,8 @@ class PayedService
         $this->withdrawModel->status = Withdraw::STATUS_PAY;
         $this->withdrawModel->arrival_at = time();
 
-        $this->updateWithdrawModel();
         \Log::debug('---------eventmodel+++++++++-----------------');
+        $this->updateWithdrawModel();
 
         event(new WithdrawPayedEvent($this->withdrawModel));
     }
@@ -180,8 +181,8 @@ class PayedService
             $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
             $this->withdrawModel->pay_at = null;
 
+        \Log::debug('++++app_common_services_withdraw_PayService----tryPayed---');
             $this->updateWithdrawModel();
-            
 
             throw new ShopException($exception->getMessage());
 
@@ -280,9 +281,9 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_wechat----result+++++', $result);
+        
         if ($result['errno'] == 1) {
-            
-
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
         return true;
@@ -298,6 +299,7 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_ALIPAY)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_alipay----result+++++', $result);
 
         if (is_array($result)) {
 
@@ -320,6 +322,8 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_huanxun----result+++++', $result);
+
         if ($result['result'] == 10) {
             return true;
         }
@@ -339,6 +343,8 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_eup----result+++++', $result);
+
         if ($result['errno'] === 0) {
             return true;
         }
@@ -354,6 +360,8 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::YOP)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_yop----result+++++', $result);
+
         if ($result['errno'] == 200) {
             return false;
         }
@@ -369,6 +377,8 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_converge----result+++++', $result);
+
         if (!$result['data']['errorCode'] && $result['hmac']) {
             return false;
         }
@@ -407,7 +417,8 @@ class PayedService
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
 
-        \Log::debug('--------withdrawPay---------$result', print_r($result, 1));
+        \Log::debug('-------app_common_services_withdraw_PayService_in_separateUnionPay
+            --withdrawPay---------$result', print_r($result, 1));
 
         if($result) {
             return true;
@@ -439,6 +450,8 @@ class PayedService
         \Log::debug('--------进入更新打款体现记录---------');
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
+            
+            \Log::debug('--------更新打款提现验证失败---------');
             throw new ShopException($validator->messages());
         }
         if (!$this->withdrawModel->save()) {
