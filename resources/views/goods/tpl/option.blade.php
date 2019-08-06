@@ -343,7 +343,7 @@
             hh += '<td class="danger"><input name="option_productsn_' + ids + '[]" type="text" class="form-control option_productsn option_productsn_' + ids + '" " value="' + (val.productsn == 'undefined' ? '' : val.productsn ) + '"/></td>';
             hh += '<td class="info"><input name="option_weight_' + ids + '[]" type="text" class="form-control option_weight option_weight_' + ids + '" " value="' + (val.weight == 'undefined' ? '' : val.weight ) + '"/></td>';
 
-            hh += '<td class="info"><div class="input-group"><input name="option_thumb_' + ids + '[]"  type="hidden" class="option_thumb_' + ids + '" url="'+(val.url == 'undefined' ? '' : val.url )+'" value="'+(val.thumb == 'undefined' ? '' : val.thumb )+'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button"></button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'+(val.url == 'undefined' ? '' : val.url )+'" onerror="this.src=\'/addons/yun_shop/static/resource/images/nopic.jpg\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
+            hh += '<td class="info"><div class="input-group"><input name="option_thumb_' + ids + '[]"  type="hidden" class="option_thumb_' + ids + '" url="'+(val.url == 'undefined' ? '' : val.url )+'" value="'+(val.thumb == 'undefined' ? '' : val.thumb )+'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button"></button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'+(val.url == 'undefined' ? '' : val.url )+'" onerror="nofind()" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
 
             hh += "</tr>";
 
@@ -367,7 +367,14 @@
     }
     function nofind() {
         var img = event.srcElement;
-        img.src = "./resource/image/module-nopic-small.jpg";
+        img.src='/addons/yun_shop/static/resource/images/nopic.jpg';
+        img.onerror = nofindV2();
+
+    }
+    //兼容独立版本
+    function nofindV2() {
+        var img = event.srcElement;
+        img.src='/static/resource/images/nopic.jpg';
         img.onerror = null;
     }
 
