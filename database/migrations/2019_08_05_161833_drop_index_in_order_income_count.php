@@ -24,6 +24,10 @@ class DropIndexInOrderIncomeCount extends Migration
                 }
             });
         }
+        //重启队列
+        $supervisor = app('supervisor');
+        $supervisor->setTimeout(5000);  // microseconds
+        $supervisor->restart();
     }
 
     /**
