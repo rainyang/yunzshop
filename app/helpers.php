@@ -304,7 +304,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null,$host = '')
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = app('systemSetting');
+        $systemSetting = app('SystemSetting');
         if ($remote = $systemSetting->get('remote')) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }

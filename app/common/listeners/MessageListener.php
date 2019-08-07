@@ -13,14 +13,11 @@ namespace app\common\listeners;
 use app\common\events\MessageEvent;
 use app\Jobs\MessageJob;
 use Illuminate\Contracts\Events\Dispatcher;
+use app\Jobs\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class MessageListener implements ShouldQueue
+class MessageListener
 {
-
-    use DispatchesJobs;
-
 
     public function subscribe(Dispatcher $event)
     {
@@ -33,7 +30,7 @@ class MessageListener implements ShouldQueue
         /**
          * @var $event MessageEvent
          */
-        $this->dispatch(new MessageJob($event));
+        DispatchesJobs::dispatch(new MessageJob($event), DispatchesJobs::LOW);
     }
 
 }
