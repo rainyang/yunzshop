@@ -65,7 +65,7 @@ class WithdrawController extends BaseController
         $this->withdrawModel = $this->getWithdrawModel($withdrawId);
 
         if ($this->withdrawModel->status != Withdraw::STATUS_INITIAL) {
-            return json_encode(['msg' => '审核失败,数据不符合提现规则!']);
+            return ['msg' => '审核失败,数据不符合提现规则!'];
         }
         return $this->examine();
         /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
@@ -118,7 +118,7 @@ class WithdrawController extends BaseController
         $this->withdrawModel = $this->getWithdrawModel($withdrawId);
 
         if ($this->withdrawModel->status != Withdraw::STATUS_INVALID) {
-            return json_encode(['msg' => '重审核失败,数据不符合提现规则!']);
+            return ['msg' => '重审核失败,数据不符合提现规则!'];
         }
         return $this->examine();
         /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
@@ -175,7 +175,7 @@ class WithdrawController extends BaseController
             $withdraw = Withdraw::getWithdrawById($withdrawId)->first();
 
             if ($withdraw->status != '1') {
-                return json_encode(['msg' => '打款失败,数据不存在或不符合打款规则!']);
+                return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
             }
 
             $remark = '提现打款-' . $withdraw->type_name . '-金额:' . $withdraw->actual_amounts . '元,' .
@@ -190,7 +190,7 @@ class WithdrawController extends BaseController
 
                     if (!is_null($withdraw_modle)) {
                         if ($withdraw_modle->status != '1') {
-                            return json_encode(['msg' => '打款失败,数据不存在或不符合打款规则!']);
+                            return ['msg' => '打款失败,数据不存在或不符合打款规则!'];
                         }
 
                         $withdraw[] = $withdraw_modle;
@@ -243,7 +243,7 @@ class WithdrawController extends BaseController
             $updatedData = ['pay_at' => time()];
             Withdraw::updatedWithdrawStatus($withdrawId, $updatedData);
             $result = WithdrawService::otherWithdrawSuccess($withdrawId);
-            return json_encode(['msg' => '提现打款成功!']);
+            return ['msg' => '提现打款成功!'];
         } elseif ($payWay == '2') {
             //修改提现记录状态
             $updatedData = [
@@ -283,7 +283,7 @@ class WithdrawController extends BaseController
         $status = 0;
 
         if (empty($ids)) {
-            return json_encode(['status' => $status]);
+            return ['status' => $status];
         }
 
         $withdrawId = explode(',', $ids);
@@ -292,7 +292,7 @@ class WithdrawController extends BaseController
             $status = 1;
         }
 
-        return json_encode(['status' => $status]);
+        return ['status' => $status];
     }
 
 
@@ -362,13 +362,13 @@ class WithdrawController extends BaseController
         $result = $this->withdrawModel->save();
         if ($result !== true) {
             DB::rollBack();
-            return json_encode(['msg' => '审核失败：记录修改失败!']);
+            return ['msg' => '审核失败：记录修改失败!'];
         }
 
         event(new WithdrawAuditedEvent($this->withdrawModel));
 
         DB::commit();
-        return json_encode(['msg' => '审核成功!']);
+        return ['msg' => '审核成功!'];
     }
 
 
