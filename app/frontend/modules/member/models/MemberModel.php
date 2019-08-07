@@ -788,7 +788,8 @@ class MemberModel extends Member
 
             $v['id'] = $v['uid'];
             unset($v['uid']);
-            $v['wechat'] = $v['yz_member']['wechat'];
+            $v['wechat'] = $v['yz_member']['wechat'] ?: 0;
+            $v['mobile'] = $v['mobile'] ?: 0;
 
             if (!is_null($v['yz_member'])) {
                 if (1 == $v['yz_member']['is_agent'] && 2 == $v['yz_member']['status']) {
