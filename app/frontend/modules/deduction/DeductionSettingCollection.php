@@ -120,7 +120,6 @@ abstract class DeductionSettingCollection extends Collection
      */
     public function getImportantAndValidMinPriceProportion()
     {
-dump();
         // 找到抵扣设置集合中设置了价格比例的,权重最高的设置项
 
         $priceProportion = 0;
