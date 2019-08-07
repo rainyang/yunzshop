@@ -52,6 +52,7 @@ use app\common\services\member\MemberRelation;
 use app\frontend\modules\member\models\SubMemberModel;
 use app\Jobs\ModifyRelationJob;
 use Illuminate\Support\Facades\DB;
+use Yunshop\Article\models\Log;
 use Yunshop\Commission\models\Agents;
 use Yunshop\TeamDividend\models\TeamDividendLevelModel;
 use app\common\facades\Setting;
@@ -281,7 +282,74 @@ class MemberController extends BaseController
 
     public function memberExcel()
     {
-        return $this->successJson('导入成功');
+        $data = request()->input();
+        $uniacid = \YunShop::app()->uniacid;
+        //excel 本身就重复的值
+        $data = array_column($data['data'],null,'手机号');
+        $phone = array_keys($data);
+        $phones = MemberModel::select('mobile')->whereIn('mobile',$phone)->pluck('mobile');
+        if(!empty($phones)){
+            // 存在重复值 取交集
+            $repetPhone = array_intersect($phone,$phones->toArray());
+            //删除重复值
+            foreach ($repetPhone as $value){
+                if(isset($data[$value])){
+                    unset($data[$value]);
+                }
+            }
+        }
+        $defaultGroupId = Member_Group::getDefaultGroupId(\YunShop::app()->uniacid)->first();
+        //整理数据入库
+        $i = 0;
+        $array = array();
+        $avatar = '';
+        foreach ($data as $v){
+            $salt = Str::random(8);
+              $array[$i] = [
+                  'uniacid' => $uniacid,
+                  'mobile' => $v['手机号'],
+                  'groupid' => $defaultGroupId->id ?: 0,
+                  'createtime' => $_SERVER['REQUEST_TIME'],
+                  'nickname' => $v['手机号'],
+                  'avatar' => $avatar,
+                  'gender' => 0,
+                  'residecity' => '',
+                  'salt' => $salt,
+                  'password' => md5($v['密码'].$salt),
+              ];
+              $i++;
+        }
+        if(!MemberModel::insert($array)){
+           return $this->errorJson('批量添加失败');
+        }
+        //todo 批量插入同时无法返回主键ID故查询一次
+        $idArray = MemberModel::select('uid','mobile')->whereIn('mobile',array_keys($data))->get();
+        $defaultSubGroupId = Member_Group::getDefaultGroupId()->first();
+
+        if (!empty($defaultSubGroupId)) {
+            $defaultSubGroupId = $defaultSubGroupId->id;
+        } else {
+            $defaultSubGroupId = 0;
+        }
+
+        foreach ($idArray as $key => $value){
+            $subData[$key] = array(
+                'member_id' => $value->uid,
+                'uniacid' => $uniacid,
+                'group_id' => $defaultSubGroupId,
+                'level_id' => 0,
+                'invite_code' => \app\frontend\modules\member\models\MemberModel::generateInviteCode(),
+                'created_at' => $_SERVER['REQUEST_TIME'],
+                'updated_at' => $_SERVER['REQUEST_TIME']
+            );
+        }
+
+        if (SubMember_Model::insert($subData)){
+            return $this->successJson('导入成功');
+        }else{
+            return $this->errorJson('导入失败');
+        }
+
     }
 
 
