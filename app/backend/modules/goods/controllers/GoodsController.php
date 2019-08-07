@@ -656,6 +656,10 @@ class GoodsController extends BaseController
         $data = request()->input('data');
         $goodsData = array();
         $i = 0;
+        //todo 如果品牌不存在添加品牌,品牌图片问题
+        //todo 如果分类不存在添加分类
+
+        //todo 图片问题
         foreach ($data as $key => $value){
             $goodsData[$i] = [
                 'uniacid' => $value['公众号'] ?: 0,

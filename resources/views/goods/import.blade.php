@@ -2,22 +2,33 @@
 
 @section('content')
 @section('title', trans('商品详情'))
-<input type="file"onchange="importf(this)" />
-    <div id="demo">
-        <table class="table">
-            <tr>
-                <td>111</td>
-                <td>111</td>
-                <td>111</td>
-            </tr>
 
-            <tr>
-                <td>111</td>
-                <td>111</td>
-                <td>111</td>
-            </tr>
-        </table>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <span>当前位置：</span>
+        <a href="#">
+            <span>EXCEL导入商品</span>
+        </a>
     </div>
+</div>
+<div class="alert alert-info alert-important">
+    <span>功能介绍:</span>
+    <span style="padding-left: 60px;">1. 使用excel快速导入商品, 文件格式<b style="color:red;">[xls]</b></span>
+    <span style="padding-left: 60px;">2. 一次导入的数据不要太多,大量数据请分批导入,建议在服务器负载低的时候进行</span>
+    <br>
+    <span>使用方法:</span>
+    <span style="padding-left: 60px;">1. 下载Excel模板文件并录入信息</span>
+    <span style="padding-left: 60px;">4. 上传Excel导入</span>
+    <br>
+    <span>格式要求： Excel第一列可以为会员ID或者手机号(根据选择的上传第一列值得类型决定)，第二列必须为充值数量</span>
+</div>
+
+<div class="form-group">
+    <label class="col-sm-2 control-label must">EXCEL文件</label>
+    <div class="col-sm-5 goodsname" style="padding-right:0;">
+        <input type="file" onchange="importf(this)" class="form-control"/>
+    </div>
+</div>
     <script>
         /*
         FileReader共有4种读取方法：
@@ -55,8 +66,9 @@
                     type: "post",
                     data: {data:data},
                     cache: false,
-                    success: function ($data) {
-                        alert(111);
+                    success: function (result) {
+                        alert(result.msg);
+                        window.location.reload();
                     }
                 })
             };

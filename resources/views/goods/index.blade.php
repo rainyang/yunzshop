@@ -143,6 +143,7 @@
                             <label class="btn btn-info batchenable">批量上架</label>
                             <label class="btn batchdisable">批量下架</label>
                             <label class="btn btn-danger batchdel">批量删除</label>
+                            <label class="btn btn-warning"><a href="{!! yzWebUrl('goods.goods.import') !!}">商品excel导入</a></label>
                         @show
                         <table class="table table-hover">
                             <thead class="navbar-inner">
@@ -398,6 +399,12 @@
                 }, "json"
             );
         });
+
+        {{--$(".import").click(function () {--}}
+        {{--    alert({{yzWebUrl('goods.goods.import')}});--}}
+        {{--    location.href="{{yzWebUrl('goods.goods.import')}}";--}}
+        {{--});--}}
+
         $(".batchdisable").click(function () {
             $(this).html('下架中...');
             $("[name=check1]:checkbox:checked").each(function (i) {
