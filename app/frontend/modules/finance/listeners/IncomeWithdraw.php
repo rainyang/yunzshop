@@ -89,14 +89,19 @@ class IncomeWithdraw
     public function withdrawArrival($event)
     {
         $withdrawModel = $event->getWithdrawModel();
+        \Log::debug('---------withdrawModel,,model+++++++++-----------------');
 
         $member = Member::getMemberByUid($withdrawModel->member_id)->with('hasOneFans')->first();
+        \Log::debug('---------member_uids+++++-----------------');
+
         $noticeData = [
             'type_name' => $withdrawModel->type_name,
             'pay_status' => "已到账",
             'actual_amounts' => $withdrawModel->actual_amounts,
             'pay_way' => $withdrawModel->pay_way,
         ];
+        \Log::debug('---------$noticeData+++++-----------------');
+
         MessageService::withdrawArrival($noticeData,$member);
     }
 

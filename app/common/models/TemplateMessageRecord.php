@@ -12,4 +12,6 @@ namespace app\common\models;
 class TemplateMessageRecord extends BaseModel
 {
     public $table = 'yz_template_message_record';
+    public $guarded = [''];
+    public $timestamps = true;
 }

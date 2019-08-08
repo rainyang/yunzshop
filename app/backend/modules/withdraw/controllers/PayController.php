@@ -21,6 +21,8 @@ class PayController extends PreController
      */
     public function index()
     {
+        \Log::debug('提现记录打款接口++++++++++++++++++++');
+
         $result = (new PayedService($this->withdrawModel))->withdrawPay();
         if ($result == true) {
             return $this->message('打款成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));

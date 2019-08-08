@@ -25,6 +25,7 @@ use app\frontend\modules\coupon\services\models\UseScope\CouponUseScope;
 use app\frontend\modules\coupon\services\models\UseScope\GoodsScope;
 use app\frontend\modules\coupon\services\models\UseScope\ShopScope;
 use app\frontend\modules\order\models\PreOrder;
+use phpDocumentor\Reflection\Types\Null_;
 
 class Coupon
 {
@@ -252,6 +253,11 @@ class Coupon
      */
     public function isOptional()
     {
+        //检测优惠券是否被删除
+        if($this->memberCoupon->is_member_deleted == 1){
+            return false;
+        }
+
         if (!isset($this->useScope)) {
             trace_log()->coupon("优惠券{$this->getMemberCoupon()->id}", '范围设置无效');
             return false;
