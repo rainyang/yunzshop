@@ -24,18 +24,4 @@ class DepositSetting extends BaseSetting
 
         return true;
     }
-
-    private function depositEnough()
-    {
-        if (!app('plugins')->isEnabled('team-rewards')) {
-            return false;
-        }
-        $memberId = \YunShop::app()->getMemberId();
-        $pluginMember = TeamRewardsMemberModel::uniacid()->where('member_id',$memberId)->first();
-        if($pluginMember && $pluginMember->deposit > $this->orderPay->amount)
-        {
-            return true;
-        }
-        return false;
-    }
 }
