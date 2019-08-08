@@ -43,9 +43,12 @@
                     <div class="col-sm-9 col-xs-12">
                         <input type="text" name="express_info[KDN][CustomerName]" class="form-control" value="{{ $set['KDN']['CustomerName'] }}" />
                         <span class='help-block'>在青龙系统申请一个商家编码，也叫青龙配送编码，格式：数字＋字母＋数字，举例：001K123456,<b>京东配送必填</b></span>
+                        <span class='help-block'>如有疑问，请看链接
+                            <a href="https://bbs.yunzmall.com/forum.php?mod=viewthread&tid=661&highlight=%E5%BF%AB%E9%80%92%E9%B8%9F">https://bbs.yunzmall.com/forum.php?mod=viewthread&tid=661&highlight=%E5%BF%AB%E9%80%92%E9%B8%9F</a>
+                        </span>
                     </div>
-
                 </div>
+                        
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
