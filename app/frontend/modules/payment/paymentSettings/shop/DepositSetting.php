@@ -16,18 +16,18 @@ class DepositSetting extends BaseSetting
     public function canUse()
     {
 
-        return true;
+        return $this->depositEnough();
     }
 
     public function exist()
     {
 
-        return true;
+        return $this->depositEnough();
     }
 
     private function depositEnough()
     {
-        if (!app('plugins')->isEnabled('team_rewards')) {
+        if (!app('plugins')->isEnabled('team-rewards')) {
             return false;
         }
         $memberId = \YunShop::app()->getMemberId();

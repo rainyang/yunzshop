@@ -20,7 +20,7 @@ class DepositPayment extends BasePayment
 
     private function depositEnough()
     {
-        if (!app('plugins')->isEnabled('team_rewards')) {
+        if (!app('plugins')->isEnabled('team-rewards')) {
             return false;
         }
         $memberId = \YunShop::app()->getMemberId();
