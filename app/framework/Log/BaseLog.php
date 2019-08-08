@@ -27,4 +27,7 @@ abstract class BaseLog
     }
 
     abstract public function add($message, array $content = []);
+    public function getLogger(){
+        return $this->log;
+    }
 }

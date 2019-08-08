@@ -49,6 +49,25 @@
                                 </span>
                             </div>
                         </div>
+                        <!-- 是否开启订单拆单  -->
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">按商品拆单</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="order[order_apart]" value="1"
+                                           @if ($set['order_apart']) checked @endif/>
+                                    开启
+                                </label>
+                                <label class="radio radio-inline">
+                                    <input type="radio" name="order[order_apart]" value="0"
+                                           @if (empty($set['order_apart'])) checked @endif/>
+                                    关闭
+                                </label>
+                                <span class="help-block">
+                                    开启有用户购买平台自营商品，每一个商品拆成一个订单，订单原有逻辑不变。
+                                </span>
+                            </div>
+                        </div>
 
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">首单商品</label>

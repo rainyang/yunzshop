@@ -77,7 +77,8 @@ public function __construct(array $attributes = [])
             $value = unserialize($value);
         }
         app('SettingCache')->put($key, $value, 600);
-
+        // 修改setting之后重启队列
+        app('supervisor')->restart();
         //\Log::debug('-----setting set cache------' . $cacheKey, $value);
         return $result;
     }

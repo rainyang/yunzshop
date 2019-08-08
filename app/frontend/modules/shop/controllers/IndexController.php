@@ -67,10 +67,7 @@ class IndexController extends ApiController
             ->with('hasOneGoodsLimitBuy')
             ->where("is_recommand", 1)
             ->where("status", 1)
-            ->where(function ($query) {
-                $query->where('plugin_id', 0)
-                    ->orWhere('plugin_id', 40);
-            })
+            ->whereInPluginIds()
             ->orderBy("display_order", 'desc')
             ->orderBy("id", 'desc')
             ->get();
@@ -93,10 +90,7 @@ class IndexController extends ApiController
             $goodsList = Goods::uniacid()->select(DB::raw(implode(',', $field)))
                 ->where("is_recommand", 1)
                 ->where("status", 1)
-                ->where(function ($query) {
-                    $query->where('plugin_id', 0)
-                        ->orWhere('plugin_id', 40);
-                })
+                ->whereInPluginIds()
                 ->orderBy("display_order", 'desc')
                 ->orderBy("id", 'desc')
                 ->paginate(16);

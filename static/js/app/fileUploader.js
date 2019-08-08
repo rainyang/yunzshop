@@ -562,7 +562,8 @@
                         return c ? (a.post(o, {
                                 id: c
                             },
-                            function(a) { !(a.error) ? (b.parent().remove(), util.message("删除成功", "", "success")) : util.message(a.message, "", "error");
+                            // function(a) { !(a.error) ? (b.parent().remove(), util.message("删除成功", "", "success")) : util.message(a.message, "", "error");
+                            function(a) { !(a.error) ? (b.parent().remove(), alert("删除成功")) : alert(a.message);
                             }), !1) : !1
                     })
                 },
