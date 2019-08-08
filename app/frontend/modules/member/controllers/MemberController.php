@@ -1689,6 +1689,8 @@ class MemberController extends ApiController
     public function getMemberSetting($request, $integrated)
     {
         $set = \Setting::get('shop.member');
+        //判断微信端是否开启了手机号登录
+        $data['wechat_login_mode'] = $set['wechat_login_mode'] ? true : false;
         //判断是否显示等级页
         $data['level']['is_open'] = $set['display_page'] ? 1 : 0;
         $data['level']['level_type'] = $set['level_type'] ?: '0';
