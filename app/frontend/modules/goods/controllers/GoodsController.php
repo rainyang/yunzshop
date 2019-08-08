@@ -266,7 +266,7 @@ class GoodsController extends ApiController
                 return $this->errorJson('酒店插件未开启');
             }
         }
-        $this->dataIntegrated(\app\frontend\controllers\HomePageController::wxJsSdkConfig(),'wx_js_sdk_config');
+
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberHistoryController::store($request, true),'store');
         $this->dataIntegrated(\app\frontend\modules\member\controllers\MemberFavoriteController::isFavorite($request, true),'is_favorite');
         return $this->successJson('', $this->apiData);
