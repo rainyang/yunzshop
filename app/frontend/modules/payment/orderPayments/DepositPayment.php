@@ -1,0 +1,34 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: win 10
+ * Date: 2019/8/7
+ * Time: 17:42
+ */
+
+namespace app\frontend\modules\payment\orderPayments;
+
+
+use Yunshop\TeamRewards\common\models\TeamRewardsMemberModel;
+
+class DepositPayment extends WebPayment
+{
+    public function canUse()
+    {
+        return parent::canUse() && !$this->depositEnough();
+    }
+
+    private function depositEnough()
+    {
+        if (!app('plugins')->isEnabled('team_rewards')) {
+            return false;
+        }
+        $memberId = \YunShop::app()->getMemberId();
+        $pluginMember = TeamRewardsMemberModel::uniacid()->where('member_id',$memberId)->first();
+        if($pluginMember && $pluginMember->deposit > $this->orderPay->amount)
+        {
+            return true;
+        }
+        return false;
+    }
+}

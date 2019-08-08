@@ -144,6 +144,10 @@ class PayFactory
      */
     const PAY_ALIPAY_HJ = 29;
 
+    /**
+     *  团队奖励预存款支付
+     */
+    const PAY_TEAM_DEPOSIT = 30;
 
     public static function create($type = null)
     {
@@ -277,6 +281,12 @@ class PayFactory
                 }
 
                 $className = new \Yunshop\ConvergePay\services\AlipayService();
+                break;
+            case self::PAY_TEAM_DEPOSIT:
+                if (!app('plugins')->isEnabled('team_rewards')) {
+                    throw new AppException('插件未开启');
+                }
+                $className = new \Yunshop\TeamRewards\common\services\DepositPayService();
                 break;
             default:
                 $className = null;
