@@ -259,11 +259,11 @@ class PaymentConfig
                 'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
                     return new DepositPayment($orderPay, $payType, $settings);
                 },
-                'settings' => [
+                /*'settings' => [
                     'shop' => function (OrderPay $orderPay) {
                         return new DepositSetting($orderPay);
                     }
-                ],
+                ],*/
             ],
         ];
     }
