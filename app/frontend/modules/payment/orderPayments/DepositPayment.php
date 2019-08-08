@@ -11,7 +11,7 @@ namespace app\frontend\modules\payment\orderPayments;
 
 use Yunshop\TeamRewards\common\models\TeamRewardsMemberModel;
 
-class DepositPayment extends WebPayment
+class DepositPayment extends BasePayment
 {
     public function canUse()
     {
