@@ -15,7 +15,7 @@ class DepositPayment extends BasePayment
 {
     public function canUse()
     {
-        return parent::canUse()/* && !$this->depositEnough()*/;
+        return parent::canUse() && !$this->depositEnough();
     }
 
     private function depositEnough()
