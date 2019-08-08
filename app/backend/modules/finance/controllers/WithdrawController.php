@@ -32,6 +32,9 @@ class WithdrawController extends BaseController
     public function dealt()
     {
         $resultData = \YunShop::request();
+
+        \Log::debug('开始执行提现程序+++++++++++++++++', $resultData['submit_check']);
+
         if (isset($resultData['submit_check'])) {
             //审核
            return (new AuditController())->index();
@@ -55,15 +58,10 @@ class WithdrawController extends BaseController
         return $this->message('提交数据有误，请刷新重试', yzWebUrl("finance.withdraw-detail.index", ['id' => $resultData['id']]));
     }
 
-
-
-    
-
-
-
-
     public function submitCheck($withdrawId, $incomeData)
     {
+        \Log::debug('审核检测接口+++++++++++++++++');
+
         $this->withdrawModel = $this->getWithdrawModel($withdrawId);
 
         if ($this->withdrawModel->status != Withdraw::STATUS_INITIAL) {
@@ -72,7 +70,7 @@ class WithdrawController extends BaseController
         return $this->examine();
         /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '0') {
-            return ['msg' => '审核失败,数据不符合提现规则!'];
+            return json_encode(['msg' => '审核失败,数据不符合提现规则!']);
         }
         $withdrawStatus = "-1";
         $actual_amounts = 0;
@@ -110,9 +108,9 @@ class WithdrawController extends BaseController
             $noticeData->audit_at = $updatedData['audit_at'];
             //审核通知事件
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
-            return ['msg' => '审核成功!'];
+            return json_encode(['msg' => '审核成功!']);
         }
-        return ['msg' => '审核失败!'];*/
+        return json_encode(['msg' => '审核失败!'];)*/
     }
 
     public function submitCancel($withdrawId, $incomeData)
@@ -125,7 +123,7 @@ class WithdrawController extends BaseController
         return $this->examine();
         /*$withdraw = Withdraw::getWithdrawById($withdrawId)->first();
         if ($withdraw->status != '-1') {
-            return ['msg' => '审核失败,数据不符合提现规则!'];
+            return json_encode(['msg' => '审核失败,数据不符合提现规则!']);
         }
         $withdrawStatus = "-1";
         $actual_amounts = 0;
@@ -164,9 +162,9 @@ class WithdrawController extends BaseController
             $noticeData->audit_at = $updatedData['audit_at'];
             //重新审核通知事件
             event(new AfterIncomeWithdrawCheckEvent($noticeData));
-            return ['msg' => '审核成功!'];
+            return json_encode(['msg' => '审核成功!']);
         }
-        return ['msg' => '审核失败!'];*/
+        return json_encode(['msg' => '审核失败!']);*/
     }
 
 
@@ -285,7 +283,7 @@ class WithdrawController extends BaseController
         $status = 0;
 
         if (empty($ids)) {
-            return json_encode(['status' => $status]);
+            return ['status' => $status];
         }
 
         $withdrawId = explode(',', $ids);
@@ -294,7 +292,7 @@ class WithdrawController extends BaseController
             $status = 1;
         }
 
-        return json_encode(['status' => $status]);
+        return ['status' => $status];
     }
 
 

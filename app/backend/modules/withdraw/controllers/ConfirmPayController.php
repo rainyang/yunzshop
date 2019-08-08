@@ -21,6 +21,8 @@ class ConfirmPayController extends PreController
      */
     public function index()
     {
+        \Log::debug('提现记录确认打款接口+++++++++++++++++++++');
+
         $result = (new PayedService($this->withdrawModel))->confirmPay();
 
         if ($result == true) {
