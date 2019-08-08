@@ -44,6 +44,7 @@ class PayType extends BaseModel
     const USDTPAY = 27;//USDT支付
     const WECHAT_HJ_PAY = 28;//微信支付-HJ(汇聚)
     const ALIPAY_HJ_PAY = 29;//支付宝支付-HJ(汇聚)
+    const PAY_TEAM_DEPOSIT = 30;//预存款支付
 
     /**
      * 查询所有分类类型
