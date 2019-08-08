@@ -46,6 +46,8 @@ class GoodsController extends BaseController
     protected $goods_id = null;
     protected $shopset;
     protected $shoppay;
+    private $list;
+    private $brand;
     //private $goods;
     protected $lang = null;
 
@@ -640,14 +642,6 @@ class GoodsController extends BaseController
      */
     public function import()
     {
-//        $result = $this->unzipFile('D:\Program\www/upload.zip','D:\Program\www/upload');
-//        dd($result);
-//        $file = '\storage\app/public/recharge/62dfb2e0706289bee51423faecdb24f5.xlsx';
-//        $reader = \Excel::load($file);
-//        $sheet = $reader->getSheet()->toArray(); // 读取第一個工作表
-//        dd($sheet);
-//        $highestRow = $sheet->getHighestRow(); // 取得总行数
-//        $highestColumm = $sheet->getHighestColumn(); // 取得总列数
         return view('goods.import')->render();
     }
 
@@ -697,41 +691,29 @@ class GoodsController extends BaseController
         }
     }
 
+
     /**
-     * 商品批量导入
+     * excel 商品导入
+     * @return \Illuminate\Http\JsonResponse
      */
     public function a()
     {
         $data = request()->input('data');
-//        $goodsData = array();
         $i = 0;
-//        //todo 如果分类不存在添加分类
-//        $goodsCategory1 = array_unique(array_column($data,'商品分类一'));
-//        $goodsCategory2 = array_unique(array_column($data,'商品分类二'));
-//        $goodsCategory3 = array_unique(array_column($data,'商品分类三'));
-//        $goodsCategory = array_merge($goodsCategory1,$goodsCategory2,$goodsCategory3);
-//        //todo 加速开发查询三次数据库
-//        $category = Category::select()->whereIn('name',$goodsCategory)->get();
-//        dd($category);
-
-//
-//        //todo 如果品牌不存在添加品牌,品牌图片问题
-//
-//
-//        //todo 图片问题
+        $goodsName = array_column($data,'商品名称');
         foreach ($data as $key => $value){
             $goodsData[$i] = [
                 'uniacid' => $value['公众号'] ?: 0,
                 'display_order' => $value['排序'],
                 'title' => $value['商品名称'],
-                'brand_id' => $value['品牌'],
+                'brand_id' => $this->getBrandId(['uniacid' => $value['公众号'],'brand'=> $value['品牌']]),
                 'type' => $value['商品类型'],
                 'sku' => $value['商品单位'],
                 'is_recommand' => $value['推荐'],
                 'is_new' => $value['新上'],
                 'is_hot' => $value['热卖'],
                 'is_discount' => $value['促销'],
-                'thumb_url' => $value['商品图片'],
+                'thumb_url' => 'image/'.$value['商品编号'].'png',
                 'goods_sn' => $value['商品编号'],
                 'price' => $value['商品现价'],
                 'market_price' => $value['商品原价'],
@@ -744,13 +726,187 @@ class GoodsController extends BaseController
                 'status' => $value['是否上架'],
                 'content' => $value['商品描述']
             ];
+            $goodsCategorys[$value['商品名称']] = [
+                'title' => $value['商品名称'],
+                'category1' => $value['商品分类一'],
+                'category2' => $value['商品分类二'],
+            ];
             $i++;
         }
-//        dd($goodsData);
+        unset($data);
+        unset($i);
         $result = Goods::insert($goodsData);
+        unset($goodsData);
+        $goodsId = Goods::select('id','uniacid','title')->whereIn('title',$goodsName)->get()->toArray();
+        unset($goodsName);
+        foreach ($goodsId as $k => $v){
+            if(isset($goodsCategorys[$v['title']])){
+                $goodsId[$k] = array_merge($v,$goodsCategorys[$v['title']]);
+            }
+            unset($k);
+        }
+        unset($v);
+        $goodsCategory = array();
+        foreach ($goodsId as $a => $b){
+            $temp = $this->getCategoryId([
+                'uniacid'=>$b['uniacid'],
+                'category_name_1'=>$b['category1'],
+                'category_name_2' => $b['category2'],
+            ]);
+            $goodsCategory[$a] = [
+                'goods_id' => $b['id'],
+                'category_id' => $temp['category_id'],
+                'category_ids' => $temp['category_ids'],
+                'created_at'=>$_SERVER['REQUEST_TIME'],
+                'updated_at' => $_SERVER['REQUEST_TIME'],
+            ];
+            unset($temp);
+            unset($a);
+        }
+        unset($b);
+        $result = GoodsCategory::insert($goodsCategory);
         if($result){
             return $this->successJson('导入成功');
         }
+    }
+
+    /**
+     *   //todo 通过数组下标查找,没有就添加，如果上传的excel里分类较多，需优化
+     * @param $level
+     * @param $uniacid
+     * @param $name
+     * @return mixed
+     */
+    private function getCategoryId($array)
+    {
+        if($array['category_name_1'] == null and $array['category_name_2'] == null){
+             return [
+                 'category_id' => 0,
+                 'category_ids' => '',
+             ];
+        }
+        if(is_null($this->list)){
+            $this->list = array_column(Category::select('id','name','uniacid','level')->where('plugin_id',0)->get()->toArray(),null,'name');
+        }
+        $result = array();
+        if($this->list[$array['category_name_1']]){
+            if($this->list[$array['category_name_1']]['uniacid'] == $array['uniacid']){
+                $result['category_id_1'] = $this->list[$array['category_name_1']]['id'];
+            }else{
+                $result['category_id_1'] = $this->addCategory([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['category_name_1'],
+                    'level' => 1,
+                    'plugin_id'=> 0,
+                    'is_home' => 1,
+                    'parent_id' => 0
+                ]);
+            }
+        }else{
+            $result['category_id_1'] = $this->addCategory([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['category_name_1'],
+                'level' => 1,
+                'plugin_id'=> 0,
+                'is_home' => 1,
+                'parent_id' => 0
+            ]);
+        }
+
+        //商品二级分类
+        if($this->list[$array['category_name_2']]){
+            if($this->list[$array['category_name_2']]['uniacid'] == $array['uniacid']){
+                $result['category_id'] = $this->list[$array['category_name_2']]['id'];
+                $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+            }else{
+                $result['category_id'] = $this->addCategory([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['category_name_2'],
+                    'level' => 2,
+                    'plugin_id'=> 0,
+                    'is_home' => 1,
+                    'parent_id' => $result['category_id_1']
+                ]);
+                $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+            }
+        }else{
+            $result['category_id'] = $this->addCategory([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['category_name_2'],
+                'level' => 2,
+                'plugin_id'=> 0,
+                'is_home' => 1,
+                'parent_id' => $result['category_id_1']
+            ]);
+            $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+        }
+        if(!$result['category_ids']){
+            $result['category_ids'] = $result['category_id'];
+        }
+        unset($result['category_id_1']);
+        return $result;
+    }
+
+    /**
+     * 添加分类表
+     * @param $array
+     * @return int
+     */
+    private function addCategory($array)
+    {
+        $id = Category::insertGetId($array);
+        $this->list = array_column(Category::select('id','name','uniacid','level')->where('plugin_id',0)->get()->toArray(),null,'name');
+        return $id;
+    }
+
+    /**
+     * 通过数组下标获取brand_id
+     * @param $array
+     * @return mixed
+     */
+    private function getBrandId($array)
+    {
+        if(is_null($this->brand)){
+            $this->brand = array_column(Brand::get()->toArray(),null,'name');
+        }
+        if($this->brand[$array['brand']]){
+            if($this->brand[$array['brand']]['uniacid'] == $array['uniacid']){
+                  return $this->brand[$array['brand']]['id'];
+            }else{
+                //todo 添加品牌
+                return $this->addBrand([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['brand'],
+                    'alias' => '批量添加',
+                    'logo' => '',
+                    'desc' => '',
+                    'created_at'=>$_SERVER['REQUEST_TIME'],
+                    'updated_at' => $_SERVER['REQUEST_TIME'],
+                ]);
+            }
+        }else{
+            return $this->addBrand([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['brand'],
+                'alias' => '',
+                'logo' => '',
+                'desc' => '',
+                'created_at'=>$_SERVER['REQUEST_TIME'],
+                'updated_at' => $_SERVER['REQUEST_TIME'],
+            ]);
+        }
+    }
+
+    /**
+     * 添加品牌
+     * @param $array
+     * @return int
+     */
+    private function addBrand($array)
+    {
+        $id = Brand::insertGetId($array);
+        $this->brand = array_column(Brand::get()->toArray(),null,'name');
+        return $id;
     }
 
 }

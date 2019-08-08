@@ -75,7 +75,7 @@
                     cache: false,
                     success: function (result) {
                         alert(result.msg);
-                        // window.location.reload();
+                        window.location.reload();
                     }
                 })
             };
