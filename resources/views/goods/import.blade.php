@@ -23,10 +23,17 @@
     <span>格式要求： Excel第一列可以为会员ID或者手机号(根据选择的上传第一列值得类型决定)，第二列必须为充值数量</span>
 </div>
 
+{{--异步上传,节约时间--}}
 <div class="form-group">
     <label class="col-sm-2 control-label must">EXCEL文件</label>
     <div class="col-sm-5 goodsname" style="padding-right:0;">
         <input type="file" onchange="importf(this)" class="form-control"/>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-2 control-label must">ZIP文件</label>
+    <div class="col-sm-5 goodsimage" style="padding-right:0;">
+        <input type="file" onchange="importImage(this)" class="form-control"/>
     </div>
 </div>
     <script>
@@ -68,7 +75,7 @@
                     cache: false,
                     success: function (result) {
                         alert(result.msg);
-                        window.location.reload();
+                        // window.location.reload();
                     }
                 })
             };
@@ -88,6 +95,33 @@
             o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
             return o;
         }
+
+        //异步图片文件上传
+        function importImage(obj) {
+            var formData = new FormData();
+            formData.append("file", obj.files[0]);
+            $.ajax({
+                url: "{!! yzWebUrl('goods.goods.update-zip') !!}",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (result) {
+                    if (result.result == 1) {
+                        alert("上传成功！");
+                    }
+                    if (result.result == 0) {
+                        alert(result.msg);
+                    }
+                },
+                error: function () {
+                    alert("上传失败！");
+                }
+            });
+        }
+
+
+
     </script>
 
 @endsection('content')

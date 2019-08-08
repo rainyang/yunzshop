@@ -39,6 +39,7 @@ use Yunshop\Hotel\common\models\Hotel;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
+use app\common\helpers\ImageHelper;
 
 class GoodsController extends BaseController
 {
@@ -639,6 +640,8 @@ class GoodsController extends BaseController
      */
     public function import()
     {
+//        $result = $this->unzipFile('D:\Program\www/upload.zip','D:\Program\www/upload');
+//        dd($result);
 //        $file = '\storage\app/public/recharge/62dfb2e0706289bee51423faecdb24f5.xlsx';
 //        $reader = \Excel::load($file);
 //        $sheet = $reader->getSheet()->toArray(); // 读取第一個工作表
@@ -649,30 +652,85 @@ class GoodsController extends BaseController
     }
 
     /**
+     *  解压zip文件
+     * @string $file  需要解压的文件的绝对路径
+     * @string $destination 解压文件的绝对路径
+     * @return bool
+     *
+     */
+    private function unZipFile($file, $destination)
+    {
+        $zip = new \ZipArchive() ; // 实例化对象
+        if ($zip->open($file) !== true) {    //打开zip文档
+            return false; //无法打开zip文件
+        }
+        $zip->extractTo($destination);//将压缩文件解压到指定的目录下
+        $zip->close(); //关闭zip文档
+        return ture;
+    }
+
+    //ajax 异步上传文件
+    public function updateZip()
+    {
+        $file = request()->file('file');
+        if (!$file) {
+            return $this->errorJson('请传入正确参数.');
+        }
+
+        if ($file->isValid()) {
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $ext = $file->getClientOriginalExtension();
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            if (env('APP_Framework') == 'platform') {
+                $attachment = base_path().'/static/upload/';
+            } else {
+                $attachment = $_SERVER['DOCUMENT_ROOT'].'/attachment/image/';
+            }
+            if($this->unZipFile($attachment.$newOriginalName,$attachment) == true){
+                return $this->successJson('上传成功');
+            }else{
+                return $this->errorJson('解压失败');
+            }
+        }
+    }
+
+    /**
      * 商品批量导入
      */
     public function a()
     {
         $data = request()->input('data');
-        $goodsData = array();
+//        $goodsData = array();
         $i = 0;
-        //todo 如果品牌不存在添加品牌,品牌图片问题
-        //todo 如果分类不存在添加分类
+//        //todo 如果分类不存在添加分类
+//        $goodsCategory1 = array_unique(array_column($data,'商品分类一'));
+//        $goodsCategory2 = array_unique(array_column($data,'商品分类二'));
+//        $goodsCategory3 = array_unique(array_column($data,'商品分类三'));
+//        $goodsCategory = array_merge($goodsCategory1,$goodsCategory2,$goodsCategory3);
+//        //todo 加速开发查询三次数据库
+//        $category = Category::select()->whereIn('name',$goodsCategory)->get();
+//        dd($category);
 
-        //todo 图片问题
+//
+//        //todo 如果品牌不存在添加品牌,品牌图片问题
+//
+//
+//        //todo 图片问题
         foreach ($data as $key => $value){
             $goodsData[$i] = [
                 'uniacid' => $value['公众号'] ?: 0,
                 'display_order' => $value['排序'],
                 'title' => $value['商品名称'],
-                // todo 商品分类
                 'brand_id' => $value['品牌'],
                 'type' => $value['商品类型'],
                 'sku' => $value['商品单位'],
-                'is_discount' => 1,
-                'is_new' => 1,
-                'is_hot' =>1,
-                'is_discount' => 1,
+                'is_recommand' => $value['推荐'],
+                'is_new' => $value['新上'],
+                'is_hot' => $value['热卖'],
+                'is_discount' => $value['促销'],
                 'thumb_url' => $value['商品图片'],
                 'goods_sn' => $value['商品编号'],
                 'price' => $value['商品现价'],
@@ -684,7 +742,7 @@ class GoodsController extends BaseController
                 'reduce_stock_method' => $value['拍下减库存'],
                 'no_refund' => $value['不可退货退款'],
                 'status' => $value['是否上架'],
-                'content' => $value['商品详情']
+                'content' => $value['商品描述']
             ];
             $i++;
         }
