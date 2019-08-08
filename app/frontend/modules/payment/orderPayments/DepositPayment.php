@@ -25,7 +25,7 @@ class DepositPayment extends BasePayment
         }
         $memberId = \YunShop::app()->getMemberId();
         $pluginMember = TeamRewardsMemberModel::uniacid()->where('member_id',$memberId)->first();
-        if($pluginMember && $pluginMember->deposit > $this->orderPay->amount)
+        if($pluginMember && $pluginMember->deposit >= $this->orderPay->amount)
         {
             return true;
         }
