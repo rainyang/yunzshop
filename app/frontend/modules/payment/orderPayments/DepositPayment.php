@@ -15,7 +15,7 @@ class DepositPayment extends WebPayment
 {
     public function canUse()
     {
-        return parent::canUse();/* && !$this->depositEnough();*/
+        return parent::canUse() && !$this->depositEnough();
     }
 
     private function depositEnough()
