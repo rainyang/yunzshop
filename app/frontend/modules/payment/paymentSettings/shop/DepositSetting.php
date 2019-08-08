@@ -16,13 +16,13 @@ class DepositSetting extends BaseSetting
     public function canUse()
     {
 
-        return $this->depositEnough();
+        return true;
     }
 
     public function exist()
     {
 
-        return $this->depositEnough();
+        return true;
     }
 
     private function depositEnough()
