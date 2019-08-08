@@ -52,8 +52,18 @@ class GoodsPosterController extends ApiController
         'br'        => false,
     ];
 
+    /**
+     * 字体路径
+     *
+     * @var string
+     */
+    private $fontPath;
+
+
     public function generateGoodsPoster()
     {
+        $this->fontPath = $this->defaultFontPath();
+
         $id = intval(\YunShop::request()->id);
 
         $this->mid = \YunShop::app()->getMemberId();
@@ -164,12 +174,12 @@ class GoodsPosterController extends ApiController
     public function base64EncodeImage($strTmpName)
     {
         $base64Image = '';
-        $imageInfo   = getimagesize($strTmpName);
+        $imageInfo = getimagesize($strTmpName);
         //$imageData   = fread(fopen($strTmpName , 'r'), filesize($strTmpName));
         //$base64Image = 'data:' . $imageInfo['mime'] . ';base64,' . chunk_split(base64_encode($imageData));
         $base64Image = base64_encode(file_get_contents($strTmpName));
         return [
-            'mime' => $imageInfo['mime'],
+            'mime'        => $imageInfo['mime'],
             'base64Image' => $base64Image,
         ];
     }
@@ -233,10 +243,9 @@ class GoodsPosterController extends ApiController
     //商城logo 与 商城名称处理
     protected function createShopImage($target)
     {
-        $this->writeEnv();
-        $font = "source_han_sans";
+
         //计算商城名称的宽度
-        $testbox = imagettfbbox($this->shopText['size'], 0, $font, $this->shopSet['name']);
+        $testbox = imagettfbbox($this->shopText['size'], 0, $this->fontPath, $this->shopSet['name']);
         $shopTextWidth = $testbox[2] > 500 ? 500 : $testbox[2];
 
 
@@ -263,7 +272,7 @@ class GoodsPosterController extends ApiController
 
         Utils::mkdirs($path);
 
-        $file_name = \YunShop::app()->uniacid .'-'.  \YunShop::app()->getMemberId() .'-' . $this->goodsModel->id . '.png';
+        $file_name = \YunShop::app()->uniacid . '-' . \YunShop::app()->getMemberId() . '-' . $this->goodsModel->id . '.png';
 
         return $path . $file_name;
     }
@@ -335,17 +344,12 @@ class GoodsPosterController extends ApiController
      */
     private function mergeText($target, $params, $text)
     {
-        $this->writeEnv();
-        $font = "source_han_sans";
-
-        // $font="c:/windows/fonts/simhei.ttf";
-
         if ($params['type']) {
-            $text = $this->autowrap($params['size'], 0, $font, $text, $params['max_width'], $params['br']);
+            $text = $this->autowrap($params['size'], 0, $this->fontPath, $text, $params['max_width'], $params['br']);
         }
 
         $black = imagecolorallocate($target, 51, 51, 51);//文字颜色
-        imagettftext($target, $params['size'], 0, $params['left'], $params['top'], $black, $font, $text);
+        imagettftext($target, $params['size'], 0, $params['left'], $params['top'], $black, $this->fontPath, $text);
 
         return $target;
     }
@@ -359,25 +363,19 @@ class GoodsPosterController extends ApiController
 
         $color = imagecolorallocate($target, 107, 107, 107);
 
-        $this->writeEnv();
-
-        $font = "source_han_sans";
-
-        // $font="c:/windows/fonts/simhei.ttf";
-
         $price = '现价:￥' . $this->goodsModel->price;
         $market_price = '原价:￥' . $this->goodsModel->market_price;
         $black = imagecolorallocate($target, 241, 83, 83);//当前价格颜色
 
-        $price_box = imagettfbbox(18, 0, $font, $price);
-        $market_price_box = imagettfbbox(24, 0, $font, $market_price);
+        $price_box = imagettfbbox(18, 0, $this->fontPath, $price);
+        $market_price_box = imagettfbbox(24, 0, $this->fontPath, $market_price);
         $gray = imagecolorallocate($target, 107, 107, 107);//原价颜色
 
         //设置删除线条
         // imageline($target, $price_box[2] + 12, 900, $price_box[2]+$market_price_box[2] + 14, 900, $color);
 
-        imagettftext($target, 24, 0, 30, 910, $black, $font, $price);
-        imagettftext($target, 16, 0, 30, 940, $gray, $font, $market_price);
+        imagettftext($target, 24, 0, 30, 910, $black, $this->fontPath, $price);
+        imagettftext($target, 16, 0, 30, 940, $gray, $this->fontPath, $market_price);
 
         return $target;
 
@@ -400,13 +398,13 @@ class GoodsPosterController extends ApiController
             //商城商品二维码
             $url = yzAppFullUrl('/goods/' . $this->goodsModel->id, ['mid' => $this->mid]);
 
-            $file =  'shop-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
+            $file = 'shop-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
 
         } else {
             //门店商品二维码
             $url = yzAppFullUrl('/goods/' . $this->goodsModel->id . '/o2o/' . $this->storeid, ['mid' => $this->mid]);
 
-            $file =  'store-'.$this->storeid.'-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
+            $file = 'store-' . $this->storeid . '-mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
         }
 
         $path = storage_path('app/public/goods/qrcode/' . \YunShop::app()->uniacid);
@@ -414,7 +412,7 @@ class GoodsPosterController extends ApiController
         Utils::mkdirs($path);
 
 
-        if (!is_file($path.'/'.$file)) {
+        if (!is_file($path . '/' . $file)) {
 
             \QrCode::format('png')->size(200)->generate($url, $path . '/' . $file);
 
@@ -483,7 +481,7 @@ class GoodsPosterController extends ApiController
     {
         $url = "https://api.weixin.qq.com/wxa/getwxacodeunlimit?";
         $token = $this->getToken();
-        \Log::debug('===========access_token===========',$token);
+        \Log::debug('===========access_token===========', $token);
         $url .= "access_token=" . $token;
         $postdata = [
             "scene" => 'id=' . $this->goodsModel->id . ',mid=' . \YunShop::app()->getMemberId(),
@@ -493,13 +491,13 @@ class GoodsPosterController extends ApiController
         if (!is_dir($path)) {
             Utils::mkdirs($path);
         }
-        \Log::debug('=====地址信息=======',$postdata);
+        \Log::debug('=====地址信息=======', $postdata);
         $res = $this->curl_post($url, json_encode($postdata), $options = array());
         $erroe = json_decode($res);
-        if(isset($erroe->errcode)){
-            return $this->errorJson('错误码'.$erroe->errcode.';错误信息'.$erroe->errmsg);
+        if (isset($erroe->errcode)) {
+            return $this->errorJson('错误码' . $erroe->errcode . ';错误信息' . $erroe->errmsg);
         }
-        \Log::debug('===========生成二维码===========',$res);
+        \Log::debug('===========生成二维码===========', $res);
         $file = 'mid-' . $this->mid . '-goods-' . $this->goodsModel->id . '.png';
         file_put_contents($path . '/' . $file, $res);
         $img = imagecreatefromstring(file_get_contents($path . '/' . $file));
@@ -550,9 +548,13 @@ class GoodsPosterController extends ApiController
         return $data;
     }
 
-    private function writeEnv()
+    /**
+     * 默认字体路径
+     *
+     * @return string
+     */
+    private function defaultFontPath()
     {
-        putenv('GDFONTPATH=' . base_path('static/fonts'));
+        return base_path() . DIRECTORY_SEPARATOR . "static" . DIRECTORY_SEPARATOR . "fonts" . DIRECTORY_SEPARATOR . "source_han_sans.ttf";
     }
-
 }
