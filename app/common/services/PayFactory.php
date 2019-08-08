@@ -11,6 +11,7 @@ namespace app\common\services;
 
 use app\common\exceptions\AppException;
 use Yunshop\DianBangScan\services\DianBangScanService;
+use Yunshop\MinApp\Common\Services\WeChatAppletPay;
 
 class PayFactory
 {
@@ -144,6 +145,11 @@ class PayFactory
      */
     const PAY_ALIPAY_HJ = 29;
 
+    /**
+     *  支付宝支付-HJ(汇聚)
+     */
+    const PAY_WE_CHAT_APPLET = 30;
+
 
     public static function create($type = null)
     {
@@ -270,13 +276,11 @@ class PayFactory
 
                 $className = new \Yunshop\ConvergePay\services\WechatService();
                 break;
-            case self::PAY_ALIPAY_HJ:
-                if (!app('plugins')->isEnabled('converge_pay') && \Setting::get('plugin.convergePay_set.alipay') == false) {
-
-                    throw new AppException('商城未开启汇聚支付插件中支付宝支付');
+            case self::PAY_WE_CHAT_APPLET:
+                if (!app('plugins')->isEnabled('min-pay')) {
+                    throw new AppException('小程序插件未开启');
                 }
-
-                $className = new \Yunshop\ConvergePay\services\AlipayService();
+                $className = new WeChatAppletPay();
                 break;
             default:
                 $className = null;

@@ -15,6 +15,7 @@ use app\common\events\withdraw\WithdrawPayEvent;
 use app\common\events\withdraw\WithdrawPayingEvent;
 use app\common\exceptions\ShopException;
 use app\common\models\Income;
+use app\common\models\Member;
 use app\common\models\Withdraw;
 use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
@@ -253,16 +254,25 @@ class PayedService
      */
     private function wechatWithdrawPay()
     {
-        $member_id = $this->withdrawModel->member_id;
+        $memberId = $this->withdrawModel->member_id;
         $sn = $this->withdrawModel->withdraw_sn;
         $amount = $this->withdrawModel->actual_amounts;
         $remark = '';
 
-        $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
-        if ($result['errno'] == 1) {
-            
-            $this->sendMessage();            
+        $memberModel = Member::uniacid()->where('uid', $memberId)->with(['hasOneFans', 'hasOneMiniApp'])->first();
 
+        //优先使用微信会员打款
+        if ($memberModel->hasOneFans->openid) {
+            $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($memberId, $sn, $amount, $remark);
+        //微信会员openid不存在时，假设使用小程序会员openid
+        } elseif (app('plugins')->isEnabled('min-app') && $memberModel->hasOneMiniApp->openid) {
+            $result = PayFactory::create(PayFactory::PAY_WE_CHAT_APPLET)->doWithdraw($memberId, $sn, $amount, $remark);
+        } else {
+            $this->sendMessage('提现会员openid错误');
+            throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：提现会员openid错误");
+        }
+        if ($result['errno'] == 1) {
+            $this->sendMessage();
             throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
         }
         return true;
@@ -441,21 +451,16 @@ class PayedService
 
     /**
      * @param string $msg 提现错误信息
-     *
      */
-    private function sendMessage($msg) 
+    private function sendMessage($msg = '')
     {
         if ($this->withdrawModel->type == 'balance') {
-            
-            return BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
-        
+            BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
         } else {
-            
             foreach ($this->uids as $k => $v) {
                 //收入提现失败通知
                 MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
             }
-            return ;
         }
     }
 }
