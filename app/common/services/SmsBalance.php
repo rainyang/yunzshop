@@ -6,6 +6,7 @@ namespace app\common\services;
 use app\common\services\aliyun\AliyunSMS;
 use app\common\models\UniAccount;
 use app\backend\modules\member\models\Member;
+use app\framework\Support\Facades\Log;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Events\Dispatcher;
 
@@ -28,7 +29,7 @@ class SmsBalance
                         if (count($smsHour) == 2) {
                             $time = $smsHour['1'] . ' ' . $smsHour['0'] . ' * * * *';
                         } else {
-                            $time = '0 ' . $smsHour['0'] . ' * * * *';
+                            $time = '0 ' . $smsHour['0'] . ' * * * ';
                         }
                         \Cron::add('smsMeaggeToMemberMobile'.$u->unacid, $time, function () {
                             $this->handle();
@@ -69,7 +70,7 @@ class SmsBalance
             }
             foreach ($mobile as $key => $value) {
                 //todo 发送短信
-                $aly_sms = new AliyunSMS(trim($smsSet['aly_appkey']), trim($smsSet['aly_secret']));
+                $aly_sms = new app\common\services\aliyun\AliyunSMS(trim($smsSet['aly_appkey']), trim($smsSet['aly_secret']));
                 $response = $aly_sms->sendSms(
                     $smsSet['aly_signname'], // 短信签名
                     $smsSet['aly_templateBalanceCode'], // 发货提醒短信
