@@ -20,6 +20,9 @@ class SmsBalance
             \YunShop::app()->uniacid = $u->uniacid;
             \Setting::$uniqueAccountId = $u->uniacid;
             $balanceSet = \Setting::get('finance.balance');
+            if($balanceSet['sms_send'] == 0){
+                continue;
+            }
             $smsHour = explode(":", str_replace('：',':',$balanceSet['sms_hour']));
             if(count($smsHour) == 2){
                 $time = $smsHour['1'].' '.$smsHour['0'].' * * * *';

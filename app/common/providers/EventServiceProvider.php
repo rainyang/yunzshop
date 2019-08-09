@@ -184,6 +184,8 @@ class EventServiceProvider extends ServiceProvider
 
         //余额短信提醒定时任务
         \app\common\services\SmsBalance::class,
+        // 订单关闭后返还优惠券
+        \app\backend\modules\coupon\listeners\OrderClosedListener::class,
     ];
 
     /**
