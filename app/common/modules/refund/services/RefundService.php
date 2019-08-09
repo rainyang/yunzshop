@@ -184,7 +184,7 @@ class RefundService
         $result = PayFactory::create($this->refundApply->order->pay_type_id)->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
 
         if ($result !== true) {
-            throw new AdminException($result);
+            throw new AdminException(TEAM_REWARDS_DEPOSIT.'退款失败');
         }
 
         //退款状态设为完成

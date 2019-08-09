@@ -283,7 +283,7 @@ class PayFactory
                 $className = new \Yunshop\ConvergePay\services\AlipayService();
                 break;
             case self::PAY_TEAM_DEPOSIT:
-                if (!app('plugins')->isEnabled('team-rewards')) {
+                if (!app('plugins')->isEnabled('team-rewards') && \Setting::get('team-rewards.is_open') != 1) {
                     throw new AppException('插件未开启');
                 }
                 $className = new \Yunshop\TeamRewards\common\services\DepositPayService();

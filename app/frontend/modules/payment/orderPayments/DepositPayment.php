@@ -23,6 +23,11 @@ class DepositPayment extends BasePayment
         if (!app('plugins')->isEnabled('team-rewards')) {
             return false;
         }
+        $set = \Setting::get('team-rewards.is_open');
+        if($set != 1)
+        {
+            return false;
+        }
         $memberId = \YunShop::app()->getMemberId();
         $pluginMember = TeamRewardsMemberModel::uniacid()->where('member_id',$memberId)->first();
         if($pluginMember && $pluginMember->deposit >= $this->orderPay->amount)
