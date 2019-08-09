@@ -277,7 +277,7 @@ class PayFactory
                 $className = new \Yunshop\ConvergePay\services\WechatService();
                 break;
             case self::PAY_WE_CHAT_APPLET:
-                if (!app('plugins')->isEnabled('min-pay')) {
+                if (!app('plugins')->isEnabled('min-app')) {
                     throw new AppException('小程序插件未开启');
                 }
                 $className = new WeChatAppletPay();
