@@ -36,7 +36,7 @@ class SmsCodeService extends MemberService
                 return show_json(6, $checkCode['json']);
             }
             $memberInfo = MemberModel::checkMobile($this->uniacid, $data['mobile']);
-            if (empty($hasMobile)) {
+            if (empty($memberInfo)) {
                 $memberInfo = $this->register($data);
             }
 
