@@ -76,8 +76,9 @@ class SmsBalance
                     $smsSet['aly_templateBalanceCode'], // 发货提醒短信
                     $mobile, // 短信接收者
                     Array(  // 短信模板中字段的值
-                        "blance" => $value['credit2'],
-                        'name' => $u['name'],
+                        'preshop' => $u->name,
+                        'amount' => $value['credit2'],
+                        'endshop' =>$u->name,
                     )
                 );
                 if ($response->Code == 'OK' && $response->Message == 'OK') {

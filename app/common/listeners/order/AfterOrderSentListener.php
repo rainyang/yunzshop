@@ -28,10 +28,10 @@ class AfterOrderSentListener
         $response = $aly_sms->sendSms(
                 $set['aly_signname'], // 短信签名
                 $set['aly_templateSendMessageCode'], // 发货提醒短信
-                $mobile // 短信接收者
-//                Array(  // 短信模板中字段的值
-//                    "number" => $code
-//                )
+                $mobile, // 短信接收者
+                Array(  // 短信模板中字段的值
+                    "shop" => \app\common\models\UniAccount::select('uniacid','name')->where('uniacid',\YunShop::app()->uniacid)->first()->name,
+                )
         );
         if ($response->Code == 'OK' && $response->Message == 'OK') {
              \Log::debug('阿里云短信发送成功');

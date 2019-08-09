@@ -30,9 +30,6 @@ class TestController extends BaseController
 
     public function t()
     {
-
-//        $balanceSet = \Setting::get('finance.balance');
-//        $smsHour = explode(":", $balanceSet['sms_hour']);
     }
 
     private $amountItems;
