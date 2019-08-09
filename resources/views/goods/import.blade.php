@@ -15,12 +15,17 @@
     <span>功能介绍:</span>
     <span style="padding-left: 60px;">1. 使用excel快速导入商品, 文件格式<b style="color:red;">[xls]</b></span>
     <span style="padding-left: 60px;">2. 一次导入的数据不要太多,大量数据请分批导入,建议在服务器负载低的时候进行</span>
+    <span style="padding-left: 60px;">3. 导入商品时请注意商品名称一定不能重复，判断唯一性的标准</span>
+    <span style="padding-left: 60px;">4. 模板中的excel中的商品分类只能进行两级分类,分类不要重复填写,比如之前有一个分类是分类1,他的二级分类是分类2，就不在填
+    商品分类一和商品分类二这一行了
+    </span>
+    <span style="padding-left: 60px;">5. 商品图片需要填写图片的名称,请自己找一个方法保证图片唯一性,比如:商品条码+日期+当前时间等</span>
     <br>
     <span>使用方法:</span>
     <span style="padding-left: 60px;">1. 下载Excel模板文件并录入信息</span>
     <span style="padding-left: 60px;">4. 上传Excel导入</span>
     <br>
-    <span>格式要求： Excel第一列可以为会员ID或者手机号(根据选择的上传第一列值得类型决定)，第二列必须为充值数量</span>
+    <span>格式要求： Excel中并没有严格的格式要求,只要都填写就行了</span>
 </div>
 
 {{--异步上传,节约时间--}}
@@ -35,6 +40,17 @@
     <div class="col-sm-5 goodsimage" style="padding-right:0;">
         <input type="file" onchange="importImage(this)" class="form-control"/>
     </div>
+</div>
+<div class='form-group'>
+    <div class="col-sm-12">
+        <div class="modal-footer">
+            <a class="btn btn-primary" href="{{yzWebUrl('goods.goods.excelImport')}}" style="margin-right: 10px;">
+                <i class="fa fa-download"></i>
+                <span>导入商品模板文件</span>
+            </a>
+        </div>
+    </div>
+</div>
 </div>
     <script>
         /*

@@ -909,4 +909,27 @@ class GoodsController extends BaseController
         return $id;
     }
 
+    /**
+     * demo 下载
+     */
+    public function excelImport()
+    {
+        $exportData['0'] = ["公众号", "排序",'商品名称','商品分类一','商品分类二','商品品牌','商品类型','商品单位',
+            '商品属性','商品图片','商品编号','商品条码','商品现价','商品原价','虚拟销量','减库存方式','不可退换货',
+            '是否上架','商品描述','推荐','新上','热卖','促销'
+        ];
+
+        \Excel::create('商品批量导入模板', function ($excel) use ($exportData) {
+            $excel->setTitle('Office 2005 XLSX Document');
+            $excel->setCreator('芸众商城');
+            $excel->setLastModifiedBy("芸众商城");
+            $excel->setSubject("Office 2005 XLSX Test Document");
+            $excel->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.");
+            $excel->setKeywords("office 2005 openxml php");
+            $excel->setCategory("report file");
+            $excel->sheet('info', function ($sheet) use ($exportData) {
+                $sheet->rows($exportData);
+            });
+        })->export('xls');
+    }
 }

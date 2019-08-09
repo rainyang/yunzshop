@@ -280,11 +280,34 @@ class MemberController extends BaseController
         return view('member.import')->render();
     }
 
+    public function memberExcelDemo()
+    {
+        $exportData['0'] = ['手机号','密码'];
+        \Excel::create('会员批量导入模板', function ($excel) use ($exportData) {
+            $excel->setTitle('Office 2005 XLSX Document');
+            $excel->setCreator('芸众商城');
+            $excel->setLastModifiedBy("芸众商城");
+            $excel->setSubject("Office 2005 XLSX Test Document");
+            $excel->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.");
+            $excel->setKeywords("office 2005 openxml php");
+            $excel->setCategory("report file");
+            $excel->sheet('info', function ($sheet) use ($exportData) {
+                $sheet->rows($exportData);
+            });
+        })->export('xls');
+    }
+
     public function memberExcel()
     {
         $data = request()->input();
         $uniacid = \YunShop::app()->uniacid;
         //excel 本身就重复的值
+        if(!$data['data']['0']['手机号']){
+             $this->errorJson('第一项开头必须为手机号');
+        }
+        if(!$data['data']['0']['密码']){
+            $this->errorJson('第二项开头必须为密码');
+        }
         $data = array_column($data['data'],null,'手机号');
         $phone = array_keys($data);
         $phones = MemberModel::select('mobile')->whereIn('mobile',$phone)->pluck('mobile');
@@ -302,7 +325,14 @@ class MemberController extends BaseController
         //整理数据入库
         $i = 0;
         $array = array();
-        $avatar = '';
+        //获取图片
+        $memberSet = \Setting::get('shop.member');
+        \Log::info('member_set',$memberSet);
+        if (isset($memberSet) && $memberSet['headimg']) {
+            $avatar =yz_tomedia($memberSet['headimg']);
+        } else {
+            $avatar = Url::shopUrl('static/images/photo-mr.jpg');
+        }
         foreach ($data as $v){
             $salt = Str::random(8);
               $array[$i] = [
@@ -349,7 +379,6 @@ class MemberController extends BaseController
         }else{
             return $this->errorJson('导入失败');
         }
-
     }
 
 
