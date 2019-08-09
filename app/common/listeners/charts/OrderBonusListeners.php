@@ -19,15 +19,12 @@ use app\common\events\order\AfterOrderRefundedEvent;
 use app\common\models\order\OrderPluginBonus;
 use app\Jobs\OrderBonusStatusJob;
 use app\Jobs\OrderCountContentJob;
-use app\Jobs\OrderCountIncomeJob;
-use app\Jobs\OrderCountStatusJob;
 use app\Jobs\OrderMemberMonthJob;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Yunshop\StoreCashier\common\models\CashierOrder;
 use Yunshop\StoreCashier\common\models\StoreOrder;
 use Yunshop\Supplier\common\models\SupplierOrder;
-use app\common\models\Order;
 
 class OrderBonusListeners
 {
@@ -70,9 +67,8 @@ class OrderBonusListeners
     {
         $orderModel = $event->getOrderModel();
         $this->dispatch(new OrderMemberMonthJob($orderModel));
-        $this->dispatch(new OrderBonusStatusJob($orderModel->id));
+        (new OrderBonusStatusJob($orderModel->id))->handle();
         $this->receivedBonus($orderModel);
-//        $this->dispatch((new OrderCountIncomeJob($event->getOrderModel())));
     }
     
     public function receivedBonus($orderModel)

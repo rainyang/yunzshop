@@ -68,6 +68,25 @@
 
                 <div class='panel-body'>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券返还：</label>
+                        <div class="col-sm-4 col-xs-6">
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[order_close_return]" value="1" @if ($coupon['order_close_return'] == 1) checked="checked" @endif />
+                                开启
+                            </label>
+                            <label class="radio-inline">
+                                <input type="radio" name="coupon[order_close_return]" value="0" @if ($coupon['order_close_return'] == 0) checked="checked" @endif />
+                                关闭
+                            </label>
+                            <div class="help-block" style="width: 450px">
+                                开启优惠券返还：未付款订单、退款订单关闭订单后，使用的优惠券返还到会员账户。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='panel-body'>
+                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知设置：</label>
                         <div class="col-sm-4 col-xs-6">
                             <select name='coupon[coupon_notice]' class='form-control diy-notice'>

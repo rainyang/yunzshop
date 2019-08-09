@@ -33,12 +33,16 @@ class AuditService
 
     private $uids;
 
+    private $set;
+
     public function __construct(Withdraw $withdrawModel)
     {
         $this->withdrawModel = $withdrawModel;
         $this->setAuditAmount();
 
         $this->uids = \Setting::get('withdraw.notice.withdraw_user');
+
+        $this->set = \Setting::get('withdraw.income');
     }
 
 
@@ -51,10 +55,16 @@ class AuditService
     public function withdrawAudit()
     {
         if ($this->withdrawModel->status == Withdraw::STATUS_INITIAL || $this->withdrawModel->status == Withdraw::STATUS_INVALID) {
-            return $this->_withdrawAudit();
+            try {
+                
+                return $this->_withdrawAudit();
+                
+            } catch (\Exception $e) {
+
+                $this->sendMessage();
+                exit();
+            }
         }
-        
-        $this->sendMessage('不符合审核规则');
 
         throw new ShopException("提现审核：ID{$this->withdrawModel->id}，不符合审核规则");
     }
@@ -129,17 +139,11 @@ class AuditService
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
             
-            $msg = $validator->messages()->first();
-            
-            $this->sendMessage($msg);
-
-            throw new ShopException($msg);
+            throw new ShopException($validator->messages()->first());
         }
 
         if (!$this->withdrawModel->save()) {
             
-            $this->sendMessage('记录更新失败');
-
             throw new ShopException("提现审核：ID{$this->withdrawModel->id}，记录更新失败");
         }
         event(new WithdrawAuditedEvent($this->withdrawModel));
@@ -185,8 +189,6 @@ class AuditService
 
         if($audit_amount < 0 && $audit_amount != 0){
             
-            $this->sendMessage('提现金额小于手续费');
-
             throw new ShopException("驳回部分后提现金额小于手续费，不能通过申请！");
         }
 
@@ -262,19 +264,27 @@ class AuditService
         return $servicetax_rate;
     }
 
-    private function sendMessage($msg)
+    private function sendMessage()
     {
-        if ($this->withdrawModel->type == 'balance') {
+        if ($this->set['free_audit'] == 1) {
+                
+            if ($this->withdrawModel->type == 'balance') {
 
-            return BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
-        
-        } else {
+                return BalanceNoticeService::withdrawFailureNotice($this->withdrawModel);  //余额提现失败通知
             
-            foreach ($this->uids as $k => $v) {
-                //收入提现失败通知
-                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
+            } else {
+                
+                foreach ($this->uids as $k => $v) {
+                    
+                    $usermodel = \app\common\models\Member::uniacid()->where('uid', $k)->first();
+
+                    if ($usermodel) {
+                        //收入提现失败通知
+                        MessageService::withdrawFailure($this->withdrawModel->toArray(), $usermodel); 
+                    }
+                }
+                return ;
             }
-            return ;
         }
     }
 }

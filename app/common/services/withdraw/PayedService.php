@@ -32,6 +32,10 @@ class PayedService
 
     private $uids;
 
+    private $set;
+
+    private $msg;
+
     public function __construct(Withdraw $withdrawModel)
     {
         $this->setWithdrawModel($withdrawModel);
@@ -45,9 +49,9 @@ class PayedService
             $this->_withdrawPay();
             return true;
         }
-        $this->sendMessage('不符合打款规则');
-
-        throw new ShopException("提现打款：ID{$this->withdrawModel->id}，不符合打款规则");
+        \Log::debug('---------提现打款,不符合打款规则-----------------');
+        $this->msg = "提现打款：ID{$this->withdrawModel->id}，不符合打款规则";
+        throw new ShopException($this->msg);
     }
 
 
@@ -61,18 +65,27 @@ class PayedService
     public function confirmPay()
     {
         \Log::debug('---------进入确认打款接口-----------------');
+
         if ($this->withdrawModel->status == Withdraw::STATUS_PAYING || $this->withdrawModel->status == Withdraw::STATUS_AUDIT) {
 
             $this->withdrawModel->pay_at = time();
-            DB::transaction(function () {
-                $this->_payed();
-            });
-            return true;
+            try {
+                
+                DB::transaction(function () {
+                    $this->_payed();
+                });
+                return true;
+
+            } catch (\Exception $e) {
+                
+                if ($this->withdraw_set['free_audit'] == 1) {
+                    $this->sendMessage();
+                }
+                $this->msg = '提现记录不符合确认打款规则';
+                throw new ShopException($this->msg);
+            }
         }
         
-        $this->sendMessage('提现记录不符合确认打款规则');
-
-        throw new ShopException('提现记录不符合确认打款规则');
     }
 
 
@@ -84,10 +97,22 @@ class PayedService
     private function _withdrawPay()
     {
         \Log::debug('---------进入提现打款-----------------');
-        DB::transaction(function () {
-            $this->pay();
-        });
-        return $this->payed();
+        try {
+            
+            DB::transaction(function () {
+                $this->pay();
+            });
+            \Log::debug('---------payed+++++++++-----------------');
+
+            return $this->payed();
+            
+        } catch (\Exception $e) {
+                \Log::debug('__withdrawPay--------payServiceed');
+            if (\Setting::get('withdraw.income.free_audit') == 1) {
+                $this->sendMessage();
+            }
+            throw new ShopException($this->msg ? : '提现失败');
+        }
     }
 
 
@@ -105,6 +130,7 @@ class PayedService
         $this->withdrawModel->pay_at = time();
 
         event(new WithdrawPayingEvent($this->withdrawModel));
+        \Log::debug('++++app_common_services_withdraw_PayService----paying---');
         $this->updateWithdrawModel();
     }
 
@@ -126,6 +152,7 @@ class PayedService
         $this->withdrawModel->status = Withdraw::STATUS_PAY;
         $this->withdrawModel->arrival_at = time();
 
+        \Log::debug('---------eventmodel+++++++++-----------------');
         $this->updateWithdrawModel();
 
         event(new WithdrawPayedEvent($this->withdrawModel));
@@ -157,11 +184,10 @@ class PayedService
             $this->withdrawModel->status = Withdraw::STATUS_AUDIT;
             $this->withdrawModel->pay_at = null;
 
+        \Log::debug('++++app_common_services_withdraw_PayService----tryPayed---');
             $this->updateWithdrawModel();
-            
-            $this->sendMessage(); //发送消息
-
-            throw new ShopException($exception->getMessage());
+            $this->msg = $exception->getMessage();
+            throw new ShopException($this->msg);
 
         } finally {
             // todo 增加验证队列
@@ -207,7 +233,8 @@ class PayedService
                 $result = $this->convergePayWithdrawPay();
                 break;
             default:
-                throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型");
+                $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：未知打款类型";
+                throw new ShopException($this->msg);
         }
         return $result;
     }
@@ -236,10 +263,8 @@ class PayedService
         $result = (new BalanceChange())->income($data);
 
         if ($result !== true) {
-            
-            $this->sendMessage();            
-
-            throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result}");
+            $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result}";
+            throw new ShopException($this->msg);
         }
         return true;
     }
@@ -259,11 +284,11 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_WEACHAT)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_wechat----result+++++', $result);
+        
         if ($result['errno'] == 1) {
-            
-            $this->sendMessage();            
-
-            throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+            $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}";
+            throw new ShopException($this->msg);
         }
         return true;
     }
@@ -278,12 +303,13 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_ALIPAY)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_alipay----result+++++', $result);
 
         if (is_array($result)) {
 
             if ($result['errno'] == 1) {
-                
-                throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+                $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}";
+                throw new ShopException($this->msg);
             }
             return true;
         }
@@ -300,15 +326,16 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_Huanxun_Quick)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_huanxun----result+++++', $result);
+
         if ($result['result'] == 10) {
             return true;
         }
         if ($result['result'] == 8) {
             return false;
         }
-        $this->sendMessage(); //发送消息
-
-        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}");
+        $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['msg']}";
+        throw new ShopException($this->msg);
     }
 
 
@@ -320,11 +347,13 @@ class PayedService
         $remark = '';
 
         $result = PayFactory::create(PayFactory::PAY_EUP)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_eup----result+++++', $result);
+
         if ($result['errno'] === 0) {
             return true;
         }
-
-        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+        $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}";
+        throw new ShopException($this->msg);
     }
 
     private function yopWithdrawPay()
@@ -335,11 +364,13 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::YOP)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_yop----result+++++', $result);
+
         if ($result['errno'] == 200) {
             return false;
         }
-
-        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}");
+        $this->msg = "收入提现ID：{$this->withdrawModel->id}，提现失败：{$result['message']}";
+        throw new ShopException($this->msg);
     }
 
     private function convergePayWithdrawPay()
@@ -350,12 +381,15 @@ class PayedService
         $remark = 'withdraw';
 
         $result = PayFactory::create(PayFactory::PAY_WECHAT_HJ)->doWithdraw($member_id, $sn, $amount, $remark);
+        \Log::debug('app_common_services_withdraw_PayService_in_converge----result+++++', $result);
+
         if (!$result['data']['errorCode'] && $result['hmac']) {
             return false;
         }
         
         \Log::debug("-----收入提现ID：{$this->withdrawModel->id}-----.-----汇聚提现失败：{$result['data']['errorDesc']}-----");
-        throw new ShopException("收入提现ID：{$this->withdrawModel->id}，汇聚提现失败：{$result['data']['errorDesc']}");
+        $this->msg = "收入提现ID：{$this->withdrawModel->id}，汇聚提现失败：{$result['data']['errorDesc']}";
+        throw new ShopException($this->msg);
     }
 
 
@@ -388,7 +422,8 @@ class PayedService
             //调用分帐接口
         $result = PayFactory::create(PayFactory::PAY_SEPARATE)->doWithdraw($member_id, $sn, $amount, $withdraw_id,$trade_no);
 
-        \Log::debug('--------withdrawPay---------$result', print_r($result, 1));
+        \Log::debug('-------app_common_services_withdraw_PayService_in_separateUnionPay
+            --withdrawPay---------$result', print_r($result, 1));
 
         if($result) {
             return true;
@@ -420,10 +455,13 @@ class PayedService
         \Log::debug('--------进入更新打款体现记录---------');
         $validator = $this->withdrawModel->validator();
         if ($validator->fails()) {
-            throw new ShopException($validator->messages());
+            \Log::debug('--------更新打款提现验证失败---------');
+            $this->msg = $validator->messages();
+            throw new ShopException($this->msg);
         }
         if (!$this->withdrawModel->save()) {
-            throw new ShopException("提现打款-打款记录更新状态失败");
+            $this->msg = "提现打款-打款记录更新状态失败";
+            throw new ShopException($this->msg);
         }
         return true;
     }
@@ -443,7 +481,7 @@ class PayedService
      * @param string $msg 提现错误信息
      *
      */
-    private function sendMessage($msg) 
+    private function sendMessage() 
     {
         if ($this->withdrawModel->type == 'balance') {
             
@@ -452,8 +490,13 @@ class PayedService
         } else {
             
             foreach ($this->uids as $k => $v) {
-                //收入提现失败通知
-                MessageService::withdrawFailure($this->withdrawModel->toArray(), $k, $msg); 
+                
+                $usermodel = \app\common\models\Member::uniacid()->where('uid', $k)->first();
+
+                if ($usermodel) {
+                    //收入提现失败通知
+                    MessageService::withdrawFailure($this->withdrawModel->toArray(), $usermodel); 
+                }
             }
             return ;
         }
