@@ -167,16 +167,42 @@
                 </div>
             </div>
 
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额定时提醒</label>
+                <div class="col-sm-4 col-xs-6">
+                    <!--原字段 name = trade[closerecharge] -->
+                    <label class='radio-inline'>
+                        <input type='radio' name='balance[sms_send]' value='1' @if($balance['sms_send'] == 1) checked @endif/>
+                        开启
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='balance[sms_send]' value='0' @if($balance['sms_send'] == 0) checked @endif/>
+                        关闭
+                     </label>
+                </div>
+            </div>
+
+
+           <div id="sms_send" @if($balance['sms_send'] !=1 ) style="display:none" @endif >
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">定时提醒设置</label>
+                        <div class="input-group recharge-item" style="margin-top:5px; width: 30%">
+                            <span class="input-group-addon">每天</span>
+                            <input type="text" class="form-control" name="balance[sms_hour]" value="{{ $balance['sms_hour']  or '00:00'}}">
+                            <span class="input-group-addon">点,金额超过</span>
+                            <input type="text" class="form-control" name="balance[sms_hour_amount]" value="{{ $balance['sms_hour_amount']  or '0'}}">
+                            <span class="input-group-addon unit"> 元 </span>
+                       </div>
+            </div>
+           </div>
+
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                         <div class="col-sm-9 col-xs-12">
                             <input type="submit" name="submit" value="提交" class="btn btn-success"/>
                         </div>
                     </div>
-
-                </div>
-            </div>
-
         </form>
     </div>
     <script language='javascript'>
@@ -189,6 +215,16 @@
                 }
                 else {
                     $("#love_rate").hide();
+                }
+            });
+
+            $(":radio[name='balance[sms_send]']").click(function () {
+
+                if ($(this).val() == 1) {
+                    $("#sms_send").show();
+                }
+                else {
+                    $("#sms_send").hide();
                 }
             });
 
