@@ -29,7 +29,8 @@ class SmsCodeService extends MemberService
         $this->uniacid  = \YunShop::app()->uniacid;
         $data = request()->input();
 
-        if (\Request::isMethod('post') && $this->validate($data)) {
+        if (\Request::isMethod('post')) {
+            $this->validate($data);
             //检测验证码
             $checkCode = self::checkCode();
             if ($checkCode['status'] != 1) {
