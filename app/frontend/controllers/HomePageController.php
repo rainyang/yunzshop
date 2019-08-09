@@ -279,11 +279,7 @@ class HomePageController extends ApiController
                     $result['captcha']['status'] = $status;
                 }
             }
-
-            
-            if($member_set['mobile_login_code']){
-                $result['system']['mobile_login_code'] = $member_set['mobile_login_code'] ? true : false;
-            }
+            $result['system']['mobile_login_code'] = $member_set['mobile_login_code'] ? 1 : 0;
             //小程序验证推广按钮是否开启
             $result['system']['btn_romotion'] = PortType::popularizeShow($type);
 
