@@ -122,7 +122,10 @@ class SmsCodeService extends MemberService
         \Log::info('salt', $array['data']['salt']);
 
         $array['data']['password'] = md5('123456' . $data['salt']);
-        $array['memberModel'] = MemberModel::create($data);
+        //dd($array['data']);
+        $array['memberModel'] = MemberModel::create($array['data']);
+        // dd($array['memberModel']);
+        //dd($array['memberModel']);
         $array['member_id'] =  $array['memberModel']->uid;
         //手机归属地查询插入
         $array['phoneData'] = file_get_contents((new PhoneAttributionService())->getPhoneApi($data['mobile']));
@@ -152,7 +155,7 @@ class SmsCodeService extends MemberService
         SubMemberModel::insertData($array['sub_data']);
         //生成分销关系链
         Member::createRealtion($array['member_id']);
-        $array['member_info'] = MemberModel::getUserInfo($this->uniacid, $data['mobile'], $data['password'])->first();
+        $member = MemberModel::checkMobile($this->uniacid, $data['mobile']);
         if ($data['type'] == 7) {
             MemberWechatModel::insertData(array(
                 'uniacid' => $this->uniacid,
@@ -167,8 +170,8 @@ class SmsCodeService extends MemberService
                 'uuid' => $data['uuid']
             ));
         }
-        \Log::debug('----------------array----------',$array);
-        return $array['member_info'];
+        //dd($array);
+        return $member;
     }
 
     /**
