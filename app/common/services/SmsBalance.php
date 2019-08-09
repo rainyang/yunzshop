@@ -15,29 +15,26 @@ class SmsBalance
 
     public function subscribe(Dispatcher $events)
     {
-        $uniAccount = UniAccount::get();
-        foreach ($uniAccount as $u ){
-            \YunShop::app()->uniacid = $u->uniacid;
-            \Setting::$uniqueAccountId = $u->uniacid;
-            $balanceSet = \Setting::get('finance.balance');
-            if($balanceSet['sms_send'] == 0){
-                continue;
-            }
-            $smsHour = explode(":", str_replace('：',':',$balanceSet['sms_hour']));
-            if(count($smsHour) == 2){
-                $time = $smsHour['1'].' '.$smsHour['0'].' * * * *';
-            }else{
-                $time = '0 '.$smsHour['0'].' * * * *';
-            }
-
-            if($balanceSet['sms_send'] ==1 and $balanceSet['sms_hour'] !== null){
-                $events->listen('cron.collectJobs', function () use ($time) {
-                    \Cron::add('smsMeaggeToMemberMobile', $time, function() {
-                        $this->handle();
-                    });
+                $events->listen('cron.collectJobs', function ()  {
+                    $uniAccount = UniAccount::get();
+                    foreach ($uniAccount as $u ) {
+                        \YunShop::app()->uniacid = $u->uniacid;
+                        \Setting::$uniqueAccountId = $u->uniacid;
+                        $balanceSet = \Setting::get('finance.balance');
+                        if ($balanceSet['sms_send'] == 0) {
+                            continue;
+                        }
+                        $smsHour = explode(":", str_replace('：', ':', $balanceSet['sms_hour']));
+                        if (count($smsHour) == 2) {
+                            $time = $smsHour['1'] . ' ' . $smsHour['0'] . ' * * * *';
+                        } else {
+                            $time = '0 ' . $smsHour['0'] . ' * * * *';
+                        }
+                        \Cron::add('smsMeaggeToMemberMobile'.$u->unacid, $time, function () {
+                            $this->handle();
+                        });
+                    }
                 });
-            }
-        }
     }
 
     /**
