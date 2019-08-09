@@ -116,7 +116,7 @@ class ConfirmController extends PageController
         if($this->genre() == 2){ //1 是会员ID， 2 是手机号
             $phones = array_column($values,null,0);
             $phone = array_keys($phones);
-            $result = Member::select('uid','mobile')->whereIn('mobile',$phone)->get();
+            $result = Member::uniacid()->select('uid','mobile')->whereIn('mobile',$phone)->get();
             foreach ($result as $value){
                 $phones[$value->mobile][0] = $value->uid;
             }
