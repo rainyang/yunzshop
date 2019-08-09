@@ -698,6 +698,14 @@ class GoodsController extends BaseController
      */
     public function a()
     {
+        if (env('APP_Framework') == 'platform') {
+            $attachment = 'static/upload/';
+        } else {
+            $attachment = 'attachment/';
+        }
+        $scheme = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
+        $url = $scheme.$_SERVER['HTTP_HOST'];
+        $url = $url.'/'.$attachment.'images/';
         $data = request()->input('data');
         $i = 0;
         $goodsName = array_column($data,'商品名称');
@@ -713,7 +721,7 @@ class GoodsController extends BaseController
                 'is_new' => $value['新上'],
                 'is_hot' => $value['热卖'],
                 'is_discount' => $value['促销'],
-                'thumb' => 'image/'.$value['商品编号'].'.png',
+                'thumb' => $url.$value['商品图片'],
                 'goods_sn' => $value['商品编号'],
                 'product_sn' => $value['商品条码'],
                 'price' => $value['商品现价'],
@@ -917,7 +925,7 @@ class GoodsController extends BaseController
     {
         $exportData['0'] = ["公众号", "排序",'商品名称','商品分类一','商品分类二','商品品牌','商品类型','商品单位',
             '商品属性','商品图片','商品编号','商品条码','商品现价','商品原价','成本价','虚拟销量','减库存方式','不可退换货',
-            '是否上架','商品描述','推荐','新上','热卖','促销'
+            '是否上架','商品描述','推荐','新上','热卖','促销','商品图片'
         ];
 
         \Excel::create('商品批量导入模板', function ($excel) use ($exportData) {
