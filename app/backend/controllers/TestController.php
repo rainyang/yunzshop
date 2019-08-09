@@ -20,6 +20,9 @@ use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use app\common\facades\Setting;
+use app\common\services\aliyun\AliyunSMS;
+use app\common\models\UniAccount;
+use Yunshop\Article\models\Log;
 
 class TestController extends BaseController
 {
@@ -28,6 +31,8 @@ class TestController extends BaseController
     public function t()
     {
 
+//        $balanceSet = \Setting::get('finance.balance');
+//        $smsHour = explode(":", $balanceSet['sms_hour']);
     }
 
     private $amountItems;

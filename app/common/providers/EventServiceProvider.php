@@ -179,7 +179,11 @@ class EventServiceProvider extends ServiceProvider
         TeamRank::class,
         //商品定时上下架
         \app\backend\modules\goods\listeners\GoodsServiceListener::class,
+
         // 订单生成后判断是否可退换货
+
+        //余额短信提醒定时任务
+        \app\common\services\SmsBalance::class,
     ];
 
     /**
