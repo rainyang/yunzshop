@@ -17,24 +17,26 @@ class SmsBalance
     public function subscribe(Dispatcher $events)
     {
                 $events->listen('cron.collectJobs', function ()  {
-                    $uniAccount = UniAccount::get();
-                    foreach ($uniAccount as $u ) {
-                        \YunShop::app()->uniacid = $u->uniacid;
-                        \Setting::$uniqueAccountId = $u->uniacid;
-                        $balanceSet = \Setting::get('finance.balance');
-                        if ($balanceSet['sms_send'] == 0) {
-                            continue;
-                        }
-                        $smsHour = explode(":", str_replace('：', ':', $balanceSet['sms_hour']));
-                        if (count($smsHour) == 2) {
-                            $time = $smsHour['1'] . ' ' . $smsHour['0'] . ' * * * *';
-                        } else {
-                            $time = '0 ' . $smsHour['0'] . ' * * * ';
-                        }
-                        \Cron::add('smsMeaggeToMemberMobile'.$u->unacid, $time, function () {
-                            $this->handle();
-                        });
-                    }
+                    \Cron::add('smsMeaggeToMemberMobile', '*/5 * * * * *', function () {
+                        $this->handle();
+                    });
+//                    $uniAccount = UniAccount::get();
+//                    foreach ($uniAccount as $u ) {
+//                        \Setting::$uniqueAccountId = $u->uniacid;
+//                        $balanceSet = \Setting::get('finance.balance');
+//                        if ($balanceSet['sms_send'] == 0) {
+//                            continue;
+//                        }
+//                        $smsHour = explode(":", str_replace('：', ':', $balanceSet['sms_hour']));
+//                        if (count($smsHour) == 2) {
+//                            $time = $smsHour['1'] . ' ' . $smsHour['0'] . ' * * * *';
+//                        } else {
+//                            $time = '0 ' . $smsHour['0'] . ' * * * ';
+//                        }
+//                        \Log::debug('定时时间'.$time);
+//                        \Log::debug('smsMeaggeToMemberMobile'.$u->unacid);
+//
+//                    }
                 });
     }
 
@@ -44,6 +46,7 @@ class SmsBalance
      */
     public function handle()
     {
+        \Log::debug('定时短信发送');
         $uniAccount = UniAccount::get();
         foreach ($uniAccount as $u) {
             \YunShop::app()->uniacid = $u->uniacid;
@@ -51,13 +54,15 @@ class SmsBalance
             $balanceSet = \Setting::get('finance.balance');
             //sms_send 是否开启
             if($balanceSet['sms_send'] == 0){
+                \Log::debug($u->uniacid.'未开启');
                 continue;
             }
             $smsSet = \Setting::get('shop.sms');
             //sms_hour 时间
             //sms_hour_amount 金额
             if ($smsSet['type'] != 3 && $smsSet['aly_templateBalanceCode'] == null) {
-                return false;
+                \Log::debug('短信功能设置'.$smsSet);
+                continue;
             }
             //查询余额,获取余额超过该值的用户，并把没有手机号的筛选掉
             $mobile = Member::uniacid()
@@ -65,16 +70,23 @@ class SmsBalance
                 ->whereNotNull('mobile')
                 ->where('credit2', '>', $balanceSet['sms_hour_amount'])
                 ->get();
-            if ($mobile) {
+            if (!empty($mobile)) {
+                \Log::debug('未找到满足条件会员');
+                continue;
+            }else{
                 $mobile = $mobile->toArray();
             }
+
             foreach ($mobile as $key => $value) {
+                if(!$value['mobile']){
+                      continue;
+                }
                 //todo 发送短信
-                $aly_sms = new app\common\services\aliyun\AliyunSMS(trim($smsSet['aly_appkey']), trim($smsSet['aly_secret']));
+                $aly_sms = new \app\common\services\aliyun\AliyunSMS(trim($smsSet['aly_appkey']), trim($smsSet['aly_secret']));
                 $response = $aly_sms->sendSms(
                     $smsSet['aly_signname'], // 短信签名
                     $smsSet['aly_templateBalanceCode'], // 发货提醒短信
-                    $mobile, // 短信接收者
+                    $value['mobile'], // 短信接收者
                     Array(  // 短信模板中字段的值
                         'preshop' => $u->name,
                         'amount' => $value['credit2'],
@@ -86,7 +98,6 @@ class SmsBalance
                 } else {
                     \Log::debug($value['mobile'].'阿里云短信发送失败'.$response->Message);
                 }
-                return true;
             }
         }
         return true;
