@@ -683,6 +683,9 @@ class GoodsController extends BaseController
             } else {
                 $attachment = $_SERVER['DOCUMENT_ROOT'].'/attachment/image/';
             }
+            if(is_dir($attachment)){
+                mkdir($attachment);
+            }
             if($this->unZipFile($attachment.$newOriginalName,$attachment) == true){
                 return $this->successJson('上传成功');
             }else{
@@ -705,7 +708,7 @@ class GoodsController extends BaseController
         }
         $scheme = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
         $url = $scheme.$_SERVER['HTTP_HOST'];
-        $url = $url.'/'.$attachment.'images/';
+        $url = $url.'/'.$attachment.'image/';
         $data = request()->input('data');
         $i = 0;
         $goodsName = array_column($data,'商品名称');
