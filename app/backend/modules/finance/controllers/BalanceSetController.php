@@ -14,6 +14,7 @@ use app\common\components\BaseController;
 use app\common\exceptions\ShopException;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\framework\Support\Facades\Log;
 
 class BalanceSetController extends BaseController
 {
@@ -40,7 +41,11 @@ class BalanceSetController extends BaseController
     public function store()
     {
         $request_data = $this->getPostValue();
-        //dd($request_data);
+        \Cache::forever("sms_timing_setting", [
+            'sms_hour'=>$request_data['sms_hour'],
+            'sms_send' => $request_data['sms_send'],
+        ]);
+        \Log::debug(\Cache::get("sms_timing_setting"));
         if (Setting::set('finance.balance', $request_data)) {
             (new \app\common\services\operation\BalanceSetLog(['old'=>$this->balance_set,'new'=>$request_data], 'update'));
             return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance-set.see'),'success');

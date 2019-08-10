@@ -183,7 +183,8 @@ class EventServiceProvider extends ServiceProvider
         // 订单生成后判断是否可退换货
 
         //余额短信提醒定时任务
-        \app\common\services\SmsBalance::class,
+        \app\common\listeners\SmsBalanceListener::class,
+
         // 订单关闭后返还优惠券
         \app\backend\modules\coupon\listeners\OrderClosedListener::class,
     ];

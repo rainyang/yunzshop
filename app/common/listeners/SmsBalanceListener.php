@@ -1,42 +1,37 @@
 <?php
 
 
-namespace app\common\services;
+namespace app\common\listeners;
 
-use app\common\services\aliyun\AliyunSMS;
 use app\common\models\UniAccount;
 use app\backend\modules\member\models\Member;
-use app\framework\Support\Facades\Log;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Events\Dispatcher;
 
-class SmsBalance
+
+class SmsBalanceListener
 {
     use DispatchesJobs;
 
     public function subscribe(Dispatcher $events)
     {
                 $events->listen('cron.collectJobs', function ()  {
-                    \Cron::add('smsMeaggeToMemberMobile', '*/5 * * * * *', function () {
-                        $this->handle();
-                    });
-//                    $uniAccount = UniAccount::get();
-//                    foreach ($uniAccount as $u ) {
-//                        \Setting::$uniqueAccountId = $u->uniacid;
-//                        $balanceSet = \Setting::get('finance.balance');
-//                        if ($balanceSet['sms_send'] == 0) {
-//                            continue;
-//                        }
-//                        $smsHour = explode(":", str_replace('：', ':', $balanceSet['sms_hour']));
-//                        if (count($smsHour) == 2) {
-//                            $time = $smsHour['1'] . ' ' . $smsHour['0'] . ' * * * *';
-//                        } else {
-//                            $time = '0 ' . $smsHour['0'] . ' * * * ';
-//                        }
-//                        \Log::debug('定时时间'.$time);
-//                        \Log::debug('smsMeaggeToMemberMobile'.$u->unacid);
-//
-//                    }
+                    //sms_timing_setting 设置了永久缓存
+                    // $time = '10 16 * * * *';
+                    if(\Cache::has("sms_timing_setting")) {
+                        $set = \Cache::get('sms_timing_setting');
+                        if ($set['sms_send'] == 1 and $set['sms_hour'] != null) {
+                            $set['time'] = explode(":", str_replace('：', ':', $set['sms_hour']));
+                            if (count($set['time']) == 2) {
+                                $set['times'] = $set['time']['1'] . ' ' . $set['time']['0'] . ' * * * *';
+                            } else {
+                                $set['times'] = '0 ' . set['time']['0'] . ' * * * ';
+                            }
+                            \Cron::add('smsMeaggeToMemberMobile', $set['times'], function () {
+                                $this->handle();
+                            });
+                        }
+                    }
                 });
     }
 
