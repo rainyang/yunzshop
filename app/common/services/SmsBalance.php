@@ -70,7 +70,7 @@ class SmsBalance
                 ->whereNotNull('mobile')
                 ->where('credit2', '>', $balanceSet['sms_hour_amount'])
                 ->get();
-            if (!empty($mobile)) {
+            if (empty($mobile)) {
                 \Log::debug('未找到满足条件会员');
                 continue;
             }else{
