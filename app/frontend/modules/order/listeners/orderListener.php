@@ -14,6 +14,7 @@ use app\common\models\UniAccount;
 use app\frontend\modules\order\services\MessageService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\OtherMessageService;
+use app\frontend\modules\order\services\SmsMessageService;
 use Carbon\Carbon;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Support\Facades\DB;
@@ -55,6 +56,7 @@ class orderListener
         if (!$order->isVirtual()) {
             (new MessageService($order))->sent();
             (new OtherMessageService($order))->sent();
+            (new SmsMessageService($order))->sent();
         }
     }
 
