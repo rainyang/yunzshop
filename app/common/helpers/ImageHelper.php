@@ -57,7 +57,7 @@ class ImageHelper
         }
 
         $param = uploadParam();
-        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+        $options['fileSizeLimit'] = $param['fileSizeLimitImage'];
 
         $s = '';
         if (!defined('TPL_INIT_IMAGE')) {
@@ -130,7 +130,7 @@ class ImageHelper
         $options['multiple'] = true;
         $options['direct'] = false;
         $param = uploadParam();
-        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+        $options['fileSizeLimit'] = $param['fileSizeLimitImage'];
 
         if (isset($options['dest_dir']) && !empty($options['dest_dir'])) {
             if (!preg_match('/^\w+([\/]\w+)?$/i', $options['dest_dir'])) {
@@ -213,7 +213,7 @@ EOF;
         $options['multi'] = false;
         $options['type'] = 'video';
         $param = uploadParam();
-        $options['fileSizeLimit'] = $param['fileSizeLimit'];
+        $options['fileSizeLimit'] = $param['fileSizeLimitAudio'];
 
         $s = '';
         if (!defined('TPL_INIT_VIDEO')) {
