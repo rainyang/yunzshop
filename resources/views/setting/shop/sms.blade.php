@@ -160,21 +160,22 @@
                             <input type="text" name="sms[aly_templateCodeForget]" class="form-control" value="{{ $set['aly_templateCodeForget'] }}"  placeholder="例如: SMS_5057806" />
                         </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额定时提醒:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_templateBalanceCode]" class="form-control" value="{{ $set['aly_templateBalanceCode'] }}"  placeholder="例如: SMS_5057806" />
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额定时提醒:</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="sms[aly_templateBalanceCode]" class="form-control" value="{{ $set['aly_templateBalanceCode'] }}"  placeholder="例如: SMS_5057806" />
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品发货提醒:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="sms[aly_templateSendMessageCode]" class="form-control" value="{{ $set['aly_templateSendMessageCode'] }}"  placeholder="例如: SMS_5057806" />
+                        </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品发货提醒:</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <input type="text" name="sms[aly_templateSendMessageCode]" class="form-control" value="{{ $set['aly_templateSendMessageCode'] }}"  placeholder="例如: SMS_5057806" />
-                    </div>
-                </div>
+
 
 
                 <!--
