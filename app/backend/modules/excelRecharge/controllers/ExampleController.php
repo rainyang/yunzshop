@@ -15,7 +15,12 @@ class ExampleController extends BaseController
 {
     public function index()
     {
-        $exportData[0] = ["会员ID", "充值数量"];
+        $id = request()->input('id');
+        if($id == 1){
+            $exportData['0'] = ["会员ID", "充值数量"];
+        }else{
+            $exportData['0'] = ["手机号", "充值数量"];
+        }
 
         \Excel::create('批量充值模板', function ($excel) use ($exportData) {
             $excel->setTitle('Office 2005 XLSX Document');

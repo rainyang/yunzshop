@@ -39,12 +39,15 @@ use Yunshop\Hotel\common\models\Hotel;
 use Yunshop\LeaseToy\models\LeaseOrderModel;
 use Yunshop\LeaseToy\models\LeaseToyGoodsModel;
 use Yunshop\VideoDemand\models\CourseGoodsModel;
+use app\common\helpers\ImageHelper;
 
 class GoodsController extends BaseController
 {
     protected $goods_id = null;
     protected $shopset;
     protected $shoppay;
+    private $list;
+    private $brand;
     //private $goods;
     protected $lang = null;
 
@@ -634,5 +637,311 @@ class GoodsController extends BaseController
         ])->render();
     }
 
+    /**
+     * 商品批量导入
+     */
+    public function import()
+    {
+        return view('goods.import')->render();
+    }
 
+    /**
+     *  解压zip文件
+     * @string $file  需要解压的文件的绝对路径
+     * @string $destination 解压文件的绝对路径
+     * @return bool
+     *
+     */
+    private function unZipFile($file, $destination)
+    {
+        $zip = new \ZipArchive() ; // 实例化对象
+        if ($zip->open($file) !== true) {    //打开zip文档
+            return false; //无法打开zip文件
+        }
+        $zip->extractTo($destination);//将压缩文件解压到指定的目录下
+        $zip->close(); //关闭zip文档
+        return ture;
+    }
+
+    //ajax 异步上传文件
+    public function updateZip()
+    {
+        $file = request()->file('file');
+        if (!$file) {
+            return $this->errorJson('请传入正确参数.');
+        }
+
+        if ($file->isValid()) {
+            // 获取文件相关信息
+            $originalName = $file->getClientOriginalName(); // 文件原名
+            $realPath = $file->getRealPath();   //临时文件的绝对路径
+            $ext = $file->getClientOriginalExtension();
+            $newOriginalName = md5($originalName . str_random(6)) . '.' . $ext;
+            \Storage::disk('image')->put($newOriginalName, file_get_contents($realPath));
+            if (env('APP_Framework') == 'platform') {
+                $attachment = base_path().'/static/upload/';
+            } else {
+                $attachment = $_SERVER['DOCUMENT_ROOT'].'/attachment/image/';
+            }
+            if(is_dir($attachment)){
+                mkdir($attachment);
+            }
+            if($this->unZipFile($attachment.$newOriginalName,$attachment) == true){
+                return $this->successJson('上传成功');
+            }else{
+                return $this->errorJson('解压失败');
+            }
+        }
+    }
+
+
+    /**
+     * excel 商品导入
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function a()
+    {
+        if (env('APP_Framework') == 'platform') {
+            $attachment = 'static/upload/';
+        } else {
+            $attachment = 'attachment/';
+        }
+        $scheme = empty($_SERVER['HTTPS']) ? 'http://' : 'https://';
+        $url = $scheme.$_SERVER['HTTP_HOST'];
+        $url = $url.'/'.$attachment.'image/';
+        $data = request()->input('data');
+        $i = 0;
+        $goodsName = array_column($data,'商品名称');
+        foreach ($data as $key => $value){
+            $goodsData[$i] = [
+                'uniacid' => $value['公众号'] ?: 0,
+                'display_order' => $value['排序'],
+                'title' => $value['商品名称'],
+                'brand_id' => $this->getBrandId(['uniacid' => $value['公众号'],'brand'=> $value['品牌']]),
+                'type' => $value['商品类型'],
+                'sku' => $value['商品单位'],
+                'is_recommand' => $value['推荐'],
+                'is_new' => $value['新上'],
+                'is_hot' => $value['热卖'],
+                'is_discount' => $value['促销'],
+                'thumb' => $url.$value['商品图片'],
+                'goods_sn' => $value['商品编号'],
+                'product_sn' => $value['商品条码'],
+                'price' => $value['商品现价'],
+                'market_price' => $value['商品原价'],
+                'cost_price' => $value['成本价'],
+                'weight' => $value['重量'],
+                'stock' => $value['库存'],
+                'virtual_sales' => $value['虚拟销量'],
+                'reduce_stock_method' => $value['拍下减库存'],
+                'no_refund' => $value['不可退货退款'],
+                'status' => $value['是否上架'],
+                'content' => $value['商品描述']
+            ];
+            $goodsCategorys[$value['商品名称']] = [
+                'title' => $value['商品名称'],
+                'category1' => $value['商品分类一'],
+                'category2' => $value['商品分类二'],
+            ];
+            $i++;
+        }
+        unset($data);
+        unset($i);
+        $result = Goods::insert($goodsData);
+        unset($goodsData);
+        $goodsId = Goods::select('id','uniacid','title')->whereIn('title',$goodsName)->get()->toArray();
+        unset($goodsName);
+        foreach ($goodsId as $k => $v){
+            if(isset($goodsCategorys[$v['title']])){
+                $goodsId[$k] = array_merge($v,$goodsCategorys[$v['title']]);
+            }
+            unset($k);
+        }
+        unset($v);
+        $goodsCategory = array();
+        foreach ($goodsId as $a => $b){
+            $temp = $this->getCategoryId([
+                'uniacid'=>$b['uniacid'],
+                'category_name_1'=>$b['category1'],
+                'category_name_2' => $b['category2'],
+            ]);
+            $goodsCategory[$a] = [
+                'goods_id' => $b['id'],
+                'category_id' => $temp['category_id'],
+                'category_ids' => $temp['category_ids'],
+                'created_at'=>$_SERVER['REQUEST_TIME'],
+                'updated_at' => $_SERVER['REQUEST_TIME'],
+            ];
+            unset($temp);
+            unset($a);
+        }
+        unset($b);
+        $result = GoodsCategory::insert($goodsCategory);
+        if($result){
+            return $this->successJson('导入成功');
+        }
+    }
+
+    /**
+     *   //todo 通过数组下标查找,没有就添加，如果上传的excel里分类较多，需优化
+     * @param $level
+     * @param $uniacid
+     * @param $name
+     * @return mixed
+     */
+    private function getCategoryId($array)
+    {
+        if($array['category_name_1'] == null and $array['category_name_2'] == null){
+             return [
+                 'category_id' => 0,
+                 'category_ids' => '',
+             ];
+        }
+        if(is_null($this->list)){
+            $this->list = array_column(Category::select('id','name','uniacid','level')->where('plugin_id',0)->get()->toArray(),null,'name');
+        }
+        $result = array();
+        if($this->list[$array['category_name_1']]){
+            if($this->list[$array['category_name_1']]['uniacid'] == $array['uniacid']){
+                $result['category_id_1'] = $this->list[$array['category_name_1']]['id'];
+            }else{
+                $result['category_id_1'] = $this->addCategory([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['category_name_1'],
+                    'level' => 1,
+                    'plugin_id'=> 0,
+                    'is_home' => 1,
+                    'parent_id' => 0
+                ]);
+            }
+        }else{
+            $result['category_id_1'] = $this->addCategory([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['category_name_1'],
+                'level' => 1,
+                'plugin_id'=> 0,
+                'is_home' => 1,
+                'parent_id' => 0
+            ]);
+        }
+
+        //商品二级分类
+        if($this->list[$array['category_name_2']]){
+            if($this->list[$array['category_name_2']]['uniacid'] == $array['uniacid']){
+                $result['category_id'] = $this->list[$array['category_name_2']]['id'];
+                $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+            }else{
+                $result['category_id'] = $this->addCategory([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['category_name_2'],
+                    'level' => 2,
+                    'plugin_id'=> 0,
+                    'is_home' => 1,
+                    'parent_id' => $result['category_id_1']
+                ]);
+                $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+            }
+        }else{
+            $result['category_id'] = $this->addCategory([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['category_name_2'],
+                'level' => 2,
+                'plugin_id'=> 0,
+                'is_home' => 1,
+                'parent_id' => $result['category_id_1']
+            ]);
+            $result['category_ids'] = $result['category_id_1'].','.$result['category_id'];
+        }
+        if(!$result['category_ids']){
+            $result['category_ids'] = $result['category_id'];
+        }
+        unset($result['category_id_1']);
+        return $result;
+    }
+
+    /**
+     * 添加分类表
+     * @param $array
+     * @return int
+     */
+    private function addCategory($array)
+    {
+        $id = Category::insertGetId($array);
+        $this->list = array_column(Category::select('id','name','uniacid','level')->where('plugin_id',0)->get()->toArray(),null,'name');
+        return $id;
+    }
+
+    /**
+     * 通过数组下标获取brand_id
+     * @param $array
+     * @return mixed
+     */
+    private function getBrandId($array)
+    {
+        if(is_null($this->brand)){
+            $this->brand = array_column(Brand::get()->toArray(),null,'name');
+        }
+        if($this->brand[$array['brand']]){
+            if($this->brand[$array['brand']]['uniacid'] == $array['uniacid']){
+                  return $this->brand[$array['brand']]['id'];
+            }else{
+                //todo 添加品牌
+                return $this->addBrand([
+                    'uniacid' => $array['uniacid'],
+                    'name' => $array['brand'],
+                    'alias' => '批量添加',
+                    'logo' => '',
+                    'desc' => '',
+                    'created_at'=>$_SERVER['REQUEST_TIME'],
+                    'updated_at' => $_SERVER['REQUEST_TIME'],
+                ]);
+            }
+        }else{
+            return $this->addBrand([
+                'uniacid' => $array['uniacid'],
+                'name' => $array['brand'],
+                'alias' => '',
+                'logo' => '',
+                'desc' => '',
+                'created_at'=>$_SERVER['REQUEST_TIME'],
+                'updated_at' => $_SERVER['REQUEST_TIME'],
+            ]);
+        }
+    }
+
+    /**
+     * 添加品牌
+     * @param $array
+     * @return int
+     */
+    private function addBrand($array)
+    {
+        $id = Brand::insertGetId($array);
+        $this->brand = array_column(Brand::get()->toArray(),null,'name');
+        return $id;
+    }
+
+    /**
+     * demo 下载
+     */
+    public function excelImport()
+    {
+        $exportData['0'] = ["公众号", "排序",'商品名称','商品分类一','商品分类二','商品品牌','商品类型','商品单位',
+            '商品属性','商品图片','商品编号','商品条码','商品现价','商品原价','成本价','虚拟销量','减库存方式','不可退换货',
+            '是否上架','商品描述','推荐','新上','热卖','促销','商品图片'
+        ];
+
+        \Excel::create('商品批量导入模板', function ($excel) use ($exportData) {
+            $excel->setTitle('Office 2005 XLSX Document');
+            $excel->setCreator('芸众商城');
+            $excel->setLastModifiedBy("芸众商城");
+            $excel->setSubject("Office 2005 XLSX Test Document");
+            $excel->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.");
+            $excel->setKeywords("office 2005 openxml php");
+            $excel->setCategory("report file");
+            $excel->sheet('info', function ($sheet) use ($exportData) {
+                $sheet->rows($exportData);
+            });
+        })->export('xls');
+    }
 }

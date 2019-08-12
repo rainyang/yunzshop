@@ -60,6 +60,11 @@ class UserController extends BaseController
         if ($requestUser) {
 
             $userData = $this->addedUserData($requestUser);
+
+            if (env('APP_Framework') == 'platform') {
+                $userData['owner_uid'] = 0;
+            }
+
             $userModel->fill($userData);
             $userModel->widgets = \YunShop::request()->widgets;
             $userModel->widgets['perms'] = \YunShop::request()->perms;

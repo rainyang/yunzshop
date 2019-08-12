@@ -338,6 +338,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机验证码登录</label>
+                            <div class="col-sm-9 col-xs-12" >
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[mobile_login_code]" value="1" @if($set['mobile_login_code'] == 1)checked="true" @endif/> 开启
+                                </label>
+                                <label class="radio-inline">
+                                    <input type="radio" name="member[mobile_login_code]" value="0" @if($set['mobile_login_code'] == 0)checked="true" @endif/> 关闭
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信端登录方式</label>
                             <div class="col-sm-9 col-xs-12" >
                                 <label class="radio-inline">

@@ -1515,6 +1515,13 @@ class MemberController extends ApiController
     public function isValidatePage($request, $integrated = null)
     {
         $member_id = \YunShop::app()->getMemberId();
+        $invite_page = 0;
+        $data = [
+            'is_bind_mobile' => 0,
+            'invite_page'    => 0,
+            'is_invite'      => 0,
+            'is_login'       => 0,
+        ];
 
         //强制绑定手机号
         if (Cache::has('shop_member')) {
@@ -1524,47 +1531,41 @@ class MemberController extends ApiController
         }
 
         if (!is_null($member_set)) {
-            $data = [
-                'is_bind_mobile' => $this->isBindMobile($member_set, $member_id),
-                'invite_page' => 0,
-                'is_invite' => 0,
-                'is_login' => 0,
-            ];
-
-            if ($data['is_bind_mobile']) {
-                if (is_null($integrated)) {
-                    return $this->successJson('强制绑定手机开启', $data);
-                } else {
-                    return show_json(1, $data);
-                }
-            }
-
-            $type = \YunShop::request()->type;
-            $invitation_log = [];
-            if ($member_id) {
-                $mobile = \app\common\models\Member::where('uid', $member_id)->first();
-                if ($mobile->mobile) {
-                    $invitation_log = 1;
-                } else {
-                    $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
-                    $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member_id)->where('mid', $member->parent_id)->first();
-                }
-            }
-
+            $data['is_bind_mobile'] = $this->isBindMobile($member_set, $member_id);
             $invite_page = $member_set['invite_page'] ? 1 : 0;
-            $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+        }
 
-            $data['is_invite'] = $invitation_log ? 1 : 0;
-            $data['is_login'] = $member_id ? 1 : 0;
-
+        if ($data['is_bind_mobile']) {
             if (is_null($integrated)) {
-                return $this->successJson('邀请页面开关', $data);
+                return $this->successJson('强制绑定手机开启', $data);
             } else {
                 return show_json(1, $data);
             }
         }
 
-        return show_json(1, []);
+        $type = \YunShop::request()->type;
+        $invitation_log = [];
+        if ($member_id) {
+            $mobile = \app\common\models\Member::where('uid', $member_id)->first();
+            if ($mobile->mobile) {
+                $invitation_log = 1;
+            } else {
+                $member = MemberShopInfo::uniacid()->where('member_id', $member_id)->first();
+                $invitation_log = MemberInvitationCodeLog::uniacid()->where('member_id', $member_id)->where('mid', $member->parent_id)->first();
+            }
+        }
+
+        $data['invite_page'] = $type == 5 ? 0 : $invite_page;
+
+        $data['is_invite'] = $invitation_log ? 1 : 0;
+        $data['is_login'] = $member_id ? 1 : 0;
+
+
+        if (is_null($integrated)) {
+            return $this->successJson('邀请页面开关', $data);
+        } else {
+            return show_json(1, $data);
+        }
     }
 
     public function confirmGoods()
