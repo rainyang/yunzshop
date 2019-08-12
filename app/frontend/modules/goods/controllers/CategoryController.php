@@ -155,7 +155,13 @@ class CategoryController extends BaseController
         }, 'hasManyOptions' => function ($query) {
                 return $query->select('id', 'goods_id', 'title', 'thumb', 'product_price', 'market_price', 'stock', 'specs', 'weight');
             }])
-            ->search(['category'=>$category_id])->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
+            //->search(['category'=>$category_id])
+            ->join('yz_goods_category', function ($join) use ($category_id) {
+                $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
+                    ->whereRaw('FIND_IN_SET(?,category_ids)', [$category_id]);
+            })
+            ->groupBy('yz_goods.id')
+            ->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
             ->paginate(20,['*'],'page',$goods_page);
         foreach ($list as $goodsModel) {
             $goodsModel->buyNum = 0;
