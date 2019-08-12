@@ -21,6 +21,8 @@ class AuditedRebutController extends PreController
      */
     public function index()
     {
+        \Log::debug('审核后驳回接口+++++++++++++++++');
+        
         $result = $this->auditedRebut();
         if ($result == true) {
             return $this->message('驳回成功', yzWebUrl("withdraw.detail.index", ['id' => $this->withdrawModel->id]));
