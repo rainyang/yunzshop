@@ -10,6 +10,7 @@ namespace app\backend\modules\supervisord\controllers;
 
 use app\backend\modules\supervisord\services\Supervisor;
 use app\common\components\BaseController;
+use app\common\facades\SiteSetting;
 use app\common\helpers\Cache;
 use app\common\helpers\Url;
 use app\common\facades\Setting;
@@ -49,11 +50,11 @@ class SupervisordController extends BaseController
         if ($setting){
 
             $set['address']['ip'] = $setting['address']['ip']?:'http://127.0.0.1';
-            Setting::setNotUniacid('supervisor',$set);
+            SiteSetting::set('supervisor',$set);
             return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
         }
-        $supervisord  = Setting::getNotUniacid('supervisor');
-        $supervisord['address']['ip'] ? : Setting::setNotUniacid('supervisor', $supervisord['address']['ip'] = 'http://127.0.0.1');
+        $supervisord  = SiteSetting::get('supervisor');
+        $supervisord['address']['ip'] ? : SiteSetting::set('supervisor', $supervisord['address']['ip'] = 'http://127.0.0.1');
 
         return view('supervisor.store',[
              'setting'=>json_encode($supervisord)
@@ -64,11 +65,11 @@ class SupervisordController extends BaseController
         $setting = request()->input('setting');
         if ($setting){
             $set['queue']['is_classify'] = $setting['queue']['is_classify'] ?: 0;
-            Setting::setNotUniacid('supervisor',$set);
+            SiteSetting::set('supervisor',$set);
             return $this->successJson("设置保存成功", Url::absoluteWeb('supervisord.supervisord.store'));
         }
         $supervisord  = Setting::getNotUniacid('supervisor');
-        $supervisord['queue']['is_classify'] ? : Setting::setNotUniacid('supervisor', $supervisord['queue']['is_classify'] = 0);
+        $supervisord['queue']['is_classify'] ? : SiteSetting::set('supervisor', $supervisord['queue']['is_classify'] = 0);
 
         return view('supervisor.queue',[
              'setting'=>json_encode($supervisord)
