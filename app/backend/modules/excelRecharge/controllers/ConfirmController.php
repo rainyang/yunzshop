@@ -118,6 +118,7 @@ class ConfirmController extends PageController
             $phone = array_keys($phones);
             $result = Member::uniacid()->select('uid','mobile')->whereIn('mobile',$phone)->get();
             foreach ($result as $value){
+                $this->phone = $value->mobile;
                 $phones[$value->mobile][0] = $value->uid;
             }
             unset($phone);
@@ -162,7 +163,12 @@ class ConfirmController extends PageController
             $this->failureTotal += 1;
 
             $status = 0;
-            $remark = "充值失败" . $result;
+            if($this->phone){
+                $remark = $this->phone."充值失败";
+            }else{
+                $remark = "充值失败".$result;
+            }
+
         }
 
         return [
