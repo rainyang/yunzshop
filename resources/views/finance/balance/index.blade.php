@@ -188,13 +188,18 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">定时提醒设置</label>
                         <div class="input-group recharge-item" style="margin-top:5px; width: 30%">
-                            <span class="input-group-addon">每天</span>
-                            <input type="text" class="form-control" name="balance[sms_hour]" value="{{ $balance['sms_hour']  or '00:00'}}">
+                            <select name="balance[sms_hour]" class="form-control">
+                                @foreach($day_data as $key => $week)
+                                    <option value='{{ $key }}' @if($key == $balance['sms_hour']) selected @endif>{{  $week}}</option>
+                                @endforeach
+                            </select>
                             <span class="input-group-addon">点,金额超过</span>
                             <input type="text" class="form-control" name="balance[sms_hour_amount]" value="{{ $balance['sms_hour_amount']  or '0'}}">
                             <span class="input-group-addon unit"> 元 </span>
                        </div>
+                <span style="margin-left: 18%" class="help-block">重新设置时间后一定要在一分钟后重启队列，若不重启该设置则会在第二天才生效</span>
             </div>
+
            </div>
 
                     <div class="form-group">

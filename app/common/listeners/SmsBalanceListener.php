@@ -20,14 +20,9 @@ class SmsBalanceListener
                     // $time = '10 16 * * * *';
                     if(\Cache::has("sms_timing_setting")) {
                         $set = \Cache::get('sms_timing_setting');
-                        if ($set['sms_send'] == 1 and $set['sms_hour'] != null) {
-                            $set['time'] = explode(":", str_replace('：', ':', $set['sms_hour']));
-                            if (count($set['time']) == 2) {
-                                $set['times'] = $set['time']['1'] . ' ' . $set['time']['0'] . ' * * * *';
-                            } else {
-                                $set['times'] = '0 ' . set['time']['0'] . ' * * * ';
-                            }
-                            \Cron::add('smsMeaggeToMemberMobile', $set['times'], function () {
+                        if($set['sms_hour'] != 0){
+                              $time = '0 '.$set['sms_hour'].' * * * *';
+                            \Cron::add('smsMeaggeToMemberMobile', $time, function () {
                                 $this->handle();
                             });
                         }

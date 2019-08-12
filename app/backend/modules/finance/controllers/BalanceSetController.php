@@ -30,9 +30,23 @@ class BalanceSetController extends BaseController
         !$this->balance_set && $this->setBalanceSet();
 
         //dd($this->balance_set);
-        return view('finance.balance.index', ['balance' => $this->balance_set,])->render();
+        return view('finance.balance.index', ['balance' => $this->balance_set,'day_data' => $this->getDayData()])->render();
     }
 
+    /**
+     * 返回一天24时，对应key +1, 例：1 => 0:00
+     * @return array
+     */
+    private function getDayData()
+    {
+        $dayData = [];
+        for ($i = 1; $i <= 23; $i++) {
+            $dayData += [
+                $i+1 => "当天" . $i . ":00",
+            ];
+        }
+        return $dayData;
+    }
 
     /**
      * 更新余额设置数据
@@ -42,8 +56,7 @@ class BalanceSetController extends BaseController
     {
         $request_data = $this->getPostValue();
         \Cache::forever("sms_timing_setting", [
-            'sms_hour'=>$request_data['sms_hour'],
-            'sms_send' => $request_data['sms_send'],
+            'sms_hour'=>$request_data['sms_hour'] ?: 0,
         ]);
         \Log::debug(\Cache::get("sms_timing_setting"));
         if (Setting::set('finance.balance', $request_data)) {
