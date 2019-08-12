@@ -12,6 +12,7 @@ use app\common\listeners\order\FirstOrderListener;
 use app\common\models\Order;
 use app\common\models\UniAccount;
 use app\frontend\modules\order\services\MessageService;
+use app\frontend\modules\order\services\MiniMessageService;
 use app\frontend\modules\order\services\OrderService;
 use app\frontend\modules\order\services\OtherMessageService;
 use app\frontend\modules\order\services\SmsMessageService;
@@ -38,6 +39,7 @@ class orderListener
     public function onPaid(AfterOrderPaidEvent $event)
     {
         $order = Order::find($event->getOrderModel()->id);
+        (new MiniMessageService($order))->received();
         if (!$order->isVirtual()) {
             (new MessageService($order))->paid();
             (new OtherMessageService($order))->paid();
