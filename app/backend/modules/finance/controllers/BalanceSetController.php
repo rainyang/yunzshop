@@ -42,7 +42,7 @@ class BalanceSetController extends BaseController
         $dayData = [];
         for ($i = 1; $i <= 23; $i++) {
             $dayData += [
-                $i+1 => "当天" . $i . ":00",
+                $i+1 => "每天" . $i . ":00",
             ];
         }
         return $dayData;
