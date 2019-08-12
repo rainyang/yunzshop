@@ -381,8 +381,12 @@ class Goods extends BaseModel
                             'yz_goods_category.category_id as category_id',
                             'yz_goods_category.category_ids as category_ids'
                         ])->join('yz_goods_category', function ($join) use ($scope) {
-                            $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
-                                ->whereIn('yz_goods_category.category_id', $scope);
+                            $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id');
+                            $join->where(function ($join) use ($scope) {
+                                foreach ($scope as $s) {
+                                    $join->orWhereRaw('FIND_IN_SET(?,category_ids)', [$s]);
+                                }
+                            });
                         });
                     } else {
                         $query->select([
