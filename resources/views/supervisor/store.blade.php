@@ -1,5 +1,5 @@
 @extends('layouts.base')
-@section('title', '服务费设置')
+@section('title', '服务器设置')
 @section('content')
     <style>
 
