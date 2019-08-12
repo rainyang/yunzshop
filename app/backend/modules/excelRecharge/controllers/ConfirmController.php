@@ -44,6 +44,11 @@ class ConfirmController extends PageController
      */
     private $successAmount = '0';
 
+    /**
+     * @var string
+     */
+    private $phone = '';
+
     //批量充值提交
     public function index()
     {
@@ -117,8 +122,8 @@ class ConfirmController extends PageController
             $phones = array_column($values,null,0);
             $phone = array_keys($phones);
             $result = Member::uniacid()->select('uid','mobile')->whereIn('mobile',$phone)->get();
+
             foreach ($result as $value){
-                $this->phone = $value->mobile;
                 $phones[$value->mobile][0] = $value->uid;
             }
             unset($phone);
@@ -127,10 +132,8 @@ class ConfirmController extends PageController
             $values = $phones;
         }
 
-//        dd($values);
-
         foreach ($values as $key => $value) {
-
+            $this->phone = trim($value['0']);
             $amount = trim($value[1]);
             $memberId = trim($value[0]);
 
@@ -161,13 +164,12 @@ class ConfirmController extends PageController
             $this->successAmount += $amount;
         } else {
             $this->failureTotal += 1;
-
-            $status = 0;
             if($this->phone){
-                $remark = $this->phone."充值失败";
+                $remark =  $this->phone."充值失败" ;
             }else{
-                $remark = "充值失败".$result;
+                $remark = "充值失败" . $result;
             }
+            $status = 0;
 
         }
 
