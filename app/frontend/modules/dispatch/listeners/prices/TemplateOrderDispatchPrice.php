@@ -268,11 +268,12 @@ class TemplateOrderDispatchPrice
                 }
             }
         }
-
         // 默认件数
         if ($goods_total > $dispatchModel->first_piece) {
-            $diff = $goods_total - $dispatchModel->another_piece;
+
+            $diff = $goods_total - $dispatchModel->first_piece;
             $another_piece = $dispatchModel->another_piece_price;
+
             if ($diff > 0) {
                 $another_piece = ceil($diff / $dispatchModel->another_piece) * $dispatchModel->another_piece_price;
             }
