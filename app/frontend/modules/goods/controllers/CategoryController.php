@@ -160,10 +160,12 @@ class CategoryController extends BaseController
                 $join->on('yz_goods_category.goods_id', '=', 'yz_goods.id')
                     ->whereRaw('FIND_IN_SET(?,category_ids)', [$category_id]);
             })
+            // 由于一个商品可选多种分类，会出现查询商品重复的情况，需要对商品id分组达到去重效果
             ->groupBy('yz_goods.id')
             ->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
             ->paginate(20,['*'],'page',$goods_page);
         foreach ($list as $goodsModel) {
+            //前端需要goods_id
             $goodsModel->goods_id = $goodsModel->id;
             $goodsModel->buyNum = 0;
             if (strexists($goodsModel->thumb, 'image/')) {
