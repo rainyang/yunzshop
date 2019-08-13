@@ -164,6 +164,7 @@ class CategoryController extends BaseController
             ->where('yz_goods.status',1)->orderBy('yz_goods.display_order', 'desc')->orderBy('yz_goods.id', 'desc')
             ->paginate(20,['*'],'page',$goods_page);
         foreach ($list as $goodsModel) {
+            $goodsModel->goods_id = $goodsModel->id;
             $goodsModel->buyNum = 0;
             if (strexists($goodsModel->thumb, 'image/')) {
                 $goodsModel->thumb = yz_tomedia($goodsModel->thumb,'image');
