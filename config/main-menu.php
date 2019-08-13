@@ -1428,13 +1428,13 @@ return [
 
                     'member_member_agent_parent' => [
                         'name'       => '推广上线',
-                        'url'        => 'member.member.agentParent',
+                        'url'        => 'member.member.agent-parent',
                         'url_params' => '',
                         'permit'     => 1,
                         'menu'       => 0,
                         'icon'       => '',
                         'sort'       => 0,
-                        'item'       => 'member_member_agent',
+                        'item'       => 'member_member_agent_parent',
                         'parents'    => ['Member', 'member_all',],
                     ],
 
