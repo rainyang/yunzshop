@@ -20,6 +20,8 @@ use app\Jobs\ModifyRelationJob;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Yunshop\Commission\models\Agents;
+use Yunshop\Hotel\common\models\Hotel;
+use Yunshop\Supplier\common\models\Supplier;
 use Yunshop\TeamDividend\models\TeamDividendAgencyModel;
 
 /**
@@ -409,6 +411,24 @@ class MemberShopInfo extends BaseModel
     public function hasOneMember()
     {
         return $this->hasOne(Member::class, 'uid', 'member_id');
+    }
+
+    //关联供应商
+    public function hasOneSupplier()
+    {
+        return $this->hasOne(Supplier::class, 'member_id', 'member_id');
+    }
+
+    //关联门店
+    public function hasOneStore()
+    {
+        return $this->hasOne(Store::class, 'uid', 'member_id');
+    }
+
+    //关联酒店
+    public function hasOneHotel()
+    {
+        return $this->hasOne(Hotel::class, 'uid', 'member_id');
     }
 
     public static function chkInviteCode($code)
