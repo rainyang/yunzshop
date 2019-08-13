@@ -78,7 +78,6 @@ class LevelUpgradeService
 
         $result = $this->check(1);
         $this->setValidity($result); // 设置会员等级期限
-        \Log::debug('打印结果',$result);
         if ($result) {
             return $this->upgrade($result);
         }
@@ -89,11 +88,9 @@ class LevelUpgradeService
     public function setValidity($isUpgrate = false)
     {
         $set = Setting::get('shop.member');
-        \Log::debug('打印set',$set);
         if (!$set['term']) {
             return;
         }
-        \Log::debug('打印validity',$this->validity);
         if (!$this->validity['is_goods']) {
             return;
         }
@@ -107,8 +104,6 @@ class LevelUpgradeService
                 $validity = $this->memberModel->validity + $this->new_level->validity * $this->validity['goods_total'];
             }
         }
-
-        \Log::debug('打印会员当前等级',[$validity,$isUpgrate]);
 
         if (isset($validity)) {
             $this->memberModel->validity = $validity;
@@ -128,7 +123,6 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
                 \Log::info('---==等级设置信息==----', [unserialize($set), json_decode($set, true)]);
-        \Log::debug('打印level_type',[$set['level_type'],$set]);
         //获取可升级的最高等级
         switch ($set['level_type']) {
             case 0:
@@ -229,7 +223,7 @@ class LevelUpgradeService
         
         \Log::debug('---==levelid==---', $levelid);
 
-        $levels = MemberLevel::uniacid()->where('level', '>', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
+        $levels = MemberLevel::uniacid()->where('level', '>=', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
 
         \Log::debug('---==levels==---', $levels);
 
@@ -272,18 +266,15 @@ class LevelUpgradeService
 
         $this->memberModel->level_id = $levelId;
         $this->memberModel->upgrade_at = time();
-        \Log::debug('$this->memberModel->level_id',$this->memberModel->level_id);
 
         if ($this->memberModel->save()) {
             //会员等级升级触发事件
             event(new MemberLevelUpgradeEvent($this->memberModel,false));
 
             event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
-            \Log::debug('会员等级升级触发事件');
             $this->notice();
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {
-            \Log::debug('失败');
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级失败，等级ID' . $levelId);
         }
 
