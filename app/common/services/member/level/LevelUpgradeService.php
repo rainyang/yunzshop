@@ -91,7 +91,6 @@ class LevelUpgradeService
         if (!$set['term']) {
             return;
         }
-
         if (!$this->validity['is_goods']) {
             return;
         }
@@ -124,7 +123,6 @@ class LevelUpgradeService
     {
         $set = Setting::get('shop.member');
                 \Log::info('---==等级设置信息==----', [unserialize($set), json_decode($set, true)]);
-
         //获取可升级的最高等级
         switch ($set['level_type']) {
             case 0:
@@ -225,8 +223,8 @@ class LevelUpgradeService
         
         \Log::debug('---==levelid==---', $levelid);
 
-        $levels = MemberLevel::uniacid()->where('level', '>', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
-        
+        $levels = MemberLevel::uniacid()->where('level', '>=', $levelid->level ? : 0)->select('id', 'level', 'level_name', 'goods_id', 'validity')->orderBy('level', 'desc')->get();
+
         \Log::debug('---==levels==---', $levels);
 
         $this->validity['is_goods'] = true; // 商品升级 开启等级期限
@@ -274,7 +272,6 @@ class LevelUpgradeService
             event(new MemberLevelUpgradeEvent($this->memberModel,false));
 
             event(new MemberLevelValidityEvent($this->memberModel, $this->validity['goods_total'], $levelId));
-
             $this->notice();
             \Log::info('会员ID' . $this->memberModel->member_id . '会员等级升级成功，等级ID' . $levelId);
         } else {
