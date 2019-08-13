@@ -409,9 +409,10 @@ class TestController extends BaseController
         echo 'end';*/
     }
 
-    public function ff()
+    public function generateAddressJs()
     {
-
+        $num = (new \app\common\services\address\GenerateAddressJs())->address();
+        echo $num;
     }
 
     protected $GoodsGroupTable = 'yz_goods_group_goods';
