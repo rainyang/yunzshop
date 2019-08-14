@@ -103,8 +103,9 @@ class MemberOfficeAccountService extends MemberService
     {
         $scope     = \YunShop::request()->scope ?: '';
         $subscribe = 0;
+        $share = Setting::get('shop.share');
 
-        if (env('APP_Framework') == 'platform') {
+        if (env('APP_Framework') == 'platform' || (!is_null($share) && $share->follow_url != '')) {
             $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
             $global_token = \Curl::to($global_access_token_url)
@@ -539,7 +540,26 @@ class MemberOfficeAccountService extends MemberService
                 if ($yz_member->refresh_expires_in_1 > time()) {
                     $account = AccountWechats::getAccountByUniacid($uniacid);
                     $appId = $account->key;
+                    $appSecret = $account->secret;
 
+                    //是否关注 更新用户信息
+                    $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+
+                    $global_token = \Curl::to($global_access_token_url)
+                        ->asJsonResponse(true)
+                        ->get();
+
+                    $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+
+                    $user_info = \Curl::to($global_userinfo_url)
+                        ->asJsonResponse(true)
+                        ->get();
+
+                    if ($user_info['subscribe']) {
+                        $this->updateMemberInfo($yz_member->member_id, $user_info);
+                    }
+
+                    //更新token
                     $refresh_url = $this->_refreshAuth($appId, $yz_member->refresh_token_1);
 
                     $refresh_info = \Curl::to($refresh_url)
