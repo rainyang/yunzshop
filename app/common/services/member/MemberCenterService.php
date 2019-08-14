@@ -592,11 +592,9 @@ class MemberCenterService
        //发现视频
        if (app('plugins')->isEnabled('video-share')) {
            $set = \Setting::get('plugin.video-share');
-           dd($set);
-           exit;
            if ($set['is_open']) {
                $data[] = [
-                   'name'  => 'video_share',
+                   'name'  => 'video-share',
                    'title' => '发现视频',
                    'class' => 'icon-extension_video',
                    'url'   => 'VideoList',
