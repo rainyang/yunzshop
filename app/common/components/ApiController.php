@@ -33,6 +33,13 @@ class ApiController extends BaseController
     protected $ignoreAction = [];
 
     /**
+     * 强制跳转
+     *
+     * @var bool
+     */
+    public $jump = false;
+
+    /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
      */
@@ -66,6 +73,7 @@ class ApiController extends BaseController
         if (!$member->checkLogged($this)) {
             if ($mid || ($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
+                || $this->jump
             ) {
                 $this->jumpUrl($type, $mid);
             }
