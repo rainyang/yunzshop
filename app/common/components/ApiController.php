@@ -32,8 +32,6 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
-    public $jump = false; //强制跳转
-
     /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
@@ -66,11 +64,7 @@ class ApiController extends BaseController
         $member = MemberFactory::create($type);
 
         if (!$member->checkLogged($this)) {
-            if ($mid) {
-                return $this->jumpUrl($type, $mid);
-            }
-
-            if (($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
+            if ($mid || ($relaton_set->status == 1 && !in_array($this->action, $this->ignoreAction))
                 || ($relaton_set->status == 0 && !in_array($this->action, $this->publicAction))
             ) {
                 $this->jumpUrl($type, $mid);
