@@ -589,6 +589,20 @@ class MemberCenterService
            ];
        }
 
+       //发现视频
+       if (app('plugins')->isEnabled('video-share')) {
+           $set = \Setting::get('plugin.video-share');
+           if ($set['is_open']) {
+               $data[] = [
+                   'name'  => 'video_share',
+                   'title' => '发现视频',
+                   'class' => 'icon-extension_video',
+                   'url'   => 'VideoList',
+                   'image' => 'member_a(72).png'
+               ];
+           }
+       }
+
        foreach ($data as $k => $v) {
 
            if (in_array($v['name'], $diyarr['tool'])) {
