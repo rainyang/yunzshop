@@ -754,8 +754,11 @@ class MemberModel extends Member
         $pageSize = 10;
 
         // 查出用户的某一级别下线的会员资料
-
-        $teamMembersIds = MemberModel::find(\YunShop::app()->getMemberId())->memberChildren()->where('level', $relationLevel)->pluck('child_id');
+        $member = MemberModel::find(\app\frontend\models\Member::current()->uid);
+        if (!$member) {
+            return [];
+        }
+        $teamMembersIds = $member->memberChildren()->where('level', $relationLevel)->pluck('child_id');
         // 总订单数,总订单金额
 
 
@@ -785,7 +788,8 @@ class MemberModel extends Member
 
             $v['id'] = $v['uid'];
             unset($v['uid']);
-            $v['wechat'] = $v['yz_member']['wechat'];
+            $v['wechat'] = $v['yz_member']['wechat'] ?: 0;
+            $v['mobile'] = $v['mobile'] ?: 0;
 
             if (!is_null($v['yz_member'])) {
                 if (1 == $v['yz_member']['is_agent'] && 2 == $v['yz_member']['status']) {

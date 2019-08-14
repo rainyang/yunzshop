@@ -16,6 +16,8 @@ use app\common\services\credit\ConstService;
 use app\common\services\finance\BalanceChange;
 use app\common\services\finance\PointService;
 use Yunshop\Love\Common\Services\LoveChangeService;
+use app\backend\modules\member\models\Member;
+
 
 class ConfirmController extends PageController
 {
@@ -42,6 +44,10 @@ class ConfirmController extends PageController
      */
     private $successAmount = '0';
 
+    /**
+     * @var string
+     */
+    private $phone = '';
 
     //批量充值提交
     public function index()
@@ -112,8 +118,22 @@ class ConfirmController extends PageController
 
         $data = [];
         $values = $this->getRow();
-        foreach ($values as $key => $value) {
+        if($this->genre() == 2){ //1 是会员ID， 2 是手机号
+            $phones = array_column($values,null,0);
+            $phone = array_keys($phones);
+            $result = Member::uniacid()->select('uid','mobile')->whereIn('mobile',$phone)->get();
 
+            foreach ($result as $value){
+                $phones[$value->mobile][0] = $value->uid;
+            }
+            unset($phone);
+            unset($value);
+            unset($result);
+            $values = $phones;
+        }
+
+        foreach ($values as $key => $value) {
+            $this->phone = trim($value['0']);
             $amount = trim($value[1]);
             $memberId = trim($value[0]);
 
@@ -144,9 +164,13 @@ class ConfirmController extends PageController
             $this->successAmount += $amount;
         } else {
             $this->failureTotal += 1;
-
+            if($this->phone){
+                $remark =  $this->phone."充值失败" ;
+            }else{
+                $remark = "充值失败" . $result;
+            }
             $status = 0;
-            $remark = "充值失败" . $result;
+
         }
 
         return [
@@ -216,6 +240,15 @@ class ConfirmController extends PageController
     private function rechargeType()
     {
         return request()->batch_type;
+    }
+
+    /**
+     * 第一列的值是手机号还是会员ID
+     * @return mixed
+     */
+    private function genre()
+    {
+        return request()->genre;
     }
 
     /**

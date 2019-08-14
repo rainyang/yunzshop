@@ -12,7 +12,6 @@ use app\backend\modules\charts\modules\team\listeners\TeamRank;
 use app\backend\modules\goods\listeners\LimitBuy;
 use app\common\events\member\MemberChangeRelationEvent;
 use app\common\events\member\MemberCreateRelationEvent;
-use app\common\events\message\SendMessageEvent;
 use app\common\events\order\AfterOrderCreatedEvent;
 use app\common\events\order\AfterOrderCreatedImmediatelyEvent;
 use app\common\events\PayLog;
@@ -94,10 +93,6 @@ class EventServiceProvider extends ServiceProvider
             WechatMessageListener::class//示例监听类
         ],
 
-        //发送消息触发事件
-        SendMessageEvent::class => [
-
-        ],
         AfterProcessStatusChangedEvent::class => [
             StatusContainer::class,
         ],
@@ -184,8 +179,14 @@ class EventServiceProvider extends ServiceProvider
         TeamRank::class,
         //商品定时上下架
         \app\backend\modules\goods\listeners\GoodsServiceListener::class,
+
         // 订单生成后判断是否可退换货
-        \app\common\listeners\order\OrderNoRefundListener::class,
+
+        //余额短信提醒定时任务
+        \app\common\listeners\SmsBalanceListener::class,
+
+        // 订单关闭后返还优惠券
+        \app\backend\modules\coupon\listeners\OrderClosedListener::class,
     ];
 
     /**

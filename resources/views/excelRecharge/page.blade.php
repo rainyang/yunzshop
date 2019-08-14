@@ -18,9 +18,10 @@
         <span>使用方法:</span>
         <span style="padding-left: 60px;">1. 下载Excel模板文件并录入信息</span>
         <span style="padding-left: 60px;">2. 选择充值类型</span>
-        <span style="padding-left: 60px;">3. 上传Excel导入</span>
+        <span style="padding-left: 60px;">3.选择第一列值的类型 </span>
+        <span style="padding-left: 60px;">4. 上传Excel导入</span>
         <br>
-        <span>格式要求： Excel第一列必须为会员ID，第二列必须为充值数量</span>
+        <span>格式要求： Excel第一列可以为会员ID或者手机号(根据选择的上传第一列值得类型决定)，第二列必须为充值数量</span>
     </div>
     <form id="importform" class="form-horizontal form" action="{{yzWebUrl('excelRecharge.confirm.index')}}" method="post" enctype="multipart/form-data">
         <div class='form-group'>
@@ -43,6 +44,17 @@
                 </div>
             </div>
 
+            <div class='form-group'>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label must">上传第一列的值</label>
+                    <div class="col-sm-5 goodsname" style="padding-right:0;">
+                        <select class="form-control batch_type" name="genre">
+                            <option value="1">会员ID</option>
+                            <option value="2">手机号</option>
+                        </select>
+                    </div>
+                </div>
+
             <div class="form-group">
                 <label class="col-sm-2 control-label must">EXCEL文件</label>
                 <div class="col-sm-5 goodsname" style="padding-right:0;">
@@ -58,9 +70,14 @@
                         <i class="fa fa-pencil"></i>
                         <span>充值记录</span>
                     </a>
-                    <a class="btn btn-primary" href="{{yzWebUrl('excelRecharge.example.index')}}" style="margin-right: 10px;">
+                    <a class="btn btn-primary" href="{{yzWebUrl('excelRecharge.example.index')}}&id=1" style="margin-right: 10px;">
                         <i class="fa fa-download"></i>
-                        <span>下载Excel模板文件</span>
+                        <span>下载Excel模板文件(会员ID)</span>
+                    </a>
+
+                    <a class="btn btn-primary" href="{{yzWebUrl('excelRecharge.example.index')}}&id=2" style="margin-right: 10px;">
+                        <i class="fa fa-download"></i>
+                        <span>下载Excel模板文件(手机号)</span>
                     </a>
                 </div>
             </div>

@@ -207,6 +207,32 @@ class RegisterController extends ApiController
         }
     }
 
+    public function alySendCode()
+    {
+        $mobile = \YunShop::request()->mobile;
+
+        $state = \YunShop::request()->state ?: '86';
+
+        $sms_type = \YunShop::request()->sms_type;
+
+        if (empty($mobile)) {
+            return $this->errorJson('请填入手机号');
+        }
+
+        $type = \YunShop::request()->type;
+        if (empty($type)) {
+            $type = Client::getType();
+        }
+
+        $code = rand(1000, 9999);
+        Session::set('codetime', time());
+        Session::set('code', $code);
+        Session::set('code_mobile', $mobile);
+
+        //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+        $this->sendSmsV2($mobile, $code, $state, 'reg', $sms_type);
+    }
+
     public function sendCodeV2()
     {
         $mobile = \YunShop::request()->mobile;

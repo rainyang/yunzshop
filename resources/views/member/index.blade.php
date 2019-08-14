@@ -202,6 +202,7 @@
             </div>
             <div class="clearfix panel-heading">
                 <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.add-member')}}">添加会员</a>
+                <a class="btn btn-info dropdown-toggle" style="height: 35px;margin-top: 5px;color: white;" href="{{yzWebUrl('member.member.import')}}">会员excel导入</a>
             </div>
             <div class="clearfix">
                 <div class="panel panel-default">

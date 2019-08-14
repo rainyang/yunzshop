@@ -49,11 +49,11 @@ class Member extends \app\common\models\Member
     public function hasManyMemberCoupon($backType = null)
     {
         return $this->hasMany(MemberCoupon::class, 'uid', 'uid')
-            ->where('used', 0)->with('belongsToCoupon', function ($query) use ($backType) {
+            ->where('used', 0)->with(['belongsToCoupon'=> function ($query) use ($backType) {
                 if (isset($backType)) {
                     $query->where('coupon_method', $backType);
                 }
-            });
+            }]);
     }
 
     public function defaultAddress()

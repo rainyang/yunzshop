@@ -865,17 +865,18 @@ class Order extends BaseModel
     {
         event(new AfterOrderPaidImmediatelyEvent($this));
 
-        if (\Setting::get('shop.order.paid_process')) {
-            //同步
-            event(new AfterOrderPaidEvent($this));
-
-        } else {
+        // 去掉同步设置（已没用，相关设置也注释掉了，之前为了解决成为分销商和分销升级异步问题）
+//        if (\Setting::get('shop.order.paid_process')) {
+//            //同步
+//            event(new AfterOrderPaidEvent($this));
+//
+//        } else {
             //异步
             $this->dispatch(new OrderPaidEventQueueJob($this->id));
             OrderPaidJob::create([
                 'order_id' => $this->id,
             ]);
-        }
+//        }
     }
 
     public function fireSentEvent()
@@ -892,17 +893,18 @@ class Order extends BaseModel
     {
         event(new AfterOrderReceivedImmediatelyEvent($this));
 
-        if (\Setting::get('shop.order.receive_process')) {
-            //同步
-            event(new AfterOrderReceivedEvent($this));
-
-        } else {
+        // 去掉同步设置（已没用，相关设置也注释掉了，之前为了解决成为分销商和分销升级异步问题）
+//        if (\Setting::get('shop.order.receive_process')) {
+//            //同步
+//            event(new AfterOrderReceivedEvent($this));
+//
+//        } else {
             //异步
             $this->dispatch(new OrderReceivedEventQueueJob($this->id));
             OrderReceivedJob::create([
                 'order_id' => $this->id,
             ]);
-        }
+//        }
     }
 
     public function orderCreatedJob()

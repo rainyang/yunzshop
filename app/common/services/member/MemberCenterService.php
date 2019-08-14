@@ -605,17 +605,14 @@ class MemberCenterService
            }
        }
 
+       $arr['ViewSet'] = [];
        if (app('plugins')->isEnabled('designer')) {
            //获取所有模板
            $sets = ViewSet::uniacid()->select('names', 'type')->get()->toArray();
-
-           if (!$sets) {
-               $arr['ViewSet'] = [];
-           } else {
-               foreach ($sets as $k => $v) {
-                   $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-                   $arr['ViewSet'][$v['type']]['name'] = $v['names'];
-               }
+           
+           foreach ($sets as $k => $v) {
+               $arr['ViewSet'][$v['type']]['name'] = $v['names'];
+               $arr['ViewSet'][$v['type']]['name'] = $v['names'];
            }
        }
 

@@ -137,7 +137,8 @@ class BalanceWithdrawController extends BalanceController
             return $this->errorJson('扣除手续费后的金额不能小于1元');
         }
 
-
+        $this->cashLimitation();
+        
         DB::beginTransaction();
 
         //写入提现记录

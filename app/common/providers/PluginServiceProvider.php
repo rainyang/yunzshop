@@ -24,6 +24,7 @@ class PluginServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
         $plugins = app('plugins');
         if (strpos(request()->path(), 'install')) {
             return;
@@ -50,6 +51,7 @@ class PluginServiceProvider extends ServiceProvider
             // call closure using service container
             $this->app->call($bootstrapper);
         }
+
     }
     protected function registerPluginCallbackListener()
     {

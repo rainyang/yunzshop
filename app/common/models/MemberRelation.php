@@ -13,6 +13,7 @@ namespace app\common\models;
 use app\common\events\member\MemberCreateRelationEvent;
 use app\common\events\member\MemberFirstChilderenEvent;
 use app\common\events\member\MemberRelationEvent;
+use app\common\events\MessageEvent;
 use app\common\models\notice\MessageTemp;
 use app\common\services\MessageService;
 
@@ -696,7 +697,7 @@ class MemberRelation extends BaseModel
             return;
         }
 
-        MessageService::notice(MessageTemp::$template_id, $msg, $member->uid);
+        event(new MessageEvent($member->uid, $temp_id, $params, $url=''));
     }
 
     /**
@@ -738,13 +739,7 @@ class MemberRelation extends BaseModel
             ['name' => '下级昵称', 'value' => $member->nickname]
         ];
 
-        $msg = MessageTemp::getSendMsg($temp_id, $params);
-
-        if (!$msg) {
-            return;
-        }
-
-        MessageService::notice(MessageTemp::$template_id, $msg, $parent->uid);
+        event(new MessageEvent($parent->uid, $temp_id, $params, $url=''));
     }
 
     private static function setRelationInfo($member)
@@ -756,5 +751,7 @@ class MemberRelation extends BaseModel
             self::sendGeneralizeNotify($member->member_id);
         }
     }
+
+
 
 }

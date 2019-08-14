@@ -8,6 +8,12 @@
 namespace app\common\models;
 
 
+/**
+ * @property string $openid
+ *
+ * Class MemberMiniAppModel
+ * @package app\common\models
+ */
 class MemberMiniAppModel extends BaseModel
 {
     public $table = 'yz_member_mini_app';

@@ -93,6 +93,9 @@ class MemberLevelController extends ApiController
             }
 
             $memberData['nickname'] =  $member_info['nickname'];
+            if (!empty($member_info['avatar']) && strexists($member_info['avatar'], 'http://')) {
+                $memberData['avatar'] = 'https:' . substr($member_info['avatar'], strpos($member_info['avatar'], '//'));
+            }
             $memberData['avatar'] = $member_info['avatar'];
             $memberData['validity'] = $member_info['yz_member']['validity'];
         }

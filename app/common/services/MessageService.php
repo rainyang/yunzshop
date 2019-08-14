@@ -6,11 +6,13 @@ use app\common\events\message\SendMessageEvent;
 use app\common\models\AccountWechats;
 use app\common\models\Member;
 use app\common\models\notice\MessageTemp;
+use app\common\models\TemplateMessageRecord;
+use app\Jobs\DispatchesJobs;
 use app\Jobs\MessageNoticeJob;
+use Exception;
 use EasyWeChat\Message\News;
 use EasyWeChat\Message\Text;
 use EasyWeChat\Foundation\Application;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use app\Jobs\MiniMessageNoticeJob;
 use app\common\models\MemberMiniAppModel;
 class MessageService
@@ -25,7 +27,7 @@ class MessageService
      * @param string $url
      * @return bool
      */
-    public function push($member_id, $template_id, array $params, $url='', $uniacid='')
+    public function push($member_id, $temp_id, array $params, $url='', $uniacid='')
     {
         if ($uniacid) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
@@ -37,37 +39,55 @@ class MessageService
             return false;
         }
 
-        if (!$member_id || !$template_id) {
+        if (!$member_id || !$temp_id) {
             return false;
         }
 
+        $temp = MessageTemp::withoutGlobalScopes(['uniacid'])->whereId($temp_id)->first();
 
-        //todo MessageTemp 用法有点乱，需要重构
-
-        $params = MessageTemp::getSendMsg($template_id, $params);
-        $template_id = MessageTemp::$template_id;
-
+        if (!$temp) {
+            return false;
+        }
+        $template_id = $temp->template_id;
 
         if (!$template_id) {
             \Log::error("微信消息推送：MessageTemp::template_id参数不存在");
             return false;
         }
 
+        $send_msg = $this->getSendMsg($temp, $params);
 
         $memberModel = $this->getMemberModel($member_id);
 
         $config = $this->getConfiguration($uniacid);
 
-        $app = new Application($config);
+        try {
 
+            $app = new Application($config);
+            $app = $app->notice;
+            $app = $app->uses($template_id);
+            $app = $app->andData($send_msg);
+            $app = $app->andReceiver($memberModel->hasOneFans->openid);
+            $app = $app->andUrl($url);
+            $app->send();
 
-        $app = $app->notice;
-        $app = $app->uses($template_id);
-        $app = $app->andData($params);
-        $app = $app->andReceiver($memberModel->hasOneFans->openid);
-        $app = $app->andUrl($url);
+        } catch (Exception $error) {
 
-        $app->send();
+            TemplateMessageRecord::create([
+                'uniacid' => \YunShop::app()->uniacid,
+                'member_id' => $member_id,
+                'template_id' => $template_id,
+                'url' => $url,
+                'openid' => $memberModel->hasOneFans->openid,
+                'data' => json_encode($send_msg),
+                'send_time' => time(),
+                'status' => -1,
+                'extend_data' => $error->getMessage(),
+            ]);
+
+            return true;
+        }
+
         return true;
     }
 
@@ -108,7 +128,7 @@ class MessageService
      *
      * @return array|bool
      */
-    private function getConfiguration($uniacid)
+    public function getConfiguration($uniacid)
     {
         if ($uniacid) {
             \Setting::$uniqueAccountId = \YunShop::app()->uniacid = $uniacid;
@@ -126,6 +146,36 @@ class MessageService
         return ['app_id' => $accountWechat->key, 'secret' => $accountWechat->secret];
     }
 
+    private function getSendMsg($temp, $params)
+    {
+        $msg = [
+            'first' => [
+                'value' => $this->replaceTemplate($temp->first, $params),
+                'color' => $temp->first_color
+            ],
+            'remark' => [
+                'value' => $this->replaceTemplate($temp->remark, $params),
+                'color' => $temp->remark_color
+            ]
+        ];
+        foreach ($temp->data as $row) {
+            $msg[$row['keywords']] = [
+                'value' => $this->replaceTemplate($row['value'], $params),
+                'color' => $row['color']
+            ];
+        }
+
+        return $msg;
+    }
+
+    private function replaceTemplate($str, $datas = array())
+    {
+        foreach ($datas as $row ) {
+            $str = str_replace('[' . $row['name'] . ']', $row['value'], $str);
+        }
+        return $str;
+    }
+
 
 
 
@@ -134,10 +184,6 @@ class MessageService
 
 
     /*todo 一下代码需要重构，重新分化类功能 2018-03-23 yitian*/
-
-
-    use DispatchesJobs;
-
 
     /**
      * 发送微信模板消息
@@ -152,63 +198,47 @@ class MessageService
     public static function MiniNotice($templateId, $data, $uid, $uniacid = '', $url = '',$scene = '')
     {
         \Log::debug('==============miniApp===================',[$templateId,$data,$uid]);
-            //监听消息通知
-            event(new SendMessageEvent([
-                'data' => $data,
-                'uid' => $uid,
-                'url' => $url
-            ]));
-           // $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
-            $res = \Setting::get('plugin.min_app');
-            $options = [
-                'app_id' => $res['key'],
-                'secret' => $res['secret'],
-            ];
-            $member = Member::whereUid($uid)->first();
-            if (!isset($member)) {
-                \Log::error("小程序消息推送失败,未找到uid:{$uid}的用户");
-                return false;
-            }
 
-            if(empty($scene)){
-                $createTime = $member->hasOneMiniApp->formId_create_time;
-                $time=strtotime (date("Y-m-d H:i:s")); //当前时间
-                $minute=floor(($time-$createTime) % 86400/60);
-                if ($minute > 10080 && empty($createTime)){
-                    \Log::error("小程序消息推送失败,formId失效");
-                    return false;
-                }
-                $scene = $member->hasOneMiniApp->formId;
-                $pieces = explode("#", $scene);
-                $scene = array_shift($pieces);//获取首个元素并删除
-                $str = implode("#", $pieces);
-                MemberMiniAppModel::where('member_id',$uid)->uniacid()->update(['formId'=>$str]);
-            }
-            if(empty($scene)){
-                \Log::error("小程序消息推送失败,formId失效");
-                return false;
-            }
-            (new MessageService())->MiniNoticeQueue($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$scene );
-    }
-    public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
-    {
-
-        if (\Setting::get('shop.notice.toggle') == false) {
-            return false;
-        }
-        //监听消息通知
-        event(new SendMessageEvent([
-            'data' => $data,
-            'uid' => $uid,
-            'url' => $url
-        ]));
-
-        $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+       // $res = AccountWechats::getAccountByUniacid(\YunShop::app()->uniacid);
+        $res = \Setting::get('plugin.min_app');
         $options = [
             'app_id' => $res['key'],
             'secret' => $res['secret'],
         ];
-        $app = new Application($options);
+        $member = Member::whereUid($uid)->first();
+        if (!isset($member)) {
+            \Log::error("小程序消息推送失败,未找到uid:{$uid}的用户");
+            return false;
+        }
+
+        if(empty($scene)){
+            $createTime = $member->hasOneMiniApp->formId_create_time;
+            $time=strtotime (date("Y-m-d H:i:s")); //当前时间
+            $minute=floor(($time-$createTime) % 86400/60);
+            if ($minute > 10080 && empty($createTime)){
+                \Log::error("小程序消息推送失败,formId失效");
+                return false;
+            }
+            $scene = $member->hasOneMiniApp->formId;
+            $pieces = explode("#", $scene);
+            $scene = array_shift($pieces);//获取首个元素并删除
+            $str = implode("#", $pieces);
+            MemberMiniAppModel::where('member_id',$uid)->uniacid()->update(['formId'=>$str]);
+        }
+        if(empty($scene)){
+            \Log::error("小程序消息推送失败,formId失效");
+            return false;
+        }
+        $job = new MiniMessageNoticeJob($options, $templateId, $data,$member->hasOneMiniApp->openid, $url,$scene );
+        DispatchesJobs::dispatch($job,DispatchesJobs::LOW);
+    }
+
+    public static function notice($templateId, $data, $uid, $uniacid = '', $url = '',$miniApp = [])
+    {
+        if (\Setting::get('shop.notice.toggle') == false) {
+            return false;
+        }
+
         $member = Member::whereUid($uid)->first();
         if (!isset($member)) {
             \Log::error("微信消息推送失败,未找到uid:{$uid}的用户");
@@ -218,22 +248,11 @@ class MessageService
         if (!$member->isFollow()) {
             return false;
         }
-        (new MessageService())->noticeQueue($app->notice, $templateId, $data, $member->hasOneFans->openid, $url);
+        $job = new MessageNoticeJob($templateId, $data, $member->hasOneFans->openid, $url);
 
-
-//        $notice = $app->notice;
-//        $notice->uses($templateId)->andData($data)->andReceiver($openId)->send();
+        DispatchesJobs::dispatch($job,DispatchesJobs::LOW);
     }
 
-    public function MiniNoticeQueue($options, $templateId, $data, $openId, $url,$formId){
-        $this->dispatch((new MiniMessageNoticeJob($options, $templateId, $data, $openId, $url,$formId)));
-    }
-
-    public function noticeQueue($notice, $templateId, $data, $openId, $url)
-    {
-        $this->dispatch((new MessageNoticeJob($notice, $templateId, $data, $openId, $url)));
-
-    }
 
     public static function getWechatTemplates()
     {
