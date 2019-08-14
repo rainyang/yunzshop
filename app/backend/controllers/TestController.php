@@ -20,6 +20,9 @@ use app\frontend\modules\member\models\SubMemberModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use app\common\facades\Setting;
+use app\common\services\aliyun\AliyunSMS;
+use app\common\models\UniAccount;
+use Yunshop\Article\models\Log;
 
 class TestController extends BaseController
 {
@@ -27,7 +30,7 @@ class TestController extends BaseController
 
     public function t()
     {
-        
+
     }
 
     private $amountItems;
@@ -407,9 +410,10 @@ class TestController extends BaseController
         echo 'end';*/
     }
 
-    public function ff()
+    public function generateAddressJs()
     {
-
+        $num = (new \app\common\services\address\GenerateAddressJs())->address();
+        echo $num;
     }
 
     protected $GoodsGroupTable = 'yz_goods_group_goods';

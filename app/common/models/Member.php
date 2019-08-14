@@ -99,6 +99,7 @@ use app\common\models\member\MemberInvitationCodeLog;
  * @property string pay_password
  * @property Collection memberCarts
  * @property McMappingFans hasOneFans
+ * @property MemberMiniAppModel hasOneMiniApp
  * @property \app\backend\modules\member\models\MemberShopInfo yzMember
  * @property MemberDel hasOneDel
  */
@@ -187,7 +188,7 @@ class Member extends BackendModel
 
     public function hasOneMiniApp()
     {
-        return $this->hasOne('app\common\models\MemberMiniAppModel', 'member_id', 'uid');
+        return $this->hasOne(MemberMiniAppModel::class, 'member_id', 'uid');
     }
 
 

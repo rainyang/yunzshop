@@ -10,6 +10,7 @@ namespace app\common\providers;
 
 use app\backend\modules\supervisord\services\Supervisor;
 use app\common\facades\Setting;
+use app\common\facades\SiteSetting;
 use app\common\helpers\SettingCache;
 use app\common\modules\express\KDN;
 use app\common\managers\ModelExpansionManager;
@@ -32,7 +33,7 @@ class ShopProvider extends ServiceProvider
             return new SettingCache();
         });
         $this->app->singleton('supervisor',function() {
-            $supervisord  = Setting::get('supervisor');
+            $supervisord  =  SiteSetting::get('supervisor');
             $ip = $supervisord['address']['ip']?: 'http://127.0.0.1';
             return new Supervisor($ip, 9001);
         });

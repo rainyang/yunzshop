@@ -21,6 +21,8 @@ class AgainPayController extends PreController
      */
     public function index()
     {
+        \Log::debug('打款中重新打款接口+++++++++++++++++++++');
+        
         $this->withdrawModel->status = 1;
 
         $result = (new PayedService($this->withdrawModel))->withdrawPay();

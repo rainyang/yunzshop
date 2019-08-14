@@ -115,6 +115,18 @@ return [
                 'parents' => ['system', 'supervisor', 'supervisord_supervisord_store'],
                 'child' => []
             ],
+            'supervisord_supervisord_queue' => [
+                'name' => '队列设置',
+                'url' => 'supervisord.supervisord.queue',
+                'url_params' => '',
+                'permit' => 1,
+                'menu' => 1,
+                'icon' => '',
+                'sort' => '2',
+                'item' => 'supervisord_supervisord_queue',
+                'parents' => ['system', 'supervisor', 'supervisord_supervisord_queue'],
+                'child' => []
+            ],
         ],
     ],
     'site_setting' => [

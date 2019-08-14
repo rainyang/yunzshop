@@ -304,7 +304,7 @@ function yz_tomedia($src, $local_path = false, $upload_type = null,$host = '')
     $sign = false;
 
     if (env('APP_Framework') == 'platform') {
-        $systemSetting = app('systemSetting');
+        $systemSetting = app('SystemSetting');
         if ($remote = $systemSetting->get('remote')) {
             $setting[$remote['key']] = unserialize($remote['value']);
         }
@@ -3026,18 +3026,19 @@ if (!function_exists('uploadParam')) {
         $u_url = 'static/resource/js/app/';
         if (env('APP_Framework') == 'platform') {
             $global = SystemSetting::settingLoad('global', 'system_global');
-            $fileSizeLimit = intval($global['image_limit']) * 1024;
+            $result['fileSizeLimitImage'] = intval($global['image_limit']) * 1024;
+            $result['fileSizeLimitAudio'] = intval($global['audio_limit']) * 1024;
             $util = 'utils';
             $util_url = '/' . $u_url . $util;
         } else {
             $util_url = '/addons/yun_shop/' . $u_url . $util;
             $global = \YunShop::app()->setting['upload'];
-            $fileSizeLimit = intval(\YunShop::app()->setting['upload']['image']['limit']) * 1024;
+            $result['fileSizeLimitImage'] = intval($global['image']['limit']) * 1024;
+            $result['fileSizeLimitAudio'] = intval($global['audio']['limit']) * 1024;
         }
 
         $result['util'] = $util;
         $result['global'] = $global;
-        $result['fileSizeLimit'] = $fileSizeLimit;
         $result['util_url'] = $util_url;
 
         return $result;

@@ -12,40 +12,61 @@
                 <div class="panel panel-default">
                     <div class='panel-body'>
 
-                        <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付流程</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <label class="radio radio-inline">
-                                    <input type="radio" name="order[paid_process]" value="1"
-                                           @if ($set['paid_process']) checked @endif/>
-                                    同步
-                                </label>
-                                <label class="radio radio-inline">
-                                    <input type="radio" name="order[paid_process]" value="0"
-                                           @if (empty($set['paid_process'])) checked @endif/>
-                                    异步
-                                </label>
-                                <span class="help-block">
-                                    获得推广资格的条件和分销商等级升级条件为同一个时，选择同步，否则选择异步（选择同步时会使订单付款变慢）
-                                </span>
-                            </div>
-                        </div>
 
+                        {{--<div class="form-group">--}}
+                            {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">订单支付流程</label>--}}
+                            {{--<div class="col-sm-9 col-xs-12">--}}
+                                {{--<label class="radio radio-inline">--}}
+                                    {{--<input type="radio" name="order[paid_process]" value="1"--}}
+                                           {{--@if ($set['paid_process']) checked @endif/>--}}
+                                    {{--同步--}}
+                                {{--</label>--}}
+                                {{--<label class="radio radio-inline">--}}
+                                    {{--<input type="radio" name="order[paid_process]" value="0"--}}
+                                           {{--@if (empty($set['paid_process'])) checked @endif/>--}}
+                                    {{--异步--}}
+                                {{--</label>--}}
+                                {{--<span class="help-block">--}}
+                                    {{--获得推广资格的条件和分销商等级升级条件为同一个时，选择同步，否则选择异步（选择同步时会使订单付款变慢）--}}
+                                {{--</span>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+
+                        {{--<div class="form-group">--}}
+                            {{--<label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成流程</label>--}}
+                            {{--<div class="col-sm-9 col-xs-12">--}}
+                                {{--<label class="radio radio-inline">--}}
+                                    {{--<input type="radio" name="order[receive_process]" value="1"--}}
+                                           {{--@if ($set['receive_process']) checked @endif/>--}}
+                                    {{--同步--}}
+                                {{--</label>--}}
+                                {{--<label class="radio radio-inline">--}}
+                                    {{--<input type="radio" name="order[receive_process]" value="0"--}}
+                                           {{--@if (empty($set['receive_process'])) checked @endif/>--}}
+                                    {{--异步--}}
+                                {{--</label>--}}
+                                {{--<span class="help-block">--}}
+                                    {{--获得推广资格的条件和分销商等级升级条件为同一个时，选择同步，否则选择异步（选择同步时会使订单完成变慢）--}}
+                                {{--</span>--}}
+                            {{--</div>--}}
+                        {{--</div>--}}
+                            
+                        <!-- 是否开启订单拆单  -->
                         <div class="form-group">
-                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成流程</label>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">按商品拆单</label>
                             <div class="col-sm-9 col-xs-12">
                                 <label class="radio radio-inline">
-                                    <input type="radio" name="order[receive_process]" value="1"
-                                           @if ($set['receive_process']) checked @endif/>
-                                    同步
+                                    <input type="radio" name="order[order_apart]" value="1"
+                                           @if ($set['order_apart']) checked @endif/>
+                                    开启
                                 </label>
                                 <label class="radio radio-inline">
-                                    <input type="radio" name="order[receive_process]" value="0"
-                                           @if (empty($set['receive_process'])) checked @endif/>
-                                    异步
+                                    <input type="radio" name="order[order_apart]" value="0"
+                                           @if (empty($set['order_apart'])) checked @endif/>
+                                    关闭
                                 </label>
                                 <span class="help-block">
-                                    获得推广资格的条件和分销商等级升级条件为同一个时，选择同步，否则选择异步（选择同步时会使订单完成变慢）
+                                    开启有用户购买平台自营商品，每一个商品拆成一个订单，订单原有逻辑不变。
                                 </span>
                             </div>
                         </div>

@@ -52,12 +52,16 @@ class ApplyController extends ApiController
      */
     private $withdraw_data;
 
+    private $withdraw_item_data;
+
+    private $uids;
 
     public function __construct()
     {
         parent::__construct();
 
         $this->withdraw_set = $this->getWithdrawSet();
+        $this->uids = \Setting::get('withdraw.notice.withdraw_user');
     }
 
     //提现接口
@@ -120,10 +124,27 @@ class ApplyController extends ApiController
 
     private function withdrawStart()
     {
-        DB::transaction(function () {
-            $this->_withdrawStart();
-        });
-        return true;
+        try{
+
+            DB::transaction(function () {
+                $this->_withdrawStart();
+            });
+            return true;
+
+        } catch (\Exception $exception) {
+            
+            if ($this->withdraw_set['free_audit'] == 1) {
+                
+                foreach ($this->uids as $k => $v) {
+                        
+                    if ($user_model = \app\common\models\Member::uniacid()->where('uid', $v['uid'])->first()) {
+                        MessageService::withdrawFailure($this->withdraw_item_data, $user_model);
+                    }
+                }
+                    
+            }
+            return $exception->getMessage();
+        }
     }
 
 
@@ -142,6 +163,8 @@ class ApplyController extends ApiController
             $withdrawModel->withdraw_set = $this->withdraw_set;
             $withdrawModel->income_set = $this->getIncomeSet($item['key_name']);
             $withdrawModel->fill($this->getWithdrawData($item));
+
+            $this->withdraw_item_data = $withdrawModel;
 
             event(new WithdrawApplyEvent($withdrawModel));
             

@@ -14,6 +14,7 @@ use app\common\components\BaseController;
 use app\common\exceptions\ShopException;
 use app\common\facades\Setting;
 use app\common\helpers\Url;
+use app\framework\Support\Facades\Log;
 
 class BalanceSetController extends BaseController
 {
@@ -29,9 +30,23 @@ class BalanceSetController extends BaseController
         !$this->balance_set && $this->setBalanceSet();
 
         //dd($this->balance_set);
-        return view('finance.balance.index', ['balance' => $this->balance_set,])->render();
+        return view('finance.balance.index', ['balance' => $this->balance_set,'day_data' => $this->getDayData()])->render();
     }
 
+    /**
+     * 返回一天24时，对应key +1, 例：1 => 0:00
+     * @return array
+     */
+    private function getDayData()
+    {
+        $dayData = [];
+        for ($i = 1; $i <= 23; $i++) {
+            $dayData += [
+                $i+1 => "每天" . $i . ":00",
+            ];
+        }
+        return $dayData;
+    }
 
     /**
      * 更新余额设置数据
@@ -40,7 +55,10 @@ class BalanceSetController extends BaseController
     public function store()
     {
         $request_data = $this->getPostValue();
-        //dd($request_data);
+        \Cache::forever("sms_timing_setting", [
+            'sms_hour'=>$request_data['sms_hour'] ?: 0,
+        ]);
+        \Log::debug(\Cache::get("sms_timing_setting"));
         if (Setting::set('finance.balance', $request_data)) {
             (new \app\common\services\operation\BalanceSetLog(['old'=>$this->balance_set,'new'=>$request_data], 'update'));
             return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance-set.see'),'success');

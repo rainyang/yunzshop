@@ -45,7 +45,7 @@ class MemberDesignerController extends ApiController
                     {
                        if($design['params']['memberredlove'] == true || $design['params']['memberwhitelove'] == true){
                            if(!$is_love_open){
-                               $design['params']['memberredlove'] = false;
+                               $datas[$dkey]['params']['memberredlove'] = false;
                                $datas[$dkey]['params']['memberwhitelove'] = false;
                            }
                        }

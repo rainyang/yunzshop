@@ -158,7 +158,7 @@ class GoodsOptionService
                     $hh .= '<td class="danger"><input name="option_productsn_' . $ids . '[]" type="text" class="form-control option_productsn option_productsn_' . $ids . '" " value="' . $val['product_sn'] . '"/></td>';
                 $hh .= '<td class="info"><input name="option_weight_' . $ids . '[]" type="text" class="form-control option_weight option_weight_' . $ids . '" " value="' . $val['weight'] . '"/></td>';
 
-                $hh .= '<td class="info"><div class="input-group"><input name="option_thumb_'.$ids.'[]" type="hidden" class="option_thumb_'.$ids.'" url="'.$val['url'].'" value="'.$val['thumb'].'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button">上传图片</button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'.$val['url'].'" onerror="this.src=\''.static_url('./resource/images/nopic.jpg').'\'; this.title=\'图片未找到.\'" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
+                $hh .= '<td class="info"><div class="input-group"><input name="option_thumb_'.$ids.'[]" type="hidden" class="option_thumb_'.$ids.'" url="'.$val['url'].'" value="'.$val['thumb'].'"/><span><button style="display:none" class="btn btn-default" onclick="showImageDialog(this);" type="button">上传图片</button></span></div><div class="input-group" onclick="tu(this)" style="margin-top:.5em;"><img src="'.$val['url'].'" onerror="nofind()" class="img-responsive img-thumbnail" style="width:50px;height:50px"></div></td>';
 
                 $hh .= '</tr>';
 

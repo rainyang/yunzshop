@@ -37,7 +37,8 @@ class HomePageController extends ApiController
         'wxapp',
         'isCloseSite',
         'designerShare',
-        'getParams'
+        'getParams',
+        'getCaptcha'
     ];
     protected $ignoreAction = [
         'index',
@@ -48,7 +49,8 @@ class HomePageController extends ApiController
         'wxapp',
         'isCloseSite',
         'designerShare',
-        'getParams'
+        'getParams',
+        'getCaptcha'
     ];
     private $pageSize = 16;
 
@@ -277,7 +279,7 @@ class HomePageController extends ApiController
                     $result['captcha']['status'] = $status;
                 }
             }
-
+            $result['system']['mobile_login_code'] = $member_set['mobile_login_code'] ? 1 : 0;
             //小程序验证推广按钮是否开启
             $result['system']['btn_romotion'] = PortType::popularizeShow($type);
 
@@ -1068,6 +1070,23 @@ class HomePageController extends ApiController
         $list = (new IndexController())->getRecommentGoods();
         $this->successJson('',$list);
     }
+
+    public function getCaptcha()
+    {
+        //增加验证码功能
+        $status = Setting::get('shop.sms.status');
+        if (extension_loaded('fileinfo')) {
+            if ($status == 1) {
+                $captcha                     = self::captchaTest();
+                $result['captcha']           = $captcha;
+                $result['captcha']['status'] = $status;     
+            } else {
+                $result['captcha']['status'] = $status;
+            }
+        }
+        return $this->successJson('ok', $result);
+    }
+
     public function getParams($request)
     {
         $this->dataIntegrated($this->index($request, true), 'home');
