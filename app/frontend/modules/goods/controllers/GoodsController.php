@@ -221,6 +221,10 @@ class GoodsController extends ApiController
         $goodsModel = $this->_getGoods($id);
         //设置商品相关插件信息
         $this->setGoodsPluginsRelations($goodsModel);
+        //供应商logo转格式
+        if (!empty($goodsModel->supplier)) {
+            $goodsModel->supplier->logo = yz_tomedia($goodsModel->supplier->logo);
+        }
         //默认供应商店铺名称
         if ($goodsModel->supplier->store_name == 'null') {
             $goodsModel->supplier->store_name = $goodsModel->supplier->user_name;
