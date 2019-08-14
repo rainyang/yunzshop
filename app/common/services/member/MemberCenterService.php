@@ -598,7 +598,7 @@ class MemberCenterService
                    'title' => '发现视频',
                    'class' => 'icon-extension_video',
                    'url'   => 'VideoList',
-                   'image' => 'member_a(72).png'
+                   'image' => 'member_a(73).png'
                ];
            }
        }
