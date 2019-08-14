@@ -36,7 +36,7 @@ class IncomeService
         $balance=Setting::get('shop.shop');
         //从数据库获取
 
-        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
+//        $balance= empty(PayType::get_pay_type_name(3))?"余额":PayType::get_pay_type_name(3);
 
         $set = \Setting::get('shop.lang.zh_cn.income');
 
