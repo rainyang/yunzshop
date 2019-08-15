@@ -105,7 +105,7 @@ class MemberOfficeAccountService extends MemberService
         $subscribe = 0;
         $share = Setting::get('shop.share');
 
-        if (env('APP_Framework') == 'platform' || (!is_null($share) && $share->follow_url != '')) {
+        if (env('APP_Framework') == 'platform' || (!is_null($share) && $share['follow_url'] != '')) {
             $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
             $global_token = \Curl::to($global_access_token_url)
@@ -543,20 +543,23 @@ class MemberOfficeAccountService extends MemberService
                     $appSecret = $account->secret;
 
                     //是否关注 更新用户信息
-                    if (date('Y-m-d', $yz_token->updated_at) != date('Y-m-d')) {
+                    list($update_day, $update_time) = explode(' ', $yz_member->updated_at);
+                    if ($update_day != date('Y-m-d')) {
                         $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
                         $global_token = \Curl::to($global_access_token_url)
                             ->asJsonResponse(true)
                             ->get();
 
-                        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+                        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $openid);
 
                         $user_info = \Curl::to($global_userinfo_url)
                             ->asJsonResponse(true)
                             ->get();
 
                         if ($user_info['subscribe']) {
+                            $user_info['nickname'] = $this->filteNickname($user_info);
+
                             $this->updateMemberInfo($yz_member->member_id, $user_info);
                         }
                     }
