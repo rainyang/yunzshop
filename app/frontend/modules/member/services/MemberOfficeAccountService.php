@@ -543,20 +543,22 @@ class MemberOfficeAccountService extends MemberService
                     $appSecret = $account->secret;
 
                     //是否关注 更新用户信息
-                    $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
+                    if (date('Y-m-d', $yz_token->updated_at) != date('Y-m-d')) {
+                        $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
-                    $global_token = \Curl::to($global_access_token_url)
-                        ->asJsonResponse(true)
-                        ->get();
+                        $global_token = \Curl::to($global_access_token_url)
+                            ->asJsonResponse(true)
+                            ->get();
 
-                    $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
+                        $global_userinfo_url = $this->_getInfo($global_token['access_token'], $token['openid']);
 
-                    $user_info = \Curl::to($global_userinfo_url)
-                        ->asJsonResponse(true)
-                        ->get();
+                        $user_info = \Curl::to($global_userinfo_url)
+                            ->asJsonResponse(true)
+                            ->get();
 
-                    if ($user_info['subscribe']) {
-                        $this->updateMemberInfo($yz_member->member_id, $user_info);
+                        if ($user_info['subscribe']) {
+                            $this->updateMemberInfo($yz_member->member_id, $user_info);
+                        }
                     }
 
                     //更新token
