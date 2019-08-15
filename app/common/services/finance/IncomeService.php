@@ -48,7 +48,7 @@ class IncomeService
         }
         switch ($key) {
             case 'balance':
-                return $name.'到'.$balance;
+                return $name.'到'.$balance['credit'];
                // return '提现到'.$dalance['credit'];
 
 
