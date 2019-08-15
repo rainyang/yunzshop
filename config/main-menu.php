@@ -329,6 +329,19 @@ return [
                         'item'       => 'goods_goods_batch_destroy',
                         'parents'    => ['Goods', 'goods_goods',],
                     ],
+
+                    'goods_goods_import'  => [
+                        'name'       => 'excel导入商品',
+                        'url'        => 'goods.goods.import',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 1,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'goods_goods_import',
+                        'parents'    => ['Goods', 'goods_goods',],
+                    ],
+
                     'goods_goods_batch_property' => [
                         'name'       => '批量上下架',
                         'url'        => 'goods.goods.batchSetProperty',
@@ -1326,6 +1339,18 @@ return [
                         'icon'       => '',
                         'sort'       => 0,
                         'item'       => 'member_add',
+                        'parents'    => ['Member', 'member_all',],
+                    ],
+
+                    'member_import' => [
+                        'name'       => '会员excel导入',
+                        'url'        => 'member.member.import',
+                        'url_params' => '',
+                        'permit'     => 1,
+                        'menu'       => 0,
+                        'icon'       => '',
+                        'sort'       => 0,
+                        'item'       => 'member_import',
                         'parents'    => ['Member', 'member_all',],
                     ],
 

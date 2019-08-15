@@ -42,6 +42,11 @@ class LoginController extends ApiController
             return $this->init_login();
         }
 
+        if(\Setting::get('shop.member.mobile_login_code') == 1 and \YunShop::request()->is_sms == 1){
+            // todo 待优化，需要考虑其他很多种情况
+            $type = 10;
+        }
+
         if (!empty($type)) {
                 $member = MemberFactory::create($type);
 
