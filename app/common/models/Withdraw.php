@@ -18,9 +18,10 @@ use app\common\traits\CreateOrderSnTrait;
  * @package app\common\models
  *
  * @property int id
- * @property int type_id
- * @property float amounts
  * @property int status
+ * @property int type_id
+ * @property int arrival_at
+ * @property float amounts
  *
  * @method self initial()
  * @method self audit()
