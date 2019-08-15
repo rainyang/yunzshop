@@ -225,7 +225,7 @@ class MemberMiniAppService extends MemberService
      *
      * @return bool
      */
-    public function checkLogged()
+    public function checkLogged($login = null)
     {
         return MemberService::isLogged();
     }

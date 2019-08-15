@@ -33,8 +33,8 @@ class MemberOfficeAccountService extends MemberService
         $member_id = 0;
 
         $uniacid = \YunShop::app()->uniacid;
-        $scope   = \YunShop::request()->scope;
-
+        $scope   = \YunShop::request()->scope ?: 'userinfo';     //scope: base|home|userinfo
+\Log::debug('------login------', $scope);
         if (Setting::get('shop.member')['wechat_login_mode'] == '1') {
             return $this->isPhoneLogin($uniacid);
         }
@@ -52,10 +52,12 @@ class MemberOfficeAccountService extends MemberService
         $authurl = $this->_getAuthUrl($appId, $callback, $state);
 
         if ($scope == 'base') {
+            \Log::debug('-------setp1------');
             $authurl = $this->_getAuthBaseUrl($appId, $callback, $state);
         }
 
         if (!empty($code)) {
+            \Log::debug('------setp2-------');
             $redirect_url = $this->_getClientRequestUrl();
 
             $tokenurl = $this->_getTokenUrl($appId, $appSecret, $code);
@@ -79,7 +81,8 @@ class MemberOfficeAccountService extends MemberService
             $member_id = $this->memberLogin($userinfo);
 
             Session::set('member_id', $member_id);
-            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid']), time() + self::TOKEN_EXPIRE);
+            \Log::debug('------set cookie-----', [$scope]);
+            setcookie('Yz-Token', encrypt($userinfo['access_token'] . '\t' . ($userinfo['expires_in'] + time()) . '\t' . $userinfo['openid'] . '\t' . $scope), time() + self::TOKEN_EXPIRE);
         } else {
             $this->_setClientRequestUrl();
 
@@ -505,16 +508,22 @@ class MemberOfficeAccountService extends MemberService
         exit;
     }
 
-    public function checkLogged()
+    public function checkLogged($login = null)
     {
         $uniacid = \YunShop::app()->uniacid;
+        $from    = \YunShop::request()->scope;
 
         if (isset($_COOKIE['Yz-Token'])) {
             try {
                 $yz_token = decrypt($_COOKIE['Yz-Token']);
 
-                list($token, $expires, $openid) = explode('\t', $yz_token);
+                list($token, $expires, $openid, $scope) = explode('\t', $yz_token);
             } catch (DecryptException $e) {
+                return false;
+            }
+\Log::debug('----base-----', [$from,$scope]);
+            if ($scope === 'base' && $from != $scope) {
+                $login->jump = true;
                 return false;
             }
 
@@ -524,8 +533,6 @@ class MemberOfficeAccountService extends MemberService
                 $openid_member = SubMemberModel::getMemberByOpenid($openid);
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
-                    Session::set('member_id', $openid_member->member_id);
-
                     return true;
                 }
 
@@ -533,7 +540,6 @@ class MemberOfficeAccountService extends MemberService
             }
 
             if ($yz_member->access_expires_in_1 > time()) {
-                Session::set('member_id', $yz_member->member_id);
                 return true;
             } else {
                 if ($yz_member->refresh_expires_in_1 > time()) {
