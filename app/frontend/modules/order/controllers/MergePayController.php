@@ -148,6 +148,13 @@ class MergePayController extends ApiController
                       $names = \Setting::get('shop.shop.credit');
                 }
             }
+            //预存款
+            if($paymentType->getCode()  == 'DepositPay'){
+                if(app('plugins')->isEnabled('team-rewards'))
+                {
+                    $names =  TEAM_REWARDS_DEPOSIT.'支付';
+                }
+            }
                 return [
                     'name' => $names ?: $paymentType->getName(),
                     'value' => $paymentType->getId(),

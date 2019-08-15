@@ -145,11 +145,12 @@ class PayFactory
      */
     const PAY_ALIPAY_HJ = 29;
 
-    /**
-     *  支付宝支付-HJ(汇聚)
-     */
     const PAY_WE_CHAT_APPLET = 30;
 
+    /**
+     *  团队奖励预存款支付
+     */
+    const PAY_TEAM_DEPOSIT = 31;
 
     public static function create($type = null)
     {
@@ -281,6 +282,12 @@ class PayFactory
                     throw new AppException('小程序插件未开启');
                 }
                 $className = new WeChatAppletPay();
+                break;
+            case self::PAY_TEAM_DEPOSIT:
+                if (!app('plugins')->isEnabled('team-rewards') && \Setting::get('team-rewards.is_open') != 1) {
+                    throw new AppException('插件未开启');
+                }
+                $className = new \Yunshop\TeamRewards\common\services\DepositPayService();
                 break;
             default:
                 $className = null;

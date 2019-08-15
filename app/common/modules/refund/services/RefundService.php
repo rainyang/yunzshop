@@ -82,6 +82,9 @@ class RefundService
             case PayType::ALIPAY_HJ_PAY:
                 $result = $this->ConvergeWechat();
                 break;
+            case PayType::PAY_TEAM_DEPOSIT:
+                $result = $this->deposit();
+                break;
             default:
                 $result = false;
                 break;
@@ -168,6 +171,20 @@ class RefundService
 
         if ($result !== true) {
             throw new AdminException($result);
+        }
+
+        //退款状态设为完成
+        RefundOperationService::refundComplete(['id' => $this->refundApply->id]);
+
+        return $result;
+    }
+
+    private function deposit()
+    {
+        $result = PayFactory::create($this->refundApply->order->pay_type_id)->doRefund($this->refundApply->order->hasOneOrderPay->pay_sn, $this->refundApply->order->hasOneOrderPay->amount, $this->refundApply->price);
+
+        if ($result !== true) {
+            throw new AdminException(TEAM_REWARDS_DEPOSIT.'退款失败');
         }
 
         //退款状态设为完成

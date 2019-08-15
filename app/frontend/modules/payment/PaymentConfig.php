@@ -16,6 +16,7 @@ use app\frontend\modules\payment\orderPayments\AppPayment;
 use app\frontend\modules\payment\orderPayments\CloudAliPayment;
 use app\frontend\modules\payment\orderPayments\CloudPayment;
 
+use app\frontend\modules\payment\orderPayments\DepositPayment;
 use app\frontend\modules\payment\orderPayments\HuanxunPayment;
 use app\frontend\modules\payment\orderPayments\CODPayment;
 use app\frontend\modules\payment\orderPayments\CreditPayment;
@@ -38,6 +39,7 @@ use app\frontend\modules\payment\paymentSettings\shop\AnotherPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\BalanceSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayAliSetting;
 use app\frontend\modules\payment\paymentSettings\shop\CloudPayWechatSetting;
+use app\frontend\modules\payment\paymentSettings\shop\DepositSetting;
 use app\frontend\modules\payment\paymentSettings\shop\HuanxunPaySetting;
 use app\frontend\modules\payment\paymentSettings\shop\CODSetting;
 use app\frontend\modules\payment\paymentSettings\shop\HuanxunWxPaySetting;
@@ -250,6 +252,16 @@ class PaymentConfig
                 'settings' => [
                     'shop' => function (OrderPay $orderPay) {
                         return new AlipayPayHjSetting($orderPay);
+                    }
+                ],
+            ],
+            'DepositPay' => [
+                'payment' => function (OrderPay $orderPay, PayType $payType, OrderPaymentSettingCollection $settings) {
+                    return new DepositPayment($orderPay, $payType, $settings);
+                },
+                'settings' => [
+                    'shop' => function (OrderPay $orderPay) {
+                        return new DepositSetting($orderPay);
                     }
                 ],
             ],
