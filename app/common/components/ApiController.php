@@ -114,7 +114,7 @@ class ApiController extends BaseController
         } else {
             if (($this->controller == 'Login' && $this->action == 'checkLogin') || $this->jump) {
                 if ($scope == 'home') {
-                    try {
+                    try { //装修组件需要登录 强制跳转
                         if (!$mid && (!app('plugins')->isEnabled('designer')
                                 || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {
                             return;
