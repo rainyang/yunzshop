@@ -533,7 +533,11 @@ class MemberOfficeAccountService extends MemberService
                 $openid_member = SubMemberModel::getMemberByOpenid($openid);
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
-                    return true;
+                    if (\YunShop::app()->getMemberId()) {
+                     return true;
+                    }
+
+                    return false;
                 }
 
                 return false;
