@@ -122,7 +122,6 @@ class ApiController extends BaseController
                     } catch (\Exception $e) {
                         //TODO
                     }
-
                 }
 
                 if (self::MOBILE_TYPE == $type || self::WEB_APP == $type || self::NATIVE_APP == $type) {
