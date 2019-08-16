@@ -32,6 +32,8 @@ class ApiController extends BaseController
     protected $publicAction = [];
     protected $ignoreAction = [];
 
+    public $jump = false;
+
     /**
      * @throws ShopException
      * @throws UniAccountNotFoundException
@@ -110,7 +112,7 @@ class ApiController extends BaseController
         if ($type == 2) {
             throw new MemberNotLoginException('请登录', ['login_status' => 0, 'login_url' => Url::absoluteApi('member.login.index', $queryString)]);
         } else {
-            if ($this->controller == 'Login' && $this->action == 'checkLogin') {
+            if (($this->controller == 'Login' && $this->action == 'checkLogin') || $this->jump) {
                 if ($scope == 'home') {
                     if (!$mid && (!app('plugins')->isEnabled('designer')
                             || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {

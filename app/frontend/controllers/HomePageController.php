@@ -289,6 +289,7 @@ class HomePageController extends ApiController
                 return show_json(1, $result);
             }
         } catch (MemberNotLoginException $e) {
+            $this->jump = true;
             return $this->jumpUrl($type, $mid);
         }
     }
