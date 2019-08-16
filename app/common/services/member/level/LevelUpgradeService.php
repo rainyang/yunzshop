@@ -212,6 +212,7 @@ class LevelUpgradeService
      */
     private function checkGoodsId()
     {
+        $reallevel = [];
         $goodsIds = array_pluck($this->orderModel->hasManyOrderGoods->toArray(), 'goods_id');
         
         \Log::debug('---==get_order_model==---', $this->orderModel);
@@ -251,14 +252,14 @@ class LevelUpgradeService
                     if (app('plugins')->isEnabled('universal-card')) {
                         
                         if ($time->goods_option_id) {
-                            $level->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
+                            $reallevel->validity = (new \Yunshop\UniversalCard\services\LevelUpgradeService())->upgrade($level->id, $time->goods_option_id);
                         }
                     }
                 }
             }
         }
         // return $level ?: [];
-        return $reallevel ?: [];
+        return $reallevel;
     }
 
     private function upgrade($levelId)
