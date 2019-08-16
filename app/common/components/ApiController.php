@@ -114,10 +114,15 @@ class ApiController extends BaseController
         } else {
             if (($this->controller == 'Login' && $this->action == 'checkLogin') || $this->jump) {
                 if ($scope == 'home') {
-                    if (!$mid && (!app('plugins')->isEnabled('designer')
-                            || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {
-                        return;
+                    try {
+                        if (!$mid && (!app('plugins')->isEnabled('designer')
+                                || (app('plugins')->isEnabled('designer')) && (new IndexPageService())->getIndexPage() == '')) {
+                            return;
+                        }
+                    } catch (\Exception $e) {
+                        //TODO
                     }
+
                 }
 
                 if (self::MOBILE_TYPE == $type || self::WEB_APP == $type || self::NATIVE_APP == $type) {
