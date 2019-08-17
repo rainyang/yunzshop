@@ -847,8 +847,10 @@ class Order extends BaseModel
      */
     public function refund()
     {
-        $this->hasOneOrderPay->fastRefund();
+        $result = $this->hasOneOrderPay->fastRefund();
         OrderService::orderForceClose(['order_id' => $this->id]);
+
+        return $result;
     }
 
     public function fireCreatedEvent()

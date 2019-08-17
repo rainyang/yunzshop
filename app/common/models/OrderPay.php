@@ -299,5 +299,7 @@ class OrderPay extends BaseModel
 
         $this->status = OrderPay::STATUS_REFUNDED;
         $this->save();
+
+        return $result;
     }
 }
