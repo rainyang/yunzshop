@@ -534,7 +534,7 @@ class MemberOfficeAccountService extends MemberService
 
                 if (!is_null($openid_member) && $openid_member->access_expires_in_1 > $expires) {
                     if (\YunShop::app()->getMemberId()) {
-                     return true;
+                       return true;
                     }
 
                     return false;
@@ -544,7 +544,11 @@ class MemberOfficeAccountService extends MemberService
             }
 
             if ($yz_member->access_expires_in_1 > time()) {
-                return true;
+                if (\YunShop::app()->getMemberId()) {
+                    return true;
+                }
+
+                return false;
             } else {
                 if ($yz_member->refresh_expires_in_1 > time()) {
                     $account = AccountWechats::getAccountByUniacid($uniacid);
