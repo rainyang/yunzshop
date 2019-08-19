@@ -16,7 +16,7 @@ class AddTokenToYzMemberMinTable extends Migration
         if (Schema::hasTable('yz_member_mini_app')) {
             Schema::table('yz_member_mini_app', function (Blueprint $table) {
                 if (!Schema::hasColumn('yz_member_mini_app', 'access_token')) {
-                    $table->string('access_token', 255)->default(0);
+                    $table->string('access_token', 1000)->default(0);
                 }
             });
         }
