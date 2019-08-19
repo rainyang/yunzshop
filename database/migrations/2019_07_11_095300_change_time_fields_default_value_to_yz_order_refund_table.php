@@ -36,6 +36,7 @@ class ChangeTimeFieldsDefaultValueToYzOrderRefundTable extends Migration
                     $table->integer('updated_at')->default(null)->nullable()->change();
                 });
         }
+        //todo 为什么不用case--when--then--else--end呢？
         \Illuminate\Support\Facades\DB::update('update ' . app('db')->getTablePrefix() . 'yz_order_refund set create_time = null where create_time = 0');
         \Illuminate\Support\Facades\DB::update('update ' . app('db')->getTablePrefix() . 'yz_order_refund set refund_time = null where refund_time = 0');
         \Illuminate\Support\Facades\DB::update('update ' . app('db')->getTablePrefix() . 'yz_order_refund set operate_time = null where operate_time = 0');
