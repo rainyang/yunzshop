@@ -15,7 +15,7 @@ class AddIndexOpenidToYzMemberTable extends Migration
     {
         if (Schema::hasTable('yz_member')) {
             Schema::table('yz_member', function (Blueprint $table) {
-//                $table->index('yz_openid');
+                $table->index('yz_openid');
             });
         }
     }
