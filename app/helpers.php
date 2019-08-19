@@ -3006,7 +3006,7 @@ if (!function_exists('uploadUrl')) {
         } else {
             $url['upload_url'] = './index.php?c=utility&a=file&do=upload&upload_type=';
             if($type = 'new'){
-                $image_url = str_replace('/web','.',yzWebUrl('upload.uploadimage.getimage'));
+                $image_url = str_replace('/web','.',yzWebUrl('upload.uploadImage.getImage'));
                 $url['image_url'] = $image_url;
             }elseif($type = 'default') {
                 $url['image_url'] = './index.php?c=utility&a=file&do=image&local=local&groupid=-999';
