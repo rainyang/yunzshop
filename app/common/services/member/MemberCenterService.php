@@ -617,7 +617,6 @@ class MemberCenterService
        }
 
        $arr['is_open'] = [
-           'yop' => app('plugins')->isEnabled('yop-pay') ? 1 : 0,
            'is_open_hotel' => app('plugins')->isEnabled('hotel') ? 1 : 0,
            'is_open_net_car' => app('plugins')->isEnabled('net-car') ? 1 : 0,
            'is_open_fight_groups' => app('plugins')->isEnabled('fight-groups') ? 1 : 0,

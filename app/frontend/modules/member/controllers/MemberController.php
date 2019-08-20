@@ -121,6 +121,11 @@ class MemberController extends ApiController
         //自定义表单
         $data['myform'] = (new MemberService())->memberInfoAttrStatus($member_info['yz_member']);
 
+
+        //这个参数是要在会员设置里使用的，别再把这个参数移走了
+        $data['yop'] = app('plugins')->isEnabled('yop-pay') ? 1 : 0;
+
+
         //邀请码
         $v = request('v');
         if (!is_null($v)) {
