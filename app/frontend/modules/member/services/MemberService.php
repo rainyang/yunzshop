@@ -427,11 +427,7 @@ class MemberService
         $member_id = 0;
         $scope = \YunShop::request()->scope ?: '';
 
-        if (isset($userinfo['nickname'])) {
-            $userinfo['nickname'] = $this->filteNickname($userinfo);
-        } else {
-            $userinfo['nickname'] = '';
-        }
+        $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $UnionidInfo = MemberUniqueModel::getUnionidInfo($uniacid, $userinfo['unionid'])->first();
 
@@ -545,11 +541,7 @@ class MemberService
         $member_id = 0;
         $scope = \YunShop::request()->scope ?: '';
 
-        if (isset($userinfo['nickname'])) {
-            $userinfo['nickname'] = $this->filteNickname($userinfo);
-        } else {
-            $userinfo['nickname'] = '';
-        }
+        $userinfo['nickname'] = $this->filteNickname($userinfo);
 
         $fans_mode = $this->getFansModel($userinfo['openid']);
         
@@ -625,6 +617,10 @@ class MemberService
      */
     public function filteNickname($userinfo)
     {
+        if (!isset($userinfo['nickname'])) {
+            return '';
+        }
+
         if (Client::getOS() == 'OS_WIN') {
             $s_format = 'UCS-2';
         } else {
