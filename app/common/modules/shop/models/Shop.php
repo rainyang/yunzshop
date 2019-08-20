@@ -44,7 +44,7 @@ class Shop extends \app\common\models\Shop
 
     public function memberRelation()
     {
-        return $this->hasMany(MemberRelation::class, 'uniacid', 'uniacid');
+        return $this->hasOne(MemberRelation::class, 'uniacid', 'uniacid');
     }
 
 }
