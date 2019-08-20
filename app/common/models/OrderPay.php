@@ -293,13 +293,21 @@ class OrderPay extends BaseModel
      * @throws AppException
      */
     public function fastRefund(){
-        $pay = PayFactory::create($this->pay_type_id);
-
-        $result = $pay->doRefund($this->pay_sn, $this->amount, $this->amount);
 
         $this->status = OrderPay::STATUS_REFUNDED;
-        $this->save();
 
-        return $result;
+        $pay = PayFactory::create($this->pay_type_id);
+
+        try {
+            $result = $pay->doRefund($this->pay_sn, $this->amount, $this->amount);
+
+            if ($result) {
+                $this->save();
+            }
+
+            return $result;
+        } catch (\Exception $e) {
+            throw new AppException($e->getMessage());
+        }
     }
 }

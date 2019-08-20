@@ -25,6 +25,7 @@ use app\common\models\MemberRelation;
 class Shop extends \app\common\models\Shop
 {
     static $current;
+    static $currentUniacid;
 
     /**
      * 当前公众号对应的商城
@@ -32,20 +33,18 @@ class Shop extends \app\common\models\Shop
      */
     public static function current()
     {
-        if (!isset(self::$current)) {
+        if (!isset(self::$current) || self::$currentUniacid != \YunShop::app()->uniacid) {
+            self::$currentUniacid = \YunShop::app()->uniacid;
             self::$current = new self();
-            self::$current->init();
+            self::$current->uniacid = self::$currentUniacid;
         }
+
         return self::$current;
     }
 
     public function memberRelation()
     {
-        return $this->hasOne(MemberRelation::class,'uniacid','uniacid');
+        return $this->hasOne(MemberRelation::class, 'uniacid', 'uniacid');
     }
 
-    public function init()
-    {
-        $this->uniacid = \YunShop::app()->uniacid;
-    }
 }
