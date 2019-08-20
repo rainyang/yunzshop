@@ -847,8 +847,27 @@ class Order extends BaseModel
      */
     public function refund()
     {
+        $result = $this->hasOneOrderPay->fastRefund();
+
+        if (isset($result['batch_no'])) { //兼容支付宝老接口
+            $refundApply = new RefundApply(['reason' => '后台退款', 'content' => '后台退款', 'refund_type' => 1, 'order_id' => $this->id]);
+            $refundApply->images = '';
+            $refundApply->refund_sn = \app\frontend\modules\refund\services\RefundService::createOrderRN();
+            $refundApply->create_time = time();
+            $refundApply->price = $this->price;
+            $refundApply->alipay_batch_sn = $result['batch_no'];
+            $refundApply->uid = 0;
+            $refundApply->uniacid = $this->uniacid;
+            $refundApply->status = 0;
+
+            if (!$refundApply->save()) {
+                throw  new AppException('后台申请退款失败');
+            }
+        }
+
         OrderService::orderForceClose(['order_id' => $this->id]);
-        $this->hasOneOrderPay->fastRefund();
+
+        return $result;
     }
 
     public function fireCreatedEvent()
