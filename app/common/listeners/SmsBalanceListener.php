@@ -15,8 +15,10 @@ class SmsBalanceListener
 
     public function subscribe(Dispatcher $events)
     {
+
         $events->listen('cron.collectJobs', function () {
-            if (app()->runningInConsole()) {
+            \Log::debug('-------------IN_IA-----------',defined('IN_IA'));
+            if (defined('IN_IA')) {
                 \Log::debug('----定时任务执行----');
                 $uniAccounts = UniAccount::getEnable();
                 foreach ($uniAccounts as $uniAccount) {
@@ -37,6 +39,7 @@ class SmsBalanceListener
                         continue;
                     }
                     $time = '0 ' . $balanceSet['sms_hour'] . ' * * * *';
+                    \Log::debug('-----------time--------',$time);
                     \Cron::add('smsMeaggeToMemberMobile' . $uniAccount->uniacid, $time, function () use ($unicid) {
                         $this->handle($unicid);
                     });
