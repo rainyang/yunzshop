@@ -863,9 +863,9 @@ class Order extends BaseModel
             if (!$refundApply->save()) {
                 throw  new AppException('后台申请退款失败');
             }
+        } else {
+            OrderService::orderForceClose(['order_id' => $this->id]);
         }
-
-        OrderService::orderForceClose(['order_id' => $this->id]);
 
         return $result;
     }
