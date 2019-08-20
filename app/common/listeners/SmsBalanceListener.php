@@ -16,7 +16,7 @@ class SmsBalanceListener
     public function subscribe(Dispatcher $events)
     {
         $events->listen('cron.collectJobs', function () {
-            if (defined('IS_CRON')) {
+            if (app()->runningInConsole()) {
                 \Log::debug('----定时任务执行----');
                 $uniAccounts = UniAccount::getEnable();
                 foreach ($uniAccounts as $uniAccount) {
