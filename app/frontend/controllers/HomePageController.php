@@ -1088,6 +1088,26 @@ class HomePageController extends ApiController
         return $this->successJson('ok', $result);
     }
 
+    //该接口为全局需要的参数，别给我删了
+    public function globalParameter($bool = false)
+    {
+        $data = [];
+        //配送站
+        if (app('plugins')->isEnabled('delivery-station')) {
+            $data['is_open_delivery_station'] = \Setting::get('plugin.delivery_station.is_open') ? 1 : 0;
+        } else {
+            $data['is_open_delivery_station'] = 0;
+        }
+
+
+
+        if ($bool) {
+            return show_json(1, $data);
+        } else {
+            return $this->successJson('ok', $data);
+        }
+    }
+
     public function getParams($request)
     {
         $this->dataIntegrated($this->index($request, true), 'home');
@@ -1095,6 +1115,7 @@ class HomePageController extends ApiController
         $this->dataIntegrated($this->getBalance(), 'balance');
         $this->dataIntegrated($this->getLangSetting(), 'lang');
 //        $this->dataIntegrated($this->wxJsSdkConfig(), 'config');
+        $this->dataIntegrated($this->globalParameter(true), 'globalParameter');
 
         return $this->successJson('', $this->apiData);
     }
