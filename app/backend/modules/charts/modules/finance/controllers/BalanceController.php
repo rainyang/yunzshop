@@ -44,7 +44,7 @@ class BalanceController extends ChartsController
         foreach ($this->time as $key => $time) {
             $allBalanceData[$key] = Balance::uniacid()
                 ->selectRaw('sum(change_money) as useBalance, sum(if(service_type=7,change_money,0)) as incomeBalance, sum(if(service_type=6,change_money,0)) as withdrawBalance, sum(if(service_type=2,change_money,0)) as usedBalance')
-                ->selectRaw('sum(if(service_type=1 && operator_id=1,change_money,0)) as recharge, sum(if(service_type=1 && operator=-2,change_money,0)) as memberRecharge')
+                ->selectRaw('sum(if(service_type=1 ,change_money,0)) as recharge, sum(if(service_type=1 ,change_money,0)) as memberRecharge')
                 ->where('created_at','<=', strtotime($time))
                 ->first()
                 ->toArray();
