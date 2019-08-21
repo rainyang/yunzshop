@@ -216,7 +216,7 @@ class IncomePageController extends ApiController
     {
         $total_income =Income::selectRaw('member_id, incometable_type, sum(amount) as total_amount, sum(if(status = 0, amount, 0)) as usable_total')
             ->whereMember_id(\YunShop::app()->getMemberId())
-            ->groupBy('incometable_type')
+            ->groupBy('incometable_type', 'member_id')
             ->get();
 
         //计算累计收入
