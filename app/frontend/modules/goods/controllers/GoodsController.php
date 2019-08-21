@@ -312,7 +312,7 @@ class GoodsController extends ApiController
         }
 
         //门店商品
-        if ($goodsModel->plugin_id == 32 || $goodsModel->store_goods) {
+        if ($goodsModel->plugin_id == 32 && $goodsModel->store_goods) {
             $goods_type = 'store_goods';
             $store_id = $goodsModel->store_goods->store_id;
             $data['store_id'] = $store_id;
@@ -320,7 +320,7 @@ class GoodsController extends ApiController
 
 
         //供应商商品
-        if ($goodsModel->plugin_id == 92 || $goodsModel->supplier) {
+        if ($goodsModel->plugin_id == 92 && $goodsModel->supplier) {
             $goods_type = 'supplierGoods';
         }
 

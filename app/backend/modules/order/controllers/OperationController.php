@@ -123,7 +123,12 @@ class OperationController extends BaseController
     public function manualRefund()
     {
 
-        $this->order->refund();
+        $result = $this->order->refund();
+
+        if (isset($result['url'])) {
+            return redirect($result['url'])->send();
+        }
+
         return $this->message('操作成功');
     }
 

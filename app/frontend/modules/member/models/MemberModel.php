@@ -771,7 +771,7 @@ class MemberModel extends Member
             }])
             ->orderBy('uid', 'desc')->paginate($pageSize)->toArray();
 
-        $orderData = Order::select(DB::raw('sum(`price`) as total_amount,count(1) as total,uid'))->whereIn('uid', array_column($teamMembers['data'], 'uid'))->where('status', 3)->groupBy('uid')->get();
+        $orderData = Order::select(DB::raw('sum(`price`) as total_amount,count(1) as total,uid,price'))->whereIn('uid', array_column($teamMembers['data'], 'uid'))->where('status', 3)->groupBy('uid')->get();
 
         foreach ($teamMembers['data'] as &$v) {
             // 不限

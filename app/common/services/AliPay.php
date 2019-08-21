@@ -175,7 +175,7 @@ class AliPay extends Pay
         if(!empty($res)&&$res['alipay_trade_refund_response']['code'] == '10000'){
             return $res['alipay_trade_refund_response'];
         } else {
-            return false;
+            throw new AppException($res['alipay_trade_refund_response']['msg'] . '-' . $res['alipay_trade_refund_response']['sub_msg']);
         }
     }
 
@@ -199,7 +199,7 @@ class AliPay extends Pay
         if(!empty($res)&&$res['alipay_trade_refund_response']['code'] == '10000'){
             return $res['alipay_trade_refund_response'];
         } else {
-            return false;
+            throw new AppException($res['alipay_trade_refund_response']['msg'] . '-' . $res['alipay_trade_refund_response']['sub_msg']);
         }
     }
 
