@@ -108,7 +108,7 @@ class MemberOfficeAccountService extends MemberService
         $subscribe = 0;
         $share = Setting::get('shop.share');
 
-        if (env('APP_Framework') == 'platform' || (!is_null($share) && $share['follow_url'] != '')) {
+        if (is_null($share) || $share['follow'] == 1) {
             $global_access_token_url = $this->_getAccessToken($appId, $appSecret);
 
             $global_token = \Curl::to($global_access_token_url)
