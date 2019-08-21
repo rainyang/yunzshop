@@ -25,7 +25,7 @@ class Withdraw extends \app\common\models\Withdraw
             $query->whereBetween('created_at',[strtotime($search['time']['start']), strtotime($search['time']['end'])]);
         }
         if (!empty($search['type'])) {
-            $query->ofType($search['type']);
+            $query->whereType($search['type']);
         }
         return $query;
     }

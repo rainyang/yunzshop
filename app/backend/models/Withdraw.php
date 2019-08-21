@@ -29,40 +29,32 @@ class Withdraw extends \app\common\models\Withdraw
         return parent::scopeRecords($query);
     }
 
-
     public function scopeSearch($query, $search)
     {
-        if($search['member_id']) {
-            $query->where('member_id',$search['member_id']);
+        if ($search['member_id']) {
+            $query->where('member_id', $search['member_id']);
         }
-
         if (isset($search['status']) && $search['status'] != "") {
             $query->ofStatus($search['status']);
         }
-
-        if($search['withdraw_sn']) {
+        if ($search['withdraw_sn']) {
             $query->ofWithdrawSn($search['withdraw_sn']);
         }
-
-        if($search['type']) {
-            $query->ofType($search['type']);
+        if ($search['type']) {
+            $query->whereType($search['type']);
         }
-
-        if($search['pay_way']) {
+        if ($search['pay_way']) {
             $query->where('pay_way', $search['pay_way']);
         }
-
-        if($search['searchtime']){
-            $range = [strtotime($search['time']['start']),  strtotime($search['time']['end'])];
+        if ($search['searchtime']) {
+            $range = [strtotime($search['time']['start']), strtotime($search['time']['end'])];
             $query->whereBetween('created_at', $range);
         }
-
-        if($search['member']) {
-            $query->whereHas('hasOneMember', function($query)use($search){
+        if ($search['member']) {
+            $query->whereHas('hasOneMember', function ($query) use ($search) {
                 return $query->searchLike($search['member']);
             });
         }
-
         return $query;
     }
 
