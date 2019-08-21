@@ -42,7 +42,7 @@ class BalanceSetController extends BaseController
         $dayData = [];
         for ($i = 1; $i <= 23; $i++) {
             $dayData += [
-                $i+1 => "每天" . $i . ":00",
+                $i => "每天" . $i . ":00",
             ];
         }
         return $dayData;
@@ -55,10 +55,7 @@ class BalanceSetController extends BaseController
     public function store()
     {
         $request_data = $this->getPostValue();
-        \Cache::forever("sms_timing_setting", [
-            'sms_hour'=>$request_data['sms_hour'] ?: 0,
-        ]);
-        \Log::debug(\Cache::get("sms_timing_setting"));
+        
         if (Setting::set('finance.balance', $request_data)) {
             (new \app\common\services\operation\BalanceSetLog(['old'=>$this->balance_set,'new'=>$request_data], 'update'));
             return $this->message('余额基础设置保存成功', Url::absoluteWeb('finance.balance-set.see'),'success');
