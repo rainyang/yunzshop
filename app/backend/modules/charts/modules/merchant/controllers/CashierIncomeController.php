@@ -139,7 +139,7 @@ class CashierIncomeController extends BaseController
             $withdraws = DB::table('yz_store as s')
                 ->leftJoin('yz_member_income as sw', 's.uid', 'sw.member_id')
                 ->where('s.uniacid', $uniacid)
-                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=0 and '.$prefix.'sw.incometable_type like "%CashierOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.incometable_type like "%CashierOrder",'.$prefix.'sw.amount,0)) as withdraw')
+                ->selectRaw(''.$prefix.'s.id, sum(if('.$prefix.'sw.status=1 and '.$prefix.'sw.pay_status<>2 and '.$prefix.'sw.incometable_type like "%CashierOrder",'.$prefix.'sw.amount,0)) as withdrawing, sum(if('.$prefix.'sw.pay_status=2 and '.$prefix.'sw.incometable_type like "%CashierOrder",'.$prefix.'sw.amount,0)) as withdraw')
                 ->groupBy('s.id')
                 ->get();
         }
