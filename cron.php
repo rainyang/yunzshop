@@ -1,5 +1,5 @@
 <?php
-
+define('IS_CRON',true);
 define('IN_IA', true);
 include_once __DIR__ . '/../../framework/bootstrap.inc.php';
 
