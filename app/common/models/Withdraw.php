@@ -353,11 +353,6 @@ class Withdraw extends BaseModel
         return $query->where('status', $status);
     }
 
-    public function scopeOfType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
-
     public function scopeOfWithdrawSn($query, $withdraw_sn)
     {
         return $query->where('withdraw_sn', $withdraw_sn);

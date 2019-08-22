@@ -6,6 +6,7 @@ sh.exe.stackdump
 tmp/
 .idea/
 composer.lock
+/composer.phar
 /vendor/*
 /tests/
 .env

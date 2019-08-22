@@ -125,12 +125,6 @@ class Balance extends BaseModel
         return $query->where('serial_number', $orderSn);
     }
 
-    public function scopeOfType($query,$type)
-    {
-        return $query->where('type',$type);
-    }
-
-
     public function scopeWithMember($query)
     {
         return $query->with(['member' => function($query) {
@@ -144,7 +138,7 @@ class Balance extends BaseModel
             $query->ofSource($search['source']);
         }
         if ($search['type']) {
-            $query->ofType($search['type']);
+            $query->whereType($search['type']);
         }
         if ($search['order_sn']) {
             $query->where('serial_number', 'like', $search['order_sn'] . '%');

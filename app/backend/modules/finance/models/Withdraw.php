@@ -39,7 +39,7 @@ class Withdraw extends \app\common\models\Withdraw
         }
 
         if($search['type']) {
-            $query->ofType($search['type']);
+            $query->whereType($search['type']);
         }
 
         if($search['pay_way']) {
