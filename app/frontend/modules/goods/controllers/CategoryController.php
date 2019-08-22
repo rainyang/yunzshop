@@ -48,12 +48,13 @@ class CategoryController extends BaseController
     public function categoryHome()
     {
         $res = app('plugins')->isEnabled('designer');
+        $category_data = [
+            'names'     => '02',
+            'type'      => 'category',
+        ];
+        $category_template = $category_data;
         if ($res){
             $category_template = ViewSet::uniacid()->where('type','category')->select('names','type')->first();
-            $category_data = [
-                'names'     => '02',
-                'type'      => 'category',
-            ];
             $category_template = $category_template ?: $category_data;
         }
         $set = \Setting::get('shop.category');
