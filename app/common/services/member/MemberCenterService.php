@@ -32,7 +32,7 @@ class MemberCenterService
            'asset_equity' => ['integral', 'credit', 'asset', 'love', 'coin','froze','extension'],
            'merchant'     => ['supplier', 'kingtimes', 'hotel', 'store-cashier', 'cashier', 'micro', 'delivery_station', 'service_station'],
            'market'       => ['ranking', 'article', 'clock_in', 'conference', 'video_demand', 'enter_goods', 'universal_card', 'recharge_code', 'my-friend', 'business_card', 'net_car', 'fight_groups', 'material-center'
-               , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order']
+               , 'help-center', 'sign', 'courier', 'declaration', 'distribution-order', 'video-share']
        ];
 
        $data = [];
@@ -587,6 +587,20 @@ class MemberCenterService
                'url'   => 'MyGroups',
                'image' => 'member_a(72).png'
            ];
+       }
+
+       //发现视频
+       if (app('plugins')->isEnabled('video-share')) {
+           $set = \Setting::get('plugin.video-share');
+           if ($set['is_open']) {
+               $data[] = [
+                   'name'  => 'video-share',
+                   'title' => '发现视频',
+                   'class' => 'icon-extension_video',
+                   'url'   => 'VideoList',
+                   'image' => 'member_a(73).png'
+               ];
+           }
        }
 
        foreach ($data as $k => $v) {
