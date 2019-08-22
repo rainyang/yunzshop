@@ -19,12 +19,11 @@ use app\common\helpers\Url;
 use Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Session\Store;
-
 use app\frontend\modules\goods\models\Category;
 use app\frontend\modules\goods\services\CategoryService;
-
 use app\common\models\Goods;
 use app\common\models\GoodsSpecItem;
+use Yunshop\Designer\models\ViewSet;
 
 class CategoryController extends BaseController
 {
@@ -48,6 +47,16 @@ class CategoryController extends BaseController
 
     public function categoryHome()
     {
+        $res = app('plugins')->isEnabled('designer');
+        $category_data = [
+            'names'     => '02',
+            'type'      => 'category',
+        ];
+        $category_template = $category_data;
+        if ($res){
+            $category_template = ViewSet::uniacid()->where('type','category')->select('names','type')->first();
+            $category_template = $category_template ?: $category_data;
+        }
         $set = \Setting::get('shop.category');
         $pageSize = 100;
         $parent_id = \YunShop::request()->parent_id ?: '0';
@@ -78,7 +87,8 @@ class CategoryController extends BaseController
             'member_cart' => $this->getMemberCart(),
             'goods_list' => $goods_list,
             'ads' => $this->getAds(),
-            'set' => $set
+            'set' => $set,
+            'category_template' => $category_template
         ]);
     }
     protected function getMemberCart()
