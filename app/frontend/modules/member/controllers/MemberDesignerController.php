@@ -11,6 +11,7 @@ namespace app\frontend\modules\member\controllers;
 
 use app\common\components\ApiController;
 use app\common\facades\Setting;
+use app\common\models\Member;
 use app\frontend\controllers\HomePageController;
 use Yunshop\Designer\models\MemberDesigner;
 use Yunshop\Designer\services\DesignerService;
@@ -185,6 +186,13 @@ class MemberDesignerController extends ApiController
          $merchants = [];
          //控制二维码显示，由member-data方法搬来
          $member_info = MemberModel::getUserInfos_v2(\YunShop::app()->getMemberId())->first();
+
+         if (empty($member_info)) {
+             $mid = Member::getMid();
+             $this->jump = true;
+             return $this->jumpUrl(\YunShop::request()->type, $mid);
+         }
+
          $member_info = $member_info->toArray();
          $is_agent = $member_info['yz_member']['is_agent'] == 1 && $member_info['yz_member']['status'] == 2 ? true : false;
          if($is_agent){

@@ -102,11 +102,9 @@ class MemberController extends ApiController
 
         $member_info = MemberModel::getUserInfos_v2($member_id)->first();
         if (empty($member_info)) {
-            if (is_null($integrated)) {
-                return $this->errorJson('[' . $member_id . ']用户不存在');
-            } else {
-                return show_json(0, '[' . $member_id . ']用户不存在');
-            }
+            $this->jump = true;
+            $mid = \app\common\models\Member::getMid();
+            $this->jumpUrl(\YunShop::request()->type, $mid);
         }
 
         $member_info = $member_info->toArray();
