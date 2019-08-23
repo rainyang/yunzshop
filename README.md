@@ -21,5 +21,5 @@ https://demo.yunzmall.cn/
 注意：开源不等于免费，仅供学习使用，如需商用，请联系下方二维码（有优惠），进行商业授权。
 
 如需授权，请加此微信联系。
-![yangyu20180816](https://github.com/rainyang/yunzshop/tree/master/static/images/logan.jpeg)
+![yangyu20180816](https://github.com/rainyang/yunzshop/raw/master/static/images/logan.jpeg)
 
